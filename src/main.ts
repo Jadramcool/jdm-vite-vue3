@@ -1,8 +1,8 @@
 import { createApp } from 'vue';
 import './style.css';
 import App from './App.vue';
-import router from './router/index.ts';
-import store from './store/index.ts'; // 在vue中使用pinia
+import router from './router/index';
+import store from './store/index'; // 在vue中使用pinia
 
 const app = createApp(App);
 

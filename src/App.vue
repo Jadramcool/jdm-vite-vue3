@@ -1,14 +1,20 @@
-// 使用user数据 // App.vue
-<script setup lang="ts">
-import useUserStore from '@/store/modules/user.ts';
-
-const userStore = useUserStore();
-</script>
-
 <template>
   <div>{{ userStore.name }}</div>
   <RouterView />
+  <n-button @click="handleToPage('Home')">Home</n-button>
+  <n-button @click="handleToPage('Demo')">Demo</n-button>
 </template>
+
+<script setup lang="ts" name="App">
+import useUserStore from '@/store/modules/user';
+
+const userStore = useUserStore();
+
+const router = useRouter();
+const handleToPage = (name: string) => {
+  router.push({ name });
+};
+</script>
 
 <style scoped>
 #app {
@@ -16,5 +22,3 @@ const userStore = useUserStore();
   height: 100vh;
 }
 </style>
-
-@/store/modules/user
