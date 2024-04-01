@@ -39,13 +39,10 @@
   },
   "lint-staged": {
     "**/*.{html,vue,ts,cjs,json,md}": [
-      "prettier --write"
+      "prettier"
     ],
     "**/*.{vue,js,ts,jsx,tsx}": [
-      "eslint --fix"
-    ],
-    "**/*.{vue,css,scss,html}": [
-      "stylelint --fix"
+      "eslint"
     ]
   }
 }
