@@ -7,7 +7,12 @@ const useUserStore = defineStore('user', {
   state: () => ({
     name: 'hps',
   }),
-  // other options...
+  getters: {},
+  actions: {},
+
+  // 开始数据持久化
+  persist: true,
+  // https://prazdevs.github.io/pinia-plugin-persistedstate/zh/guide/config.html  配置持久化
 });
 
 export default useUserStore;

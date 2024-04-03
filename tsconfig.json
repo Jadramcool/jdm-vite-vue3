@@ -9,7 +9,8 @@
     "baseUrl": "./",
     "paths": {
       "@": ["src"],
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "#/*": ["types/*"]
     },
     /* Bundler mode */
     "moduleResolution": "bundler",

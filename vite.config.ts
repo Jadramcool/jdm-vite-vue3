@@ -1,48 +1,45 @@
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import * as path from 'path';
+import { defineConfig, loadEnv, ConfigEnv } from 'vite';
+import path from 'path';
 
-// 自动引入插件
-import AutoImport from 'unplugin-auto-import/vite';
-import Components from 'unplugin-vue-components/vite';
+import vitePlugins from './config/vitePlugins';
 
-// Naive UI 的解析器
-import { NaiveUiResolver } from 'unplugin-vue-components/resolvers';
+// import { VITE_PORT, VITE_DROP_CONSOLE, API_BASE_URL, API_TARGET_URL } from './config/constant';
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [
-    vue(),
-    AutoImport({
-      imports: [
-        'vue',
-        'vue-router',
-        'pinia',
-        {
-          'naive-ui': ['useDialog', 'useMessage', 'useNotification', 'useLoadingBar'],
-        },
-      ],
-      eslintrc: {
-        enabled: true, // Default `false`
-        filepath: './.eslintrc-auto-import.json', // Default `./.eslintrc-auto-import.json`
-        globalsPropValue: true, // Default `true`, (true | false | 'readonly' | 'readable' | 'writable' | 'writeable')
+export default defineConfig((env: ConfigEnv) => {
+  // 加载环境变量
+  const viteEnv = loadEnv(env.mode, './env', 'VITE');
+  console.log('🚀jay, viteEnv', viteEnv);
+  return {
+    base: viteEnv.VITE_BASE,
+    envDir: './env', // 指定环境变量文件目录
+    plugins: vitePlugins(env),
+    resolve: {
+      // 设置别名
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
+        '#': path.resolve(__dirname, 'types'), // #代替types
       },
-    }),
-    Components({
-      // dirs 指定组件所在位置，默认为 src/components
-      // 可以让我们使用自己定义组件的时候免去 import 的麻烦
-      dirs: ['src/components/'], // ++
-      // 配置需要将哪些后缀类型的文件进行自动按需引入
-      extensions: ['vue'], // ++
-      // 解析的 UI 组件库，这里以 NaiveUI 为例
-      resolvers: [NaiveUiResolver()],
-    }),
-  ],
-
-  resolve: {
-    // 设置别名
-    alias: {
-      '@': path.resolve(__dirname, 'src'),
     },
-  },
+    server: {
+      host: '0.0.0.0',
+      port: 8080,
+      open: true,
+      https: false,
+      // proxy: {
+      //   '/api': {
+      //     target: '要代理的地址',
+      //     changeOrigin: true,
+      //     ws: true,
+      //     rewrite: (path: string) => path.replace(/^\/api/, ''),
+      //   },
+      // },
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@import "@/assets/styles/index.scss";',
+        },
+      },
+    },
+  };
 });
