@@ -38,7 +38,6 @@ class HttpRequest {
       (response: AxiosResponse<ResponseModel>): AxiosResponse['data'] => {
         const { data } = response;
         const { code } = data;
-        console.log('🚀 ~ HttpRequest ~ constructor ~ code:', code);
         if (code && code !== HttpCodeConfig.success) {
           switch (code) {
             case HttpCodeConfig.notFound:
@@ -64,9 +63,9 @@ class HttpRequest {
   private async executeRequest<T = any>(config: AxiosRequestConfig): Promise<ResponseModel<T>> {
     try {
       const response = await this.service.request<ResponseModel<T>>(config);
-      console.log('🚀 ~ HttpRequest ~ response:', response);
-      return response.data;
+      return response.data || response;
     } catch (error) {
+      console.log(error);
       return Promise.reject(error);
     }
   }

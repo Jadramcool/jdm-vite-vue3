@@ -1,16 +1,17 @@
-import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
+import { setupRouterGuards } from './guards';
+import { basicRoutes } from './basic-routes';
 
-const routes: Array<RouteRecordRaw> = [
-  { path: '/', redirect: '/home' },
-
-  { path: '/home', name: 'Home', component: () => import('@/views/Home.vue') },
-  { path: '/demo', name: 'Demo', component: () => import('@/views/Demo.vue') },
-];
-
-const router = createRouter({
-  // 4. 内部提供了 history 模式的实现。为了简单起见，我们在这里使用 hash 模式。
-  history: createWebHistory(),
-  routes, // `routes: routes` 的缩写
+export const router = createRouter({
+  history:
+    import.meta.env.VITE_USE_HASH === 'true'
+      ? createWebHashHistory(import.meta.env.VITE_PUBLIC_PATH || '/')
+      : createWebHistory(import.meta.env.VITE_PUBLIC_PATH || '/'),
+  routes: basicRoutes, // 路由配置
+  scrollBehavior: () => ({ left: 0, top: 0 }), // 滚动行为
 });
 
-export default router;
+export async function setupRouter(app: any) {
+  app.use(router);
+  setupRouterGuards(router);
+}

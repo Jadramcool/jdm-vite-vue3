@@ -1,0 +1,7 @@
+// 自定义进度条颜色
+#nprogress .bar {
+  /* 自定义颜色 需要加上!important;，这里加了渐变色 */
+  background-color: #ffffff !important;
+  background-image: linear-gradient(0deg, #ffffff 0%, #6284ff 50%, #ff0000 100%) !important;
+  height: 6px !important;
+}

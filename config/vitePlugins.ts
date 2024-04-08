@@ -10,7 +10,8 @@ import VueSetupExtend from 'vite-plugin-vue-setup-extend';
 import { viteMockServe } from 'vite-plugin-mock';
 // Naive UI 的解析器
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers';
-
+// UnoCSS
+import UnoCSS from 'unocss/vite';
 import { ConfigEnv } from 'vite';
 
 export default (env: ConfigEnv) => {
@@ -19,6 +20,7 @@ export default (env: ConfigEnv) => {
     vue({
       include: [/.vue$/],
     }),
+    UnoCSS(),
     AutoImport({
       imports: [
         'vue',
@@ -37,9 +39,9 @@ export default (env: ConfigEnv) => {
     Components({
       // dirs 指定组件所在位置，默认为 src/components
       // 可以让我们使用自己定义组件的时候免去 import 的麻烦
-      dirs: ['src/components/'], // ++
+      dirs: ['src/components'],
       // 配置需要将哪些后缀类型的文件进行自动按需引入
-      extensions: ['vue'], // ++
+      extensions: ['vue'],
       // 解析的 UI 组件库，这里以 NaiveUI 为例
       resolvers: [NaiveUiResolver()],
     }),

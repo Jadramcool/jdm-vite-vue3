@@ -1,67 +1,73 @@
 <template>
-  <div>{{ userStore.name }}</div>
-  <RouterView />
-  <n-button @click="handleToPage('Home')">Home</n-button>
-  <n-button @click="handleToPage('Demo')">Demo</n-button>
-  <div class="scss">scss</div>
+  <n-config-provider
+    class="wh-full"
+    :theme="appStore.isDark ? darkTheme : undefined"
+    :theme-overrides="appStore.naiveThemeOverrides"
+  >
+    <AppProvider>
+      <router-view v-if="Layout" v-slot="{ Component, route: curRoute }">
+        <component :is="Layout">
+          <KeepAlive :include="keepAliveNames">
+            <CommonPage show-footer>
+              <component :is="Component" :key="curRoute.fullPath" />
+            </CommonPage>
+          </KeepAlive>
+        </component>
+
+        <!-- <LayoutSetting class="fixed right-12 top-1/2 z-999" /> -->
+      </router-view>
+      <router-view v-else></router-view>
+    </AppProvider>
+  </n-config-provider>
 </template>
 
 <script setup lang="ts" name="App">
-import useUserStore from '@/store/modules/user';
-// import { login } from '@/api/mock/user';
-// import * as WeatherApi from '@/api/weather';
-// import request from './utils/http/request';
-// import { exampleAPI, exampleHupuAPI, mockAPI } from '@/api/example';
-import * as exampleApi from '@/api/example';
-// exampleAPI().then((res: any) => {
-//   console.log('getData: ', res);
-//   const { data } = res;
-//   console.log('list: ', data);
-// });
+import { darkTheme } from 'naive-ui';
+import { AppProvider } from '@/components/application';
+import { useCssVar } from '@vueuse/core';
+import { kebabCase } from 'lodash';
+import { useAppStore, useTabStore } from '@/store';
 
-// exampleHupuAPI().then((res: any) => {
-//   console.log('getData: ', res);
-//   const { data } = res;
-//   console.log('list: ', data);
-// });
+const route = useRoute();
+const appStore = useAppStore();
+const tabStore = useTabStore();
 
-exampleApi.mockAPI().then((res: any) => {
-  console.log('mock: ', res);
-  const { data } = res;
-  console.log('🚀 ~ mockAPI ~ data:', data);
-});
+const layouts: any = new Map();
 
-exampleApi.mockPostAPI({ username: '123', password: '123' }).then((res: any) => {
-  console.log('mockPostAPI: ', res);
-  const { data } = res;
-  console.log('🚀 ~ mockPostAPI ~ data:', data);
-});
-const userStore = useUserStore();
-
-const router = useRouter();
-const handleToPage = (name: string) => {
-  router.push({ name });
+// 获取layout
+const getLayout = (name: string): void => {
+  // 利用map将加载过的layout缓存起来，防止重新加载layout导致页面闪烁
+  if (layouts.get(name)) return layouts.get(name);
+  const layout: any = markRaw(defineAsyncComponent(() => import(`@/layout/${name}/index.vue`)));
+  layouts.set(name, layout);
+  console.log(layout);
+  return layout;
 };
 
-// const createUser = () => {
-//   login({
-//     name: 'vben',
-//     gender: 'man',
-//   }).then((data: any) => {
-//     console.log(data);
-//   });
-// };
+const setupCssVar = () => {
+  const common: any = appStore.naiveThemeOverrides?.common || {};
+  // 使用 Object.keys() 获取对象的键数组，然后对数组进行迭代
+  Object.keys(common).forEach((key) => {
+    const value: string = common[key];
+    useCssVar(`--${kebabCase(key)}`, document.documentElement).value = value || '';
+    if (key === 'primaryColor') window.localStorage.setItem('__THEME_COLOR__', value || '');
+  });
+};
 
-onMounted(async () => {});
+setupCssVar();
+
+// 返回当前路由对应的layout
+const Layout: any = computed(() => {
+  if (!route.matched?.length) return null;
+  return getLayout((route.meta?.layout as string) || appStore.layout);
+  // const layout: any = markRaw(defineAsyncComponent(() => import(`@/layout/normal/index.vue`)));
+  // return layout;
+});
+// 获取keep-alive的所有组件名称
+const keepAliveNames = computed(() => {
+  console.log('tabStore.tabs', tabStore.tabs);
+  return tabStore.tabs.filter((item: any) => item.keepAlive).map((item) => item.name);
+});
 </script>
 
-<style lang="scss" scoped>
-#app {
-  width: 100vw;
-  height: 100vh;
-}
-
-.scss {
-  color: $test-color;
-}
-</style>
+<style lang="scss" scoped></style>

@@ -8,3 +8,4 @@ const store = createPinia();
 store.use(piniaPluginPersistedstate); // 使用持久化插件
 
 export default store;
+export * from './modules';

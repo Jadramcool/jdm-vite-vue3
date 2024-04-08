@@ -1,11 +1,12 @@
 import { AxiosRequestConfig } from 'axios';
 
 export interface ResponseModel<T = any> {
-  success: boolean;
+  success?: boolean;
   message: string | null;
   code?: number | string;
   status?: number | string;
   data: T;
+  [key: string]: any; // 允许其他属性
 }
 
 export interface UploadFileItemModel {
