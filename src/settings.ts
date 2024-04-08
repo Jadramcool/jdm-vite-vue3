@@ -2,30 +2,30 @@ export const defaultLayout = 'normal';
 
 export const naiveThemeOverrides = {
   common: {
-    primaryColor: '#316C72FF',
-    primaryColorHover: '#316C72E3',
-    primaryColorPressed: '#2B4C59FF',
-    primaryColorSuppl: '#316C72E3',
+    primaryColor: 'rgba(49, 108, 114, 1)',
+    primaryColorHover: 'rgba(49, 108, 114, 0.89)',
+    primaryColorPressed: 'rgba(43, 76, 89, 1)',
+    primaryColorSuppl: 'rgba(49, 108, 114, 0.89)',
 
-    infoColor: '#2080F0FF',
-    infoColorHover: '#4098FCFF',
-    infoColorPressed: '#1060C9FF',
-    infoColorSuppl: '#4098FCFF',
+    infoColor: 'rgba(32, 128, 240, 1)',
+    infoColorHover: 'rgba(64, 152, 252, 1)',
+    infoColorPressed: 'rgba(16, 96, 201, 1)',
+    infoColorSuppl: 'rgba(64, 152, 252, 1)',
 
-    successColor: '#18A058FF',
-    successColorHover: '#36AD6AFF',
-    successColorPressed: '#0C7A43FF',
-    successColorSuppl: '#36AD6AFF',
+    successColor: 'rgba(24, 160, 88, 1)',
+    successColorHover: 'rgba(54, 173, 106, 1)',
+    successColorPressed: 'rgba(12, 122, 67, 1)',
+    successColorSuppl: 'rgba(54, 173, 106, 1)',
 
-    warningColor: '#F0A020FF',
-    warningColorHover: '#FCB040FF',
-    warningColorPressed: '#C97C10FF',
-    warningColorSuppl: '#FCB040FF',
+    warningColor: 'rgba(240, 160, 32, 1)',
+    warningColorHover: 'rgba(252, 176, 64, 1)',
+    warningColorPressed: 'rgba(201, 124, 16, 1)',
+    warningColorSuppl: 'rgba(252, 176, 64, 1)',
 
-    errorColor: '#D03050FF',
-    errorColorHover: '#DE576DFF',
-    errorColorPressed: '#AB1F3FFF',
-    errorColorSuppl: '#DE576DFF',
+    errorColor: 'rgba(208, 48, 80, 1)',
+    errorColorHover: 'rgba(222, 87, 109, 1)',
+    errorColorPressed: 'rgba(171, 31, 63, 1)',
+    errorColorSuppl: 'rgba(222, 87, 109, 1)',
   },
 };
 

@@ -7,16 +7,14 @@
     <AppProvider>
       <router-view v-if="Layout" v-slot="{ Component, route: curRoute }">
         <component :is="Layout">
+          <n-global-style />
           <KeepAlive :include="keepAliveNames">
-            <CommonPage show-footer>
-              <component :is="Component" :key="curRoute.fullPath" />
-            </CommonPage>
+            <component :is="Component" v-if="!tabStore.reloading" :key="curRoute.fullPath" />
           </KeepAlive>
         </component>
 
         <!-- <LayoutSetting class="fixed right-12 top-1/2 z-999" /> -->
       </router-view>
-      <router-view v-else></router-view>
     </AppProvider>
   </n-config-provider>
 </template>
@@ -40,7 +38,6 @@ const getLayout = (name: string): void => {
   if (layouts.get(name)) return layouts.get(name);
   const layout: any = markRaw(defineAsyncComponent(() => import(`@/layout/${name}/index.vue`)));
   layouts.set(name, layout);
-  console.log(layout);
   return layout;
 };
 
@@ -50,7 +47,10 @@ const setupCssVar = () => {
   Object.keys(common).forEach((key) => {
     const value: string = common[key];
     useCssVar(`--${kebabCase(key)}`, document.documentElement).value = value || '';
-    if (key === 'primaryColor') window.localStorage.setItem('__THEME_COLOR__', value || '');
+    if (key === 'primaryColor') {
+      console.log(1);
+      window.localStorage.setItem('__THEME_COLOR__', value || '');
+    }
   });
 };
 
@@ -60,13 +60,10 @@ setupCssVar();
 const Layout: any = computed(() => {
   if (!route.matched?.length) return null;
   return getLayout((route.meta?.layout as string) || appStore.layout);
-  // const layout: any = markRaw(defineAsyncComponent(() => import(`@/layout/normal/index.vue`)));
-  // return layout;
 });
 // 获取keep-alive的所有组件名称
 const keepAliveNames = computed(() => {
-  console.log('tabStore.tabs', tabStore.tabs);
-  return tabStore.tabs.filter((item: any) => item.keepAlive).map((item) => item.name);
+  return tabStore.tabs.filter((item: any) => item.keepAlive).map((item: any) => item?.name);
 });
 </script>
 

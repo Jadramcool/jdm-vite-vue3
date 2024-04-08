@@ -1,26 +1,36 @@
-<template>
-  <n-dialog-provider>
-    <n-notification-provider>
-      <n-message-provider>
-        <slot name="default"></slot>
-      </n-message-provider>
-    </n-notification-provider>
-  </n-dialog-provider>
-</template>
+<script setup lang="ts">
+import { useDialog, useLoadingBar, useMessage, useNotification } from 'naive-ui';
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { NDialogProvider, NNotificationProvider, NMessageProvider } from 'naive-ui';
+// 挂载naive组件的方法至window, 以便在路由钩子函数和请求函数里面调用
+function registerNaiveTools() {
+  window.$loadingBar = useLoadingBar();
+  window.$dialog = useDialog();
+  window.$message = useMessage();
+  window.$notification = useNotification();
+}
 
-export default defineComponent({
-  name: 'Application',
-  components: {
-    NDialogProvider,
-    NNotificationProvider,
-    NMessageProvider,
-  },
+const NaiveProviderContent = defineComponent({
+  name: 'NaiveProviderContent',
   setup() {
-    return {};
+    registerNaiveTools();
+  },
+  render() {
+    return h('div');
   },
 });
 </script>
+
+<template>
+  <n-loading-bar-provider>
+    <n-dialog-provider>
+      <n-notification-provider>
+        <n-message-provider>
+          <slot />
+          <NaiveProviderContent />
+        </n-message-provider>
+      </n-notification-provider>
+    </n-dialog-provider>
+  </n-loading-bar-provider>
+</template>
+
+<style scoped></style>

@@ -1,7 +1,9 @@
 <template>
-  <div>home</div>
-  <n-button type="warning" @click="handleLogout">退出登录</n-button>
-  <n-button type="warning" @click="handlePage">跳转路由</n-button>
+  <CommonPage show-footer>
+    <div>home</div>
+    <n-button type="warning" @click="handleLogout">退出登录</n-button>
+    <n-button type="warning" @click="handlePage">跳转路由</n-button>
+  </CommonPage>
 </template>
 
 <script setup lang="ts">
