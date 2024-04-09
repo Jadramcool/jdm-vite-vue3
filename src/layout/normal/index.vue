@@ -1,32 +1,43 @@
 <template>
-  <div class="wh-full flex">
-    <aside
-      class="flex-col flex-shrink-0 transition-width-300"
-      :class="appStore.collapsed ? 'w-64' : 'w-220'"
-      border-r="1px solid light_border dark:dark_border"
+  <n-layout class="wh-full flex" has-sider>
+    <n-layout-sider
+      :collapsed="appStore.collapsed"
+      collapse-mode="width"
+      :collapsed-width="64"
+      :width="240"
+      content-style="display: flex;flex-direction: column;min-height:100%;border-right: 1px solid #f0f0f0;"
     >
-      <SideBar />
-    </aside>
+      <SideLogo />
+      <n-scrollbar class="flex-1">
+        <SideMenu />
+      </n-scrollbar>
+    </n-layout-sider>
+    <n-layout
+      class="h-full flex flex-col"
+      content-style="display: flex;flex-direction: column;min-height:100%;"
+      embedded
+      :native-scrollbar="false"
+    >
+      <n-layout-header bordered class="flex items-center">
+        <MenuCollapse />
+        <Breadcrumb />
 
-    <article class="w-0 flex-col flex-1">
-      <AppHeader class="h-60 flex-shrink-0" />
-      <Tab></Tab>
-      <slot name="default"></slot>
-    </article>
-  </div>
+        <!-- <AppHeader class="h-60 flex-shrink-0" /> -->
+        <!-- <Tab></Tab> -->
+      </n-layout-header>
+      <n-layout-content content-style="padding: 24px;">
+        <slot name="default"></slot>
+      </n-layout-content>
+      <!-- <n-layout-footer>成府路</n-layout-footer> -->
+    </n-layout>
+  </n-layout>
 </template>
 
 <script setup>
 import { useAppStore } from '@/store';
-import SideBar from './sidebar/index.vue';
-import AppHeader from './header/index.vue';
-import Tab from './tab/index.vue';
+import { SideLogo, SideMenu, MenuCollapse, Breadcrumb } from '@/layout/components';
 
 const appStore = useAppStore();
 </script>
 
-<style>
-.collapsed {
-  width: 64px;
-}
-</style>
+<style></style>

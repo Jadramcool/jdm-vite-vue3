@@ -14,6 +14,10 @@ const route = useRoute();
 
 const authStore = useAuthStore();
 
+onMounted(() => {
+  handleLogin();
+});
+
 const handleLogin = async () => {
   try {
     const data = {
@@ -21,6 +25,7 @@ const handleLogin = async () => {
       password: '123456',
     };
     const res = await UserApi.login(data);
+    console.log('🚀 ~ handleLogin ~ res:', res);
     onLoginSuccess(res);
   } catch (error) {
     console.error(error);

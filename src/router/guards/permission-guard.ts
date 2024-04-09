@@ -1,6 +1,7 @@
 import { useAuthStore, usePermissionStore, useUserStore } from '@/store';
 // import api from '@/api';
-import { getPermissions, getUserInfo } from '@/store/helper';
+// TODO 删除getPermissions1
+import { getPermissions, getUserInfo, getPermissions1 } from '@/store/helper';
 
 const WHITE_LIST = ['/login', '/404'];
 export function createPermissionGuard(router: any) {
@@ -24,9 +25,19 @@ export function createPermissionGuard(router: any) {
     const permissionStore = usePermissionStore();
     // 刷新页面时，vuex中的数据会丢失，所以需要重新获取用户信息和权限
     if (!userStore.userInfo) {
-      const [user, permissions] = await Promise.all([getUserInfo(), getPermissions()]);
+      const [user, permissions, permissions1] = await Promise.all([
+        getUserInfo(),
+        getPermissions(),
+        getPermissions1(),
+      ]);
       userStore.setUser(user);
-      permissionStore.setPermissions(permissions);
+      // 路由初始化失败
+      if (!permissions) {
+        window.$message.error('路由初始化失败，请刷新页面重试！');
+        return;
+      }
+      // permissionStore.setPermissions(permissions);
+      permissionStore.setPermissions(permissions1);
       const routeComponents = import.meta.glob('@/views/**/*.vue');
       permissionStore.accessRoutes.forEach((route) => {
         route.component = routeComponents[route.component] || undefined;
@@ -39,7 +50,6 @@ export function createPermissionGuard(router: any) {
     }
 
     const routes = router.getRoutes();
-    console.log('🚀 ~ router.beforeEach ~ routes:', routes);
     if (routes.find((route: any) => route.name === to.name)) return true;
     console.log('没有权限，跳转到403页面');
     return { name: '404', query: { path: to.fullPath } };

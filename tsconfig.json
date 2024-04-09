@@ -10,7 +10,7 @@
     "paths": {
       "@": ["src"],
       "@/*": ["src/*"],
-      "#/*": ["types/*"]
+      "#/*": ["typings/*"]
     },
     /* Bundler mode */
     "moduleResolution": "bundler",

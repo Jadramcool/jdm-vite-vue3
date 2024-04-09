@@ -4,10 +4,10 @@
     :theme="appStore.isDark ? darkTheme : undefined"
     :theme-overrides="appStore.naiveThemeOverrides"
   >
-    <AppProvider>
+    <Application>
       <router-view v-if="Layout" v-slot="{ Component, route: curRoute }">
         <component :is="Layout">
-          <n-global-style />
+          <!-- <n-global-style /> -->
           <KeepAlive :include="keepAliveNames">
             <component :is="Component" v-if="!tabStore.reloading" :key="curRoute.fullPath" />
           </KeepAlive>
@@ -15,16 +15,16 @@
 
         <!-- <LayoutSetting class="fixed right-12 top-1/2 z-999" /> -->
       </router-view>
-    </AppProvider>
+    </Application>
   </n-config-provider>
 </template>
 
 <script setup lang="ts" name="App">
 import { darkTheme } from 'naive-ui';
-import { AppProvider } from '@/components/application';
 import { useCssVar } from '@vueuse/core';
 import { kebabCase } from 'lodash';
 import { useAppStore, useTabStore } from '@/store';
+import Application from './components/application/Application.vue';
 
 const route = useRoute();
 const appStore = useAppStore();
@@ -48,7 +48,6 @@ const setupCssVar = () => {
     const value: string = common[key];
     useCssVar(`--${kebabCase(key)}`, document.documentElement).value = value || '';
     if (key === 'primaryColor') {
-      console.log(1);
       window.localStorage.setItem('__THEME_COLOR__', value || '');
     }
   });

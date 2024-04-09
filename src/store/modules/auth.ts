@@ -7,7 +7,6 @@ export const useAuthStore = defineStore('auth', {
   }),
   actions: {
     setToken({ token }: any) {
-      console.log('🚀 ~ setToken ~ token:', token);
       this.token = token;
     },
     resetToken() {

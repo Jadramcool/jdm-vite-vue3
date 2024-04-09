@@ -8,6 +8,5 @@ export function createPageTitleGuard(router: any) {
     } else {
       document.title = baseTitle;
     }
-    console.log('🚀jay, document.title', document.title);
   });
 }

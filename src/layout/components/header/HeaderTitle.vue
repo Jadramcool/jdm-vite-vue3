@@ -35,7 +35,7 @@
   </AppCard>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { useDark, useToggle, useFullscreen } from '@vueuse/core';
 import { useAppStore } from '@/store';
 import { MenuCollapse } from '@/layout/components';
@@ -53,3 +53,5 @@ function handleLinkClick(link) {
   window.open(link);
 }
 </script>
+
+<style lang="scss" scoped></style>

@@ -26,6 +26,7 @@
     "@commitlint/cli": "^19.2.1",
     "@commitlint/config-conventional": "^19.1.0",
     "@iconify/json": "^2.2.196",
+    "@iconify/vue": "^4.1.1",
     "@types/lodash": "^4.17.0",
     "@types/node": "^20.12.2",
     "@types/nprogress": "^0.2.3",

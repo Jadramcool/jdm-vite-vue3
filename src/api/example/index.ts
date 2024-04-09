@@ -7,6 +7,7 @@ enum API {
   mockUserInfo = '/api/user/info',
   mockLogin = '/api/user/login',
   mockPremission = '/api/premission/menu',
+  mockPremission1 = '/api/premission/menu1',
 }
 
 export const exampleAPI = () => {
@@ -40,5 +41,11 @@ export const mockPostAPI = (data: any) => {
 export const mockPremissionAPI = () => {
   return request.get<exampleModel[]>({
     url: API.mockPremission,
+  });
+};
+
+export const mockPremission1API = () => {
+  return request.get<exampleModel[]>({
+    url: API.mockPremission1,
   });
 };

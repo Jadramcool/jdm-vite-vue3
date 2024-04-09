@@ -31,7 +31,6 @@ export const useTabStore = defineStore('tab', {
     },
     addTab(tab: { path: string; keepAlive?: boolean } = { path: '' }): void {
       const findIndex = this.tabs.findIndex((item) => item.path === tab.path);
-      console.log('🚀 ~ addTab ~ findIndex:', findIndex);
       // 如果 findIndex 返回的索引不是 -1，表示已经存在相同路径的标签页，此时需要更新现有标签页。
       if (findIndex !== -1) {
         this.tabs.splice(findIndex, 1, tab);

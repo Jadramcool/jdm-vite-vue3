@@ -25,5 +25,19 @@ export async function getPermissions() {
   } catch (error) {
     console.error(error);
   }
+  // TODO 返回权限
+  // return basePermissions.concat(asyncPermissions);
+  return asyncPermissions;
+}
+
+export async function getPermissions1() {
+  let asyncPermissions: any = [];
+  try {
+    const res = await ExampleAPI.mockPremission1API();
+    asyncPermissions = res?.data || res || [];
+  } catch (error) {
+    console.error(error);
+  }
+  // TODO 返回权限
   return basePermissions.concat(asyncPermissions);
 }

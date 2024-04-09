@@ -2,7 +2,6 @@
   <n-menu
     ref="menu"
     class="side-menu"
-    accordion
     :indent="18"
     :collapsed-icon-size="22"
     :collapsed-width="64"
@@ -35,7 +34,6 @@ watch(route, async () => {
 
 function handleMenuSelect(key: any, item: any) {
   if (isExternal(item.originPath)) {
-    console.log(item.originPath);
     dialog.info({
       type: 'info',
       title: `请选择打开方式`,
