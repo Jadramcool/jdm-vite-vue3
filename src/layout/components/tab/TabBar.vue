@@ -1,9 +1,8 @@
 <template>
-  <div class="tabbar">
+  <div class="tabbars flex-x-center">
     <n-tabs
       :value="tabStore.activeTab"
       :closable="tabStore.tabs.length > 1"
-      :style="`--selected-bg: ${appStore.isDark ? '#1b2429' : '#eaf0f1'}`"
       type="card"
       @close="(path: any) => tabStore.removeTab(path)"
     >
@@ -16,6 +15,10 @@
       >
         {{ item.title }}
       </n-tab>
+      <template #suffix>
+        <Reload />
+        <DropTabs />
+      </template>
     </n-tabs>
 
     <ContextMenu
@@ -29,11 +32,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useTabStore, useAppStore } from '@/store';
+import { useTabStore } from '@/store';
 import ContextMenu from './ContextMenu.vue';
+import Reload from './Reload.vue';
+import DropTabs from './DropTabs.vue';
 
 const router = useRouter();
-const appStore = useAppStore();
 const tabStore = useTabStore();
 
 const contextMenuOption = reactive({
@@ -60,7 +64,6 @@ function setContextMenu(x: number, y: number, currentPath: string) {
 
 // 右击菜单
 async function handleContextMenu(e: any, tagItem: any) {
-  console.log('🚀 ~ handleContextMenu ~ e:', e);
   const { clientX, clientY } = e;
   hideContextMenu();
   setContextMenu(clientX, clientY, tagItem.path);
@@ -69,36 +72,36 @@ async function handleContextMenu(e: any, tagItem: any) {
 }
 </script>
 
-<style scoped lang="scss">
-.tabbar {
-  display: flex;
-  align-items: center;
+<style lang="scss" scoped>
+.tabbars {
   height: 42px;
   padding: 2px;
   padding: 0 16px;
-  background-color: var(--bg-color);
   border-bottom: 1px solid var(--border-color);
+}
 
-  :deep(.n-tabs) {
-    .n-tabs-tab {
-      padding-left: 16px;
-      height: 36px;
-      background: transparent !important;
-      border-radius: 4px !important;
-      margin-right: 4px;
-      &:hover {
-        border: 1px solid var(--primary-color) !important;
-      }
-    }
-    .n-tabs-tab--active {
+:deep(.n-tabs) {
+  .n-tabs-tab {
+    padding-left: 16px;
+    height: 36px;
+    background: transparent !important;
+    border-radius: 4px !important;
+    margin-right: 4px;
+    &:hover {
       border: 1px solid var(--primary-color) !important;
-      background-color: var(--selected-bg) !important;
     }
-    .n-tabs-pad,
-    .n-tabs-tab-pad,
-    .n-tabs-scroll-padding {
-      border: none !important;
-    }
+  }
+  .n-tabs-tab--active {
+    border: 1px solid var(--primary-color) !important;
+    background-color: var(--tab-selected-bg) !important;
+  }
+  .n-tabs-pad,
+  .n-tabs-tab-pad,
+  .n-tabs-scroll-padding {
+    border: none !important;
+  }
+  .n-tabs-nav__suffix {
+    border: none !important;
   }
 }
 </style>

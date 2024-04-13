@@ -5,7 +5,6 @@ import vue from '@vitejs/plugin-vue';
 // 自动引入插件
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
-import VueSetupExtend from 'vite-plugin-vue-setup-extend';
 // mock 服务
 import { viteMockServe } from 'vite-plugin-mock';
 // Naive UI 的解析器
@@ -29,7 +28,11 @@ export default (env: ConfigEnv) => {
         {
           'naive-ui': ['useDialog', 'useMessage', 'useNotification', 'useLoadingBar'],
         },
+        '@vueuse/core',
+        'vue-i18n',
       ],
+      // 指定哪些文件应该被自动导入。
+      include: [/\.[tj]sx?$/, /\.vue$/, /\.vue\?vue/, /\.md$/],
       eslintrc: {
         enabled: true, // Default `false`
         filepath: './.eslintrc-auto-import.json', // Default `./.eslintrc-auto-import.json`
@@ -45,7 +48,6 @@ export default (env: ConfigEnv) => {
       // 解析的 UI 组件库，这里以 NaiveUI 为例
       resolvers: [NaiveUiResolver()],
     }),
-    VueSetupExtend(),
     viteMockServe({
       // 模拟服务的文件夹，在设置了configPath后失效
       mockPath: 'mock',

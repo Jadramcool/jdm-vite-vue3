@@ -1,5 +1,5 @@
 <template>
-  <router-link class="h-60 f-c-c" to="/">
+  <router-link class="h-60 flex-center" to="/">
     <!-- <img src="@/assets/images/logo.png" class="h-40" /> -->
     <TheLogo class="rounded-8!" />
     <h2

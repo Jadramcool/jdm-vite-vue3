@@ -30,7 +30,8 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "src/**/*.d.ts",
-    "./auto-imports.d.ts"
+    "./auto-imports.d.ts",
+    "typings/**/*.d.ts"
   ],
   "references": [
     {

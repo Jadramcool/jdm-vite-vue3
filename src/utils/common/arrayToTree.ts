@@ -1,5 +1,5 @@
 import { arrayToTree as _arrayToTree } from 'performant-array-to-tree';
-import { omit } from 'radash';
+import { omit } from 'lodash';
 
 export function arrayToTree(data: any) {
   const rowTree = _arrayToTree(data, {

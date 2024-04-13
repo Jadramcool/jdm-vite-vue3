@@ -1,7 +1,6 @@
 import { useAuthStore, usePermissionStore, useUserStore } from '@/store';
-// import api from '@/api';
 // TODO 删除getPermissions1
-import { getPermissions, getUserInfo, getPermissions1 } from '@/store/helper';
+import { getPermissions, getUserInfo } from '@/store/helper';
 
 const WHITE_LIST = ['/login', '/404'];
 export function createPermissionGuard(router: any) {
@@ -25,27 +24,23 @@ export function createPermissionGuard(router: any) {
     const permissionStore = usePermissionStore();
     // 刷新页面时，vuex中的数据会丢失，所以需要重新获取用户信息和权限
     if (!userStore.userInfo) {
-      const [user, permissions, permissions1] = await Promise.all([
-        getUserInfo(),
-        getPermissions(),
-        getPermissions1(),
-      ]);
+      // const [user, permissions] = await Promise.all([getUserInfo(), getPermissions()]);
+      const user = await getUserInfo();
+      const permissions = await getPermissions();
       userStore.setUser(user);
       // 路由初始化失败
       if (!permissions) {
         window.$message.error('路由初始化失败，请刷新页面重试！');
         return;
       }
-      // permissionStore.setPermissions(permissions);
-      permissionStore.setPermissions(permissions1);
-      const routeComponents = import.meta.glob('@/views/**/*.vue');
-      permissionStore.accessRoutes.forEach((route) => {
-        route.component = routeComponents[route.component] || undefined;
-        if (!router.hasRoute(route.name)) {
-          router.addRoute(route);
-        }
-        // !router.hasRoute(route.name) && router.addRoute(route);
-      });
+      // 设置权限
+      permissionStore.setPermissions(permissions);
+      // 设置菜单
+      permissionStore.setMenus(permissions);
+      // 设置路由
+      permissionStore.setRoutes(permissions);
+
+      router.addRoute(permissionStore.accessRoutes);
       return { ...to, replace: true };
     }
 

@@ -12,7 +12,7 @@ module.exports = {
           ['@', './src'],
         ],
         // 告诉resolver-alias有哪些后缀的文件要解析
-        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.vue'],
+        extensions: ['.ts', '.js', '.jsx', '.json', '.vue'],
       },
     },
   },
@@ -78,5 +78,7 @@ module.exports = {
     'no-unused-vars': 'off',
     'no-param-reassign': 'off',
     'consistent-return': 'off', // 关闭箭头函数必须有返回值
+    'no-restricted-syntax': 'off',
+    'no-undef': 'off',
   },
 };

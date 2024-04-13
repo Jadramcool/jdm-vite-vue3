@@ -13,6 +13,7 @@ const start = async () => {
   app.use(i18n);
 
   app.use(store);
+
   // 注册路由
   await setupRouter(app);
 

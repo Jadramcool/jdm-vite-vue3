@@ -59,9 +59,13 @@ function handleMenuSelect(key: any, item: any) {
       left: 8px;
       right: 8px;
     }
-    &.n-menu-item-content--selected::before {
-      border-left: 4px solid var(--primary-color);
-    }
+    // &.n-menu-item-content--selected::before {
+    //   border-left: 4px solid var(--primary-color);
+    // }
+  }
+  :deep(.n-menu-item-content--selected::before) {
+    // border-left: 5px solid var(--n-item-color-active);
+    border-left: 4px solid var(--primary-color);
   }
 }
 </style>

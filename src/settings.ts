@@ -1,35 +1,116 @@
 export const defaultLayout = 'normal';
-
+// 全局主题变量
 export const naiveThemeOverrides = {
   common: {
-    primaryColor: 'rgba(49, 108, 114, 1)',
-    primaryColorHover: 'rgba(49, 108, 114, 0.89)',
-    primaryColorPressed: 'rgba(43, 76, 89, 1)',
-    primaryColorSuppl: 'rgba(49, 108, 114, 0.89)',
+    primaryColor: '#18a058',
+    primaryColorHover: '#36ad6a',
+    primaryColorPressed: '#0c7a43',
+    primaryColorSuppl: '#36ad6a',
 
-    infoColor: 'rgba(32, 128, 240, 1)',
-    infoColorHover: 'rgba(64, 152, 252, 1)',
-    infoColorPressed: 'rgba(16, 96, 201, 1)',
-    infoColorSuppl: 'rgba(64, 152, 252, 1)',
+    // Info颜色相关
+    infoColor: '#2080f0',
+    infoColorHover: '#4098fc',
+    infoColorPressed: '#1060c9',
+    infoColorSuppl: '#4098fc',
 
-    successColor: 'rgba(24, 160, 88, 1)',
-    successColorHover: 'rgba(54, 173, 106, 1)',
-    successColorPressed: 'rgba(12, 122, 67, 1)',
-    successColorSuppl: 'rgba(54, 173, 106, 1)',
+    // Success颜色相关
+    successColor: '#18a058',
+    successColorHover: '#36ad6a',
+    successColorPressed: '#0c7a43',
+    successColorSuppl: '#36ad6a',
 
-    warningColor: 'rgba(240, 160, 32, 1)',
-    warningColorHover: 'rgba(252, 176, 64, 1)',
-    warningColorPressed: 'rgba(201, 124, 16, 1)',
-    warningColorSuppl: 'rgba(252, 176, 64, 1)',
+    // Warning颜色相关
+    warningColor: '#f0a020',
+    warningColorHover: '#fcb040',
+    warningColorPressed: '#c97c10',
+    warningColorSuppl: '#fcb040',
 
-    errorColor: 'rgba(208, 48, 80, 1)',
-    errorColorHover: 'rgba(222, 87, 109, 1)',
-    errorColorPressed: 'rgba(171, 31, 63, 1)',
-    errorColorSuppl: 'rgba(222, 87, 109, 1)',
+    // Error颜色相关
+    errorColor: '#d03050',
+    errorColorHover: '#de576d',
+    errorColorPressed: '#ab1f3f',
+    errorColorSuppl: '#de576d',
+  },
+};
+// 亮色模式下的主题变量
+export const lightThemeOverrides = {
+  common: {
+    borderColor: '#eee',
+    tabSelectedBg: '#F2F2F2',
+  },
+};
+// 黑暗模式下的主题变量
+export const darkThemeOverrides = {
+  common: {
+    borderColor: '#333', // 边框颜色
+    tabSelectedBg: '#1A171C', // 选中的tab背景色
   },
 };
 
-export const basePermissions = [
+export const basePermissions: any[] = [
+  {
+    id: 13,
+    code: 'ExternalLink',
+    name: '外链(可内嵌打开)',
+    type: 'MENU',
+    icon: 'mingcute:eyeglass-fill',
+    order: 98,
+    enable: true,
+    show: true,
+    pid: null,
+    path: '/external-link',
+  },
+  {
+    id: 14,
+    code: 'ShowDocs',
+    name: '项目文档',
+    type: 'MENU',
+    path: 'https://docs.isme.top',
+    icon: 'mingcute:scissors-2-line',
+    order: 1,
+    enable: true,
+    show: true,
+    pid: 13,
+  },
+  {
+    id: 15,
+    code: 'ApiFoxDocs',
+    name: '接口文档',
+    type: 'MENU',
+    path: 'https://apifox.com/apidoc',
+    icon: 'mingcute:rows-4-fill',
+    order: 2,
+    enable: true,
+    show: true,
+    pid: 13,
+  },
+  {
+    id: 16,
+    code: 'NaiveUI',
+    name: 'Naive UI',
+    type: 'MENU',
+    path: 'https://www.naiveui.com/zh-CN/os-theme',
+    icon: 'mingcute:ad-rectangle-fill',
+    order: 3,
+    enable: true,
+    show: true,
+    pid: 13,
+  },
+  {
+    id: 17,
+    code: 'MyBlog',
+    name: '博客-掘金',
+    type: 'MENU',
+    path: 'https://juejin.cn',
+    icon: 'mdi:account-circle-outline',
+    order: 4,
+    enable: true,
+    show: true,
+    pid: 13,
+  },
+];
+
+export const basePermissions1 = [
   {
     id: 13,
     code: 'ExternalLink',
