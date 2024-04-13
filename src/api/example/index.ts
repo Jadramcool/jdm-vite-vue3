@@ -1,4 +1,4 @@
-import request from '@/utils/http-vben/axios';
+import request from '@/utils/http/axios';
 import { exampleModel } from '../types/hello';
 
 enum API {

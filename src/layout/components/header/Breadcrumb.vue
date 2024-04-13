@@ -9,12 +9,12 @@
       v-for="item in routes"
       :key="item.path"
       tag="li"
-      style="color: var(--text-color-2); transition: 0.3s var(--cubic-bezier-ease-in-out)"
       class="flex-center gap-2 cursor-pointer split"
       @click="router.push(item.path)"
     >
-      <jay-icon :icon="item.meta.icon" />
-      <!-- <span class="whitespace-nowrap">{{ $t(`route.${String(item.name)}`, item.meta.title) }}</span> -->
+      <jay-icon :icon="item.meta.icon" v-if="appStore.showBreadcrumbIcon" />
+      <!-- <span class="whitespace-nowrap">{{ t(`route.${String(item.name)}`, item.meta.title) }}</span> -->
+      <span class="whitespace-nowrap">{{ item.meta.title }}</span>
     </n-el>
   </TransitionGroup>
 </template>
@@ -25,7 +25,6 @@ import { useAppStore } from '@/store';
 const router = useRouter();
 const route = useRoute();
 const routes = computed(() => {
-  console.log('🚀 ~ routes ~ routes:', route.matched);
   return route.matched;
 });
 const appStore = useAppStore();
@@ -46,10 +45,11 @@ const appStore = useAppStore();
 .list-enter-from,
 .list-leave-to {
   opacity: 0;
-  transform: translateX(-30px);
+  transform: translateX(45px);
 }
 
 .list-leave-active {
   position: absolute;
+  left: 25%;
 }
 </style>

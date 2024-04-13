@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import * as NprogressFn from '@/utils/nprogress';
+// import * as NprogressFn from '@/utils/nprogress';
 import { useRouterStore } from './router';
 
 export const useTabStore = defineStore('tab', {
@@ -10,11 +10,11 @@ export const useTabStore = defineStore('tab', {
       title?: string;
     }>;
     activeTab: string;
-    reloading: boolean;
+    // reloading: boolean;
   } => ({
     tabs: [],
     activeTab: '',
-    reloading: false,
+    // reloading: false,
   }),
   getters: {
     activeIndex(): number {
@@ -40,21 +40,21 @@ export const useTabStore = defineStore('tab', {
       }
       this.setActiveTab(tab.path);
     },
-    async reloadTab(path: string, keepAlive: boolean): Promise<void> {
-      const findItem = this.tabs.find((item) => item.path === path);
-      if (!findItem) return;
-      // 更新key可让keepAlive失效
-      if (keepAlive) findItem.keepAlive = false;
-      NprogressFn.start();
-      this.reloading = true;
-      await nextTick();
-      this.reloading = false;
-      findItem.keepAlive = !!keepAlive;
-      setTimeout(() => {
-        document.documentElement.scrollTo({ left: 0, top: 0 });
-        NprogressFn.close();
-      }, 100);
-    },
+    // async reloadTab(path: string, keepAlive: boolean): Promise<void> {
+    //   const findItem = this.tabs.find((item) => item.path === path);
+    //   if (!findItem) return;
+    //   // 更新key可让keepAlive失效
+    //   if (keepAlive) findItem.keepAlive = false;
+    //   NprogressFn.start();
+    //   this.reloading = true;
+    //   await nextTick();
+    //   this.reloading = false;
+    //   findItem.keepAlive = !!keepAlive;
+    //   setTimeout(() => {
+    //     document.documentElement.scrollTo({ left: 0, top: 0 });
+    //     NprogressFn.close();
+    //   }, 100);
+    // },
     async removeTab(path: string): Promise<void> {
       this.setTabs(this.tabs.filter((tab) => tab.path !== path));
       if (path === this.activeTab) {
@@ -89,6 +89,6 @@ export const useTabStore = defineStore('tab', {
   },
   persist: {
     paths: ['tabs'],
-    storage: sessionStorage,
+    storage: localStorage,
   },
 });

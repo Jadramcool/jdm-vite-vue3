@@ -1,10 +1,10 @@
 <template>
-  <n-space
-    class="f-c-c cursor-pointer rounded-4 p-6 text-22 transition-all-300 auto-bg-hover"
+  <n-flex
+    class="cursor-pointer rounded-4 p-6 text-22 transition-all-300"
     @click="appStore.switchCollapsed"
   >
     <i :class="appStore.collapsed ? 'i-line-md-menu-unfold-left' : 'i-line-md-menu-fold-left'" />
-  </n-space>
+  </n-flex>
 </template>
 
 <script lang="ts" setup>
@@ -13,4 +13,4 @@ import { useAppStore } from '@/store';
 const appStore = useAppStore();
 </script>
 
-<style></style>
+<style lang="scss" scoped></style>

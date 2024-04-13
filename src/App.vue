@@ -1,29 +1,29 @@
 <template>
   <n-config-provider
     class="wh-full"
-    :theme="appStore.isDark ? darkTheme : undefined"
-    :theme-overrides="appStore.naiveThemeOverrides"
+    inline-theme-disabled
+    :theme="appStore.colorMode === 'dark' ? darkTheme : null"
+    :theme-overrides="appStore.theme"
+    :locale="naiveLocale.locale"
+    :date-locale="naiveLocale.dateLocale"
   >
     <Application>
       <router-view v-if="Layout" v-slot="{ Component, route: curRoute }">
         <component :is="Layout">
-          <!-- <n-global-style /> -->
           <KeepAlive :include="keepAliveNames">
-            <component :is="Component" v-if="!tabStore.reloading" :key="curRoute.fullPath" />
+            <component :is="Component" v-if="appStore.loadFlag" :key="curRoute.fullPath" />
           </KeepAlive>
         </component>
-
-        <!-- <LayoutSetting class="fixed right-12 top-1/2 z-999" /> -->
       </router-view>
+      <Watermark :show-watermark="appStore.showWatermark" />
     </Application>
   </n-config-provider>
 </template>
 
 <script setup lang="ts" name="App">
 import { darkTheme } from 'naive-ui';
-import { useCssVar } from '@vueuse/core';
-import { kebabCase } from 'lodash';
 import { useAppStore, useTabStore } from '@/store';
+import { naiveI18nOptions } from '@/utils';
 import Application from './components/application/Application.vue';
 
 const route = useRoute();
@@ -32,6 +32,14 @@ const tabStore = useTabStore();
 
 const layouts: any = new Map();
 
+const naiveLocale = computed(() => {
+  return naiveI18nOptions[appStore.lang] ? naiveI18nOptions[appStore.lang] : naiveI18nOptions.enUS;
+});
+
+onMounted(() => {
+  // 初始化主题
+  appStore.setPrimaryColor();
+});
 // 获取layout
 const getLayout = (name: string): void => {
   // 利用map将加载过的layout缓存起来，防止重新加载layout导致页面闪烁
@@ -41,19 +49,19 @@ const getLayout = (name: string): void => {
   return layout;
 };
 
-const setupCssVar = () => {
-  const common: any = appStore.naiveThemeOverrides?.common || {};
-  // 使用 Object.keys() 获取对象的键数组，然后对数组进行迭代
-  Object.keys(common).forEach((key) => {
-    const value: string = common[key];
-    useCssVar(`--${kebabCase(key)}`, document.documentElement).value = value || '';
-    if (key === 'primaryColor') {
-      window.localStorage.setItem('__THEME_COLOR__', value || '');
-    }
-  });
-};
-
-setupCssVar();
+// // 设置全局样式
+// const setupCssVar = () => {
+//   const common: any = appStore.naiveThemeOverrides?.common || {};
+//   // 使用 Object.keys() 获取对象的键数组，然后对数组进行迭代
+//   Object.keys(common).forEach((key) => {
+//     const value: string = common[key];
+//     useCssVar(`--${kebabCase(key)}`, document.documentElement).value = value || '';
+//     if (key === 'primaryColor') {
+//       window.localStorage.setItem('__THEME_COLOR__', value || '');
+//     }
+//   });
+// };
+// setupCssVar();
 
 // 返回当前路由对应的layout
 const Layout: any = computed(() => {

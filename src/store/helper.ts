@@ -1,4 +1,4 @@
-import { basePermissions } from '@/settings';
+import { basePermissions, basePermissions1 } from '@/settings';
 import * as ExampleAPI from '@/api/example';
 
 export async function getUserInfo() {
@@ -25,9 +25,12 @@ export async function getPermissions() {
   } catch (error) {
     console.error(error);
   }
+
+  const res = [...basePermissions, ...asyncPermissions];
+
   // TODO 返回权限
-  // return basePermissions.concat(asyncPermissions);
-  return asyncPermissions;
+  return res;
+  // return asyncPermissions;
 }
 
 export async function getPermissions1() {
@@ -39,5 +42,5 @@ export async function getPermissions1() {
     console.error(error);
   }
   // TODO 返回权限
-  return basePermissions.concat(asyncPermissions);
+  return basePermissions1.concat(asyncPermissions);
 }

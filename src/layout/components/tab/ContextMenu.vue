@@ -10,8 +10,8 @@
   />
 </template>
 
-<script setup>
-import { useTabStore } from '@/store';
+<script lang="ts" setup>
+import { useTabStore, useAppStore } from '@/store';
 
 const props = defineProps({
   show: {
@@ -35,6 +35,7 @@ const props = defineProps({
 const emit = defineEmits(['update:show']);
 
 const tabStore = useTabStore();
+const appStore = useAppStore();
 
 const options = computed(() => [
   {
@@ -71,14 +72,20 @@ const options = computed(() => [
   },
 ]);
 
-const route = useRoute();
 const actionMap = new Map([
+  // [
+  //   'reload',
+  //   () => {
+  //     tabStore.reloadTab(route.fullPath, route.meta?.keepAlive as boolean);
+  //   },
+  // ],
   [
     'reload',
     () => {
-      tabStore.reloadTab(route.fullPath, route.meta?.keepAlive);
+      appStore.reloadPage();
     },
   ],
+
   [
     'close',
     () => {
@@ -109,7 +116,7 @@ function handleHideDropdown() {
   emit('update:show', false);
 }
 
-function handleSelect(key) {
+function handleSelect(key: any) {
   const actionFn = actionMap.get(key);
   if (actionFn) {
     actionFn();
