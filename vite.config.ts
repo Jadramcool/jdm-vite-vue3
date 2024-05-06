@@ -22,7 +22,7 @@ export default defineConfig((env: ConfigEnv) => {
     },
     server: {
       host: '0.0.0.0',
-      port: 8080,
+      port: 4000,
       open: true,
       https: false,
       // proxy: {

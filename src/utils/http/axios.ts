@@ -49,8 +49,10 @@ class HttpRequest {
             default:
               break;
           }
-          return Promise.reject(data.message);
+          console.log(code, data);
+          return Promise.reject(data.errMsg);
         }
+        console.log(data);
         return data;
       },
       (error: AxiosError) => {

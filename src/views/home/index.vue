@@ -3,6 +3,7 @@
     <div class="test">home</div>
     <n-button type="warning" @click="handleLogout">退出登录</n-button>
     <n-button type="warning" @click="handlePage">跳转路由</n-button>
+    <div class="card card-bg dark:card-bg-dark card-shadow">123</div>
   </div>
 </template>
 
@@ -34,6 +35,18 @@ const handlePage = () => {
 
 <style lang="scss" scoped>
 .test {
-  color: var(--primary-color) !important;
+  color: var(--primary-color);
+}
+.card {
+  width: 200px;
+  height: 200px;
+  padding: 20px;
+}
+
+.card-bg {
+  background: #fff;
+}
+.card-bg-dark {
+  background: #000;
 }
 </style>

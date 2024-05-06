@@ -74,4 +74,4 @@ const keepAliveNames = computed(() => {
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss"></style>

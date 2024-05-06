@@ -9,7 +9,7 @@ import { Icon } from '@iconify/vue';
 
 interface iconPorps {
   /* 图标名称 */
-  icon?: string;
+  icon?: string | undefined;
   /* 图标颜色 */
   color?: string;
   /* 图标大小 */
