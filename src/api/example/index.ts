@@ -4,10 +4,10 @@ import { exampleModel } from '../types/hello';
 enum API {
   example = '/dailyEnglish',
   hupu = 'hotlist/huPu',
-  mockUserInfo = '/api/user/info',
-  mockLogin = '/api/user/login',
-  mockPremission = '/api/premission/menu',
-  mockPremission1 = '/api/premission/menu1',
+  mockUserInfo = '/mock/user/info',
+  mockLogin = '/mock/user/login',
+  mockPremission = '/mock/premission/menu',
+  mockPremission1 = '/mock/premission/menu1',
 }
 
 export const exampleAPI = () => {

@@ -11,6 +11,7 @@
 // import { setToken } from '@/utils/token';
 import { lStorage } from '@/utils/storage';
 import * as ExampleApi from '@/api/example';
+import * as UserApi from '@/api/user';
 
 const router = useRouter();
 const handleLogout = () => {
@@ -24,8 +25,11 @@ onMounted(() => {
 });
 
 const getData = async () => {
-  const res = await ExampleApi.mockGetUserInfoAPI();
-  console.log('🚀 ~ getData ~ res:', res);
+  if (import.meta.env.VIET_MOCK) {
+    await ExampleApi.mockGetUserInfoAPI();
+  } else {
+    await UserApi.getUserInfo();
+  }
 };
 
 const handlePage = () => {

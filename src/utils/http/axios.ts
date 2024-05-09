@@ -15,7 +15,7 @@ class HttpRequest {
 
   constructor() {
     this.service = axios.create({
-      baseURL: import.meta.env.VITE_APP_BASE_URL,
+      baseURL: import.meta.env.VITE_MOCK ? '' : import.meta.env.VITE_APP_BASE_URL,
       timeout: 10 * 1000,
     });
 
@@ -23,7 +23,7 @@ class HttpRequest {
     this.service.interceptors.request.use(
       async (config: InternalAxiosRequestConfig) => {
         if (import.meta.env.VITE_APP_TOKEN_KEY && getToken()) {
-          config.headers[import.meta.env.VITE_APP_TOKEN_KEY] = getToken();
+          config.headers.authorization = `Bearer ${getToken()}`;
         }
         return config;
       },
@@ -49,10 +49,10 @@ class HttpRequest {
             default:
               break;
           }
-          console.log(code, data);
+          // console.log(code, data);
           return Promise.reject(data.errMsg);
         }
-        console.log(data);
+        // console.log(data);
         return data;
       },
       (error: AxiosError) => {

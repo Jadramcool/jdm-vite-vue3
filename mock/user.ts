@@ -3,7 +3,7 @@
 export default () => {
   return [
     {
-      url: '/api/createUser',
+      url: '/mock/createUser',
       method: 'post',
       response: ({ body, query }: any) => {
         console.log('body>>>>>>>>', body);
@@ -18,7 +18,7 @@ export default () => {
     },
     // 用户登录
     {
-      url: '/api/user/login',
+      url: '/mock/user/login',
       method: 'post',
       response: () => {
         return {
@@ -31,7 +31,7 @@ export default () => {
       },
     }, // 获取用户信息
     {
-      url: '/api/user/info',
+      url: '/mock/user/info',
       method: 'get',
       response: () => {
         return {
@@ -48,7 +48,7 @@ export default () => {
       },
     }, // 一个失败的请求
     {
-      url: '/api/error',
+      url: '/mock/error',
       method: 'get',
       response: () => {
         return {
@@ -60,7 +60,7 @@ export default () => {
     },
     // 获取权限菜单
     {
-      url: '/api/premission/menu',
+      url: '/mock/premission/menu',
       method: 'get',
       response: () => {
         return {
