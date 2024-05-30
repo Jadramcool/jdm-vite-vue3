@@ -6,8 +6,8 @@ enum API {
   hupu = 'hotlist/huPu',
   mockUserInfo = '/mock/user/info',
   mockLogin = '/mock/user/login',
-  mockPremission = '/mock/premission/menu',
-  mockPremission1 = '/mock/premission/menu1',
+  mockPermission = '/mock/permission/menu',
+  mockPermission1 = '/mock/permission/menu1',
 }
 
 export const exampleAPI = () => {
@@ -38,14 +38,14 @@ export const mockPostAPI = (data: any) => {
   });
 };
 
-export const mockPremissionAPI = () => {
+export const mockPermissionAPI = () => {
   return request.get<exampleModel[]>({
-    url: API.mockPremission,
+    url: API.mockPermission,
   });
 };
 
-export const mockPremission1API = () => {
+export const mockPermission1API = () => {
   return request.get<exampleModel[]>({
-    url: API.mockPremission1,
+    url: API.mockPermission1,
   });
 };

@@ -88,8 +88,8 @@ const appStore = useAppStore();
 const loginFormRef = ref<FormInst | null>(null);
 
 const loginForm = ref<LoginForm>({
-  username: '',
-  password: '',
+  username: '123',
+  password: '123456',
 });
 
 // 登录表单验证规则
@@ -163,7 +163,7 @@ const handleLogin = async (e: MouseEvent) => {
       duration: 0,
     });
     loginFormRef.value?.validate(async (errors) => {
-      console.log('🚀 ~ loginFormRef.value?.validate ~ valid:', errors);
+      // console.log('🚀 ~ loginFormRef.value?.validate ~ valid:', errors);
       if (!errors) {
         const data = {
           username: loginForm.value.username,

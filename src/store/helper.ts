@@ -27,11 +27,10 @@ export async function getPermissions() {
   let asyncPermissions: any = [];
   try {
     let res: any = [];
-    console.log(import.meta.env.VITE_MOCK);
-    if (import.meta.env.VITE_MOCK) {
-      res = await ExampleAPI.mockPremissionAPI();
+    if (import.meta.env.VITE_MOCK === 'true') {
+      res = await ExampleAPI.mockPermissionAPI();
     } else {
-      res = await UserApi.premissionAPI();
+      res = await UserApi.permissionAPI();
     }
     asyncPermissions = res?.data || res || [];
   } catch (error) {
@@ -48,7 +47,7 @@ export async function getPermissions() {
 export async function getMockPermissions() {
   let asyncPermissions: any = [];
   try {
-    const res = await ExampleAPI.mockPremissionAPI();
+    const res = await ExampleAPI.mockPermissionAPI();
     asyncPermissions = res?.data || res || [];
   } catch (error) {
     console.error(error);
@@ -64,7 +63,7 @@ export async function getMockPermissions() {
 export async function getPermissions1() {
   let asyncPermissions: any = [];
   try {
-    const res = await ExampleAPI.mockPremission1API();
+    const res = await ExampleAPI.mockPermission1API();
     asyncPermissions = res?.data || res || [];
   } catch (error) {
     console.error(error);

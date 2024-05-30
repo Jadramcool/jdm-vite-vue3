@@ -6,7 +6,7 @@ enum API {
   login = '/user/login',
   register = '/user/register',
   userInfo = '/user/info',
-  premission = '/user/premission/menu',
+  permission = '/system/permission/list',
 }
 
 /**
@@ -43,8 +43,8 @@ export const getUserInfo = () => {
 /**
  * @description: 获取菜单
  */
-export const premissionAPI = () => {
+export const permissionAPI = () => {
   return request.get<exampleModel[]>({
-    url: API.premission,
+    url: API.permission,
   });
 };

@@ -14,8 +14,9 @@ class HttpRequest {
   service: AxiosInstance;
 
   constructor() {
+    const baseURL = import.meta.env.VITE_MOCK === 'true' ? '' : import.meta.env.VITE_APP_BASE_URL;
     this.service = axios.create({
-      baseURL: import.meta.env.VITE_MOCK ? '' : import.meta.env.VITE_APP_BASE_URL,
+      baseURL,
       timeout: 10 * 1000,
     });
 
