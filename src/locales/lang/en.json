@@ -65,5 +65,14 @@
   },
   "route": {
     "Home": "Home"
+  },
+  "table": {
+    "refresh": "Reload",
+    "size": "Size",
+    "sizeType": {
+      "large": "large",
+      "medium": "medium",
+      "small": "small"
+    }
   }
 }

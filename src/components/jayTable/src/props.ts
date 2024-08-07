@@ -1,3 +1,12 @@
+/*
+ * @Author: Jay
+ * @Date: 2024-05-30 10:29:46
+ * @LastEditors: Jay
+ * @LastEditTime: 2024-07-24 15:14:28
+ * @FilePath: \vite-vue3-jdm\src\components\jayTable\src\props.ts
+ * @Description:
+ *
+ */
 import { NDataTable } from 'naive-ui';
 
 export const basicProps = {
@@ -10,10 +19,10 @@ export const basicProps = {
   //     type: String,
   //     default: null,
   //   },
-  //   size: {
-  //     type: String,
-  //     default: 'medium',
-  //   },
+  size: {
+    type: String,
+    default: 'medium',
+  },
   //   dataSource: {
   //     type: [Object],
   //     default: () => [],
@@ -42,11 +51,14 @@ export const basicProps = {
   pagination: {
     type: [Object, Boolean],
     default: () => {},
+    // 示例 pagination: { pageSize: 10, pageSizes: [10, 20, 30, 40, 50] }
+    // 也可以是 false 关闭分页
   },
-  //   showPagination: {
-  //     type: [String, Boolean],
-  //     default: 'auto',
-  //   },
+  // 废弃，用pagination替代
+  // showPagination: {
+  //   type: [String, Boolean],
+  //   default: 'auto',
+  // },
   //   actionColumn: {
   //     type: Object,
   //     default: null,

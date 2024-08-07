@@ -1,7 +1,16 @@
+<!--
+ * @Author: Jay
+ * @Date: 2024-05-30 10:29:46
+ * @LastEditors: Jay
+ * @LastEditTime: 2024-07-24 15:06:29
+ * @FilePath: \vite-vue3-jdm\src\views\system\user\index.vue
+ * @Description: 
+ * 
+-->
 <template>
   <div>
     <!-- <BasicForm></BasicForm> -->
-    <JayTable :columns="columns" :request="loadUserList"></JayTable>
+    <JayTable :columns="columns" :pagination="{ pageSize: 3 }" :request="loadUserList"></JayTable>
   </div>
 </template>
 
@@ -39,16 +48,21 @@ const columns = [
     key: 'updatedTime',
   },
 ];
-const params: any = ref({
-  pageInfo: { page: 1, pageSize: 3 },
+const params = ref<Query.GetParams>({
+  filters: {
+    username: 'jdm',
+    sex: 'MALE',
+  },
 });
 
 const handleParams = (params: any) => {
   return params;
 };
 
-const loadUserList = () => {
-  return UserManagerApi.userList(handleParams(params.value));
+const loadUserList = async (data: any) => {
+  console.log(handleParams(params.value));
+  // return UserManagerApi.userList(handleParams(params.value));
+  return UserManagerApi.userList({ ...data, ...handleParams(params.value) });
 };
 
 // const loadUserList = (res: any) => {

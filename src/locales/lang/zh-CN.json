@@ -67,5 +67,14 @@
   },
   "route": {
     "Home": "首页"
+  },
+  "table": {
+    "refresh": "刷新",
+    "size": "密度",
+    "sizeType": {
+      "large": "宽松",
+      "medium": "默认",
+      "small": "紧凑"
+    }
   }
 }

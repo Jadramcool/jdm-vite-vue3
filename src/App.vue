@@ -1,3 +1,12 @@
+<!--
+ * @Author: Jay
+ * @Date: 2024-05-06 10:22:58
+ * @LastEditors: Jay
+ * @LastEditTime: 2024-08-01 17:31:15
+ * @FilePath: \vite-vue3-jdm\src\App.vue
+ * @Description: 
+ * 
+-->
 <template>
   <n-config-provider
     class="wh-full"
@@ -25,6 +34,8 @@ import { darkTheme } from 'naive-ui';
 import { useAppStore, useTabStore } from '@/store';
 import { naiveI18nOptions } from '@/utils';
 import Application from './components/application/Application.vue';
+
+console.log('🚀 ~ naiveI18nOptions:', naiveI18nOptions);
 
 const route = useRoute();
 const appStore = useAppStore();

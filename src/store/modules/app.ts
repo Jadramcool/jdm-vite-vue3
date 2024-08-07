@@ -31,7 +31,7 @@ export const useAppStore = defineStore('app', {
     theme: naiveThemeOverrides as GlobalThemeOverrides,
     layout: defaultLayout, // 布局配置
     // naiveThemeOverrides, // naive-ui 主题配置
-    lang: 'zhCN', // 语言
+    lang: lStorage.getItem('lang') || 'zh-CN', // 语言
     primaryColor: naiveThemeOverrides.common.primaryColor, // 主题色
     weakColor: false, // 弱色
     grayMode: false, // 黑白模式
@@ -75,6 +75,7 @@ export const useAppStore = defineStore('app', {
     },
     // 切换语言
     setAppLanguage(lang: App.lang) {
+      console.log(111);
       setLocale(lang);
       this.lang = lang;
       lStorage.setItem('lang', lang);
