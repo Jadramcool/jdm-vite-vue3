@@ -1,8 +1,8 @@
 <!--
  * @Author: Jay
  * @Date: 2024-07-23 11:10:53
- * @LastEditors: Jay
- * @LastEditTime: 2024-07-24 15:45:27
+ * @LastEditors: jdm
+ * @LastEditTime: 2024-08-20 18:31:43
  * @FilePath: \vite-vue3-jdm\src\components\jayTable\src\components\toolbar.vue
  * @Description: 
  * 
@@ -40,16 +40,18 @@
 </template>
 
 <script setup lang="ts">
-import { $t } from '@/utils';
+import { useI18n } from 'vue-i18n';
 
 defineOptions({ name: 'Toolbar' });
+
+const { t } = useI18n();
 
 const tableSize = ref('medium');
 
 const options = [
-  { label: `${$t('table.sizeType.small')}`, key: 'small' },
-  { label: `${$t('table.sizeType.medium')}`, key: 'medium' },
-  { label: `${$t('table.sizeType.large')}`, key: 'large' },
+  { label: `${t('table.sizeType.small')}`, key: 'small' },
+  { label: `${t('table.sizeType.medium')}`, key: 'medium' },
+  { label: `${t('table.sizeType.large')}`, key: 'large' },
 ];
 
 const handleSizeSelect = (key: string) => {
