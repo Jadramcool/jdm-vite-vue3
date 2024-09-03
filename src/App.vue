@@ -1,8 +1,8 @@
 <!--
  * @Author: Jay
  * @Date: 2024-05-06 10:22:58
- * @LastEditors: Jay
- * @LastEditTime: 2024-08-01 17:31:15
+ * @LastEditors: jdm
+ * @LastEditTime: 2024-08-20 17:25:05
  * @FilePath: \vite-vue3-jdm\src\App.vue
  * @Description: 
  * 
@@ -30,12 +30,10 @@
 </template>
 
 <script setup lang="ts" name="App">
-import { darkTheme } from 'naive-ui';
 import { useAppStore, useTabStore } from '@/store';
 import { naiveI18nOptions } from '@/utils';
+import { darkTheme } from 'naive-ui';
 import Application from './components/application/Application.vue';
-
-console.log('🚀 ~ naiveI18nOptions:', naiveI18nOptions);
 
 const route = useRoute();
 const appStore = useAppStore();

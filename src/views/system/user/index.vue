@@ -1,8 +1,8 @@
 <!--
  * @Author: Jay
  * @Date: 2024-05-30 10:29:46
- * @LastEditors: Jay
- * @LastEditTime: 2024-07-24 15:06:29
+ * @LastEditors: jdm
+ * @LastEditTime: 2024-08-21 16:29:28
  * @FilePath: \vite-vue3-jdm\src\views\system\user\index.vue
  * @Description: 
  * 
@@ -10,7 +10,7 @@
 <template>
   <div>
     <!-- <BasicForm></BasicForm> -->
-    <JayTable :columns="columns" :pagination="{ pageSize: 3 }" :request="loadUserList"></JayTable>
+    <JayTable :columns="columns" :pagination="{ pageSize: 10 }" :request="loadUserList"></JayTable>
   </div>
 </template>
 
@@ -50,8 +50,9 @@ const columns = [
 ];
 const params = ref<Query.GetParams>({
   filters: {
-    username: 'jdm',
-    sex: 'MALE',
+    username_in: '1',
+    // username_not_in: 'jdm',
+    sex: 'OTHER',
   },
 });
 

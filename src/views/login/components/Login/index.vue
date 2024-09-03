@@ -55,10 +55,12 @@
         }}</n-button>
       </div>
 
-      <n-p class="flex-x-center"
-        >{{ $t('login.registerTips')
-        }}<n-a @click="toOtherForm('register')">{{ $t('login.register') }}</n-a></n-p
-      >
+      <n-p class="flex-x-center">
+        <n-space>
+          {{ $t('login.registerTips') }}
+          <n-a @click="toOtherForm('register')">{{ $t('login.register') }}</n-a>
+        </n-space>
+      </n-p>
     </div>
   </div>
 </template>
@@ -68,9 +70,12 @@ import * as UserApi from '@/api/user';
 import { lStorage } from '@/utils/storage';
 import { useAuthStore, useAppStore } from '@/store';
 import TheLogo from '@/components/common/TheLogo.vue';
-import { $t } from '@/utils';
 import { common } from '@/config';
 import { FormRules, FormItemRule, FormInst } from 'naive-ui';
+// 引入i18n
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -88,7 +93,7 @@ const appStore = useAppStore();
 const loginFormRef = ref<FormInst | null>(null);
 
 const loginForm = ref<LoginForm>({
-  username: '123',
+  username: 'jdm',
   password: '123456',
 });
 
@@ -97,7 +102,7 @@ const loginFormRules: FormRules = {
   username: [
     {
       required: true,
-      message: `${$t('common.pleaseInput')} ${$t('login.username')}`,
+      message: `${t('common.pleaseInput')} ${t('login.username')}`,
       trigger: 'blur',
     },
   ],
@@ -107,16 +112,16 @@ const loginFormRules: FormRules = {
       trigger: ['blur', 'input'],
       validator: (_rule: FormItemRule, value: string) => {
         if (!value) {
-          return new Error($t('common.pleaseInput') + $t('login.password'));
+          return new Error(t('common.pleaseInput') + t('login.password'));
         }
         if (value.length < common.passwordMinLength) {
           return new Error(
-            `${$t('login.passwordMinLength')} ${common.passwordMinLength} ${$t('login.length')}`,
+            `${t('login.passwordMinLength')} ${common.passwordMinLength} ${t('login.length')}`,
           );
         }
         if (value.length > common.passwordMaxLength) {
           return new Error(
-            `${$t('login.passwordMaxLength')} ${common.passwordMaxLength} ${$t('login.length')}`,
+            `${t('login.passwordMaxLength')} ${common.passwordMaxLength} ${t('login.length')}`,
           );
         }
         return Promise.resolve();
@@ -139,7 +144,7 @@ const toOtherForm = (type: any) => {
 const handleIsRemember = () => {
   if (isRemember.value) {
     window.$notification.info({
-      title: `${$t('login.isRememberTips')}`,
+      title: `${t('login.isRememberTips')}`,
       duration: 3000,
       keepAliveOnHover: true,
     });
@@ -159,7 +164,7 @@ const checkLocalAccount = () => {
 const handleLogin = async (e: MouseEvent) => {
   try {
     e.preventDefault();
-    const messageReactive = window.$message.loading(`${$t('login.status.logining')}...`, {
+    const messageReactive = window.$message.loading(`${t('login.status.logining')}...`, {
       duration: 0,
     });
     loginFormRef.value?.validate(async (errors) => {
@@ -176,7 +181,7 @@ const handleLogin = async (e: MouseEvent) => {
         const errorMessage: any = errors.map((item) => item[0].message).join('\n');
         console.log('🚀 ~ loginFormRef.value?.validate ~ errorMessage:', errorMessage);
         window.$notification.error({
-          title: `${$t('login.status.loginFailed')}`,
+          title: `${t('login.status.loginFailed')}`,
           content: errorMessage,
           duration: 3000,
           keepAliveOnHover: true,

@@ -67,11 +67,10 @@
 
 <script setup lang="ts">
 import * as UserApi from '@/api/user';
-import { useAppStore } from '@/store';
 import TheLogo from '@/components/common/TheLogo.vue';
-import { $t } from '@/utils';
 import { common } from '@/config';
-import { FormRules, FormItemRule, FormInst } from 'naive-ui';
+import { useAppStore } from '@/store';
+import { FormInst, FormItemRule, FormRules } from 'naive-ui';
 
 interface RegisterForm {
   username: string;

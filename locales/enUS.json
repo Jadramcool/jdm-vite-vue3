@@ -52,12 +52,14 @@
     "passwordMinLength": "Password Length Cannot Be Less Than",
     "passwordNotMatch": "Please enter the correct duplicate password",
     "register": "Register",
+    "registerTips": "Don't have an account yet?",
     "repeatPassword": "Repeat Password",
     "status": {
       "loginFailed": "Login Failed",
       "logining": "Logging In",
       "registerFailed": "Register Failed",
-      "registerSuccess": "Register Success"
+      "registerSuccess": "Register Success",
+      "registering": "Registering"
     },
     "thirdPartyLogin": "Third Party Login",
     "title": "jdm's Login Page",
