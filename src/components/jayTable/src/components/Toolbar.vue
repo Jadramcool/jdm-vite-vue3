@@ -2,7 +2,7 @@
  * @Author: Jay
  * @Date: 2024-07-23 11:10:53
  * @LastEditors: jdm
- * @LastEditTime: 2024-08-20 18:31:43
+ * @LastEditTime: 2024-09-03 18:13:27
  * @FilePath: \vite-vue3-jdm\src\components\jayTable\src\components\toolbar.vue
  * @Description: 
  * 
@@ -13,7 +13,7 @@
       <template #trigger>
         <div>
           <CommonWrapper>
-            <jay-icon :icon="'i-mdi:refresh'" />
+            <jay-icon :icon="'icon-park-outline:refresh'" />
           </CommonWrapper>
         </div>
       </template>
@@ -40,13 +40,16 @@
 </template>
 
 <script setup lang="ts">
+import { useComponentTableStore } from '@/store';
 import { useI18n } from 'vue-i18n';
 
 defineOptions({ name: 'Toolbar' });
 
+const componentTableStore = useComponentTableStore();
+
 const { t } = useI18n();
 
-const tableSize = ref('medium');
+const tableSize = componentTableStore.size;
 
 const options = [
   { label: `${t('table.sizeType.small')}`, key: 'small' },

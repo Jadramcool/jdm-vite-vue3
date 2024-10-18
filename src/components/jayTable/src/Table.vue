@@ -21,9 +21,9 @@
 </template>
 
 <script setup lang="ts">
-import { usePagination, useDataSource, useLoading } from './hooks';
-import { basicProps } from './props';
 import { ToolBar } from './components';
+import { useDataSource, useLoading, usePagination } from './hooks';
+import { basicProps } from './props';
 
 defineOptions({ name: 'JayTable' });
 const dataTable = ref<any>(null);

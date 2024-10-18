@@ -1,5 +1,5 @@
-import { defineConfig, presetUno, presetIcons, presetAttributify } from 'unocss';
 import presetRemToPx from '@unocss/preset-rem-to-px';
+import { defineConfig, presetAttributify, presetIcons, presetUno } from 'unocss';
 // import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders';
 // import { getIcons } from './build';
 

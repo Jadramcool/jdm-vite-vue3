@@ -2,7 +2,7 @@
  * @Author: Jay
  * @Date: 2024-05-30 10:29:46
  * @LastEditors: jdm
- * @LastEditTime: 2024-08-21 16:29:28
+ * @LastEditTime: 2024-10-18 10:59:53
  * @FilePath: \vite-vue3-jdm\src\views\system\user\index.vue
  * @Description: 
  * 
@@ -50,9 +50,9 @@ const columns = [
 ];
 const params = ref<Query.GetParams>({
   filters: {
-    username_in: '1',
+    // username_in: '1',
     // username_not_in: 'jdm',
-    sex: 'OTHER',
+    // sex: 'OTHER',
   },
 });
 

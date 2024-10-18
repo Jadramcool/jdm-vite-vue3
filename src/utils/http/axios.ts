@@ -1,14 +1,17 @@
 import axios, {
+  AxiosError,
   AxiosInstance,
   AxiosRequestConfig,
-  AxiosError,
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
 
+import { router } from '@/router';
+import { useAuthStore } from '@/store';
+import { lStorage } from '@/utils';
+import { getToken } from '../token/index';
 import { CodeConfig as HttpCodeConfig } from './codeConfig.ts';
 import { ResponseModel, UploadFileItemModel, UploadRequestConfig } from './types/index.ts';
-import { getToken } from '../token/index';
 
 class HttpRequest {
   service: AxiosInstance;
@@ -37,6 +40,7 @@ class HttpRequest {
     // 响应拦截器
     this.service.interceptors.response.use(
       (response: AxiosResponse<ResponseModel>): AxiosResponse['data'] => {
+        console.log('响应拦截器触发', response); // 调试用
         const { data } = response;
         const { code } = data;
         if (code && code !== HttpCodeConfig.success) {
@@ -50,10 +54,8 @@ class HttpRequest {
             default:
               break;
           }
-          // console.log(code, data);
           return Promise.reject(data.errMsg);
         }
-        // console.log(data);
         return data;
       },
       (error: AxiosError) => {
@@ -67,8 +69,23 @@ class HttpRequest {
     try {
       const response = await this.service.request<ResponseModel<T>>(config);
       return response.data || response;
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      if (error && typeof error === 'object') {
+        // 处理401错误
+        if (error.response && error.response.status === 401) {
+          const authStore = useAuthStore();
+          console.error('未授权访问', error);
+          // 可以在这里添加额外的处理逻辑，例如重定向到登录页面
+          lStorage.removeItem(import.meta.env.VITE_APP_TOKEN_KEY);
+          lStorage.removeItem('auth');
+          authStore.resetToken();
+          router.push({ path: '/login', replace: true });
+          window.$message.error('登录信息已过期，请重新登录！');
+        }
+        const lang: string = lStorage.getItem('lang') || 'zhCN';
+        const errMsg = (error as { [key: string]: any })[lang] || '接口请求失败，请稍后再试';
+        return Promise.reject(errMsg);
+      }
       return Promise.reject(error);
     }
   }

@@ -1,6 +1,15 @@
-import { basePermissions, basePermissions1 } from '@/settings';
+/*
+ * @Author: jdm
+ * @Date: 2024-05-30 10:29:46
+ * @LastEditors: jdm
+ * @LastEditTime: 2024-09-24 13:29:37
+ * @FilePath: \vite-vue3-jdm\src\store\helper.ts
+ * @Description:
+ *
+ */
 import * as ExampleAPI from '@/api/example';
 import * as UserApi from '@/api/user';
+import { basePermissions, basePermissions1 } from '@/settings';
 
 export async function getUserInfo() {
   try {
@@ -18,7 +27,7 @@ export async function getUserInfo() {
       currentRole,
     };
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return {};
   }
 }
@@ -34,7 +43,7 @@ export async function getPermissions() {
     }
     asyncPermissions = res?.data || res || [];
   } catch (error) {
-    console.error(error);
+    // console.error(error);
   }
 
   const res = [...basePermissions, ...asyncPermissions];

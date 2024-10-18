@@ -2,9 +2,9 @@
  * @Author: jdm
  * @Date: 2024-08-01 18:30:07
  * @LastEditors: jdm
- * @LastEditTime: 2024-08-26 10:10:35
+ * @LastEditTime: 2024-09-24 11:07:31
  * @FilePath: \vite-vue3-jdm\src\main.ts
- * @Description:
+ * @Description: main.ts
  *
  */
 import { i18n } from '@/locales';
@@ -16,11 +16,8 @@ import { setupRouter } from './router';
 import store from './store/index'; // 在vue中使用pinia
 import './style.css';
 
-console.log(`main1`);
-
 const start = async () => {
   const app = createApp(App);
-  console.log('main2');
 
   // 初始化 i18n 实例
   // const i18n = await createI18nInstance();

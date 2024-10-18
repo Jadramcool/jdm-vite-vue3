@@ -10,27 +10,25 @@
 <script setup lang="ts">
 // import { setToken } from '@/utils/token';
 import { lStorage } from '@/utils/storage';
-import * as ExampleApi from '@/api/example';
-import * as UserApi from '@/api/user';
 
 const router = useRouter();
 const handleLogout = () => {
   lStorage.clearAll();
 };
 
-onMounted(() => {
-  setTimeout(() => {
-    getData();
-  }, 3000);
-});
+// onMounted(() => {
+//   setTimeout(() => {
+//     getData();
+//   }, 3000);
+// });
 
-const getData = async () => {
-  if (import.meta.env.VIET_MOCK) {
-    await ExampleApi.mockGetUserInfoAPI();
-  } else {
-    await UserApi.getUserInfo();
-  }
-};
+// const getData = async () => {
+//   if (import.meta.env.VIET_MOCK) {
+//     await ExampleApi.mockGetUserInfoAPI();
+//   } else {
+//     await UserApi.getUserInfo();
+//   }
+// };
 
 const handlePage = () => {
   router.push('/base/components');

@@ -51,16 +51,16 @@
 </template>
 
 <script setup>
-import { useAppStore } from '@/store';
 import {
+  Breadcrumb,
+  Footer,
+  HeaderTools,
+  MenuCollapse,
   SideLogo,
   SideMenu,
-  MenuCollapse,
-  Breadcrumb,
-  HeaderTools,
   TabBar,
-  Footer,
 } from '@/layout/components';
+import { useAppStore } from '@/store';
 
 const appStore = useAppStore();
 </script>

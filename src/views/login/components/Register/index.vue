@@ -71,12 +71,14 @@ import TheLogo from '@/components/common/TheLogo.vue';
 import { common } from '@/config';
 import { useAppStore } from '@/store';
 import { FormInst, FormItemRule, FormRules } from 'naive-ui';
+import { useI18n } from 'vue-i18n';
 
 interface RegisterForm {
   username: string;
   password: string;
   repeatPassword: string;
 }
+const { t } = useI18n();
 
 const appStore = useAppStore();
 
@@ -95,7 +97,7 @@ const registerFormRules: FormRules = {
   username: [
     {
       required: true,
-      message: `${$t('common.pleaseInput')} ${$t('login.username')}`,
+      message: `${t('common.pleaseInput')} ${t('login.username')}`,
       trigger: 'blur',
     },
   ],
@@ -105,16 +107,16 @@ const registerFormRules: FormRules = {
       trigger: ['blur', 'input'],
       validator: (_rule: FormItemRule, value: string) => {
         if (!value) {
-          return new Error($t('common.pleaseInput') + $t('login.password'));
+          return new Error(t('common.pleaseInput') + t('login.password'));
         }
         if (value.length < common.passwordMinLength) {
           return new Error(
-            `${$t('login.passwordMinLength')} ${common.passwordMinLength} ${$t('login.length')}`,
+            `${t('login.passwordMinLength')} ${common.passwordMinLength} ${t('login.length')}`,
           );
         }
         if (value.length > common.passwordMaxLength) {
           return new Error(
-            `${$t('login.passwordMaxLength')} ${common.passwordMaxLength} ${$t('login.length')}`,
+            `${t('login.passwordMaxLength')} ${common.passwordMaxLength} ${t('login.length')}`,
           );
         }
         return Promise.resolve();
@@ -127,11 +129,11 @@ const registerFormRules: FormRules = {
       trigger: ['blur', 'input'],
       validator: (_rule: FormItemRule, value: string) => {
         if (!value) {
-          return new Error($t('common.pleaseInput') + $t('login.repeatPassword'));
+          return new Error(t('common.pleaseInput') + t('login.repeatPassword'));
         }
         console.log(registerForm.value.password, value);
         if (value !== registerForm.value.password) {
-          return new Error($t('login.passwordNotMatch'));
+          return new Error(t('login.passwordNotMatch'));
         }
         return Promise.resolve();
       },
@@ -147,7 +149,7 @@ const messageReactive = ref<any>(null);
 
 const handleRegister = async (e: MouseEvent) => {
   e.preventDefault();
-  messageReactive.value = window.$message.loading(`${$t('login.status.registering')}...`, {
+  messageReactive.value = window.$message.loading(`${t('login.status.registering')}...`, {
     duration: 0,
   });
   registerFormRef.value?.validate(async (errors) => {
@@ -160,7 +162,7 @@ const handleRegister = async (e: MouseEvent) => {
 
         await UserApi.register(data);
         window.$notification.success({
-          title: `${$t('login.status.registerSuccess')}`,
+          title: `${t('login.status.registerSuccess')}`,
           duration: 3000,
           keepAliveOnHover: true,
         });
@@ -169,7 +171,7 @@ const handleRegister = async (e: MouseEvent) => {
       } else {
         const errorMessage: any = errors.map((item) => item[0].message).join('\n');
         window.$notification.error({
-          title: `${$t('login.status.registerFailed')}`,
+          title: `${t('login.status.registerFailed')}`,
           content: errorMessage,
           duration: 3000,
           keepAliveOnHover: true,
@@ -177,7 +179,7 @@ const handleRegister = async (e: MouseEvent) => {
       }
     } catch (error: any) {
       window.$notification.error({
-        title: `${$t('login.status.registerFailed')}`,
+        title: `${t('login.status.registerFailed')}`,
         content: error,
         duration: 3000,
         keepAliveOnHover: true,

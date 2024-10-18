@@ -2,7 +2,7 @@
  * @Author: Jay
  * @Date: 2024-05-06 10:22:58
  * @LastEditors: jdm
- * @LastEditTime: 2024-08-20 17:25:05
+ * @LastEditTime: 2024-09-03 18:26:10
  * @FilePath: \vite-vue3-jdm\src\App.vue
  * @Description: 
  * 
@@ -41,7 +41,7 @@ const tabStore = useTabStore();
 
 const layouts: any = new Map();
 
-const naiveLocale = computed(() => {
+const naiveLocale: any = computed(() => {
   return naiveI18nOptions[appStore.lang] ? naiveI18nOptions[appStore.lang] : naiveI18nOptions.enUS;
 });
 

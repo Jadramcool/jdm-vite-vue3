@@ -67,11 +67,11 @@
 
 <script setup lang="ts">
 import * as UserApi from '@/api/user';
-import { lStorage } from '@/utils/storage';
-import { useAuthStore, useAppStore } from '@/store';
 import TheLogo from '@/components/common/TheLogo.vue';
 import { common } from '@/config';
-import { FormRules, FormItemRule, FormInst } from 'naive-ui';
+import { useAppStore, useAuthStore } from '@/store';
+import { lStorage } from '@/utils/storage';
+import { FormInst, FormItemRule, FormRules } from 'naive-ui';
 // 引入i18n
 import { useI18n } from 'vue-i18n';
 
@@ -161,37 +161,42 @@ const checkLocalAccount = () => {
   }
 };
 
+// 登录
 const handleLogin = async (e: MouseEvent) => {
-  try {
-    e.preventDefault();
-    const messageReactive = window.$message.loading(`${t('login.status.logining')}...`, {
-      duration: 0,
-    });
-    loginFormRef.value?.validate(async (errors) => {
-      // console.log('🚀 ~ loginFormRef.value?.validate ~ valid:', errors);
-      if (!errors) {
-        const data = {
-          username: loginForm.value.username,
-          password: loginForm.value.password,
-        };
-
+  const messageReactive = window.$message.loading(`${t('login.status.logining')}...`, {
+    duration: 0,
+  });
+  e.preventDefault();
+  loginFormRef.value?.validate(async (errors) => {
+    if (!errors) {
+      const data = {
+        username: loginForm.value.username,
+        password: loginForm.value.password,
+      };
+      try {
         const res = await UserApi.login(data);
         onLoginSuccess(res);
-      } else {
-        const errorMessage: any = errors.map((item) => item[0].message).join('\n');
-        console.log('🚀 ~ loginFormRef.value?.validate ~ errorMessage:', errorMessage);
+      } catch (error) {
+        console.error('error', error);
         window.$notification.error({
           title: `${t('login.status.loginFailed')}`,
-          content: errorMessage,
+          content: error as string,
           duration: 3000,
           keepAliveOnHover: true,
         });
+        messageReactive.destroy();
       }
-      messageReactive.destroy();
-    });
-  } catch (error) {
-    console.error(error);
-  }
+    } else {
+      const errorMessage: any = errors.map((item) => item[0].message).join('\n');
+      window.$notification.error({
+        title: `${t('login.status.loginFailed')}`,
+        content: errorMessage,
+        duration: 3000,
+        keepAliveOnHover: true,
+      });
+    }
+    messageReactive.destroy();
+  });
 };
 
 const handleExperience = async () => {

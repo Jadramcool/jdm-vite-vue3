@@ -32,7 +32,14 @@ class CustomStorage implements StorageInterface {
 
   getItem(key: string): any {
     const value = this.storage.getItem(this.getKey(key));
-    return value ? JSON.parse(value) : null;
+    if (value === null) {
+      return null;
+    }
+    try {
+      return JSON.parse(value);
+    } catch (error) {
+      return value;
+    }
   }
 
   removeItem(key: string): void {
