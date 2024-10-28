@@ -2,7 +2,7 @@
  * @Author: jdm
  * @Date: 2024-05-06 10:22:58
  * @LastEditors: jdm
- * @LastEditTime: 2024-09-24 16:43:42
+ * @LastEditTime: 2024-10-21 11:50:36
  * @FilePath: \vite-vue3-jdm\src\router\guards\permission-guard.ts
  * @Description:
  *
@@ -15,7 +15,6 @@ export function createPermissionGuard(router: any) {
   router.beforeEach(async (to: any) => {
     const authStore = useAuthStore();
     const { token } = authStore;
-    console.log('🚀 ~ router.beforeEach ~ token:', token);
     // 无token的情况
     if (!token) {
       console.log('没有token，跳转到登录页');
@@ -54,7 +53,6 @@ export function createPermissionGuard(router: any) {
     }
 
     const routes = router.getRoutes();
-    console.log('🚀 ~ router.beforeEach ~ routes:', routes, to);
     if (routes.find((route: any) => route.name === to.name)) return true;
     console.log('没有权限，跳转到404页面');
     return { name: '404', query: { path: to.fullPath } };

@@ -31,13 +31,19 @@
     "cancel": "Cancel",
     "close": "Close",
     "confirm": "Confirm",
+    "createdTime": "CreatedTime",
+    "edit": "Edit",
+    "id": "ID",
     "input": "Input",
     "open": "Open",
+    "operate": "Operate",
     "pleaseInput": "Please Input",
     "reload": "Reload",
     "reset": "Reset",
     "save": "Save",
-    "submit": "Submit"
+    "submit": "Submit",
+    "updatedTime": "UpdatedTime",
+    "username": "Username"
   },
   "login": {
     "experience": "Experience Account",
@@ -69,12 +75,22 @@
     "Home": "Home"
   },
   "table": {
+    "check": "Check",
+    "columnSetting": "Columns Setting",
+    "expandColumn": "Expand",
     "refresh": "Reload",
     "size": "Size",
     "sizeType": {
       "large": "large",
       "medium": "medium",
       "small": "small"
-    }
+    },
+    "userList": "User List"
+  },
+  "user": {
+    "email": "Email",
+    "name": "Name",
+    "phone": "Phone",
+    "sex": "Sex"
   }
 }

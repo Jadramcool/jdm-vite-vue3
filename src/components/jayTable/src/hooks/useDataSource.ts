@@ -1,8 +1,8 @@
 /*
  * @Author: Jay
  * @Date: 2024-05-30 13:50:03
- * @LastEditors: Jay
- * @LastEditTime: 2024-07-24 14:14:24
+ * @LastEditors: jdm
+ * @LastEditTime: 2024-10-26 18:28:30
  * @FilePath: \vite-vue3-jdm\src\components\jayTable\src\hooks\useDataSource.ts
  * @Description: 表格数据获取
  *
@@ -56,6 +56,7 @@ export const useDataSource = (
         options,
       };
       const res = await request(params);
+      console.log(res.data);
       dataSourceRef.value = res.data;
 
       // 设置分页信息
@@ -67,9 +68,9 @@ export const useDataSource = (
         const currentPage = pageInfo[pageField];
         // 从结果拿到总数据数
         const totalData = pageInfo[itemCountField];
-        console.log(
-          `resultTotal:${resultTotal}, currentPage:${currentPage}, totalData:${totalData}`,
-        );
+        // console.log(
+        //   `resultTotal:${resultTotal}, currentPage:${currentPage}, totalData:${totalData}`,
+        // );
 
         // 赋予分页信息
         setPagination({
@@ -97,7 +98,7 @@ export const useDataSource = (
     return getDataSourceRef.value;
   }
 
-  async function reload(opt: any) {
+  async function reload(opt: any = {}) {
     await fetch(opt);
   }
   return { dataSourceRef, getDataSourceRef, getDataSource, fetch, reload };

@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia';
 // import { useDark } from '@vueuse/core';
 import {
-  defaultLayout,
-  naiveThemeOverrides,
   darkThemeOverrides,
+  defaultLayout,
   lightThemeOverrides,
+  naiveThemeOverrides,
 } from '@/settings';
-import { lStorage, setLocale } from '@/utils';
-import chroma from 'chroma-js'; // 极小且零依赖的 JavaScript 颜色库
-import { type GlobalThemeOverrides } from 'naive-ui';
-import _ from 'lodash';
+import { getRgb, lStorage, setLocale } from '@/utils';
 import { useCssVar } from '@vueuse/core';
+import chroma from 'chroma-js'; // 极小且零依赖的 JavaScript 颜色库
+import _ from 'lodash';
+import { type GlobalThemeOverrides } from 'naive-ui';
 
 // 引用 HTML 文档的根元素
 const docEle = ref(document.documentElement);
@@ -79,12 +79,18 @@ export const useAppStore = defineStore('app', {
       this.lang = lang;
       lStorage.setItem('lang', lang);
     },
+
     // 提取主题变量并设置全局 CSS 变量
     setupCssVar() {
       const common: any = this.theme?.common || {};
       Object.keys(common).forEach((key) => {
         const value: string = common[key];
+        const rgb = getRgb(value);
+        // 全局css变量-十六进制
         useCssVar(`--${_.kebabCase(key)}`, document.documentElement).value = value || '';
+        // 全局css变量-rgb, xx xx xx 形式, 如: 255 255 255,给uno使用
+        useCssVar(`--${_.kebabCase(key)}-rgb`, document.documentElement).value =
+          rgb.join(' ') || '';
 
         // 特别处理 primaryColor，将其存入本地存储
         if (key === 'primaryColor') {

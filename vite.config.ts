@@ -1,14 +1,14 @@
 /*
  * @Author: Jay
  * @Date: 2024-05-06 10:22:58
- * @LastEditors: Jay
- * @LastEditTime: 2024-08-01 17:26:12
+ * @LastEditors: jdm
+ * @LastEditTime: 2024-10-18 18:02:38
  * @FilePath: \vite-vue3-jdm\vite.config.ts
  * @Description:
  *
  */
-import { defineConfig, loadEnv, ConfigEnv } from 'vite';
 import path from 'path';
+import { ConfigEnv, defineConfig, loadEnv } from 'vite';
 
 import vitePlugins from './config/vitePlugins';
 

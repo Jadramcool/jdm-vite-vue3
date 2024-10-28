@@ -40,7 +40,7 @@ class HttpRequest {
     // 响应拦截器
     this.service.interceptors.response.use(
       (response: AxiosResponse<ResponseModel>): AxiosResponse['data'] => {
-        console.log('响应拦截器触发', response); // 调试用
+        // console.info('响应拦截器触发', response); // 调试用
         const { data } = response;
         const { code } = data;
         if (code && code !== HttpCodeConfig.success) {

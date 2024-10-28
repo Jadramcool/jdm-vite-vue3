@@ -1,6 +1,16 @@
+/*
+ * @Author: jdm
+ * @Date: 2024-04-13 15:45:42
+ * @LastEditors: jdm
+ * @LastEditTime: 2024-10-18 18:03:05
+ * @FilePath: \vite-vue3-jdm\config\vitePlugins.ts
+ * @Description:
+ *
+ */
 // vitePlugins.ts
-import type { Plugin } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
+import type { Plugin } from 'vite';
 
 // 自动引入插件
 import AutoImport from 'unplugin-auto-import/vite';
@@ -20,6 +30,7 @@ export default (env: ConfigEnv) => {
       include: [/.vue$/],
     }),
     UnoCSS(),
+    vueJsx(),
     AutoImport({
       imports: [
         'vue',

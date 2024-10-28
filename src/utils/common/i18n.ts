@@ -2,7 +2,7 @@
  * @Author: jdm
  * @Date: 2024-08-07 11:04:18
  * @LastEditors: jdm
- * @LastEditTime: 2024-08-20 18:21:58
+ * @LastEditTime: 2024-10-26 18:16:31
  * @FilePath: \vite-vue3-jdm\src\utils\common\i18n.ts
  * @Description:
  *

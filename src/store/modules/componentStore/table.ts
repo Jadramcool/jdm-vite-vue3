@@ -10,7 +10,11 @@ export const useComponentTableStore = defineStore('table', {
     size: tableLayout.size,
   }),
   getters: {},
-  actions: {},
+  actions: {
+    setSize(size: string) {
+      this.size = size;
+    },
+  },
   // persist: {
   //   paths: ['collapsed', 'naiveThemeOverrides'],
   //   storage: sessionStorage,

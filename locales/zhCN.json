@@ -31,13 +31,19 @@
     "cancel": "取消",
     "close": "关闭",
     "confirm": "确认",
+    "createdTime": "创建时间",
+    "edit": "编辑",
+    "id": "ID",
     "input": "输入",
     "open": "打开",
+    "operate": "操作",
     "pleaseInput": "请输入",
     "reload": "重新加载",
     "reset": "重置",
     "save": "保存",
-    "submit": "提交"
+    "submit": "提交",
+    "updatedTime": "更新时间",
+    "username": "用户名"
   },
   "login": {
     "experience": "体验账号",
@@ -69,12 +75,22 @@
     "Home": "首页"
   },
   "table": {
+    "check": "勾选",
+    "columnSetting": "列设置",
+    "expandColumn": "展开",
     "refresh": "刷新",
     "size": "密度",
     "sizeType": {
       "large": "宽松",
       "medium": "默认",
       "small": "紧凑"
-    }
+    },
+    "userList": "用户列表"
+  },
+  "user": {
+    "email": "邮箱",
+    "name": "姓名",
+    "phone": "手机号",
+    "sex": "性别"
   }
 }

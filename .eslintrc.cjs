@@ -41,6 +41,9 @@ module.exports = {
     ecmaVersion: 'latest',
     parser: '@typescript-eslint/parser',
     sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true,
+    },
   },
   plugins: [
     '@typescript-eslint',
@@ -80,5 +83,6 @@ module.exports = {
     'consistent-return': 'off', // 关闭箭头函数必须有返回值
     'no-restricted-syntax': 'off',
     'no-undef': 'off',
+    'no-nested-ternary': 'off', // 允许三元表达式嵌套
   },
 };

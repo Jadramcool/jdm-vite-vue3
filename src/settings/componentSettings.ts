@@ -2,7 +2,7 @@
  * @Author: Jay
  * @Date: 2024-05-30 13:50:03
  * @LastEditors: jdm
- * @LastEditTime: 2024-09-03 18:08:47
+ * @LastEditTime: 2024-10-26 17:24:45
  * @FilePath: \vite-vue3-jdm\src\settings\componentSettings.ts
  * @Description:
  *
@@ -28,6 +28,7 @@ export default {
     tableLayout: {
       // 表格布局，可选值为 'small' | 'medium' | 'large', 默认为'medium'
       size: 'medium',
+      align: 'center',
     },
   },
 };
