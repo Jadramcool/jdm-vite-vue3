@@ -31,4 +31,7 @@ export default {
       align: 'center',
     },
   },
+  form: {
+    // 表单项默认宽度
+  },
 };

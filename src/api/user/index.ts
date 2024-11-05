@@ -1,5 +1,5 @@
 import request from '@/utils/http/axios';
-import { exampleModel } from '../types/hello';
+import { BasicModel } from '../types/base';
 import { loginModel } from '../types/user';
 
 enum API {
@@ -14,7 +14,7 @@ enum API {
  * @param {loginModel} data
  */
 export const login = (data: loginModel) => {
-  return request.post<exampleModel[]>({
+  return request.post<BasicModel[]>({
     url: API.login,
     data,
   });
@@ -25,7 +25,7 @@ export const login = (data: loginModel) => {
  * @param {loginModel} data
  */
 export const register = (data: loginModel) => {
-  return request.post<exampleModel[]>({
+  return request.post<BasicModel[]>({
     url: API.register,
     data,
   });
@@ -35,7 +35,7 @@ export const register = (data: loginModel) => {
  * @description: 获取用户信息
  */
 export const getUserInfo = () => {
-  return request.get<exampleModel[]>({
+  return request.get<BasicModel[]>({
     url: API.userInfo,
   });
 };
@@ -44,7 +44,7 @@ export const getUserInfo = () => {
  * @description: 获取菜单
  */
 export const permissionAPI = () => {
-  return request.get<exampleModel[]>({
+  return request.get<BasicModel[]>({
     url: API.permission,
   });
 };

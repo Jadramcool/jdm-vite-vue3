@@ -67,6 +67,14 @@ class HttpRequest {
   // 执行请求
   private async executeRequest<T = any>(config: AxiosRequestConfig): Promise<ResponseModel<T>> {
     try {
+      // 将请求参数中的数组和对象转换JSON字符串
+      if (config.params) {
+        Object.entries(config.params).forEach(([key, value]) => {
+          if (Array.isArray(value) || typeof value === 'object') {
+            config.params[key] = JSON.stringify(value);
+          }
+        });
+      }
       const response = await this.service.request<ResponseModel<T>>(config);
       return response.data || response;
     } catch (error: any) {

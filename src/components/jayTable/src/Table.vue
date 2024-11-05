@@ -2,22 +2,22 @@
  * @Author: Jay
  * @Date: 2024-05-30 13:50:03
  * @LastEditors: jdm
- * @LastEditTime: 2024-10-28 11:25:06
+ * @LastEditTime: 2024-10-31 17:43:42
  * @FilePath: \vite-vue3-jdm\src\components\jayTable\src\Table.vue
  * @Description: 自定义表格封装
  * 
 -->
 <template>
-  <NCard title="搜索表格" size="small">
-    <BasicForm> </BasicForm>
-  </NCard>
+  <!-- <NCard title="搜索表格" size="small">
+    <BasicForm @register="register"> </BasicForm>
+  </NCard> -->
   <!-- 自定义表格部分 -->
-  <n-card :bordered="false" :title="props.title" size="small">
+  <NCard :bordered="false" :title="props.title" size="small">
     <template #header-extra>
       <tool-bar v-model:columns="columnChecks" @refresh="handleRefresh" />
     </template>
 
-    <n-data-table
+    <NDataTable
       ref="dataTable"
       v-bind="getTableValue"
       :striped="isStriped"
@@ -25,11 +25,11 @@
       @update:page="updatePage"
       @update:page-size="updatePageSize"
     />
-  </n-card>
+  </NCard>
 </template>
 
-<script setup lang="ts">
-import { BasicForm } from '@/components';
+<script setup lang="ts" name="JayTable">
+// import { BasicForm } from '@/components';
 import { useComponentTableStore } from '@/store';
 import { ToolBar } from './components';
 import { useColumns, useDataSource, useLoading, usePagination } from './hooks';
@@ -37,12 +37,13 @@ import { basicProps } from './props';
 
 defineOptions({ name: 'JayTable' });
 
+// ********************自定义配置表格组件********************
+
 const dataTable = ref<any>(null);
 const componentTableStore = useComponentTableStore();
 
 // 初始化默认props
 const props = defineProps(basicProps);
-
 // 自定义变化的props，比如size，别的参数在此添加
 const customProps = computed(() => {
   return {
@@ -117,6 +118,13 @@ const updatePageSize = (size: any) => {
 const handleRefresh = async () => {
   await reload();
 };
+
+// 暴露方法
+defineExpose({
+  reload,
+});
+
+// ********************自定义配置表单组件********************
 </script>
 
 <style lang="scss" scoped>

@@ -39,7 +39,8 @@ export default defineConfig({
     'flex-y-center': 'flex justify-center',
     'flex-x-center': 'flex items-center',
     'flex-x-end': 'flex items-end',
-    'card-border': 'border border-solid border-light_border dark:border-dark_border',
+    'card-border':
+      'border border-solid border-light_border dark:border-dark_border transition-all duration-300 ease-in-out',
     'auto-bg': 'bg-white dark:bg-#18181C',
   },
   theme: {

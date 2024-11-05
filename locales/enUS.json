@@ -41,6 +41,7 @@
     "reload": "Reload",
     "reset": "Reset",
     "save": "Save",
+    "status": "Status",
     "submit": "Submit",
     "updatedTime": "UpdatedTime",
     "username": "Username"
@@ -89,8 +90,15 @@
   },
   "user": {
     "email": "Email",
+    "female": "Female",
+    "male": "Male",
     "name": "Name",
+    "other": "Other",
     "phone": "Phone",
-    "sex": "Sex"
+    "sex": "Sex",
+    "status": {
+      "disable": "Disabled",
+      "enable": "Enabled"
+    }
   }
 }

@@ -23,7 +23,7 @@
       <template #trigger>
         <div>
           <n-dropdown
-            :options="options"
+            :options="tableSizeOptions"
             trigger="click"
             v-model:value="tableSize"
             @select="handleSizeSelect"
@@ -83,11 +83,13 @@ const componentTableStore = useComponentTableStore();
 const { t } = useI18n();
 
 const tableSize = ref(componentTableStore.size);
-const options = [
-  { label: `${t('table.sizeType.small')}`, key: 'small' },
-  { label: `${t('table.sizeType.medium')}`, key: 'medium' },
-  { label: `${t('table.sizeType.large')}`, key: 'large' },
-];
+const tableSizeOptions = computed(() => {
+  return [
+    { label: t('table.sizeType.small'), key: 'small' },
+    { label: t('table.sizeType.medium'), key: 'medium' },
+    { label: t('table.sizeType.large'), key: 'large' },
+  ];
+});
 
 const handleSizeSelect = (key: string) => {
   tableSize.value = key;

@@ -2,7 +2,7 @@
  * @Author: Jay
  * @Date: 2024-05-30 13:50:03
  * @LastEditors: jdm
- * @LastEditTime: 2024-10-26 18:28:30
+ * @LastEditTime: 2024-10-31 10:25:52
  * @FilePath: \vite-vue3-jdm\src\components\jayTable\src\hooks\useDataSource.ts
  * @Description: 表格数据获取
  *
@@ -28,8 +28,7 @@ export const useDataSource = (
     try {
       // 显示加载动画
       setLoading(true);
-
-      const { request, pagination } = unref(propsRef);
+      const { request, pagination, filters } = unref(propsRef);
       if (!request) return;
 
       // 分页信息字段名
@@ -54,9 +53,10 @@ export const useDataSource = (
       const params = {
         pagination: pageParams,
         options,
+        ...toRaw(filters),
       };
+
       const res = await request(params);
-      console.log(res.data);
       dataSourceRef.value = res.data;
 
       // 设置分页信息

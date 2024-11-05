@@ -35,14 +35,14 @@ export const naiveThemeOverrides = {
 // 亮色模式下的主题变量
 export const lightThemeOverrides = {
   common: {
-    borderColor: '#eee',
+    // borderColor: '#eee',
     tabSelectedBg: '#f0f0f4',
   },
 };
 // 黑暗模式下的主题变量
 export const darkThemeOverrides = {
   common: {
-    borderColor: '#333', // 边框颜色
+    // borderColor: '#333', // 边框颜色
     tabSelectedBg: '#1A171C', // 选中的tab背景色
   },
 };

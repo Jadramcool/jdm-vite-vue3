@@ -1,3 +1,14 @@
+/*
+ * @Author: jdm
+ * @Date: 2024-05-30 10:29:46
+ * @LastEditors: jdm
+ * @LastEditTime: 2024-10-28 14:07:17
+ * @FilePath: \vite-vue3-jdm\src\components\Form\src\hooks\types.ts
+ * @Description:
+ *
+ */
+import type { FormProps } from 'naive-ui';
+
 type FormType =
   | 'input'
   | 'password'
@@ -28,4 +39,16 @@ export interface FormItem {
 export interface FormOption {
   formItems: FormItem[];
   labelWidth?: string; // 标签的长度
+}
+
+export interface FormActionType {
+  submit: () => Promise<any>;
+  setProps: (formProps: Partial<FormProps>) => Promise<void>;
+  // setSchema: (schemaProps: Partial<FormSchema[]>) => Promise<void>;
+  setFieldsValue: (values: Recordable) => void;
+  clearValidate: (name?: string | string[]) => Promise<void>;
+  getFieldsValue: () => Recordable;
+  resetFields: () => Promise<void>;
+  validate: (nameList?: any[]) => Promise<any>;
+  setLoading: (status: boolean) => void;
 }

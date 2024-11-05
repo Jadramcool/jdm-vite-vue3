@@ -58,20 +58,6 @@ const getLayout = (name: string): void => {
   return layout;
 };
 
-// // 设置全局样式
-// const setupCssVar = () => {
-//   const common: any = appStore.naiveThemeOverrides?.common || {};
-//   // 使用 Object.keys() 获取对象的键数组，然后对数组进行迭代
-//   Object.keys(common).forEach((key) => {
-//     const value: string = common[key];
-//     useCssVar(`--${kebabCase(key)}`, document.documentElement).value = value || '';
-//     if (key === 'primaryColor') {
-//       window.localStorage.setItem('__THEME_COLOR__', value || '');
-//     }
-//   });
-// };
-// setupCssVar();
-
 // 返回当前路由对应的layout
 const Layout: any = computed(() => {
   if (!route.matched?.length) return null;

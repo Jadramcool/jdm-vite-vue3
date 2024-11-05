@@ -1,4 +1,4 @@
-export interface exampleModel {
+export interface BasicModel {
   index: number;
   title: string;
   desc: string;

@@ -121,6 +121,7 @@ export function isNullAndUnDef(val: any): boolean {
 export function isNullOrUnDef(val: any): boolean {
   return isUnDef(val) || isNull(val);
 }
+
 /**
  * 判断是否 url
  * */

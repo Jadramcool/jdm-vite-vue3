@@ -1,3 +1,12 @@
+/*
+ * @Author: jdm
+ * @Date: 2024-10-28 11:49:11
+ * @LastEditors: jdm
+ * @LastEditTime: 2024-10-28 14:52:28
+ * @FilePath: \vite-vue3-jdm\src\utils\common\naiveTableSchemaUtils.ts
+ * @Description:
+ *
+ */
 import componentSetting from '@/settings/componentSettings';
 import type { DataTableColumn } from 'naive-ui';
 
@@ -30,4 +39,17 @@ export const columnsUtil = (schema: any, tableFields: string[]): DataTableColumn
         ...table,
       } as DataTableColumn;
     });
+};
+
+export const formSchemaUtil = (schema: any, formFields: string[]) => {
+  const { properties } = schema;
+
+  return properties
+    .filter(({ key, form }: any) => formFields.includes(key) && form?.visible !== false)
+    .map(({ key, label, defaultValue, form }: any) => ({
+      field: key,
+      label,
+      defaultValue: form?.defaultValue ?? defaultValue, // 使用 nullish 合并运算符
+      ...form,
+    }));
 };

@@ -1,5 +1,5 @@
 import request from '@/utils/http/axios';
-import { exampleModel } from '../types/hello';
+import { BasicModel } from '../types/base';
 
 enum API {
   permission = '/system/permission/menu',
@@ -9,7 +9,7 @@ enum API {
  * @description: 获取菜单
  */
 export const permissionList = () => {
-  return request.get<exampleModel[]>({
+  return request.get<BasicModel[]>({
     url: API.permission,
   });
 };

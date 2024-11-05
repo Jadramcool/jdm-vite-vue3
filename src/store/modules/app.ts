@@ -58,6 +58,9 @@ export const useAppStore = defineStore('app', {
     colorMode() {
       return store.value === 'auto' ? system.value : store.value;
     },
+    getLang() {
+      return () => this.lang;
+    },
   },
   actions: {
     // 切换侧边栏折叠状态
@@ -67,6 +70,7 @@ export const useAppStore = defineStore('app', {
     // 切换颜色模式
     setColorMode(mode: 'light' | 'dark' | 'auto') {
       store.value = mode;
+      console.log('🚀 ~ setColorMode ~ store.value:', store.value);
       this.setPrimaryColor();
     },
     // 切换全屏

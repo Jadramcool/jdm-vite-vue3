@@ -2,7 +2,7 @@
  * @Author: Jay
  * @Date: 2024-05-30 10:29:46
  * @LastEditors: jdm
- * @LastEditTime: 2024-10-26 17:13:24
+ * @LastEditTime: 2024-10-30 18:13:18
  * @FilePath: \vite-vue3-jdm\src\components\jayTable\src\props.ts
  * @Description:
  *
@@ -32,6 +32,10 @@ export const basicProps = {
   //     type: Function,
   //     default: null,
   //   },
+  filters: {
+    type: Object,
+    default: () => {},
+  },
   request: {
     type: Function as PropType<(...arg: any[]) => Promise<any>>,
     default: null,

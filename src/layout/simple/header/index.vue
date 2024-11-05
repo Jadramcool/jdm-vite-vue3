@@ -28,13 +28,14 @@
 </template>
 
 <script setup>
-import { useDark, useToggle, useFullscreen } from '@vueuse/core';
-import { useAppStore } from '@/store';
+// import { useAppStore } from '@/store';
+import { useDark, useFullscreen, useToggle } from '@vueuse/core';
 
-const appStore = useAppStore();
+// const appStore = useAppStore();
 const isDark = useDark();
 const toggleDark = () => {
-  appStore.toggleDark();
+  console.log('🚀 ~ isDark:', isDark);
+  // appStore.toggleDark();
   useToggle(isDark)();
 };
 

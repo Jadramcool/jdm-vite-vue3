@@ -1,26 +1,26 @@
-import { ref, onUnmounted, unref, watch, nextTick } from 'vue';
 import { isProdMode } from '@/utils';
+import type { FormProps } from 'naive-ui';
+import { nextTick, onUnmounted, ref, unref } from 'vue';
+import { FormActionType } from './types';
 
-export default function useForm(props?: any) {
-  const formAction = ref<any>(null);
-  const loadedRef = ref<any>(false);
+export const useForm = (props?: any) => {
+  const formRef = ref<Nullable<FormActionType>>(null);
+  const loadedRef = ref<Nullable<boolean>>(false);
 
-  function register(instance: any) {
+  const register = (instance: FormActionType) => {
     if (isProdMode()) {
       // 开发环境下，组件卸载后释放内存
       onUnmounted(() => {
-        formAction.value = null;
+        formRef.value = null;
         loadedRef.value = null;
       });
     }
 
     // form 组件实例 instance 已存在
     // 实际上 register 拿到的并不是 组件实例， 只是挂载了一些组件内部方法的 对象 formAction
-    if (unref(loadedRef) && isProdMode() && instance === unref(formAction)) {
-      return;
-    }
+    if (unref(loadedRef) && isProdMode() && instance === unref(formRef)) return;
 
-    formAction.value = instance;
+    formRef.value = instance;
     loadedRef.value = true;
 
     // 监听 props， 若props改变了
@@ -34,10 +34,10 @@ export default function useForm(props?: any) {
       },
       { immediate: true, deep: true },
     );
-  }
+  };
 
   async function getForm() {
-    const form = unref(formAction);
+    const form = unref(formRef);
     if (!form) {
       console.log('error');
     }
@@ -46,31 +46,23 @@ export default function useForm(props?: any) {
   }
 
   const methods: any = {
-    async setProps(formProps: any) {
+    setProps: async (formProps: FormProps) => {
       const form = await getForm();
       form.setProps(formProps);
     },
-    async validate(callback: (valid: any) => void) {
-      const form = await getForm();
-      form.validate(callback);
+    getFieldsValue: <T>() => {
+      return unref(formRef)?.getFieldsValue() as T;
     },
-    async validateField(props: string | string[], callback: (err: string) => void) {
-      const form = await getForm();
-      form.validateField(props, callback);
+    resetFields: async () => {
+      getForm().then(async (form) => {
+        await form.resetFields();
+      });
     },
-    async resetFields() {
+    clearValidate: async (name?: string | string[]) => {
       const form = await getForm();
-      form.resetFields();
-    },
-    async clearValidate() {
-      const form = await getForm();
-      form.clearValidate();
-    },
-    async scrollToField(prop: string) {
-      const form = await getForm();
-      form.scrollToField(prop);
+      await form.clearValidate(name);
     },
   };
 
-  return { register, methods };
-}
+  return [register, methods];
+};

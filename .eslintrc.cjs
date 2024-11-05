@@ -84,5 +84,6 @@ module.exports = {
     'no-restricted-syntax': 'off',
     'no-undef': 'off',
     'no-nested-ternary': 'off', // 允许三元表达式嵌套
+    'no-unused-expressions': 'off', // 允许有未使用的表达式
   },
 };
