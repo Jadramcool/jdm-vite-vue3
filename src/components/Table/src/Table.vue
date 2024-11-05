@@ -3,7 +3,7 @@
  * @Date: 2024-05-30 13:50:03
  * @LastEditors: jdm
  * @LastEditTime: 2024-10-31 17:43:42
- * @FilePath: \vite-vue3-jdm\src\components\jayTable\src\Table.vue
+ * @FilePath: \vite-vue3-jdm\src\components\Table\src\Table.vue
  * @Description: 自定义表格封装
  * 
 -->
@@ -28,14 +28,14 @@
   </NCard>
 </template>
 
-<script setup lang="ts" name="JayTable">
+<script setup lang="ts" name="BasicTable">
 // import { BasicForm } from '@/components';
 import { useComponentTableStore } from '@/store';
 import { ToolBar } from './components';
 import { useColumns, useDataSource, useLoading, usePagination } from './hooks';
 import { basicProps } from './props';
 
-defineOptions({ name: 'JayTable' });
+defineOptions({ name: 'BasicTable' });
 
 // ********************自定义配置表格组件********************
 

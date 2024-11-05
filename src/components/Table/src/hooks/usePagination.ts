@@ -3,7 +3,7 @@
  * @Date: 2024-05-30 13:50:03
  * @LastEditors: Jay
  * @LastEditTime: 2024-07-24 15:05:40
- * @FilePath: \vite-vue3-jdm\src\components\jayTable\src\hooks\usePagination.ts
+ * @FilePath: \vite-vue3-jdm\src\components\Table\src\hooks\usePagination.ts
  * @Description: 分页数据获取
  *
  */

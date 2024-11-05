@@ -13,7 +13,7 @@
       <BasicForm @register="register" @submit="handleSubmit" ref="formRef"> </BasicForm>
     </NCard>
 
-    <JayTable
+    <BasicTable
       ref="tableRef"
       :title="$t('table.userList')"
       :columns="columns"
@@ -22,13 +22,13 @@
       :rowKey="(row: NaiveUI.RowData) => row.id"
       :pagination="{ pageSize: 10 }"
       @update:checked-row-keys="handleCheck"
-    ></JayTable>
+    ></BasicTable>
   </div>
 </template>
 
 <script lang="tsx" setup>
 import { UserManagerApi } from '@/api/system';
-import { BasicForm, JayTable, useForm } from '@/components';
+import { BasicForm, BasicTable, useForm } from '@/components';
 import { columnsUtil, formSchemaUtil } from '@/utils';
 import dayjs from 'dayjs';
 import { NButton } from 'naive-ui';

@@ -3,7 +3,7 @@
  * @Date: 2024-07-24 13:53:25
  * @LastEditors: Jay
  * @LastEditTime: 2024-08-01 14:02:59
- * @FilePath: \vite-vue3-jdm\src\components\jayTable\src\hooks\useLoading.ts
+ * @FilePath: \vite-vue3-jdm\src\components\Table\src\hooks\useLoading.ts
  * @Description: 表格加载状态
  *
  */

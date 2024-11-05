@@ -3,7 +3,7 @@
  * @Date: 2024-07-23 11:10:53
  * @LastEditors: jdm
  * @LastEditTime: 2024-10-26 17:20:13
- * @FilePath: \vite-vue3-jdm\src\components\jayTable\src\components\Toolbar.vue
+ * @FilePath: \vite-vue3-jdm\src\components\Table\src\components\Toolbar.vue
  * @Description: 
  * 
 -->

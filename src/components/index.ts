@@ -9,4 +9,4 @@
  */
 export * from './common';
 export * from './Form';
-export * from './jayTable';
+export * from './Table';

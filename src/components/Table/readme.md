@@ -1,8 +1,8 @@
-# JayTable 表格组件
+# BasicTable 表格组件
 
 ## 介绍
 
-JayTable 是基于 Vue3 和 Naive UI 的表格组件，提供了丰富的功能和配置项，可以满足一般的表格需求。
+BasicTable 是基于 Vue3 和 Naive UI 的表格组件，提供了丰富的功能和配置项，可以满足一般的表格需求。
 
 ## 配置参数
 

@@ -3,7 +3,7 @@
  * @Date: 2024-10-21 16:02:00
  * @LastEditors: jdm
  * @LastEditTime: 2024-10-31 17:52:28
- * @FilePath: \vite-vue3-jdm\src\components\jayTable\src\hooks\useColumns.ts
+ * @FilePath: \vite-vue3-jdm\src\components\Table\src\hooks\useColumns.ts
  * @Description: 没有适配children，我也不知道怎么弄，后面学了ts再说吧
  *
  */

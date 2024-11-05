@@ -3,7 +3,7 @@
  * @Date: 2024-05-30 10:29:46
  * @LastEditors: jdm
  * @LastEditTime: 2024-10-30 18:13:18
- * @FilePath: \vite-vue3-jdm\src\components\jayTable\src\props.ts
+ * @FilePath: \vite-vue3-jdm\src\components\Table\src\props.ts
  * @Description:
  *
  */
