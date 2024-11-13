@@ -5,10 +5,7 @@ export default () => {
     {
       url: '/mock/createUser',
       method: 'post',
-      response: ({ body, query }: any) => {
-        console.log('body>>>>>>>>', body);
-        console.log('query>>>>>>>>', query);
-
+      response: () => {
         return {
           code: 200,
           message: 'ok',
