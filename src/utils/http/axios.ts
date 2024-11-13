@@ -54,7 +54,7 @@ class HttpRequest {
             default:
               break;
           }
-          return Promise.reject(data.errMsg);
+          return Promise.reject(data.errMsg || data.message || 'Unknown error');
         }
         return data;
       },
@@ -65,7 +65,7 @@ class HttpRequest {
   }
 
   // 执行请求
-  private async executeRequest<T = any>(config: AxiosRequestConfig): Promise<ResponseModel<T>> {
+  private async executeRequest<T = any>(config: AxiosRequestConfig): Promise<T> {
     try {
       // 将请求参数中的数组和对象转换JSON字符串
       if (config.params) {
@@ -75,8 +75,8 @@ class HttpRequest {
           }
         });
       }
-      const response = await this.service.request<ResponseModel<T>>(config);
-      return response.data || response;
+      const response = await this.service.request<T>(config);
+      return response.data;
     } catch (error: any) {
       if (error && typeof error === 'object') {
         // 处理401错误
@@ -99,27 +99,27 @@ class HttpRequest {
   }
 
   // 发起请求
-  public async request<T = any>(config: AxiosRequestConfig): Promise<ResponseModel<T>> {
+  public async request<T = any>(config: AxiosRequestConfig): Promise<T> {
     return this.executeRequest(config);
   }
 
   // 发起 get 请求
-  public async get<T = any>({ ...config }: AxiosRequestConfig): Promise<ResponseModel<T>> {
+  public async get<T = any>({ ...config }: AxiosRequestConfig): Promise<T> {
     return this.executeRequest({ method: 'GET', ...config });
   }
 
   // 发起 post 请求
-  public async post<T = any>({ ...config }: AxiosRequestConfig): Promise<ResponseModel<T>> {
+  public async post<T = any>({ ...config }: AxiosRequestConfig): Promise<T> {
     return this.executeRequest({ method: 'POST', ...config });
   }
 
   // 发起 put 请求
-  public async put<T = any>({ ...config }: AxiosRequestConfig): Promise<ResponseModel<T>> {
+  public async put<T = any>({ ...config }: AxiosRequestConfig): Promise<T> {
     return this.executeRequest({ method: 'PUT', ...config });
   }
 
   // 发起 delete 请求
-  public async delete<T = any>({ ...config }: AxiosRequestConfig): Promise<ResponseModel<T>> {
+  public async delete<T = any>({ ...config }: AxiosRequestConfig): Promise<T> {
     return this.executeRequest({ method: 'DELETE', ...config });
   }
 
@@ -127,7 +127,7 @@ class HttpRequest {
   public async upload<T = string>(
     fileItem: UploadFileItemModel,
     config?: UploadRequestConfig,
-  ): Promise<ResponseModel<T> | null> {
+  ): Promise<T | null> {
     if (!import.meta.env.VITE_UPLOAD_URL) return null;
 
     const fd = new FormData();

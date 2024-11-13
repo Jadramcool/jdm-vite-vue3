@@ -27,22 +27,34 @@
     "weakColor": "色弱模式"
   },
   "common": {
+    "add": "新增",
     "back": "返回",
+    "batch": "批量",
     "cancel": "取消",
     "close": "关闭",
     "confirm": "确认",
     "createdTime": "创建时间",
+    "delete": "删除",
     "edit": "编辑",
     "id": "ID",
     "input": "输入",
     "open": "打开",
     "operate": "操作",
     "pleaseInput": "请输入",
+    "pleaseSelect": "请选择",
     "reload": "重新加载",
     "reset": "重置",
     "save": "保存",
+    "search": "查询",
     "status": "状态",
     "submit": "提交",
+    "system": {
+      "user": {
+        "schema": {
+          "user": "用户"
+        }
+      }
+    },
     "updatedTime": "更新时间",
     "username": "用户名"
   },
@@ -72,6 +84,42 @@
     "title": "jdm Admin",
     "username": "用户名"
   },
+  "modules": {
+    "system": {
+      "menu": {
+        "schema": {
+          "code": "权限代码",
+          "description": "描述",
+          "layout": "布局",
+          "name": "菜单名",
+          "path": "路径"
+        },
+        "table": {
+          "title": "菜单列表"
+        }
+      },
+      "role": {
+        "schema": {
+          "code": "角色代码",
+          "name": "角色名"
+        },
+        "table": {
+          "title": "角色列表"
+        }
+      },
+      "user": {
+        "schema": {
+          "activate": "启用",
+          "deactivate": "禁用",
+          "disable": "禁用",
+          "enable": "启用"
+        },
+        "table": {
+          "title": "用户列表"
+        }
+      }
+    }
+  },
   "route": {
     "Home": "首页"
   },
@@ -85,8 +133,7 @@
       "large": "宽松",
       "medium": "默认",
       "small": "紧凑"
-    },
-    "userList": "用户列表"
+    }
   },
   "user": {
     "email": "邮箱",
@@ -95,10 +142,16 @@
     "name": "姓名",
     "other": "其他",
     "phone": "手机号",
+    "role": "角色",
+    "roleType": {
+      "admin": "管理员",
+      "user": "用户"
+    },
+    "roleTypeName": "角色类型",
     "sex": "性别",
     "status": {
-      "disable": "未激活",
-      "enable": "已激活"
+      "disable": "禁用",
+      "enable": "启用"
     }
   }
 }

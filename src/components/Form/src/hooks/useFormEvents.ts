@@ -7,7 +7,8 @@
  * @Description: 表格事件
  *
  */
-import { isFunction } from '@/utils';
+import { isArray, isFunction, isNullOrUnDef, isObject } from '@/utils';
+import _ from 'lodash';
 import type { FormActionType, FormSchema, NewFormProps } from '../types/form';
 
 declare type EmitType = (event: any, ...args: any[]) => void;
@@ -15,10 +16,11 @@ declare type EmitType = (event: any, ...args: any[]) => void;
 interface UseFormActionContext {
   emit: EmitType;
   getProps: ComputedRef<NewFormProps>;
-  getSchema?: ComputedRef<FormSchema[]>;
+  getSchema: ComputedRef<FormSchema[]>;
   formModel: Recordable;
   formElRef?: Ref<Nullable<FormActionType>>;
-  defaultFormModel?: Recordable;
+  schemaRef: Ref<FormSchema[]>;
+  defaultFormModel: Recordable;
   loadingSub: Ref<boolean>;
   handleFormatFormValues?: (values: Recordable, schema: FormSchema[]) => void;
 }
@@ -29,6 +31,7 @@ export const useFormEvents = ({
   getSchema,
   formModel,
   formElRef,
+  schemaRef,
   loadingSub,
   defaultFormModel,
   handleFormatFormValues,
@@ -39,20 +42,36 @@ export const useFormEvents = ({
   }
 
   // 清空校验
-  async function clearValidate() {
-    await unref(formElRef)?.restoreValidation();
+  function clearValidate() {
+    unref(formElRef)?.restoreValidation();
+  }
+
+  // 校验单独字段
+  function validateFields(fields: Undefinedable<string | string[]>) {
+    return unref(formElRef)?.validate(
+      (errors) => {
+        if (errors) {
+          console.error(errors);
+        }
+      },
+      (rule) => {
+        if (isArray(fields)) {
+          return !!(fields && fields.includes(rule?.key as string));
+        }
+        return rule?.key === fields;
+      },
+    );
   }
 
   // 提交事件
-  const handleSubmit = async (event?: Event): Promise<object | boolean> => {
+  const handleSubmit = async (event?: Event): Promise<object | boolean | undefined> => {
     event && event.preventDefault();
     loadingSub.value = true;
     // 针对自定义的提交,忽略validate
     const { submitFunc } = unref(getProps);
     if (submitFunc && isFunction(submitFunc)) {
       await submitFunc();
-      loadingSub.value = false;
-      return false;
+      return;
     }
 
     const formEl = unref(formElRef);
@@ -65,7 +84,7 @@ export const useFormEvents = ({
       emit('submit', values);
       return values;
     } catch (error: any) {
-      emit('submit', false);
+      // emit('submit', false);
       loadingSub.value = false;
       console.error(error);
       return false;
@@ -82,9 +101,10 @@ export const useFormEvents = ({
 
     const defaultModel = unref(defaultFormModel) || {};
     Object.keys(formModel).forEach((key) => {
-      formModel[key] = defaultModel[key] || null;
+      formModel[key] = defaultModel[key] ?? null;
     });
-    await clearValidate();
+
+    clearValidate();
     // const fromValues = handleFormValues(toRaw(unref(formModel)));
     // emit('reset', fromValues);
     submitOnReset && (await handleSubmit());
@@ -107,9 +127,79 @@ export const useFormEvents = ({
     // return toRaw(unref(formModel));
   }
 
+  // 设置表单字段值
+  async function setFieldsValue(values: Recordable): Promise<void> {
+    const schemas = unref(getSchema) || [];
+
+    const fields = schemas.map((item) => item.field).filter(Boolean);
+
+    Object.keys(values).forEach((key) => {
+      const value = values[key];
+      if (fields.includes(key)) {
+        formModel[key] = value;
+      }
+    });
+  }
+
+  // 设置默认值
+  async function setDefaultValue(data: FormSchema | FormSchema[]) {
+    let schemas: FormSchema[] = [];
+    if (isObject(data)) {
+      schemas.push(data as FormSchema);
+    }
+    if (isArray(data)) {
+      schemas = [...(data as FormSchema[])];
+    }
+
+    const obj: Recordable = {};
+    schemas.forEach((item) => {
+      if (Reflect.has(item, 'field') && item.field && !isNullOrUnDef(item.defaultValue)) {
+        obj[item.field] = item.defaultValue;
+      }
+    });
+    await setFieldsValue(obj);
+  }
+
+  // 更新schema
+  async function updateSchema(data: Partial<FormSchema> | Partial<FormSchema>[]) {
+    let updateData: Partial<FormSchema>[] = [];
+    if (isObject(data)) {
+      updateData.push(data as FormSchema);
+    } else if (isArray(data)) {
+      updateData = [...(data as FormSchema[])];
+    }
+    const hasField = updateData.every((item) => Reflect.has(item, 'field') && item.field);
+
+    if (!hasField) {
+      console.error('所有需要更新的schema必须包含field字段，请检查updateSchema方法的传入参数');
+      return;
+    }
+    const schema: FormSchema[] = [];
+    const updatedSchema: FormSchema[] = [];
+    unref(getSchema).forEach((val) => {
+      const updatedItem = updateData.find((item) => val.field === item.field);
+
+      if (updatedItem) {
+        const newSchema = _.merge({}, val, updatedItem);
+        updatedSchema.push(newSchema as FormSchema);
+        schema.push(newSchema as FormSchema);
+      } else {
+        schema.push(val);
+      }
+    });
+    setDefaultValue(updatedSchema);
+
+    schemaRef.value = _.uniqBy(schema, 'field');
+  }
+
   return {
     getFieldsValue,
     handleSubmit,
     resetFields,
+    validate,
+    clearValidate,
+    setFieldsValue,
+    updateSchema,
+    validateFields,
   };
 };

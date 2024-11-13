@@ -1,19 +1,18 @@
 import request from '@/utils/http/axios';
 import { BasicModel } from '../types/base';
-import { loginModel } from '../types/user';
 
 enum API {
   login = '/user/login',
   register = '/user/register',
   userInfo = '/user/info',
-  permission = '/system/permission/list',
+  userMenu = '/user/menu',
 }
 
 /**
  * @description: 登录
  * @param {loginModel} data
  */
-export const login = (data: loginModel) => {
+export const login = (data: System.loginModel) => {
   return request.post<BasicModel[]>({
     url: API.login,
     data,
@@ -24,7 +23,7 @@ export const login = (data: loginModel) => {
  * @description: 注册
  * @param {loginModel} data
  */
-export const register = (data: loginModel) => {
+export const register = (data: System.loginModel) => {
   return request.post<BasicModel[]>({
     url: API.register,
     data,
@@ -43,8 +42,8 @@ export const getUserInfo = () => {
 /**
  * @description: 获取菜单
  */
-export const permissionAPI = () => {
+export const menuAPI = () => {
   return request.get<BasicModel[]>({
-    url: API.permission,
+    url: API.userMenu,
   });
 };

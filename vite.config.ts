@@ -17,7 +17,6 @@ import vitePlugins from './config/vitePlugins';
 export default defineConfig((env: ConfigEnv) => {
   // 加载环境变量
   const viteEnv = loadEnv(env.mode, './env', 'VITE');
-  console.log('🚀jay, viteEnv', viteEnv);
   return {
     base: viteEnv.VITE_BASE,
     envDir: './env', // 指定环境变量文件目录

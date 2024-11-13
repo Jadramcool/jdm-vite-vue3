@@ -12,13 +12,14 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@vitejs/plugin-vue-jsx": "^4.0.1",
     "@vueuse/core": "^10.9.0",
     "axios": "^1.6.8",
     "chroma-js": "^2.4.2",
     "dayjs": "^1.11.13",
+    "eslint-plugin-jsx": "^0.1.0",
     "lodash": "^4.17.21",
     "nprogress": "^0.2.0",
-    "performant-array-to-tree": "^1.11.0",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "qs": "^6.12.1",

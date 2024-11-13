@@ -26,9 +26,10 @@ export default {
     // 可切换每页数量集合
     pageSizes: [5, 10, 20, 30, 40],
     tableLayout: {
-      // 表格布局，可选值为 'small' | 'medium' | 'large', 默认为'medium'
-      size: 'medium',
+      // 表格布局，可选值为 'small' | 'medium' | 'large', 默认为'small'
+      size: 'small',
       align: 'center',
+      operateType: 'button',
     },
   },
   form: {

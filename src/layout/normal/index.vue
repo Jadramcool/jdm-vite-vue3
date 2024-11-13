@@ -12,7 +12,7 @@
         <SideMenu />
       </n-scrollbar>
     </n-layout-sider>
-    <n-layout class="layout h-full flex flex-col" embedded>
+    <n-layout class="layout h-full" content-style="display: flex;flex-direction: column" embedded>
       <n-layout-header
         bordered
         class="z-1 flex-x-center justify-between"

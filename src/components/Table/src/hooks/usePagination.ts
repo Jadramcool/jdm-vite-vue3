@@ -41,7 +41,7 @@ export const usePagination = (refProps: any) => {
       ...config,
       pageCount: config[totalField],
       itemCount: config[itemCountField] || 0,
-      prefix: (info: any) => `共${info.itemCount}条，共${info.pageCount}页`,
+      prefix: (info: any) => `共${info.itemCount}条数据，共${info.pageCount}页`,
       onUpdatePage: () => {},
       onUpdatePageSize: () => {},
     };

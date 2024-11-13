@@ -7,11 +7,16 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    ApiSelect: typeof import('./../src/components/Form/src/components/ApiSelect.vue')['default']
     AppCard: typeof import('./../src/components/common/AppCard.vue')['default']
     Application: typeof import('./../src/components/application/Application.vue')['default']
     AppPage: typeof import('./../src/components/common/AppPage.vue')['default']
+    BasicDrawer: typeof import('./../src/components/Drawer/src/BasicDrawer.vue')['default']
+    BasicDrawerFooter: typeof import('./../src/components/Drawer/src/components/BasicDrawerFooter.vue')['default']
     BasicForm: typeof import('./../src/components/Form/src/BasicForm.vue')['default']
+    BasicModal: typeof import('./../src/components/Modal/src/BasicModal.vue')['default']
     CommonWrapper: typeof import('./../src/components/common/CommonWrapper.vue')['default']
+    DatePicker: typeof import('./../src/components/Form/src/components/DatePicker.vue')['default']
     HelloWorld: typeof import('./../src/components/HelloWorld.vue')['default']
     JayIcon: typeof import('./../src/components/common/JayIcon.vue')['default']
     NButton: (typeof import('naive-ui'))['NButton']

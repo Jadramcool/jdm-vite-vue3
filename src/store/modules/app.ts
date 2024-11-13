@@ -70,7 +70,6 @@ export const useAppStore = defineStore('app', {
     // 切换颜色模式
     setColorMode(mode: 'light' | 'dark' | 'auto') {
       store.value = mode;
-      console.log('🚀 ~ setColorMode ~ store.value:', store.value);
       this.setPrimaryColor();
     },
     // 切换全屏

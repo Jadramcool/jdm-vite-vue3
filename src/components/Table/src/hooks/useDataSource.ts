@@ -14,7 +14,7 @@ export const useDataSource = (
   propsRef: any,
   { getPaginationInfo, setPagination, setLoading }: any,
 ) => {
-  const dataSourceRef = ref([]);
+  const dataSourceRef: Recordable = ref([]);
 
   const getDataSourceRef = computed(() => {
     const dataSource = unref(dataSourceRef);
@@ -56,11 +56,11 @@ export const useDataSource = (
         ...toRaw(filters),
       };
 
-      const res = await request(params);
-      dataSourceRef.value = res.data;
+      const res: any = await request(params);
 
+      dataSourceRef.value = res?.data || res || [];
       // 设置分页信息
-      const pageInfo = res.pagination;
+      const pageInfo = res.pagination || {};
       if (pageInfo) {
         // 从结果中拿到总页数，缺省值为0。
         const resultTotal = pageInfo[totalField] || 0;
@@ -68,7 +68,7 @@ export const useDataSource = (
         const currentPage = pageInfo[pageField];
         // 从结果拿到总数据数
         const totalData = pageInfo[itemCountField];
-        // console.log(
+        // console.debug(
         //   `resultTotal:${resultTotal}, currentPage:${currentPage}, totalData:${totalData}`,
         // );
 
@@ -80,7 +80,7 @@ export const useDataSource = (
         });
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     } finally {
       // 不论成功与否，隐藏加载动画
       setLoading(false);

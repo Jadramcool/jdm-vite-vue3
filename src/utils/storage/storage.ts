@@ -66,20 +66,3 @@ class CustomStorage implements StorageInterface {
 export function createStorage({ prefixKey = '', storage = sessionStorage }) {
   return new CustomStorage({ prefixKey, storage });
 }
-
-// // 使用示例
-// const storage = createStorage({ prefixKey: 'myapp_' });
-
-// // 设置数据
-// storage.setItem('user', { name: 'John', age: 30 });
-
-// // 获取数据
-// const user = storage.getItem('user');
-// console.log(user); // 输出: { name: 'John', age: 30 }
-
-// // 清空数据
-// storage.clear();
-
-// // 再次获取数据
-// const userAfterClear = storage.getItem('user');
-// console.log(userAfterClear); // 输出: null

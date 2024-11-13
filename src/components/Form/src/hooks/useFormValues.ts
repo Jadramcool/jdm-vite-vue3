@@ -41,7 +41,6 @@ export const useFormValues = ({ defaultFormModel, getSchema, formModel }: UseFor
         set(res, key, value);
       }
     }
-
     return res;
   };
 

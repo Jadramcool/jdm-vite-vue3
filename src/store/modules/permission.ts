@@ -1,7 +1,7 @@
+import { arrayToTree, isExternal, renderIcon } from '@/utils/common'; // 导入自定义的 isExternal 函数，用于判断链接是否为外部链接
 import { hyphenate } from '@vueuse/core'; // 导入 Vue 通用实用函数库中的 hyphenate 函数
-import { defineStore } from 'pinia'; // 导入 Pinia 库中的 defineStore 函数
-import { isExternal, renderIcon, arrayToTree } from '@/utils/common'; // 导入自定义的 isExternal 函数，用于判断链接是否为外部链接
 import _ from 'lodash';
+import { defineStore } from 'pinia'; // 导入 Pinia 库中的 defineStore 函数
 
 export const routeComponents = import.meta.glob('/src/views/**/*.vue');
 // 定义一个名为 usePermissionStore 的 Pinia store
@@ -15,13 +15,13 @@ export const usePermissionStore = defineStore('permission', {
   // 定义 store 中的 actions
   actions: {
     // 设置权限的
-    async setPermissions(permissions: any[]) {
-      this.permissions = _.cloneDeep(permissions);
+    async setPermissions(menus: any[]) {
+      this.permissions = _.cloneDeep(menus);
     },
 
-    // 设置权限的
-    async setMenus(permissions: any[]) {
-      const temp = _.cloneDeep(permissions);
+    // 设置菜单的
+    async setMenus(menus: any[]) {
+      const temp = _.cloneDeep(menus);
       this.menus = arrayToTree(
         temp
           .filter((item) => item.type === 'MENU')
@@ -31,20 +31,19 @@ export const usePermissionStore = defineStore('permission', {
       );
     },
 
-    async setRoutes(permissions: any[]) {
-      const temp1 = _.cloneDeep(permissions);
+    async setRoutes(menus: any[]) {
+      const temp1 = _.cloneDeep(menus);
       this.createRoutes(temp1);
     },
 
-    createRoutes(permissions: any[]) {
+    createRoutes(menus: any[]) {
       const accessRoutes = arrayToTree(
-        permissions
+        menus
           .map((item) => this.generateRoute(item))
           .filter((item) => !!item)
           .sort((a, b) => a.order - b.order),
       );
       // this.accessRoutes = arrayToTree(accessRoutes);
-
       this.accessRoutes = {
         path: '/',
         name: 'Home',
@@ -94,7 +93,7 @@ export const usePermissionStore = defineStore('permission', {
         path: item.path, // 路由的路径
         redirect: item.redirect, // 路由的重定向路径
         component: routeComponents[item.component] || undefined, // 路由对应的组件
-        pid: item.pid, // 父路由的唯一标识符
+        pid: item.pid || null, // 父路由的唯一标识符
         meta: {
           originPath, // 原始路径
           icon: item.icon, // 路由对应的图标

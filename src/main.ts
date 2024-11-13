@@ -21,7 +21,6 @@ const start = async () => {
 
   // 初始化 i18n 实例
   // const i18n = await createI18nInstance();
-  // console.log('🚀 ~ start ~ i18n:', i18n);
   app.config.globalProperties.$t = i18n.global.t;
   app.use(i18n);
 

@@ -51,7 +51,7 @@ async function createI18nInstance(): Promise<I18n> {
     missingWarn: false,
     fallbackWarn: false,
     missing: (locale, key) => {
-      console.log('locale:', locale);
+      console.warn('locale:', locale);
       console.warn(`翻译缺失: ${key}`);
       return key;
     },

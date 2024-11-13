@@ -22,34 +22,82 @@ const tableColumnsKey: Record<string, string> = {
 // 表格列类型
 const tableColumnTypes = new Set(['selection', 'expand']);
 
+// 表格列配置
 export const columnsUtil = (schema: any, tableFields: string[]): DataTableColumn[] => {
-  return schema.properties
+  // 创建一个映射，记录 tableFields 中每个 key 的位置
+  const tableFieldsIndex: { [key: string]: number } = tableFields.reduce(
+    (acc: Recordable, key, index) => {
+      acc[key] = index;
+      return acc;
+    },
+    {},
+  );
+  const { properties, setting } = schema;
+  return properties
     .filter(
       ({ key, table }: any) =>
         tableFields.includes(key) || (table && tableColumnTypes.has(table.type)),
     )
-    .map(({ key, label, table }: any) => {
+    .map(({ key, label, table, ifShow }: any) => {
       const title = label ? (typeof label === 'string' ? label : label[0]) : key;
 
       // 使用对象展开运算符和条件运算符简化返回对象的构建
       return {
         key: table && tableColumnTypes.has(table.type) ? tableColumnsKey[table.type] : key,
         title,
+        ...(ifShow !== undefined ? { ifShow } : {}),
         align: table?.align || tableLayout.align,
+        ...setting.table,
         ...table,
       } as DataTableColumn;
+    })
+    .sort((a: Recordable, b: Recordable) => {
+      // 根据 tableFields 中 key 的顺序进行排序
+      const indexA = tableFieldsIndex[a.key];
+      const indexB = tableFieldsIndex[b.key];
+      return indexA - indexB;
     });
 };
 
+// 查询表单字段配置
 export const formSchemaUtil = (schema: any, formFields: string[]) => {
-  const { properties } = schema;
+  const { properties, setting } = schema;
+
+  return (
+    properties
+      // TODO visible考虑改成ifShow
+      .filter(({ key, form }: any) => formFields.includes(key) && form?.visible !== false)
+      .map(({ key, label, defaultValue, form, ifShow }: any) => ({
+        field: key,
+        label,
+        ...(ifShow !== undefined ? { ifShow } : {}),
+        defaultValue: form?.defaultValue ?? defaultValue, // 使用 nullish 合并运算符
+        ...setting.form,
+        ...form,
+      }))
+  );
+};
+
+// 编辑表单字段配置
+export const editFormSchemaUtil = (schema: any, editFormFields: string[]) => {
+  const { properties, setting } = schema;
 
   return properties
-    .filter(({ key, form }: any) => formFields.includes(key) && form?.visible !== false)
-    .map(({ key, label, defaultValue, form }: any) => ({
-      field: key,
-      label,
-      defaultValue: form?.defaultValue ?? defaultValue, // 使用 nullish 合并运算符
-      ...form,
-    }));
+    .filter(({ key, editForm }: any) => editFormFields.includes(key) && editForm?.visible !== false)
+    .map(({ key, label, defaultValue, form, editForm, ifShow }: any) => {
+      const result = {
+        field: key,
+        label,
+        ...(ifShow !== undefined ? { ifShow } : {}),
+        defaultValue: editForm?.defaultValue ?? defaultValue,
+        ...setting.form,
+        ...form,
+        ...editForm,
+      };
+
+      // 删除 query 字段
+      delete result.query;
+
+      return result;
+    });
 };

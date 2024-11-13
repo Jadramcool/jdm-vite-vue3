@@ -25,6 +25,7 @@ export interface FormSchema {
   giProps?: GridItemProps;
   isFull?: boolean;
   suffix?: string;
+  ifShow?: boolean;
 }
 
 export interface NewFormProps extends FormProps {
@@ -35,6 +36,7 @@ export interface NewFormProps extends FormProps {
   inline: boolean;
   layout: string;
   isFull: boolean;
+  showActionButtonGroup?: boolean; // 是否显示操作按钮组
   showSubmitButton?: boolean; // 是否显示提交按钮
   submitButtonText?: string; // 提交按钮文字
   showAdvancedButton?: boolean; // 是否显示展开按钮

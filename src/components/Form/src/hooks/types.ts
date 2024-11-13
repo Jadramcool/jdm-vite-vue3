@@ -8,6 +8,7 @@
  *
  */
 import type { FormProps } from 'naive-ui';
+import { FormSchema } from '../types';
 
 type FormType =
   | 'input'
@@ -44,10 +45,10 @@ export interface FormOption {
 export interface FormActionType {
   submit: () => Promise<any>;
   setProps: (formProps: Partial<FormProps>) => Promise<void>;
-  // setSchema: (schemaProps: Partial<FormSchema[]>) => Promise<void>;
+  updateSchema: (schemaProps: Partial<FormSchema[]>) => Promise<void>;
   setFieldsValue: (values: Recordable) => void;
   clearValidate: (name?: string | string[]) => Promise<void>;
-  getFieldsValue: () => Recordable;
+  getFieldsValue: (needFormat?: boolean) => Recordable;
   resetFields: () => Promise<void>;
   validate: (nameList?: any[]) => Promise<any>;
   setLoading: (status: boolean) => void;

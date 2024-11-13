@@ -34,7 +34,6 @@ import { useDark, useFullscreen, useToggle } from '@vueuse/core';
 // const appStore = useAppStore();
 const isDark = useDark();
 const toggleDark = () => {
-  console.log('🚀 ~ isDark:', isDark);
   // appStore.toggleDark();
   useToggle(isDark)();
 };

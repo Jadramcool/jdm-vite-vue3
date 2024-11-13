@@ -85,5 +85,6 @@ module.exports = {
     'no-undef': 'off',
     'no-nested-ternary': 'off', // 允许三元表达式嵌套
     'no-unused-expressions': 'off', // 允许有未使用的表达式
+    'default-param-last': 'off', // 允许默认参数在最后
   },
 };

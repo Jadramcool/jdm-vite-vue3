@@ -24,7 +24,7 @@ import UnoCSS from 'unocss/vite';
 import { ConfigEnv } from 'vite';
 
 export default (env: ConfigEnv) => {
-  console.log('🚀 ~ env:', env);
+  console.debug('🚀 ~ env:', env);
   const vitePlugins: (Plugin | Plugin[])[] = [
     vue({
       include: [/.vue$/],

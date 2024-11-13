@@ -8,6 +8,7 @@ const { tableLayout } = table;
 export const useComponentTableStore = defineStore('table', {
   state: () => ({
     size: tableLayout.size,
+    operateType: tableLayout.operateType,
   }),
   getters: {},
   actions: {

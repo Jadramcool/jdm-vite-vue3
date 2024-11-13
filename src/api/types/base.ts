@@ -1,7 +1,15 @@
 export interface BasicModel {
-  index: number;
-  title: string;
-  desc: string;
-  url: string;
-  mobileUrl: string;
+  [key: string]: any;
+}
+
+export interface Pagination {
+  page?: number;
+  pageSize?: number;
+  totalRecords?: number;
+  totalPages?: number;
+}
+
+export interface List<T> extends BasicModel {
+  data: T[];
+  pagination?: Pagination;
 }

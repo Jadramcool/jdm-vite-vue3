@@ -24,7 +24,7 @@ const permissionStore = usePermissionStore();
 
 const dialog = useDialog();
 
-const activeKey = computed(() => route.meta?.parentKey || route.name);
+const activeKey: any = computed(() => route.meta?.parentKey || route.name);
 
 const menu = ref<any>(null);
 watch(route, async () => {
@@ -32,7 +32,7 @@ watch(route, async () => {
   menu.value?.showOption();
 });
 
-function handleMenuSelect(key: any, item: any) {
+function handleMenuSelect(_key: any, item: any) {
   if (isExternal(item.originPath)) {
     dialog.info({
       type: 'info',

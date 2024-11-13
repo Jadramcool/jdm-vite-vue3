@@ -1,6 +1,7 @@
 import { isProdMode } from '@/utils';
 import type { FormProps } from 'naive-ui';
 import { nextTick, onUnmounted, ref, unref } from 'vue';
+import { FormSchema } from '../types';
 import { FormActionType } from './types';
 
 export const useForm = (props?: any) => {
@@ -39,7 +40,7 @@ export const useForm = (props?: any) => {
   async function getForm() {
     const form = unref(formRef);
     if (!form) {
-      console.log('error');
+      console.error('error');
     }
     await nextTick();
     return form as any;
@@ -61,6 +62,26 @@ export const useForm = (props?: any) => {
     clearValidate: async (name?: string | string[]) => {
       const form = await getForm();
       await form.clearValidate(name);
+    },
+    setFieldsValue: async (values: Record<string, any>) => {
+      const form = await getForm();
+      await form.setFieldsValue(values);
+    },
+    validate: async () => {
+      const form = await getForm();
+      return form.validate();
+    },
+    validateFields: async (name: string | string[]) => {
+      const form = await getForm();
+      return form.validateFields(name);
+    },
+    updateSchema: async (data: Partial<FormSchema> | Partial<FormSchema>[]) => {
+      const form = await getForm();
+      form.updateSchema(data);
+    },
+    submit: async () => {
+      const form = await getForm();
+      return form.submit();
     },
   };
 

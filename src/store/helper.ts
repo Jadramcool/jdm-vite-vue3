@@ -9,7 +9,7 @@
  */
 import * as ExampleAPI from '@/api/example';
 import * as UserApi from '@/api/user';
-import { basePermissions, basePermissions1 } from '@/settings';
+import { baseMenus } from '@/settings';
 
 export async function getUserInfo() {
   try {
@@ -32,51 +32,34 @@ export async function getUserInfo() {
   }
 }
 
-export async function getPermissions() {
-  let asyncPermissions: any = [];
+export async function getMenus() {
+  let asyncMenus: any = [];
   try {
     let res: any = [];
     if (import.meta.env.VITE_MOCK === 'true') {
       res = await ExampleAPI.mockPermissionAPI();
     } else {
-      res = await UserApi.permissionAPI();
+      res = await UserApi.menuAPI();
     }
-    asyncPermissions = res?.data || res || [];
-  } catch (error) {
-    // console.error(error);
-  }
-
-  const res = [...basePermissions, ...asyncPermissions];
-
-  // TODO 返回权限
-  return res;
-  // return asyncPermissions;
-}
-
-export async function getMockPermissions() {
-  let asyncPermissions: any = [];
-  try {
-    const res = await ExampleAPI.mockPermissionAPI();
-    asyncPermissions = res?.data || res || [];
+    asyncMenus = res?.data || res || [];
   } catch (error) {
     console.error(error);
   }
 
-  const res = [...basePermissions, ...asyncPermissions];
+  const mergedMenus = new Map();
 
-  // TODO 返回权限
+  // 将 baseMenus 中的对象添加到 Map 中
+  baseMenus.forEach((menu) => {
+    mergedMenus.set(menu.id, menu);
+  });
+
+  // 将 asyncMenus 中的对象添加到 Map 中，若存在相同 id，则覆盖
+  asyncMenus.forEach((menu: Recordable) => {
+    mergedMenus.set(menu.id, menu);
+  });
+
+  // 将最终的结果转换回数组
+  const res = Array.from(mergedMenus.values());
+
   return res;
-  // return asyncPermissions;
-}
-
-export async function getPermissions1() {
-  let asyncPermissions: any = [];
-  try {
-    const res = await ExampleAPI.mockPermission1API();
-    asyncPermissions = res?.data || res || [];
-  } catch (error) {
-    console.error(error);
-  }
-  // TODO 返回权限
-  return basePermissions1.concat(asyncPermissions);
 }

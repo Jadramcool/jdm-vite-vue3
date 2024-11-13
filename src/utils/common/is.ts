@@ -122,6 +122,10 @@ export function isNullOrUnDef(val: any): boolean {
   return isUnDef(val) || isNull(val);
 }
 
+export function isNullOrUnDefOrZero(val: any): boolean {
+  return isUnDef(val) || isNull(val) || val === 0;
+}
+
 /**
  * 判断是否 url
  * */
@@ -136,4 +140,12 @@ export function isExternal(path: string): boolean {
 
 export function isProdMode() {
   return process.env.NODE_ENV === 'production';
+}
+
+/**
+ * 判断是否是手机号
+ */
+
+export function isPhone(phone: string): boolean {
+  return /^1[345789]\d{9}$/.test(phone);
 }

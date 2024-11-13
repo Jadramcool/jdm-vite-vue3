@@ -11,51 +11,63 @@
 <template>
   <NForm v-bind="getBindValue" :model="formModel" ref="formElRef">
     <NGrid v-bind="getGrid">
-      <NGi v-bind="schema.giProps" v-for="schema in getSchema" :key="schema.field">
-        <NFormItem :label="schema.label" :path="schema.field">
-          <!-- 左侧提示 -->
-          <template #label v-if="schema.labelMessage">
-            {{ schema.label }}
-            <NTooltip trigger="hover" :style="schema.labelMessageStyle">
-              <template #trigger>
-                <JayIcon :icon="'mynaui:question-waves'" :hover="true" :size="14" />
-              </template>
-              {{ schema.labelMessage }}
-            </NTooltip>
-          </template>
-          <template v-if="schema.component === 'NRadioGroup'">
-            <NRadioGroup v-model:value="formModel[schema.field]">
-              <NRadio
-                v-for="option in (schema.componentProps && schema.componentProps.options) || []"
-                :key="option.value"
-                :value="option.value"
-              >
-                {{ option.label }}
-              </NRadio>
-            </NRadioGroup>
-          </template>
-          <template v-else-if="schema.component === 'NCheckboxGroup'">
-            <NCheckboxGroup v-model:value="formModel[schema.field]">
-              <NCheckbox
-                v-for="option in (schema.componentProps && schema.componentProps.options) || []"
-                :key="option.value"
-                :value="option.value"
-                :label="option.label"
-              >
-              </NCheckbox>
-            </NCheckboxGroup>
-          </template>
-          <!--判断插槽-->
-          <component
-            v-else
-            v-bind="getComponentProps(schema)"
-            v-model:value="formModel[schema.field]"
-            :is="componentMap.get(schema.component)"
-            :class="{ isFull: schema.isFull != false && getProps.isFull }"
-          />
-        </NFormItem>
-      </NGi>
-      <NGi :span="isInline ? '' : 24" :suffix="isInline ? true : false">
+      <template v-for="schema in getSchema" :key="schema.field">
+        <NGi v-bind="schema.giProps" v-if="schema.ifShow !== false">
+          <NFormItem :label="schema.label" :path="schema.field">
+            <!-- 左侧提示 -->
+            <template #label v-if="schema.labelMessage">
+              {{ schema.label }}
+              <NTooltip trigger="hover" :style="schema.labelMessageStyle">
+                <template #trigger>
+                  <JayIcon :icon="'mynaui:question-waves'" :hover="true" :size="14" />
+                </template>
+                {{ schema.labelMessage }}
+              </NTooltip>
+            </template>
+            <template v-if="schema.component === 'NRadioGroup'">
+              <NRadioGroup v-model:value="formModel[schema.field]">
+                <NRadio
+                  v-for="option in (schema.componentProps && schema.componentProps.options) || []"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </NRadio>
+              </NRadioGroup>
+            </template>
+            <template v-else-if="schema.component === 'NCheckboxGroup'">
+              <NCheckboxGroup v-model:value="formModel[schema.field]">
+                <NCheckbox
+                  v-for="option in (schema.componentProps && schema.componentProps.options) || []"
+                  :key="option.value"
+                  :value="option.value"
+                  :label="option.label"
+                >
+                </NCheckbox>
+              </NCheckboxGroup>
+            </template>
+            <template v-else-if="schema.component === 'ApiSelect'">
+              <ApiSelect v-bind="schema.componentProps" v-model:value="formModel[schema.field]" />
+            </template>
+            <template v-else-if="schema.component === 'NDatePicker'">
+              <DatePicker v-bind="schema.componentProps" v-model:value="formModel[schema.field]" />
+            </template>
+            <!--判断插槽-->
+            <component
+              v-else
+              v-bind="getComponentProps(schema)"
+              v-model:value="formModel[schema.field]"
+              :is="componentMap.get(schema.component)"
+              :class="{ isFull: schema.isFull != false && getProps.isFull }"
+            />
+          </NFormItem>
+        </NGi>
+      </template>
+      <NGi
+        :span="isInline ? '' : 24"
+        :suffix="isInline ? true : false"
+        v-if="getProps.showActionButtonGroup"
+      >
         <NSpace align="center" :justify="isInline ? 'end' : 'start'">
           <NButton
             v-if="getProps.showSubmitButton"
@@ -71,7 +83,7 @@
             @click="resetFields"
             >{{ getProps.resetButtonText }}</NButton
           >
-          <n-button
+          <NButton
             type="primary"
             text
             icon-placement="right"
@@ -79,7 +91,7 @@
             @click="unfoldToggle"
           >
             {{ overflow ? '展开' : '收起' }}
-          </n-button>
+          </NButton>
         </NSpace>
       </NGi>
     </NGrid>
@@ -91,6 +103,7 @@ import { isArray } from '@/utils';
 import _ from 'lodash';
 import { NRadio, type GridProps } from 'naive-ui';
 import { componentMap } from './componentMap';
+import { ApiSelect, DatePicker } from './components';
 import { createPlaceholderMessage } from './helper';
 import { useFormEvents, useFormValues } from './hooks';
 import { basicProps } from './props';
@@ -121,6 +134,10 @@ const getProps = computed((): NewFormProps => {
   const schemas: FormSchema[] = formProps.schemas || [];
   schemas.forEach((item) => {
     if (item.rules && isArray(item.rules)) {
+      // 给rules添加key属性,用来单个校验
+      (item.rules as object[]).forEach((rule: any) => {
+        rule.key = item.field;
+      });
       rulesObj.rules[item.field] = item.rules;
     }
   });
@@ -136,6 +153,7 @@ const getBindValue = computed(() => {
 const getSchema = computed((): FormSchema[] => {
   const schemas: FormSchema[] = unref(schemaRef) || (unref(getProps).schemas as any);
   for (const schema of schemas) {
+    // 留给日期组件用
     const { defaultValue } = schema;
     if (defaultValue) {
       schema.defaultValue = defaultValue;
@@ -150,12 +168,22 @@ const { handleFormatFormValues, initDefaultFormModel } = useFormValues({
   formModel,
 });
 
-const { handleSubmit, resetFields, getFieldsValue } = useFormEvents({
+const {
+  handleSubmit,
+  resetFields,
+  getFieldsValue,
+  validate,
+  clearValidate,
+  setFieldsValue,
+  updateSchema,
+  validateFields,
+} = useFormEvents({
   emit,
   getProps,
   getSchema,
   formModel,
   formElRef,
+  schemaRef: schemaRef as Ref<FormSchema[]>,
   loadingSub,
   defaultFormModel,
   handleFormatFormValues,
@@ -200,9 +228,9 @@ watch(
   },
 );
 
-onMounted(() => {
-  initDefaultFormModel();
-});
+// onMounted(() => {
+//   initDefaultFormModel();
+// });
 
 // ------------------按钮------------------
 const getSubmitBtnOptions = computed(() => {
@@ -228,8 +256,14 @@ const unfoldToggle = () => {
 
 const formActionType = {
   getFieldsValue,
+  setFieldsValue,
   setProps,
+  resetFields,
+  validate,
+  validateFields,
+  clearValidate,
   submit: handleSubmit,
+  updateSchema,
 };
 
 // const formActionType: Partial<FormActionType> = {

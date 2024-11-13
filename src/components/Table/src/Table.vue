@@ -5,16 +5,23 @@
  * @LastEditTime: 2024-10-31 17:43:42
  * @FilePath: \vite-vue3-jdm\src\components\Table\src\Table.vue
  * @Description: 自定义表格封装
+ * @TODO: 1. 表格列ifShow控制
  * 
 -->
 <template>
-  <!-- <NCard title="搜索表格" size="small">
-    <BasicForm @register="register"> </BasicForm>
-  </NCard> -->
   <!-- 自定义表格部分 -->
-  <NCard :bordered="false" :title="props.title" size="small">
+  <NCard :bordered="false" :title="getProps.cardTitle" size="small">
     <template #header-extra>
-      <tool-bar v-model:columns="columnChecks" @refresh="handleRefresh" />
+      <tool-bar
+        v-model:columns="columnChecks"
+        :showBatchDeleteBtn="getProps.showBatchDeleteBtn"
+        :showAddBtn="getProps.showAddBtn"
+        @refresh="handleRefresh"
+        @add="handleAdd"
+        @batch-delete="handleBatchDelete"
+      >
+        <slot name="toolbar" />
+      </tool-bar>
     </template>
 
     <NDataTable
@@ -29,13 +36,14 @@
 </template>
 
 <script setup lang="ts" name="BasicTable">
-// import { BasicForm } from '@/components';
 import { useComponentTableStore } from '@/store';
 import { ToolBar } from './components';
 import { useColumns, useDataSource, useLoading, usePagination } from './hooks';
 import { basicProps } from './props';
 
 defineOptions({ name: 'BasicTable' });
+
+const emit = defineEmits(['add', 'batchDelete']);
 
 // ********************自定义配置表格组件********************
 
@@ -53,9 +61,18 @@ const customProps = computed(() => {
 
 // 获取props
 const getProps: any = computed(() => {
-  return { ...props, ...customProps.value };
+  // 避免card的title和tableColumns的title冲突,将title改为tableTitle
+  const cardTitle = props.title || '';
+  // 去掉title属性
+  const newProps = { ...props };
+  delete newProps.title;
+  return {
+    ...newProps,
+    cardTitle,
+    ...customProps.value,
+  };
+  // return { ...props, ...customProps.value };
 });
-
 // -----------自定义配置-----------
 const isStriped = ref(true); // 是否显示斑马线标识符
 const isBordered = ref(false); // 是否显示边框
@@ -119,12 +136,19 @@ const handleRefresh = async () => {
   await reload();
 };
 
+// 新增数据
+const handleAdd = () => {
+  emit('add');
+};
+
+const handleBatchDelete = () => {
+  emit('batchDelete');
+};
+
 // 暴露方法
 defineExpose({
   reload,
 });
-
-// ********************自定义配置表单组件********************
 </script>
 
 <style lang="scss" scoped>

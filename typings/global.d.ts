@@ -26,3 +26,7 @@ declare namespace Query {
 declare type Recordable<T = any> = Record<string, T>; // 类型别名，表示一个对象，其属性名为字符串字面量，属性值可以为任意类型
 declare type Nullable<T> = T | null; // 类型别名，表示可以为null的类型
 declare type Undefinedable<T> = T | undefined; // 类型别名，表示可以为undefined的类型
+
+declare interface Fn<T = any, R = T> {
+  (...arg: T[]): R;
+}

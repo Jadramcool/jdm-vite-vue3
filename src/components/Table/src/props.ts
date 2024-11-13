@@ -11,18 +11,11 @@ import { NDataTable } from 'naive-ui';
 
 export const basicProps = {
   ...NDataTable.props, // 这里继承原 UI 组件的 props
+  // 卡片title,不要跟columns的title混淆,打算getProps的时候将title改成cardTitle
   title: {
     type: String,
-    default: null,
+    default: undefined,
   },
-  //   titleTooltip: {
-  //     type: String,
-  //     default: null,
-  //   },
-  //   dataSource: {
-  //     type: [Object],
-  //     default: () => [],
-  //   },
   columns: {
     type: [Array],
     default: () => [],
@@ -54,21 +47,14 @@ export const basicProps = {
     // 示例 pagination: { pageSize: 10, pageSizes: [10, 20, 30, 40, 50] }
     // 也可以是 false 关闭分页
   },
-  // 废弃，用pagination替代
-  // showPagination: {
-  //   type: [String, Boolean],
-  //   default: 'auto',
-  // },
-  //   actionColumn: {
-  //     type: Object,
-  //     default: null,
-  //   },
-  //   canResize: {
-  //     type: Boolean,
-  //     default: true,
-  //   },
-  //   resizeHeightOffset: {
-  //     type: Number,
-  //     default: 0,
-  //   },
+  // 是否显示新增按钮
+  showAddBtn: {
+    type: Boolean,
+    default: true,
+  },
+  // 是否显示批量删除按钮
+  showBatchDeleteBtn: {
+    type: Boolean,
+    default: false,
+  },
 };

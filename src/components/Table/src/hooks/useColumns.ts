@@ -59,6 +59,7 @@ export const useColumns = (refProps: any) => {
 
   // 获取所有列
   const getColumns = computed(() => {
+    // getColumns 过滤掉 ifShow 为 false 的列
     return columnsRef.value;
   });
 
