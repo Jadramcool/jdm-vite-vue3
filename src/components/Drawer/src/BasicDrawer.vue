@@ -3,7 +3,7 @@
     <NDrawerContent closable>
       <template #header>
         <slot v-if="$slots.header" name="header"></slot>
-        <div v-else>{{ getProps.title }}</div>
+        <div v-else>{{ getProps.headTitle }}</div>
       </template>
       <n-spin :show="getLoading">
         <slot></slot>
@@ -11,7 +11,7 @@
       <template #footer>
         <NSpace>
           <slot v-if="$slots.footer" name="footer"></slot>
-          <BasicDrawerFooter v-bind="getProps" @ok="handleOk" @cancel="handleClose" />
+          <BasicDrawerFooter v-bind="getProps" @ok="handleOk" @close="handleClose" />
         </NSpace>
       </template>
     </NDrawerContent>
@@ -108,11 +108,6 @@ const handleClose = async () => {
   emit('close');
   showRef.value = !false;
 };
-
-// const drawerActionType = {
-//   setDrawerProps,
-//   openDrawer,
-// };
 </script>
 
 <style lang="scss" scoped></style>

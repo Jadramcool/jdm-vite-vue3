@@ -10,4 +10,5 @@
 export * from './common';
 export * from './Drawer';
 export * from './Form';
+export * from './Modal';
 export * from './Table';

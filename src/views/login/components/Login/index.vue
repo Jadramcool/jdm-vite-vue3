@@ -94,7 +94,7 @@ const loginFormRef = ref<FormInst | null>(null);
 
 const loginForm = ref<LoginForm>({
   username: 'jdm',
-  password: '123456',
+  password: '123456..',
 });
 
 // 登录表单验证规则

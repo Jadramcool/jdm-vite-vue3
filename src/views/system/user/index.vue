@@ -24,6 +24,7 @@
       :showAddBtn="true"
       :showBatchDeleteBtn="true"
       :checked-row-keys="checkedRows"
+      :scroll-x="1500"
       @update:checked-row-keys="handleCheck"
       @add="handleAdd"
       @batchDelete="handleBatchDelete"

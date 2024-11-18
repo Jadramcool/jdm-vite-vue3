@@ -11,39 +11,71 @@ export const usePermissionStore = defineStore('permission', {
     accessRoutes: <any>{}, // 存储访问路由的数组
     permissions: <any[]>[], // 存储权限的数组
     menus: <any[]>[], // 存储菜单的数组
+    buttonPermissions: <any[]>[],
   }),
   // 定义 store 中的 actions
   actions: {
     // 设置权限的
-    async setPermissions(menus: any[]) {
+    async setPermissions(menus: System.Menu[]) {
       this.permissions = _.cloneDeep(menus);
     },
 
     // 设置菜单的
-    async setMenus(menus: any[]) {
-      const temp = _.cloneDeep(menus);
+    async setMenus(menus: System.Menu[]) {
+      const cloneMenus = _.cloneDeep(menus);
+
       this.menus = arrayToTree(
-        temp
-          .filter((item) => item.type === 'MENU')
+        cloneMenus
+          .filter((item) => item.type !== 'BUTTON')
           .map((item) => this.getMenuItem(item))
           .filter((item) => !!item)
-          .sort((a, b): any => a.order - b.order),
+          .sort(
+            (a: System.Menu, b: System.Menu): any => (a.order ?? Infinity) - (b.order ?? Infinity),
+          ),
       );
     },
 
-    async setRoutes(menus: any[]) {
-      const temp1 = _.cloneDeep(menus);
-      this.createRoutes(temp1);
+    async setRoutes(menus: System.Menu[]) {
+      const cloneMenus = _.cloneDeep(menus);
+      this.createRoutes(cloneMenus);
     },
 
-    createRoutes(menus: any[]) {
-      const accessRoutes = arrayToTree(
-        menus
-          .map((item) => this.generateRoute(item))
-          .filter((item) => !!item)
-          .sort((a, b) => a.order - b.order),
-      );
-      // this.accessRoutes = arrayToTree(accessRoutes);
+    createRoutes(menus: System.Menu[]) {
+      if (!Array.isArray(menus)) {
+        throw new Error('无效的参数，请传入菜单数组');
+      }
+      const btnPermissions: System.Menu[] = []; // 按钮权限
+      const nonButtonMenus: System.Menu[] = []; // 非按钮菜单
+
+      const routeCache: { [key: string]: any } = {};
+
+      menus.forEach((item) => {
+        if (item.type === 'BUTTON') {
+          btnPermissions.push(item);
+        } else {
+          nonButtonMenus.push(item);
+        }
+      });
+
+      this.buttonPermissions = btnPermissions;
+
+      //  非按钮权限
+      const formatSortMenus = nonButtonMenus
+        .map((item) => {
+          if (routeCache[item.id]) {
+            return routeCache[item.id];
+          }
+          const route = this.generateRoute(item);
+          if (route && typeof route === 'object') {
+            routeCache[item.id] = route;
+            return route;
+          }
+          return null;
+        })
+        .filter((item) => !!item)
+        .sort((a, b) => a.order - b.order);
+
+      const accessRoutes = arrayToTree(formatSortMenus);
       this.accessRoutes = {
         path: '/',
         name: 'Home',
@@ -57,9 +89,9 @@ export const usePermissionStore = defineStore('permission', {
       };
     },
 
-    getMenuItem(item: any) {
+    getMenuItem(item: System.Menu) {
       let originPath;
-      if (isExternal(item.path)) {
+      if (item.path && isExternal(item.path)) {
         originPath = item.path;
         item.component = '/src/views/iframe/index.vue';
         item.path = `/iframe/${hyphenate(item.code)}`;
@@ -87,6 +119,7 @@ export const usePermissionStore = defineStore('permission', {
         item.component = '/src/views/iframe/index.vue'; // 将组件路径设置为内置的 iframe 组件
         item.path = `/iframe/${hyphenate(item.code)}`; // 将路径设置为以 /iframe/ 开头并将权限项的 code 转为连字符分隔的形式
       }
+
       return {
         id: item.id, // 路由的唯一标识符
         name: item.code, // 路由的名称
@@ -101,9 +134,6 @@ export const usePermissionStore = defineStore('permission', {
           title: item.name, // 路由的标题
           layout: item.layout || null, // 路由的布局
           keepAlive: !!item.keepAlive, // 是否缓存路由组件
-          btns: item.children
-            ?.filter((item: any) => item.type === 'BUTTON') // 过滤出类型为 BUTTON 的子权限项
-            .map((item: any) => ({ code: item.code, name: item.name })), // 转换为按钮对象数组
         },
       };
     },

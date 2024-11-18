@@ -130,9 +130,7 @@ export const useFormEvents = ({
   // 设置表单字段值
   async function setFieldsValue(values: Recordable): Promise<void> {
     const schemas = unref(getSchema) || [];
-
     const fields = schemas.map((item) => item.field).filter(Boolean);
-
     Object.keys(values).forEach((key) => {
       const value = values[key];
       if (fields.includes(key)) {

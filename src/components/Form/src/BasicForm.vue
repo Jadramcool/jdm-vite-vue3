@@ -11,9 +11,9 @@
 <template>
   <NForm v-bind="getBindValue" :model="formModel" ref="formElRef">
     <NGrid v-bind="getGrid">
-      <template v-for="schema in getSchema" :key="schema.field">
-        <NGi v-bind="schema.giProps" v-if="schema.ifShow !== false">
-          <NFormItem :label="schema.label" :path="schema.field">
+      <template v-for="schema in getSchema">
+        <NGi v-bind="schema.giProps" v-if="getShow(schema).isIfShow" :key="schema.field">
+          <NFormItemGi :label="schema.label" :path="schema.field">
             <!-- 左侧提示 -->
             <template #label v-if="schema.labelMessage">
               {{ schema.label }}
@@ -25,7 +25,7 @@
               </NTooltip>
             </template>
             <template v-if="schema.component === 'NRadioGroup'">
-              <NRadioGroup v-model:value="formModel[schema.field]">
+              <NRadioGroup v-bind="schema.componentProps" v-model:value="formModel[schema.field]">
                 <NRadio
                   v-for="option in (schema.componentProps && schema.componentProps.options) || []"
                   :key="option.value"
@@ -47,10 +47,26 @@
               </NCheckboxGroup>
             </template>
             <template v-else-if="schema.component === 'ApiSelect'">
-              <ApiSelect v-bind="schema.componentProps" v-model:value="formModel[schema.field]" />
+              <ApiSelect
+                v-bind="getComponentProps(schema)"
+                v-model:value="formModel[schema.field]"
+              />
             </template>
+            <template v-else-if="schema.component === 'ApiTreeSelect'">
+              <ApiTreeSelect
+                v-bind="getComponentProps(schema)"
+                v-model:value="formModel[schema.field]"
+              />
+            </template>
+
             <template v-else-if="schema.component === 'NDatePicker'">
-              <DatePicker v-bind="schema.componentProps" v-model:value="formModel[schema.field]" />
+              <DatePicker
+                v-bind="getComponentProps(schema)"
+                v-model:value="formModel[schema.field]"
+              />
+            </template>
+            <template v-else-if="schema.component === 'ApiTree'">
+              <ApiTree v-bind="getComponentProps(schema)" v-model:value="formModel[schema.field]" />
             </template>
             <!--判断插槽-->
             <component
@@ -60,7 +76,7 @@
               :is="componentMap.get(schema.component)"
               :class="{ isFull: schema.isFull != false && getProps.isFull }"
             />
-          </NFormItem>
+          </NFormItemGi>
         </NGi>
       </template>
       <NGi
@@ -87,7 +103,7 @@
             type="primary"
             text
             icon-placement="right"
-            v-if="isInline && getProps.showAdvancedButton"
+            v-if="isInline && getProps.showAdvancedButton && getSchema.length > 3"
             @click="unfoldToggle"
           >
             {{ overflow ? '展开' : '收起' }}
@@ -99,11 +115,11 @@
 </template>
 
 <script setup lang="ts">
-import { isArray } from '@/utils';
+import { isArray, isBoolean, isFunction } from '@/utils';
 import _ from 'lodash';
 import { NRadio, type GridProps } from 'naive-ui';
 import { componentMap } from './componentMap';
-import { ApiSelect, DatePicker } from './components';
+import { ApiSelect, ApiTree, ApiTreeSelect, DatePicker } from './components';
 import { createPlaceholderMessage } from './helper';
 import { useFormEvents, useFormValues } from './hooks';
 import { basicProps } from './props';
@@ -152,15 +168,40 @@ const getBindValue = computed(() => {
 // 获取表单schema
 const getSchema = computed((): FormSchema[] => {
   const schemas: FormSchema[] = unref(schemaRef) || (unref(getProps).schemas as any);
-  for (const schema of schemas) {
-    // 留给日期组件用
-    const { defaultValue } = schema;
-    if (defaultValue) {
-      schema.defaultValue = defaultValue;
-    }
-  }
+  // for (const schema of schemas) {
+  //   // 留给日期组件用
+  //   // const { defaultValue } = schema;
+  //   // if (defaultValue) {
+  //   //   schema.defaultValue = defaultValue;
+  //   // }
+  //   // const isShow = getShow(schema);
+  //   // schema.show = isShow.isIfShow;
+  // }
   return schemas as FormSchema[];
 });
+
+const getShow = (schema: FormSchema): { isIfShow: boolean } => {
+  const { ifShow } = schema;
+
+  // 判断ifShow是否存在 安全地使用 ifShow
+  if (ifShow !== undefined) {
+    let isIfShow: any = true;
+    if (isBoolean(ifShow)) {
+      isIfShow = ifShow;
+    }
+
+    if (isFunction(ifShow)) {
+      const getValues = {
+        values: { ...unref(getFieldsValue()) },
+        schema,
+      };
+      isIfShow = ifShow(getValues);
+    }
+
+    return { isIfShow };
+  }
+  return { isIfShow: true };
+};
 
 const { handleFormatFormValues, initDefaultFormModel } = useFormValues({
   defaultFormModel,
@@ -193,7 +234,7 @@ const {
 const getComponentProps = (schema: FormSchema) => {
   const { component, componentProps = {} } = schema; // 使用解构赋值
   return {
-    clearable: true,
+    // clearable: true,
     placeholder: createPlaceholderMessage(unref(component)),
     ...componentProps,
   };
@@ -228,10 +269,6 @@ watch(
   },
 );
 
-// onMounted(() => {
-//   initDefaultFormModel();
-// });
-
 // ------------------按钮------------------
 const getSubmitBtnOptions = computed(() => {
   return {
@@ -265,16 +302,6 @@ const formActionType = {
   submit: handleSubmit,
   updateSchema,
 };
-
-// const formActionType: Partial<FormActionType> = {
-//   getFieldsValue,
-//   setFieldsValue,
-//   resetFields,
-//   validate,
-//   clearValidate,
-//   setProps,
-//   submit: handleSubmit,
-// };
 
 onMounted(() => {
   emit('register', formActionType);

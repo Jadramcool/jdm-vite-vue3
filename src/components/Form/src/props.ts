@@ -98,7 +98,7 @@ export const basicProps = {
   giProps: {
     type: Object as PropType<GridItemProps>,
     default: () => ({
-      offset: 1,
+      // offset: 1,
     }),
   },
   // grid 样式

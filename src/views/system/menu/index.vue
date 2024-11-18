@@ -12,18 +12,21 @@
       :request="loadMenuList"
       :rowKey="(row: NaiveUI.RowData) => row.id"
       :pagination="false"
+      :scroll-x="1500"
       @update:checked-row-keys="handleCheck"
+      @add="handleAdd"
     />
 
-    <!-- <MenuDrawer @register="registerDrawer"> </MenuDrawer> -->
+    <MenuModal @register="registerModal" @success="handleSuccess"> </MenuModal>
   </div>
 </template>
 
 <script lang="tsx" setup>
 import { MenuApi } from '@/api/system';
-import { BasicForm, BasicTable, useForm } from '@/components';
+import { BasicForm, BasicTable, useForm, useModal } from '@/components';
 // import { MenuDrawer } from './components';
 import { arrayToTree } from '@/utils';
+import { MenuModal } from './components';
 import { useMenuSchema } from './schema';
 
 defineOptions({ name: 'UserManager' });
@@ -37,9 +40,17 @@ const queryParams = ref<Query.GetParams>({});
 
 // 表格/表单方法
 const schemaMethods = {
-  // handleEdit(record: NaiveUI.RowData) {
-  //   openDrawer(record);
-  // },
+  handleEdit(record: NaiveUI.RowData) {
+    openModal({
+      isUpdate: true,
+      record,
+    });
+  },
+  handleDelete(record: NaiveUI.RowData) {
+    MenuApi.deleteMenu(record.id).then(() => {
+      tableRef.value.reload();
+    });
+  },
 };
 
 // 表格/表单配置  采用computed（适配i18n）
@@ -51,6 +62,8 @@ const [register, { getFieldsValue }] = useForm({
   submitOnReset: true,
 });
 
+const [registerModal, { openModal }] = useModal();
+
 // 表格数据请求
 const loadMenuList = async (data: Query.GetParams) => {
   data.filters = { ...(data.filters || {}), ...getFieldsValue() };
@@ -58,6 +71,16 @@ const loadMenuList = async (data: Query.GetParams) => {
   const res = await MenuApi.menuList(data);
   const menuList = arrayToTree(res);
   return menuList;
+};
+
+const handleAdd = () => {
+  openModal({
+    isUpdate: false,
+  });
+};
+
+const handleSuccess = () => {
+  tableRef.value.reload();
 };
 
 // 表单提交

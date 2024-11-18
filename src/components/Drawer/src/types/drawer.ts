@@ -2,6 +2,7 @@ import type { ButtonProps, DrawerContentProps, DrawerProps } from 'naive-ui';
 
 export interface NewDrawerProps extends DrawerProps, DrawerContentProps, DrawerFooterProps {
   closeFunc?: () => Promise<any>; // 关闭抽屉的函数
+  headTitle?: string; // 抽屉标题
 }
 
 export interface DrawerFooterProps {

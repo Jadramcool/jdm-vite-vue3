@@ -82,10 +82,20 @@ export const formSchemaUtil = (schema: any, formFields: string[]) => {
 export const editFormSchemaUtil = (schema: any, editFormFields: string[]) => {
   const { properties, setting } = schema;
 
-  return properties
+  // 创建一个映射，记录 editFormFields 中每个 key 的位置
+  const editFormFieldsIndex: { [key: string]: number } = editFormFields.reduce(
+    (acc: Recordable, key, index) => {
+      acc[key] = index;
+      return acc;
+    },
+    {},
+  );
+
+  // 过滤并映射字段配置
+  const result = properties
     .filter(({ key, editForm }: any) => editFormFields.includes(key) && editForm?.visible !== false)
     .map(({ key, label, defaultValue, form, editForm, ifShow }: any) => {
-      const result = {
+      const fieldConfig = {
         field: key,
         label,
         ...(ifShow !== undefined ? { ifShow } : {}),
@@ -96,8 +106,15 @@ export const editFormSchemaUtil = (schema: any, editFormFields: string[]) => {
       };
 
       // 删除 query 字段
-      delete result.query;
+      delete fieldConfig.query;
 
-      return result;
+      return fieldConfig;
     });
+
+  // 根据 editFormFields 中的顺序对 result 进行排序
+  return result.sort((a: Recordable, b: Recordable) => {
+    const indexA = editFormFieldsIndex[a.field];
+    const indexB = editFormFieldsIndex[b.field];
+    return indexA - indexB; // 按照顺序排序
+  });
 };

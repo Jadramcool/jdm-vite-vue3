@@ -1,5 +1,5 @@
 <template>
-  <BasicDrawer v-bind="attrs" @register="register" @ok="handleOk" :title="getTitle">
+  <BasicDrawer v-bind="attrs" @register="register" @ok="handleOk" :headTitle="getTitle">
     <BasicForm @register="registerForm"></BasicForm>
   </BasicDrawer>
 </template>

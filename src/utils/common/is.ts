@@ -10,7 +10,7 @@ export function is(val: any, type: string): boolean {
 /**
  * @description: 是否为函数
  */
-export function isFunction(val: any): boolean {
+export function isFunction(val: unknown): val is (...args: any[]) => any {
   return is(val, 'Function') || is(val, 'AsyncFunction');
 }
 
@@ -70,7 +70,7 @@ export function isString(val: any): boolean {
 /**
  * @description: 是否为boolean类型
  */
-export function isBoolean(val: any): boolean {
+export function isBoolean(val: unknown): val is boolean {
   return is(val, 'Boolean');
 }
 

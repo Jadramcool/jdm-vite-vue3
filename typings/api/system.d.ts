@@ -13,6 +13,27 @@ declare namespace System {
     menus?: Recordable;
   };
 
+  // Menu 类型声明
+  type Menu = {
+    id: number; // 菜单ID
+    name: string; // 菜单名称
+    code: string; // 权限代码
+    type: string; // menu: 菜单, button: 按钮, directory: 目录
+    pid?: Nullable<number>; // 菜单的父id
+    path?: string; // 路由路径
+    redirect?: string; // 重定向
+    icon?: string; // 图标
+    component?: string; // 组件路径
+    layout?: string; // 布局
+    keepAlive?: boolean; // 是否保持活跃
+    method?: string; // 请求方法
+    description?: string; // 菜单描述
+    show: boolean; // 是否展示
+    enable?: boolean; // 是否启用
+    order?: number; // 排序
+    roles?: Recordable; // 与角色菜单表的关系
+  };
+
   type loginModel = {
     username: string;
     password: string;

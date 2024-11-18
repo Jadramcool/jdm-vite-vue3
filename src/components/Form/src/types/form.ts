@@ -25,7 +25,8 @@ export interface FormSchema {
   giProps?: GridItemProps;
   isFull?: boolean;
   suffix?: string;
-  ifShow?: boolean;
+  ifShow?: boolean | ((renderCallbackParams: Recordable) => boolean);
+  show?: boolean; // 是否显示该字段，根据ifShow的返回值决定
 }
 
 export interface NewFormProps extends FormProps {
@@ -57,4 +58,10 @@ export interface FormActionType extends FormInst {
   resetFields: () => Promise<void>;
   // validate: (nameList?: any[]) => Promise<any>;
   setLoading: (status: boolean) => void;
+}
+
+export interface treeSelectOption {
+  label: string;
+  key: string;
+  children: treeSelectOption[];
 }

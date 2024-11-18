@@ -113,6 +113,7 @@ export const useUserSchema = (methods: any = {}) => {
         defaultValue: undefined,
         form: {
           component: 'NInput',
+          defaultValue: '15952054087',
           componentProps: {
             placeholder: '请输入手机号',
             showButton: false,
@@ -155,7 +156,6 @@ export const useUserSchema = (methods: any = {}) => {
             onUpdateValue: (value: any) => {
               console.log(value);
             },
-            // options: unref(data).roleOptions,
           },
         },
         table: {
@@ -288,26 +288,28 @@ export const useUserSchema = (methods: any = {}) => {
         key: 'operate',
         label: $t('common.operate'),
         table: {
+          fixed: 'right',
+          width: 220,
           render: (row: RowData) => (
             <NSpace justify="center">
               <NButton
                 type={row.status === 1 ? 'error' : 'primary'}
                 ghost
-                size="tiny"
+                size="small"
                 onClick={() => methods.handleEnable(row)}
               >
                 {row.status === 0
                   ? $t('modules.system.user.schema.enable')
                   : $t('modules.system.user.schema.disable')}
               </NButton>
-              <NButton type="primary" ghost size="tiny" onClick={() => methods.handleEdit(row)}>
+              <NButton type="primary" ghost size="small" onClick={() => methods.handleEdit(row)}>
                 {$t('common.edit')}
               </NButton>
               <NPopconfirm
                 onPositiveClick={() => methods.handleDelete(row)}
                 v-slots={{
                   trigger: () => (
-                    <NButton type="error" ghost size="tiny">
+                    <NButton type="error" ghost size="small">
                       {$t('common.delete')}
                     </NButton>
                   ),

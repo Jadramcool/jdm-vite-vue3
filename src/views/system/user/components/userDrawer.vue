@@ -1,5 +1,5 @@
 <template>
-  <BasicDrawer v-bind="attrs" @register="register" @ok="handleOk" :title="getTitle">
+  <BasicDrawer v-bind="attrs" @register="register" @ok="handleOk" :headTitle="getTitle">
     <!-- <template #header> 自定义抽屉头 </template>
     <template #footer> <n-button> 额外的按钮 </n-button> </template> -->
     <BasicForm @register="registerForm"></BasicForm>

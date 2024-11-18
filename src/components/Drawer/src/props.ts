@@ -48,4 +48,8 @@ export const basicProps = {
     type: [Function, Object] as PropType<any>,
     default: null,
   },
+  headTitle: {
+    type: String,
+    default: '',
+  },
 };

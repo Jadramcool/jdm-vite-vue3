@@ -14,18 +14,9 @@ import { baseMenus } from '@/settings';
 export async function getUserInfo() {
   try {
     const res = await UserApi.getUserInfo();
-    const { id, username, profile, roles, currentRole } = res || {};
-    return {
-      id,
-      username,
-      avatar: profile?.avatar,
-      nickName: profile?.nickName,
-      gender: profile?.gender,
-      address: profile?.address,
-      email: profile?.email,
-      roles,
-      currentRole,
-    };
+
+    const userInfo = res || {};
+    return userInfo;
   } catch (error) {
     // console.error(error);
     return {};

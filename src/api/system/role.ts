@@ -5,6 +5,8 @@ enum API {
   list = '/system/role/list',
   create = '/system/role/create',
   update = '/system/role/update',
+  delete = '/system/role/delete',
+  roleMenu = '/system/role/update/menu',
 }
 
 /**
@@ -48,6 +50,25 @@ export const addRole = (data: any) => {
 export const updateRole = (data: any) => {
   return request.put<BasicModel[]>({
     url: API.update,
+    data,
+  });
+};
+
+/**
+ * @description: 删除角色
+ */
+export const deleteRole = (id: number) => {
+  return request.delete<BasicModel[]>({
+    url: `${API.delete}/${id}`,
+  });
+};
+
+/**
+ * @description: 更新角色菜单
+ */
+export const updateRoleMenu = (data: any) => {
+  return request.post<BasicModel[]>({
+    url: API.roleMenu,
     data,
   });
 };

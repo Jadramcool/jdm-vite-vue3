@@ -8,6 +8,7 @@
  *
  */
 export * from './common';
+export * from './enum';
 export * from './nprogress';
 export * from './storage';
 export * from './theme';

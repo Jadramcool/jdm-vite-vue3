@@ -38,6 +38,7 @@
     "edit": "编辑",
     "id": "ID",
     "input": "输入",
+    "no": "否",
     "open": "打开",
     "operate": "操作",
     "pleaseInput": "请输入",
@@ -49,6 +50,11 @@
     "status": "状态",
     "submit": "提交",
     "system": {
+      "menu": {
+        "schema": {
+          "menu": "菜单"
+        }
+      },
       "user": {
         "schema": {
           "user": "用户"
@@ -56,7 +62,11 @@
       }
     },
     "updatedTime": "更新时间",
-    "username": "用户名"
+    "username": "用户名",
+    "yes": "是"
+  },
+  "layout": {
+    "normal": "普通"
   },
   "login": {
     "experience": "体验账号",
@@ -89,19 +99,33 @@
       "menu": {
         "schema": {
           "code": "权限代码",
+          "component": "组件",
           "description": "描述",
+          "icon": "图标",
           "layout": "布局",
           "name": "菜单名",
-          "path": "路径"
+          "order": "排序",
+          "path": "路径",
+          "pid": "父级",
+          "redirect": "重定向",
+          "show": "是否显示",
+          "type": "菜单类型"
         },
         "table": {
           "title": "菜单列表"
+        },
+        "typeMap": {
+          "button": "按钮",
+          "directory": "目录",
+          "menu": "菜单"
         }
       },
       "role": {
         "schema": {
           "code": "角色代码",
-          "name": "角色名"
+          "menu": "菜单权限",
+          "name": "角色名",
+          "setAuth": "分配权限"
         },
         "table": {
           "title": "角色列表"

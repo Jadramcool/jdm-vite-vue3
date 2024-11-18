@@ -1,7 +1,9 @@
+import { MenuApi } from '@/api';
+import { MenuTypeColorMap, MenuTypeOptions } from '@/constants';
 import { $t } from '@/locales/i18n';
-import { columnsUtil, editFormSchemaUtil, formSchemaUtil } from '@/utils';
+import { arrayToTree, columnsUtil, editFormSchemaUtil, formSchemaUtil } from '@/utils';
 import dayjs from 'dayjs';
-import { NButton, NPopconfirm, NSpace } from 'naive-ui';
+import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import { computed } from 'vue';
 
 export const useRoleSchema = (methods: any = {}) => {
@@ -126,9 +128,14 @@ export const useRoleSchema = (methods: any = {}) => {
         key: 'operate',
         label: $t('common.operate'),
         table: {
+          width: 240,
+          fixed: 'right',
           render: (row: any) => (
             <NSpace justify="center">
-              <NButton type="primary" ghost size="tiny" onClick={() => methods.handleEdit(row)}>
+              <NButton type="success" ghost size="small" onClick={() => methods.handleSetAuth(row)}>
+                {$t('modules.system.role.schema.setAuth')}
+              </NButton>
+              <NButton type="primary" ghost size="small" onClick={() => methods.handleEdit(row)}>
                 {$t('common.edit')}
               </NButton>
               {row.code !== 'DEFAULT' ? (
@@ -136,7 +143,7 @@ export const useRoleSchema = (methods: any = {}) => {
                   onPositiveClick={() => methods.handleDelete(row)}
                   v-slots={{
                     trigger: () => (
-                      <NButton type="error" ghost size="tiny">
+                      <NButton type="error" ghost size="small">
                         {$t('common.delete')}
                       </NButton>
                     ),
@@ -147,6 +154,32 @@ export const useRoleSchema = (methods: any = {}) => {
               ) : null}
             </NSpace>
           ),
+        },
+      },
+      {
+        key: 'menu',
+        label: $t('modules.system.role.schema.menu'),
+        form: {
+          component: 'ApiTree',
+          componentProps: {
+            api: MenuApi.menuList,
+            afterRequest: (data: any) => {
+              return arrayToTree(data);
+            },
+            keyField: 'id',
+            labelField: 'name',
+            renderPrefix: (node: any) => {
+              const { option } = node;
+              const type = unref(MenuTypeOptions).find((item) => item.value === option.type)?.label;
+              return (
+                type && (
+                  <NTag size="small" type={MenuTypeColorMap[option.type]}>
+                    {type}+{option.id}
+                  </NTag>
+                )
+              );
+            },
+          },
         },
       },
     ],
@@ -166,6 +199,7 @@ export const useRoleSchema = (methods: any = {}) => {
   ];
   const formFields = ['id', 'code', 'name'];
   const editFormFields = ['id', 'code', 'name', 'description'];
+  const authFormFields = ['menu'];
 
   // 表格列配置
   const columns = computed(() => columnsUtil(schema.value, tableFields));
@@ -173,5 +207,8 @@ export const useRoleSchema = (methods: any = {}) => {
   const formSchemas = computed(() => formSchemaUtil(schema.value, formFields));
 
   const editFormSchemas = computed(() => editFormSchemaUtil(schema.value, editFormFields));
-  return { columns, formSchemas, editFormSchemas };
+
+  const authFormSchemas = computed(() => editFormSchemaUtil(schema.value, authFormFields));
+
+  return { columns, formSchemas, editFormSchemas, authFormSchemas };
 };

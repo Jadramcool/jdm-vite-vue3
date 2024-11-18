@@ -65,21 +65,38 @@ const props = defineProps({
     type: Boolean as PropType<boolean>,
     default: false,
   },
+  afterRequest: {
+    type: Function as PropType<(res: any) => any>,
+    default: null,
+  },
 });
 
-const { api, labelField, valueField, searchParams } = props;
+const getProps = computed(() => {
+  return { ...unref(props) };
+});
+
+const apiMethod = computed(() => {
+  return unref(getProps).api;
+});
 
 const options: any = ref([]);
 
 const fetch = async () => {
-  if (api) {
-    const res = await api();
+  if (unref(apiMethod)) {
+    const res = await unref(apiMethod)();
 
     const data = Array.isArray(res) ? res : res.data;
+
+    let optionData: any = data;
+
+    if (unref(getProps).afterRequest) {
+      optionData = unref(getProps).afterRequest(data);
+    }
+
     options.value.push(
-      ...data.map((item: Recordable) => ({
-        label: item[labelField],
-        value: item[valueField],
+      ...optionData.map((item: Recordable) => ({
+        label: item[unref(getProps).labelField],
+        value: item[unref(getProps).valueField],
       })),
     );
   }
@@ -96,12 +113,12 @@ watch(
 
 // TODO 这个还没做
 watch(
-  () => searchParams.value,
+  () => unref(getProps).searchParams,
   (value, oldValue) => {
     if (isEmpty(value) || isEqual(value, oldValue)) return;
     (async () => {
       await fetch();
-      searchParams.value = {};
+      unref(getProps).searchParams = {};
     })();
   },
   { deep: true, immediate: props.immediate },

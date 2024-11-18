@@ -38,6 +38,7 @@
     "edit": "Edit",
     "id": "ID",
     "input": "Input",
+    "no": "No",
     "open": "Open",
     "operate": "Operate",
     "pleaseInput": "Please Input",
@@ -49,6 +50,11 @@
     "status": "Status",
     "submit": "Submit",
     "system": {
+      "menu": {
+        "schema": {
+          "menu": "Menu"
+        }
+      },
       "user": {
         "schema": {
           "user": "User"
@@ -56,7 +62,11 @@
       }
     },
     "updatedTime": "UpdatedTime",
-    "username": "Username"
+    "username": "Username",
+    "yes": "Yes"
+  },
+  "layout": {
+    "normal": "Normal"
   },
   "login": {
     "experience": "Experience Account",
@@ -89,19 +99,33 @@
       "menu": {
         "schema": {
           "code": "Code",
+          "component": "Component",
           "description": "Description",
+          "icon": "Icon",
           "layout": "Layout",
           "name": "Menu Name",
-          "path": "Path"
+          "order": "Order",
+          "path": "Path",
+          "pid": "Parent",
+          "redirect": "Redirect",
+          "show": "Show",
+          "type": "Type"
         },
         "table": {
           "title": "Menu List"
+        },
+        "typeMap": {
+          "button": "Button",
+          "directory": "Directory",
+          "menu": "Menu"
         }
       },
       "role": {
         "schema": {
           "code": "RoleCode",
-          "name": "Role Name"
+          "menu": "Menu",
+          "name": "Role Name",
+          "setAuth": "Set Auth"
         },
         "table": {
           "title": "Role List"

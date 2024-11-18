@@ -11,18 +11,20 @@
       :filters="queryParams"
       :request="loadRoleList"
       :rowKey="(row: NaiveUI.RowData) => row.id"
+      :scroll-x="1200"
       @update:checked-row-keys="handleCheck"
       @add="handleAdd"
     />
 
     <RoleDrawer @register="registerDrawer" @success="handleSuccess"> </RoleDrawer>
+    <AuthModal @register="registerModal" @success="handleUpdateMenuSuccess"> </AuthModal>
   </div>
 </template>
 
 <script lang="tsx" setup>
 import { RoleApi } from '@/api';
-import { BasicForm, BasicTable, useDrawer, useForm } from '@/components';
-import { RoleDrawer } from './components';
+import { BasicForm, BasicTable, useDrawer, useForm, useModal } from '@/components';
+import { AuthModal, RoleDrawer } from './components';
 import { useRoleSchema } from './schema';
 
 defineOptions({ name: 'Role' });
@@ -38,6 +40,14 @@ const queryParams = ref<Query.GetParams>({});
 const schemaMethods = {
   handleEdit(record: NaiveUI.RowData) {
     openDrawer({ record, isUpdate: true });
+  },
+  handleDelete(record: NaiveUI.RowData) {
+    RoleApi.deleteRole(record.id).then(() => {
+      tableRef.value.reload();
+    });
+  },
+  handleSetAuth(record: NaiveUI.RowData) {
+    openModal({ record, isUpdate: true });
   },
 };
 
@@ -58,9 +68,12 @@ const [register, { getFieldsValue }] = useForm({
 
 const [registerDrawer, { openDrawer }] = useDrawer();
 
+const [registerModal, { openModal }] = useModal();
+
 // 表格数据请求
 const loadRoleList = async (data: Query.GetParams) => {
   data.filters = { ...(data.filters || {}), ...getFieldsValue() };
+  data.options = { with_menu: true };
   return RoleApi.roleList(data);
 };
 
@@ -71,6 +84,11 @@ const handleSubmit = (data: any) => {
 
 // 新增/编辑成功回调
 const handleSuccess = () => {
+  tableRef.value.reload();
+};
+
+// 分配菜单成功回调
+const handleUpdateMenuSuccess = () => {
   tableRef.value.reload();
 };
 

@@ -131,7 +131,6 @@ const registerFormRules: FormRules = {
         if (!value) {
           return new Error(t('common.pleaseInput') + t('login.repeatPassword'));
         }
-        console.log(registerForm.value.password, value);
         if (value !== registerForm.value.password) {
           return new Error(t('login.passwordNotMatch'));
         }

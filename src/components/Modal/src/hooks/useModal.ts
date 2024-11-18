@@ -33,21 +33,21 @@ export const useModal = () => {
   }
 
   const getModal: any = () => {
-    const drawer = unref(modalRef);
-    if (!drawer) {
-      console.error('useDrawer instance is undefined!');
+    const modal = unref(modalRef);
+    if (!modal) {
+      console.error('useModal instance is undefined!');
     }
-    return drawer as any;
+    return modal as any;
   };
 
   const methods: any = {
     // 设置模态框属性
-    setDrawerProps: (props: Partial<any>): void => {
-      getModal()?.setDrawerProps(props);
+    setModalProps: (props: Partial<any>): void => {
+      getModal()?.setModalProps(props);
     },
     // 打开模态框
-    openDrawer: <T = any>(data?: T, show: boolean = true, openOnSet: boolean = true): void => {
-      getModal()?.setDrawerProps({ show });
+    openModal: <T = any>(data?: T, show: boolean = true, openOnSet: boolean = true): void => {
+      getModal()?.setModalProps({ show });
       if (!data) return;
       if (openOnSet) {
         dataTransferRef[unref(uid)] = null;
@@ -60,8 +60,8 @@ export const useModal = () => {
       }
     },
     // 关闭模态框
-    closeDrawer: () => {
-      getModal()?.setDrawerProps({ show: false });
+    closeModal: () => {
+      getModal()?.setModalProps({ show: false });
     },
   };
 
@@ -74,27 +74,28 @@ export const useModalInner = (callbackFn?: Fn) => {
   const uidRef = ref<number>(0);
 
   if (!getCurrentInstance()) {
-    throw new Error('useDrawerInner() can only be used inside setup() or functional components!');
+    throw new Error('useModalInner() can only be used inside setup() or functional components!');
   }
 
   const getModalInner = () => {
     const instance = unref(modalInstanceRef);
     if (!instance) {
-      console.error('useDrawerInner instance is undefined!');
+      console.error('useModalInner instance is undefined!');
       return;
     }
     return instance;
   };
 
-  function register(drawerInnerInstance: any, uuid: number) {
+  function register(modalInnerInstance: any, uuid: number) {
     isProdMode() &&
       tryOnUnmounted(() => {
         modalInstanceRef.value = null;
       });
 
     uidRef.value = uuid;
-    modalInstanceRef.value = drawerInnerInstance;
-    currentInstance?.emit('register', drawerInnerInstance, uuid);
+
+    modalInstanceRef.value = modalInnerInstance;
+    currentInstance?.emit('register', modalInnerInstance, uuid);
   }
 
   watchEffect(() => {
@@ -108,16 +109,16 @@ export const useModalInner = (callbackFn?: Fn) => {
 
   const methods: any = {
     // 设置模态框属性
-    setDrawerProps: (props: Partial<any>): void => {
-      getModalInner()?.setDrawerProps(props);
+    setModalProps: (props: Partial<any>): void => {
+      getModalInner()?.setModalProps(props);
     },
     // 打开模态框
-    openDrawer() {
-      getModalInner()?.setDrawerProps({ show: true });
+    openModal() {
+      getModalInner()?.setModalProps({ show: true });
     },
     // 关闭模态框
-    closeDrawer: () => {
-      getModalInner()?.setDrawerProps({ show: false });
+    closeModal: () => {
+      getModalInner()?.setModalProps({ show: false });
     },
   };
 

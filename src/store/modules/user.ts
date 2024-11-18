@@ -12,6 +12,9 @@ export const useUserStore = defineStore('user', {
     setUser(info: any) {
       this.userInfo = info;
     },
+    resetUser() {
+      this.userInfo = null;
+    },
   },
 
   // 开始数据持久化
