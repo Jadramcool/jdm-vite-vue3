@@ -66,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import * as UserApi from '@/api/user';
+import { UserApi } from '@/api/user';
 import TheLogo from '@/components/common/TheLogo.vue';
 import { common } from '@/config';
 import { useAppStore } from '@/store';

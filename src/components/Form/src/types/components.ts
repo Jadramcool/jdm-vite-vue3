@@ -27,6 +27,7 @@ export type ComponentType =
   | 'NSlider'
   | 'NRate'
   | 'NTree'
+  | 'NCascader'
   | 'ApiSelect'
   | 'ApiTreeSelect'
   | 'ApiTree';

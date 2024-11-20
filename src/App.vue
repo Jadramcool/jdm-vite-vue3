@@ -24,13 +24,13 @@
           </KeepAlive>
         </component>
       </router-view>
-      <Watermark :show-watermark="appStore.showWatermark" />
+      <Watermark :show-watermark="appStore.showWatermark" :text="userStore.userInfo.username" />
     </Application>
   </n-config-provider>
 </template>
 
 <script setup lang="ts" name="App">
-import { useAppStore, useTabStore } from '@/store';
+import { useAppStore, useTabStore, useUserStore } from '@/store';
 import { naiveI18nOptions } from '@/utils';
 import { darkTheme } from 'naive-ui';
 import Application from './components/application/Application.vue';
@@ -38,6 +38,7 @@ import Application from './components/application/Application.vue';
 const route = useRoute();
 const appStore = useAppStore();
 const tabStore = useTabStore();
+const userStore = useUserStore();
 
 const layouts: any = new Map();
 

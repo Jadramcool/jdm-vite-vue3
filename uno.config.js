@@ -42,6 +42,7 @@ export default defineConfig({
     'card-border':
       'border border-solid border-light_border dark:border-dark_border transition-all duration-300 ease-in-out',
     'auto-bg': 'bg-white dark:bg-#18181C',
+    'divider-style': 'font-bold text-lg',
   },
   theme: {
     ...themeVars,

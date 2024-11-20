@@ -72,7 +72,7 @@ export const formSchemaUtil = (schema: any, formFields: string[]) => {
         label,
         ...(ifShow !== undefined ? { ifShow } : {}),
         defaultValue: form?.defaultValue ?? defaultValue, // 使用 nullish 合并运算符
-        ...setting.form,
+        ...(setting.form || {}),
         ...form,
       }))
   );
@@ -100,8 +100,8 @@ export const editFormSchemaUtil = (schema: any, editFormFields: string[]) => {
         label,
         ...(ifShow !== undefined ? { ifShow } : {}),
         defaultValue: editForm?.defaultValue ?? defaultValue,
-        ...setting.form,
-        ...form,
+        ...(setting?.form || {}),
+        ...(form || {}),
         ...editForm,
       };
 

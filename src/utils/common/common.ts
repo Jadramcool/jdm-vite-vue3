@@ -21,3 +21,9 @@ export const clone = (obj: Record<string, any>): Record<string, any> => {
 
   return clonedObj;
 };
+
+// 处理手机号mask
+export const maskPhone = (phone: string | undefined): string => {
+  if (!phone) return '-';
+  return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
+};

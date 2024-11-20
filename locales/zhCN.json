@@ -66,7 +66,8 @@
     "yes": "是"
   },
   "layout": {
-    "normal": "普通"
+    "normal": "普通",
+    "normalWithOutCard": "普通-不含默认Card"
   },
   "login": {
     "experience": "体验账号",
@@ -160,6 +161,9 @@
     }
   },
   "user": {
+    "address": "地址",
+    "birthday": "生日",
+    "city": "所属城市",
     "email": "邮箱",
     "female": "女",
     "male": "男",

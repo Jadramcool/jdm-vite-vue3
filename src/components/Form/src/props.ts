@@ -87,6 +87,7 @@ export const basicProps = {
     type: String,
     default: '重置',
   },
+  //
   // grid 配置
   gridProps: {
     type: Object as PropType<GridProps>,

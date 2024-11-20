@@ -32,12 +32,10 @@
         <TabBar v-if="appStore.showTabs"></TabBar>
       </n-layout-header>
       <n-layout-content embedded class="h-full flex-1 overflow-hidden" :native-scrollbar="true">
-        <div class="wh-full flex-col">
-          <AppCard class="cus-scroll m-12px h-0 flex-1 p-24px" bordered>
-            <Transition :name="appStore.transitionAnimation" mode="out-in">
-              <slot />
-            </Transition>
-          </AppCard>
+        <div class="wh-full flex-col p-12px">
+          <Transition :name="appStore.transitionAnimation" mode="out-in">
+            <slot />
+          </Transition>
         </div>
         <!-- <slot name="default"></slot> -->
       </n-layout-content>

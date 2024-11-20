@@ -7,7 +7,8 @@
  * @Description: 表格事件
  *
  */
-import { isArray, isFunction, isNullOrUnDef, isObject } from '@/utils';
+import { isArray, isFunction, isISOString, isNullOrUnDef, isObject } from '@/utils';
+import dayjs from 'dayjs';
 import _ from 'lodash';
 import type { FormActionType, FormSchema, NewFormProps } from '../types/form';
 
@@ -123,18 +124,27 @@ export const useFormEvents = ({
       isFunction(handleFormatFormValues) &&
       handleFormatFormValues(unref(formModel), schemas);
 
+    console.log(formatFieldsValue);
+
     return formatFieldsValue || toRaw(unref(formModel));
-    // return toRaw(unref(formModel));
   }
 
   // 设置表单字段值
   async function setFieldsValue(values: Recordable): Promise<void> {
     const schemas = unref(getSchema) || [];
     const fields = schemas.map((item) => item.field).filter(Boolean);
+
     Object.keys(values).forEach((key) => {
       const value = values[key];
       if (fields.includes(key)) {
-        formModel[key] = value;
+        // 针对时间格式，将ISOString转为时间戳
+        if (isArray(value) && typeof value[0] === 'string' && isISOString(value[0])) {
+          formModel[key] = value.map((val: string) => dayjs(val).valueOf() || val);
+        } else if (typeof value === 'string' && isISOString(value)) {
+          formModel[key] = dayjs(value).valueOf();
+        } else {
+          formModel[key] = value;
+        }
       }
     });
   }

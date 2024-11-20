@@ -32,7 +32,7 @@ export function createPermissionGuard(router: any) {
       const userStore = useUserStore();
       const permissionStore = usePermissionStore();
       // 刷新页面时，pinia中的数据会丢失，所以需要重新获取用户信息和权限
-      if (!userStore.userInfo) {
+      if (!userStore.userInfo || !userStore.userInfo.id) {
         // const [user, permissions] = await Promise.all([getUserInfo(), getMenus()]);
         const user = await getUserInfo();
         const menus = await getMenus();
@@ -48,7 +48,6 @@ export function createPermissionGuard(router: any) {
         permissionStore.setMenus(menus);
         // 设置路由
         permissionStore.setRoutes(menus);
-        console.log(permissionStore.accessRoutes);
         router.addRoute(permissionStore.accessRoutes);
         return { ...to, replace: true };
       }

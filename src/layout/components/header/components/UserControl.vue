@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { useAuthStore, useUserStore } from '@/store';
 
+const router = useRouter();
+
 const userStore = useUserStore();
 const authStore = useAuthStore();
 const userInfo = ref(userStore.userInfo);
 const options = [
   {
     label: '个人设置',
-    value: 'userSetting',
+    value: 'userCenter',
   },
   {
     label: '退出登录',
@@ -16,6 +18,9 @@ const options = [
 ];
 
 const handleSelect = (val: string) => {
+  if (val === 'userCenter') {
+    router.push('/user-center');
+  }
   if (val === 'logout') {
     authStore.logout();
   }
@@ -25,8 +30,8 @@ const handleSelect = (val: string) => {
 <template>
   <n-popselect :options="options" trigger="click" :on-update:value="handleSelect">
     <CommonWrapper>
-      <n-avatar round size="small" :src="userInfo.avatar || ''" />
-      <span>111</span>
+      <n-avatar round size="small" :src="userInfo?.avatar || ''" />
+      <span>{{ userInfo?.name || userInfo?.username || userInfo?.phone }}</span>
     </CommonWrapper>
   </n-popselect>
 </template>

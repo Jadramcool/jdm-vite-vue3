@@ -45,7 +45,11 @@ export const useFormValues = ({ defaultFormModel, getSchema, formModel }: UseFor
   };
 
   // 处理请求参数，处理query字段，in not_in的情况
-  const handleFormatFormValues = (values: Recordable, schemas: FormSchema[]) => {
+  const handleFormatFormValues = (
+    values: Recordable,
+    schemas: FormSchema[],
+    format: any = { query: true, date: true },
+  ) => {
     const formatValues = handleFormValues(values);
     const newValues: Recordable = {};
     Object.entries(formatValues).forEach(([key, value]: string[]) => {
@@ -54,6 +58,17 @@ export const useFormValues = ({ defaultFormModel, getSchema, formModel }: UseFor
         const newKey = schema.query ? `${schema.field}__${schema.query}` : schema.field;
         newValues[newKey] = value;
         formModel[key] = value; // 根据query字段分组
+
+        if (format.date) {
+          // ? 处理时间格式，将组件的时间戳格式转换成后端需要的ISOstring格式
+          if (schema.component && ['NDatePicker'].includes(schema.component)) {
+            if (Array.isArray(value)) {
+              newValues[key] = value.map((v: any) => new Date(v));
+            } else {
+              newValues[key] = new Date(value);
+            }
+          }
+        }
       }
     });
     return newValues;
@@ -73,5 +88,9 @@ export const useFormValues = ({ defaultFormModel, getSchema, formModel }: UseFor
     defaultFormModel.value = defaultForm;
   };
 
-  return { handleFormValues, handleFormatFormValues, initDefaultFormModel };
+  return {
+    handleFormValues,
+    handleFormatFormValues,
+    initDefaultFormModel,
+  };
 };

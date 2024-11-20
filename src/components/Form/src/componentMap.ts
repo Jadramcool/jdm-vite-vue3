@@ -8,6 +8,7 @@
  *
  */
 import {
+  NCascader,
   NCheckbox,
   NDatePicker,
   NInput,
@@ -28,5 +29,6 @@ componentMap.set('NSwitch', NSwitch);
 componentMap.set('NCheckbox', NCheckbox);
 componentMap.set('NDatePicker', NDatePicker);
 componentMap.set('NTimePicker', NTimePicker);
+componentMap.set('NCascader', NCascader);
 
 export { componentMap };

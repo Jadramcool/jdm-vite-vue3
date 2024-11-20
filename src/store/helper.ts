@@ -7,8 +7,8 @@
  * @Description:
  *
  */
+import { UserApi } from '@/api';
 import * as ExampleAPI from '@/api/example';
-import * as UserApi from '@/api/user';
 import { baseMenus } from '@/settings';
 
 export async function getUserInfo() {

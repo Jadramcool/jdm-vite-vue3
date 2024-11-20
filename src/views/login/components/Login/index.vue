@@ -66,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import * as UserApi from '@/api/user';
+import { UserApi } from '@/api/user';
 import TheLogo from '@/components/common/TheLogo.vue';
 import { common } from '@/config';
 import { useAppStore, useAuthStore } from '@/store';
@@ -93,8 +93,8 @@ const appStore = useAppStore();
 const loginFormRef = ref<FormInst | null>(null);
 
 const loginForm = ref<LoginForm>({
-  username: 'jdm',
-  password: '123456..',
+  username: '',
+  password: '',
 });
 
 // 登录表单验证规则
@@ -211,6 +211,8 @@ async function onLoginSuccess(data: any = {}) {
   // 存储登录表单
   if (isRemember.value) {
     lStorage.setItem('loginForm', loginForm.value);
+  } else {
+    lStorage.removeItem('loginForm');
   }
   authStore.setToken(data);
   try {

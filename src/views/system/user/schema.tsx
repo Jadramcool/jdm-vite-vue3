@@ -262,7 +262,6 @@ export const useUserSchema = (methods: any = {}) => {
           component: 'NDatePicker',
           componentProps: {
             type: 'daterange',
-            defaultTime: '12:00:00',
             placeholder: `${$t('common.pleaseSelect')} ${$t('common.createdTime')}`,
           },
         },
@@ -277,6 +276,7 @@ export const useUserSchema = (methods: any = {}) => {
           component: 'NDatePicker',
           componentProps: {
             type: 'daterange',
+            defaultTime: ['00:00:00', '23:59:59'],
             placeholder: `${$t('common.pleaseSelect')} ${$t('common.updatedTime')}`,
           },
         },

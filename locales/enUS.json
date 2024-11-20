@@ -66,7 +66,8 @@
     "yes": "Yes"
   },
   "layout": {
-    "normal": "Normal"
+    "normal": "Normal",
+    "normalWithOutCard": "NormalWithoutCard"
   },
   "login": {
     "experience": "Experience Account",
@@ -160,6 +161,9 @@
     }
   },
   "user": {
+    "address": "Address",
+    "birthday": "Birthday",
+    "city": "City",
     "email": "Email",
     "female": "Female",
     "male": "Male",

@@ -1,5 +1,5 @@
 import { usePermissionStore, useRouterStore, useTabStore, useUserStore } from '@/store';
-import { setToken as setTokenLocal } from '@/utils';
+import { removeToken, setToken as setTokenLocal } from '@/utils';
 import { defineStore } from 'pinia';
 
 export const useAuthStore = defineStore('auth', {
@@ -41,6 +41,7 @@ export const useAuthStore = defineStore('auth', {
       resetTabs();
       // 重置token
       this.resetToken();
+      removeToken();
     },
     async logout() {
       this.resetLoginState();

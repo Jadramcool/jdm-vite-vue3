@@ -38,4 +38,35 @@ declare namespace System {
     username: string;
     password: string;
   };
+
+  type Sex = 'MALE' | 'FEMALE' | 'OTHER';
+
+  type UserRole = {
+    userId?: number;
+    roleId?: number;
+    [key: string]: any;
+  };
+
+  // User 类型声明
+  type User = {
+    id: number;
+    username: string;
+    name?: string;
+    phone?: string;
+    email?: string;
+    sex?: Sex; // 需要定义 Sex 类型
+    avatar?: string;
+    birthday?: Date;
+    createdTime?: Date;
+    updatedTime?: Date;
+    deletedTime?: Date;
+    password?: string;
+    isDeleted?: boolean;
+    status: number; // 0: 未激活, 1: 激活
+    roleType?: string; // 角色类型 admin, user, doctor
+    city?: string;
+    address?: string;
+    addressDetail?: string;
+    roles?: UserRole[]; // 需要定义 UserRole 类型
+  };
 }

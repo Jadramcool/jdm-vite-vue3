@@ -2,18 +2,31 @@
 // store/modules/user.ts
 import { defineStore } from 'pinia';
 
+const defaultUser = {
+  id: 0,
+  username: '',
+  name: '',
+  status: 1,
+};
+
+interface UserState {
+  userInfo: System.User;
+}
+
 // 第一个参数是应用程序中 store 的唯一 id
 export const useUserStore = defineStore('user', {
-  state: () => ({
-    userInfo: null,
+  state: (): UserState => ({
+    userInfo: defaultUser,
   }),
-  getters: {},
+  getters: {
+    getUser: (state) => state.userInfo,
+  },
   actions: {
     setUser(info: any) {
-      this.userInfo = info;
+      this.userInfo = { ...this.userInfo, ...info };
     },
     resetUser() {
-      this.userInfo = null;
+      this.userInfo = defaultUser;
     },
   },
 

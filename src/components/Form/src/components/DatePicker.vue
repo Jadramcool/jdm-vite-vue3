@@ -21,7 +21,6 @@ type DatePickerType =
 const modelValue: any = defineModel('value');
 
 const attrs = useAttrs();
-
 const props = defineProps({
   type: {
     type: String as () => DatePickerType,
@@ -97,4 +96,11 @@ const getProps = computed(() => {
 const getBindValue = computed(() => {
   return { ...attrs, ...getProps.value };
 });
+
+// watch(
+//   () => unref(modelValue),
+//   (val) => {
+//     modelValue.value = dayjs(val).valueOf() || val;
+//   },
+// );
 </script>

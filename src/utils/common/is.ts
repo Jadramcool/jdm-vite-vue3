@@ -149,3 +149,11 @@ export function isProdMode() {
 export function isPhone(phone: string): boolean {
   return /^1[345789]\d{9}$/.test(phone);
 }
+
+/**
+ * 判断是否是ISO 8601格式的日期
+ */
+export function isISOString(value: string): boolean {
+  const regex = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/;
+  return regex.test(value);
+}
