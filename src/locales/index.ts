@@ -10,56 +10,85 @@
 // src/locales/index.ts
 
 import { lStorage } from '@/utils';
-import { createI18n, I18n, I18nOptions } from 'vue-i18n';
+import { createI18n, I18n } from 'vue-i18n';
+import enUS from '../../locales/enUS.json';
+import zhCN from '../../locales/zhCN.json';
 
-// 动态导入语言包
-async function loadLocaleMessages(locales: string[]) {
-  const messages: Record<string, any> = {};
+const lang: string = lStorage.getItem('lang') || 'zhCN';
 
-  // 创建一个包含所有导入操作的 Promise 数组
-  const importPromises = locales.map(async (locale) => {
-    try {
-      const module = await import(`../../locales/${locale}.json`);
-      messages[locale] = module.default;
-    } catch (error) {
-      console.error(`Failed to load locale messages for ${locale}:`, error);
-      messages[locale] = {}; // 返回一个空对象以避免后续代码出错
-    }
-  });
+const messages = {
+  zhCN,
+  enUS,
+};
 
-  // 等待所有导入操作完成
-  await Promise.all(importPromises);
+export const i18n: I18n = createI18n({
+  locale: lang,
+  fallbackLocale: 'zhCN',
+  globalInjection: true,
+  legacy: false,
+  messages,
+  silentFallbackWarn: true,
+  silentTranslationWarn: true,
+  missingWarn: false,
+  fallbackWarn: false,
+  missing: (locale, key) => {
+    console.warn('locale:', locale);
+    console.warn(`翻译缺失: ${key}`);
+    return key;
+  },
+});
 
-  return messages;
-}
+// import { lStorage } from '@/utils';
+// import { createI18n, I18n, I18nOptions } from 'vue-i18n';
 
-const i18nInstance: I18n = await createI18nInstance();
+// // 动态导入语言包
+// async function loadLocaleMessages(locales: string[]) {
+//   const messages: Record<string, any> = {};
 
-async function createI18nInstance(): Promise<I18n> {
-  const lang: string = lStorage.getItem('lang') || 'zhCN';
+//   // 创建一个包含所有导入操作的 Promise 数组
+//   const importPromises = locales.map(async (locale) => {
+//     try {
+//       const module = await import(`../../locales/${locale}.json`);
+//       messages[locale] = module.default;
+//     } catch (error) {
+//       console.error(`Failed to load locale messages for ${locale}:`, error);
+//       messages[locale] = {}; // 返回一个空对象以避免后续代码出错
+//     }
+//   });
 
-  const messages: Record<string, any> = await loadLocaleMessages(['zhCN', 'enUS']);
+//   // 等待所有导入操作完成
+//   await Promise.all(importPromises);
 
-  const i18nOptions: I18nOptions = {
-    locale: lang,
-    fallbackLocale: 'zhCN',
-    globalInjection: true,
-    legacy: false,
-    messages,
-    silentFallbackWarn: true,
-    silentTranslationWarn: true,
-    missingWarn: false,
-    fallbackWarn: false,
-    missing: (locale, key) => {
-      console.warn('locale:', locale);
-      console.warn(`翻译缺失: ${key}`);
-      return key;
-    },
-  };
+//   return messages;
+// }
 
-  const i18nInstance: I18n = createI18n(i18nOptions);
+// const i18nInstance: I18n = await createI18nInstance();
 
-  return i18nInstance;
-}
+// async function createI18nInstance(): Promise<I18n> {
+//   const lang: string = lStorage.getItem('lang') || 'zhCN';
 
-export const i18n: I18n = i18nInstance;
+//   const messages: Record<string, any> = await loadLocaleMessages(['zhCN', 'enUS']);
+
+//   const i18nOptions: I18nOptions = {
+//     locale: lang,
+//     fallbackLocale: 'zhCN',
+//     globalInjection: true,
+//     legacy: false,
+//     messages,
+//     silentFallbackWarn: true,
+//     silentTranslationWarn: true,
+//     missingWarn: false,
+//     fallbackWarn: false,
+//     missing: (locale, key) => {
+//       console.warn('locale:', locale);
+//       console.warn(`翻译缺失: ${key}`);
+//       return key;
+//     },
+//   };
+
+//   const i18nInstance: I18n = createI18n(i18nOptions);
+
+//   return i18nInstance;
+// }
+
+// export const i18n: I18n = i18nInstance;
