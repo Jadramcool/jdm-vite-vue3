@@ -38,9 +38,9 @@
         </NButton>
         <NPopover placement="bottom-end" trigger="click">
           <template #trigger>
-            <NButton @click="handleRefresh" ghost size="small">
+            <NButton ghost size="small">
               <template #icon>
-                <jay-icon @click="handleRefresh" :icon="'icon-park-outline:column'" />
+                <jay-icon :icon="'icon-park-outline:column'" />
               </template>
               {{ $t('table.columnSetting') }}
             </NButton>

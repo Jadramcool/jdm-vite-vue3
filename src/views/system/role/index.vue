@@ -1,8 +1,8 @@
 <template>
   <div>
-    <NCard :title="$t('common.search')" size="small">
-      <BasicForm @register="register" @submit="handleSubmit" ref="formRef"> </BasicForm>
-    </NCard>
+    <BasicForm @register="register" @submit="handleSubmit" ref="formRef"> </BasicForm>
+
+    <n-divider dashed />
 
     <BasicTable
       ref="tableRef"

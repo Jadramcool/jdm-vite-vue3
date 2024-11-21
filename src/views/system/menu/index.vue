@@ -1,9 +1,7 @@
 <template>
   <div>
-    <NCard :title="$t('common.search')" size="small">
-      <BasicForm @register="register" @submit="handleSubmit" ref="formRef"> </BasicForm>
-    </NCard>
-
+    <BasicForm @register="register" @submit="handleSubmit" ref="formRef"> </BasicForm>
+    <n-divider dashed />
     <BasicTable
       ref="tableRef"
       :title="$t('modules.system.menu.table.title')"
@@ -12,7 +10,7 @@
       :request="loadMenuList"
       :rowKey="(row: NaiveUI.RowData) => row.id"
       :pagination="false"
-      :scroll-x="1500"
+      :scroll-x="1800"
       @update:checked-row-keys="handleCheck"
       @add="handleAdd"
     />
@@ -57,7 +55,7 @@ const schemaMethods = {
 const { columns, formSchemas } = useMenuSchema(schemaMethods);
 
 const [register, { getFieldsValue }] = useForm({
-  gridProps: { cols: '1 s:1 m:2 l:3 xl:4 2xl:4' },
+  gridProps: { cols: '1 s:1 m:2 l:3 xl:4' },
   schemas: formSchemas,
   submitOnReset: true,
 });

@@ -1,6 +1,7 @@
 <template>
   <BasicModal v-bind="attrs" @register="register" @ok="handleOk" :headTitle="getTitle">
     <BasicForm @register="registerForm"></BasicForm>
+    <BasicForm @register="registerExtraForm"></BasicForm>
   </BasicModal>
 </template>
 
@@ -25,7 +26,7 @@ const getTitle = computed(() => {
   );
 });
 
-const { editFormSchemas } = useMenuSchema();
+const { editFormSchemas, extraDataFromSchemas } = useMenuSchema();
 
 const [registerForm, { setFieldsValue, resetFields, submit }] = useForm({
   labelWidth: 120,
@@ -34,13 +35,26 @@ const [registerForm, { setFieldsValue, resetFields, submit }] = useForm({
   showActionButtonGroup: false,
 });
 
+const [
+  registerExtraForm,
+  { setFieldsValue: setFieldsValue2, resetFields: resetFields2, submit: submit2 },
+] = useForm({
+  labelWidth: 120,
+  gridProps: { cols: '1 s:1 m:2' },
+  schemas: extraDataFromSchemas,
+  showActionButtonGroup: false,
+});
+
 const [register, { closeModal, setModalProps }] = useModalInner(async (data) => {
   await resetFields();
+  await resetFields2();
   isUpdate.value = !!data?.isUpdate;
   entityId.value = data?.record?.id;
 
+  const extraData = JSON.parse(data?.record?.extraData) || {};
   if (isUpdate.value) {
     setFieldsValue(data.record);
+    setFieldsValue2(extraData);
   }
 });
 
@@ -48,11 +62,13 @@ const handleOk = async () => {
   try {
     setModalProps({ confirmLoading: true });
     const values = await submit();
-    if (values) {
+    const extraValues = await submit2();
+    const allValues = { ...values, extraData: JSON.stringify(extraValues) };
+    if (allValues) {
       if (!unref(isUpdate)) {
-        await MenuApi.createMenu(values);
+        await MenuApi.createMenu(allValues);
       } else {
-        await MenuApi.updateMenu({ id: entityId.value, ...values });
+        await MenuApi.updateMenu({ id: entityId.value, ...allValues });
       }
       emit('success');
       closeModal();

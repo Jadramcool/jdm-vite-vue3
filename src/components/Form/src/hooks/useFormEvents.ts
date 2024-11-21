@@ -124,8 +124,6 @@ export const useFormEvents = ({
       isFunction(handleFormatFormValues) &&
       handleFormatFormValues(unref(formModel), schemas);
 
-    console.log(formatFieldsValue);
-
     return formatFieldsValue || toRaw(unref(formModel));
   }
 

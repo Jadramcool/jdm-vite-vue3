@@ -18,7 +18,7 @@
   >
     <Application>
       <router-view v-if="Layout" v-slot="{ Component, route: curRoute }">
-        <component :is="Layout">
+        <component :is="Layout" v-bind="routeExtraData">
           <KeepAlive :include="keepAliveNames">
             <component :is="Component" v-if="appStore.loadFlag" :key="curRoute.fullPath" />
           </KeepAlive>
@@ -63,6 +63,11 @@ const getLayout = (name: string): void => {
 const Layout: any = computed(() => {
   if (!route.matched?.length) return null;
   return getLayout((route.meta?.layout as string) || appStore.layout);
+});
+
+// 返回当前路由额外数据
+const routeExtraData: any = computed(() => {
+  return route.meta?.extraData || null;
 });
 // 获取keep-alive的所有组件名称
 const keepAliveNames = computed(() => {

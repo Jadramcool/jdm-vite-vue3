@@ -95,6 +95,10 @@
     "title": "jdm's Login Page",
     "username": "Username"
   },
+  "message": {
+    "notSelectDefaultTop": "Default to top level if not selected",
+    "pleaseSelectDeleteUser": "Please select the user to delete"
+  },
   "modules": {
     "system": {
       "menu": {
@@ -103,14 +107,21 @@
           "component": "Component",
           "description": "Description",
           "icon": "Icon",
+          "keepAlive": "KeepAlive",
           "layout": "Layout",
           "name": "Menu Name",
           "order": "Order",
           "path": "Path",
           "pid": "Parent",
+          "pleaseInputCode": "Please enter permission code",
+          "pleaseInputComponent": "Please enter the component address",
+          "pleaseInputDescription": "Please enter a description",
+          "pleaseInputName": "Please enter the menu name",
+          "pleaseInputPath": "Please enter routing address",
           "redirect": "Redirect",
           "show": "Show",
-          "type": "Type"
+          "type": "Type",
+          "withContentCard": "Without Content Card"
         },
         "table": {
           "title": "Menu List"
@@ -126,6 +137,9 @@
           "code": "RoleCode",
           "menu": "Menu",
           "name": "Role Name",
+          "pleaseInputCode": "Please enter the role code",
+          "pleaseInputDescription": "Please enter a role description",
+          "pleaseInputRoleName": "Please enter role name",
           "setAuth": "Set Auth"
         },
         "table": {
@@ -137,7 +151,13 @@
           "activate": "Activate",
           "deactivate": "Deactivate",
           "disable": "Disable",
-          "enable": "Enable"
+          "enable": "Enable",
+          "pleaseInputCorrectPhone": "Please input correct phone",
+          "pleaseInputPhone": "Please input phone",
+          "pleaseInputUsername": "Please input username",
+          "usernameLengthMaxError": "Username length cannot exceed 16 characters",
+          "usernameLengthMinError": "Username length cannot be less than 2 characters",
+          "usernameTip": "The username is the unique identification of the user"
         },
         "table": {
           "title": "User List"

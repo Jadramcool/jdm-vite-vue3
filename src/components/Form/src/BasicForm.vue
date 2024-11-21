@@ -69,13 +69,17 @@
               <ApiTree v-bind="getComponentProps(schema)" v-model:value="formModel[schema.field]" />
             </template>
             <!--判断插槽-->
-            <component
-              v-else
-              v-bind="getComponentProps(schema)"
-              v-model:value="formModel[schema.field]"
-              :is="componentMap.get(schema.component)"
-              :class="{ isFull: schema.isFull != false && getProps.isFull }"
-            />
+            <template v-else>
+              <component
+                v-bind="getComponentProps(schema)"
+                v-model:value="formModel[schema.field]"
+                :is="componentMap.get(schema.component)"
+                :class="{
+                  isFull:
+                    schema.isFull != false && getProps.isFull && schema.component !== 'NSwitch',
+                }"
+              />
+            </template>
           </NFormItemGi>
         </NGi>
       </template>
@@ -90,14 +94,14 @@
             v-bind="getSubmitBtnOptions"
             @click="handleSubmit"
             :loading="loadingSub"
-            >{{ getProps.submitButtonText }}</NButton
+            >{{ getProps.submitButtonText ?? $t('common.search') }}</NButton
           >
 
           <NButton
             v-if="getProps.showResetButton"
             v-bind="getResetBtnOptions"
             @click="resetFields"
-            >{{ getProps.resetButtonText }}</NButton
+            >{{ getProps.resetButtonText ?? $t('common.reset') }}</NButton
           >
           <NButton
             type="primary"

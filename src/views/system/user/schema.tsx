@@ -50,11 +50,7 @@ export const useUserSchema = (methods: any = {}) => {
         form: {
           component: 'NInputNumber',
           labelMessage: 'ID是用户的唯一标识',
-          rules: [
-            { required: false, type: 'number', trigger: ['input'], message: '请输入唯一的id' },
-          ],
           componentProps: {
-            placeholder: '请输入ID',
             showButton: false,
             min: 1,
             step: 1,
@@ -74,10 +70,10 @@ export const useUserSchema = (methods: any = {}) => {
         defaultValue: undefined,
         form: {
           component: 'NInput',
-          labelMessage: '用户名也是用户的唯一标识',
+          labelMessage: $t('modules.system.user.schema.usernameTip'),
           query: 'in',
           componentProps: {
-            placeholder: '请输入用户名',
+            placeholder: $t('modules.system.user.schema.pleaseInputUsername'),
           },
         },
         editForm: {
@@ -88,13 +84,13 @@ export const useUserSchema = (methods: any = {}) => {
               trigger: ['blur', 'input'],
               validator: (_rule: FormItemRule, value: string) => {
                 if (!value) {
-                  return new Error('请输入用户名');
+                  return new Error($t('modules.system.user.schema.pleaseInputUsername'));
                 }
                 if (value.length < 2) {
-                  return new Error('用户名长度不能少于2位');
+                  return new Error($t('modules.system.user.schema.usernameLengthMinError'));
                 }
                 if (value.length > 16) {
-                  return new Error('用户名长度不能超过16位');
+                  return new Error($t('modules.system.user.schema.usernameLengthMaxError'));
                 }
                 return true;
               },
@@ -115,7 +111,7 @@ export const useUserSchema = (methods: any = {}) => {
           component: 'NInput',
           defaultValue: '15952054087',
           componentProps: {
-            placeholder: '请输入手机号',
+            placeholder: $t('modules.system.user.schema.pleaseInputPhone'),
             showButton: false,
           },
         },
@@ -127,12 +123,12 @@ export const useUserSchema = (methods: any = {}) => {
               trigger: ['blur', 'input'],
               validator: (_rule: FormItemRule, value: string) => {
                 if (!value) {
-                  return new Error('请输入手机号');
+                  return new Error($t('modules.system.user.schema.pleaseInputPhone'));
                 }
                 if (isPhone(value)) {
                   return true;
                 }
-                return new Error('请输入正确的手机号');
+                return new Error($t('modules.system.user.schema.pleaseInputCorrectPhone'));
               },
             },
           ],
@@ -214,7 +210,6 @@ export const useUserSchema = (methods: any = {}) => {
         defaultValue: undefined,
         form: {
           component: 'NSelect',
-          labelMessage: '你是男是女,你不是美国人',
           componentProps: {
             placeholder: `${$t('common.pleaseSelect')} ${$t('user.sex')}`,
             options: unref(sexOptions),
@@ -231,12 +226,12 @@ export const useUserSchema = (methods: any = {}) => {
         form: {
           component: 'NCheckboxGroup',
           query: 'in',
-          componentProps: { placeholder: '请选择状态', options: unref(statusOptions) },
+          componentProps: { placeholder: $t('common.pleaseSelect'), options: unref(statusOptions) },
         },
         editForm: {
           component: 'NRadioGroup',
           defaultValue: 0,
-          componentProps: { placeholder: '请选择状态', options: unref(statusOptions) },
+          componentProps: { placeholder: $t('common.pleaseSelect'), options: unref(statusOptions) },
         },
         table: {
           render: (row: RowData) => {

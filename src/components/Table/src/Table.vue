@@ -10,7 +10,10 @@
 -->
 <template>
   <!-- 自定义表格部分 -->
-  <NCard :bordered="false" :title="getProps.cardTitle" size="small">
+  <NCard :bordered="false" size="small">
+    <template #header>
+      <p class="card-header">{{ getProps.cardTitle }}</p>
+    </template>
     <template #header-extra>
       <tool-bar
         v-model:columns="columnChecks"

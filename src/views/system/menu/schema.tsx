@@ -11,29 +11,19 @@ import { computed } from 'vue';
 
 const locales = (field: string) => $t(`modules.system.menu.${field}`);
 
-// 是否显示
-const showOptions = computed(() => [
-  { label: $t('common.yes'), value: true },
-  { label: $t('common.no'), value: false },
-]);
-
 export const useMenuSchema = (methods: any = {}) => {
   const schema = computed(() => ({
     properties: [
-      // {
-      //   table: {
-      //     type: 'selection',
-      //     options: ['all', 'none'],
-      //   },
-      // },
       {
         key: 'id',
         label: $t('common.id'),
         defaultValue: undefined,
+        table: {
+          width: 60,
+        },
         form: {
           component: 'NInputNumber',
           componentProps: {
-            placeholder: '请输入ID',
             showButton: false,
             min: 1,
             step: 1,
@@ -55,7 +45,7 @@ export const useMenuSchema = (methods: any = {}) => {
           component: 'NInput',
           query: 'in',
           componentProps: {
-            placeholder: `${$t('common.pleaseInput')} ${$t('modules.system.menu.schema.name')}`,
+            placeholder: $t('modules.system.menu.schema.pleaseInputName'),
           },
         },
         editForm: {
@@ -63,7 +53,7 @@ export const useMenuSchema = (methods: any = {}) => {
           rules: [
             {
               required: true,
-              message: `${$t('common.pleaseInput')} ${$t('modules.system.menu.schema.name')}`,
+              message: $t('modules.system.menu.schema.pleaseInputName'),
             },
           ],
         },
@@ -76,7 +66,7 @@ export const useMenuSchema = (methods: any = {}) => {
           component: 'NInput',
           query: 'in',
           componentProps: {
-            placeholder: `${$t('common.pleaseInput')} ${$t('modules.system.menu.schema.code')}`,
+            placeholder: $t('modules.system.menu.schema.pleaseInputCode'),
           },
         },
         editForm: {
@@ -84,7 +74,7 @@ export const useMenuSchema = (methods: any = {}) => {
           rules: [
             {
               required: true,
-              message: `${$t('common.pleaseInput')} ${$t('modules.system.menu.schema.code')}`,
+              message: $t('modules.system.menu.schema.pleaseInputCode'),
             },
           ],
         },
@@ -102,7 +92,7 @@ export const useMenuSchema = (methods: any = {}) => {
         form: {
           component: 'NInput',
           componentProps: {
-            placeholder: `${$t('common.pleaseInput')} ${$t('modules.system.menu.schema.description')}`,
+            placeholder: $t('modules.system.menu.schema.pleaseInputDescription'),
             type: 'textarea',
           },
         },
@@ -122,14 +112,14 @@ export const useMenuSchema = (methods: any = {}) => {
         form: {
           component: 'NInput',
           componentProps: {
-            placeholder: `${$t('common.pleaseInput')} ${$t('modules.system.menu.schema.path')}`,
+            placeholder: $t('modules.system.menu.schema.pleaseInputPath'),
           },
         },
         editForm: {
           rules: [
             {
               required: true,
-              message: `${$t('common.pleaseInput')} ${$t('modules.system.menu.schema.path')}`,
+              message: $t('modules.system.menu.schema.pleaseInputPath'),
             },
           ],
           ifShow: ({ values }: any) => {
@@ -145,6 +135,7 @@ export const useMenuSchema = (methods: any = {}) => {
         label: $t('modules.system.menu.schema.layout'),
         defaultValue: undefined,
         table: {
+          width: 100,
           render: (row: any) => {
             const layout =
               unref(layoutOptions).find((item) => item.value === row.layout)?.label || '-';
@@ -181,14 +172,14 @@ export const useMenuSchema = (methods: any = {}) => {
             api: MenuApi.menuList,
             labelField: 'name',
             keyField: 'id',
-            placeholder: `${$t('common.pleaseSelect')} ${$t('modules.system.menu.schema.pid')}`,
+            placeholder: $t('common.pleaseSelect'),
             afterRequest: (data: any) => {
               return arrayToTree(data);
             },
           },
         },
         editForm: {
-          labelMessage: '不选默认为顶级',
+          labelMessage: $t('message.notSelectDefaultTop'),
         },
       },
       {
@@ -198,13 +189,8 @@ export const useMenuSchema = (methods: any = {}) => {
         key: 'createdTime',
         label: $t('common.createdTime'),
         defaultValue: undefined,
-        form: {
-          component: 'NRadio',
-          labelMessage: '用户名也是用户的唯一标识',
-          rules: [{ required: false, trigger: ['blur', 'input'] }],
-          componentProps: { placeholder: '请输入用户名' },
-        },
         table: {
+          width: 200,
           render: (row: any) => dayjs(row.createdTime).format('YYYY-MM-DD HH:mm:ss'),
         },
       },
@@ -213,6 +199,7 @@ export const useMenuSchema = (methods: any = {}) => {
         label: $t('common.updatedTime'),
         form: {},
         table: {
+          width: 200,
           render: (row: any) => dayjs(row.updatedTime).format('YYYY-MM-DD HH:mm:ss'),
         },
       },
@@ -263,7 +250,7 @@ export const useMenuSchema = (methods: any = {}) => {
           rules: [
             {
               required: true,
-              message: `${$t('common.pleaseSelect')} ${$t('modules.system.menu.schema.type')}`,
+              message: `${$t('common.pleaseSelect')}`,
             },
           ],
           componentProps: {
@@ -290,10 +277,15 @@ export const useMenuSchema = (methods: any = {}) => {
         key: 'show',
         label: $t('modules.system.menu.schema.show'),
         form: {
-          component: 'NRadioGroup',
+          component: 'NSwitch',
           defaultValue: true,
-          componentProps: {
-            options: unref(showOptions),
+        },
+        editForm: {
+          ifShow: ({ values }: any) => {
+            if (values.type === 'BUTTON') {
+              return false;
+            }
+            return true;
           },
         },
       },
@@ -301,6 +293,9 @@ export const useMenuSchema = (methods: any = {}) => {
         key: 'component',
         label: $t('modules.system.menu.schema.component'),
         table: {
+          ellipsis: {
+            tooltip: true,
+          },
           render: (row: NaiveUI.RowData) => row.component || '-',
         },
         form: {
@@ -310,7 +305,7 @@ export const useMenuSchema = (methods: any = {}) => {
           rules: [
             {
               required: false,
-              message: `${$t('common.pleaseInput')} ${$t('modules.system.menu.schema.component')}`,
+              message: $t('modules.system.menu.schema.pleaseInputComponent'),
             },
           ],
           ifShow: ({ values }: any) => {
@@ -340,6 +335,7 @@ export const useMenuSchema = (methods: any = {}) => {
         key: 'order',
         label: $t('modules.system.menu.schema.order'),
         table: {
+          width: 100,
           render: (row: any) => (
             <NTag type="success" bordered={false} size="small">
               {row.order}
@@ -349,6 +345,39 @@ export const useMenuSchema = (methods: any = {}) => {
         form: {
           defaultValue: 0,
           component: 'NInputNumber',
+        },
+      },
+      {
+        key: 'keepAlive',
+        label: $t('modules.system.menu.schema.keepAlive'),
+        form: {
+          defaultValue: false,
+          component: 'NSwitch',
+        },
+        editForm: {
+          ifShow: ({ values }: any) => {
+            if (values.type === 'BUTTON') {
+              return false;
+            }
+            return true;
+          },
+        },
+      },
+      // -------------extraData-----------------
+      {
+        key: 'withContentCard',
+        label: $t('modules.system.menu.schema.withContentCard'),
+        form: {
+          defaultValue: true,
+          component: 'NSwitch',
+        },
+        editForm: {
+          ifShow: ({ values }: any) => {
+            if (values.type === 'BUTTON') {
+              return false;
+            }
+            return true;
+          },
         },
       },
     ],
@@ -385,8 +414,10 @@ export const useMenuSchema = (methods: any = {}) => {
     'component',
     'icon',
     'show',
+    'keepAlive',
     'description',
   ];
+  const extraEditFormFields = ['withContentCard'];
 
   // 表格列配置
   const columns = computed(() => columnsUtil(schema.value, tableFields));
@@ -394,5 +425,10 @@ export const useMenuSchema = (methods: any = {}) => {
   const formSchemas = computed(() => formSchemaUtil(schema.value, formFields));
 
   const editFormSchemas = computed(() => editFormSchemaUtil(schema.value, editFormFields));
-  return { columns, formSchemas, editFormSchemas };
+
+  const extraDataFromSchemas = computed(() =>
+    editFormSchemaUtil(schema.value, extraEditFormFields),
+  );
+
+  return { columns, formSchemas, editFormSchemas, extraDataFromSchemas };
 };

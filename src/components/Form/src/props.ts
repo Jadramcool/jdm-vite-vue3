@@ -80,12 +80,12 @@ export const basicProps = {
   // 确认按钮文字
   submitButtonText: {
     type: String,
-    default: '查询',
+    // default: $t('common.search'),
   },
   // 重置按钮文字
   resetButtonText: {
     type: String,
-    default: '重置',
+    // default: $t('common.reset'),
   },
   //
   // grid 配置

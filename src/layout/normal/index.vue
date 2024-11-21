@@ -33,13 +33,16 @@
       </n-layout-header>
       <n-layout-content embedded class="h-full flex-1 overflow-hidden" :native-scrollbar="true">
         <div class="wh-full flex-col">
-          <AppCard class="cus-scroll m-12px h-0 flex-1 p-24px" bordered>
+          <AppCard
+            class="cus-scroll m-12px h-0 flex-1 p-24px"
+            :style="{ background: !withContentCard && 'transparent' }"
+            :bordered="!!withContentCard"
+          >
             <Transition :name="appStore.transitionAnimation" mode="out-in">
               <slot />
             </Transition>
           </AppCard>
         </div>
-        <!-- <slot name="default"></slot> -->
       </n-layout-content>
       <n-layout-footer bordered class="h-40px" v-if="appStore.showFooter">
         <AppCard class="flex-1 h-full flex-center">
@@ -63,6 +66,12 @@ import {
 import { useAppStore } from '@/store';
 
 const appStore = useAppStore();
+
+const attrs = useAttrs();
+
+const withContentCard = computed(() => {
+  return attrs?.withContentCard ?? true;
+});
 </script>
 
 <style lang="scss" scoped></style>

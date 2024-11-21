@@ -9,9 +9,9 @@
 -->
 <template>
   <div>
-    <NCard :title="$t('common.search')" size="small">
-      <BasicForm @register="register" @submit="handleSubmit" ref="formRef"> </BasicForm>
-    </NCard>
+    <BasicForm @register="register" @submit="handleSubmit" ref="formRef"> </BasicForm>
+
+    <n-divider dashed />
 
     <BasicTable
       ref="tableRef"
@@ -21,7 +21,7 @@
       :request="loadUserList"
       :rowKey="(row: NaiveUI.RowData) => row.id"
       :pagination="{ pageSize: 10 }"
-      :showAddBtn="true"
+      :showAddBtn="hasPermission('system:user:create')"
       :showBatchDeleteBtn="true"
       :checked-row-keys="checkedRows"
       :scroll-x="1500"
@@ -29,7 +29,6 @@
       @add="handleAdd"
       @batchDelete="handleBatchDelete"
     >
-      <!-- <template v-slot:toolbar>111</template> -->
     </BasicTable>
 
     <UserDrawer @register="registerDrawer" @success="handleSuccess"> </UserDrawer>
@@ -39,6 +38,8 @@
 <script lang="tsx" setup>
 import { UserManagerApi } from '@/api/system';
 import { BasicForm, BasicTable, useDrawer, useForm } from '@/components';
+import { $t } from '@/locales/i18n';
+import { hasPermission } from '@/utils';
 import { UserDrawer } from './components';
 import { useUserSchema } from './schema';
 
@@ -110,7 +111,7 @@ const handleSuccess = () => {
 // 批量删除
 const handleBatchDelete = () => {
   if (!checkedRows.value.length) {
-    window.$message.error('请选择要删除的用户');
+    window.$message.error($t('message.pleaseSelectDeleteUser'));
     return;
   }
   UserManagerApi.batchDeleteUser(checkedRows.value).then(() => {

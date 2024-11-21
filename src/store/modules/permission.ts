@@ -12,7 +12,11 @@ export const usePermissionStore = defineStore('permission', {
     permissions: <any[]>[], // 存储权限的数组
     menus: <any[]>[], // 存储菜单的数组
     buttonPermissions: <any[]>[],
+    buttonPermissionKeys: <string[]>[],
   }),
+  getters: {
+    getButtonPermissionKeys: (state) => state.buttonPermissionKeys,
+  },
   // 定义 store 中的 actions
   actions: {
     // 设置权限的
@@ -58,6 +62,7 @@ export const usePermissionStore = defineStore('permission', {
       });
 
       this.buttonPermissions = btnPermissions;
+      this.buttonPermissionKeys = btnPermissions.map((item) => item.code);
 
       //  非按钮权限
       const formatSortMenus = nonButtonMenus
@@ -134,6 +139,7 @@ export const usePermissionStore = defineStore('permission', {
           title: item.name, // 路由的标题
           layout: item.layout || null, // 路由的布局
           keepAlive: !!item.keepAlive, // 是否缓存路由组件
+          extraData: JSON.parse(item.extraData) || null, // 额外数据
         },
       };
     },

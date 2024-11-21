@@ -23,7 +23,6 @@ export const useRoleSchema = (methods: any = {}) => {
         form: {
           component: 'NInputNumber',
           componentProps: {
-            placeholder: '请输入ID',
             showButton: false,
             min: 1,
             step: 1,
@@ -48,14 +47,14 @@ export const useRoleSchema = (methods: any = {}) => {
           component: 'NInput',
           query: 'in',
           componentProps: {
-            placeholder: `${$t('common.pleaseInput')} ${$t('modules.system.role.schema.name')}`,
+            placeholder: $t('modules.system.role.schema.pleaseInputRoleName'),
           },
         },
         editForm: {
           rules: [
             {
               required: true,
-              message: `${$t('common.pleaseInput')} ${$t('modules.system.role.schema.name')}`,
+              message: $t('modules.system.role.schema.pleaseInputRoleName'),
             },
           ],
         },
@@ -67,14 +66,14 @@ export const useRoleSchema = (methods: any = {}) => {
         form: {
           component: 'NInput',
           componentProps: {
-            placeholder: `${$t('common.pleaseInput')} ${$t('modules.system.role.schema.code')}`,
+            placeholder: $t('modules.system.role.schema.pleaseInputCode'),
           },
         },
         editForm: {
           rules: [
             {
               required: true,
-              message: `${$t('common.pleaseInput')} ${$t('modules.system.role.schema.code')}`,
+              message: $t('modules.system.role.schema.pleaseInputCode'),
             },
           ],
         },
@@ -89,7 +88,7 @@ export const useRoleSchema = (methods: any = {}) => {
         editForm: {
           componentProps: {
             type: 'textarea',
-            placeholder: $t('common.pleaseInput') + $t('modules.system.menu.schema.description'),
+            placeholder: $t('modules.system.role.schema.pleaseInputDescription'),
             maxlength: '50',
             rows: 4,
             showCount: true,
@@ -106,12 +105,6 @@ export const useRoleSchema = (methods: any = {}) => {
         key: 'createdTime',
         label: $t('common.createdTime'),
         defaultValue: undefined,
-        form: {
-          component: 'NRadio',
-          labelMessage: '用户名也是用户的唯一标识',
-          rules: [{ required: false, trigger: ['blur', 'input'] }],
-          componentProps: { placeholder: '请输入用户名' },
-        },
         table: {
           render: (row: any) => dayjs(row.createdTime).format('YYYY-MM-DD HH:mm:ss'),
         },

@@ -95,6 +95,10 @@
     "title": "jdm Admin",
     "username": "用户名"
   },
+  "message": {
+    "notSelectDefaultTop": "不选默认为顶级",
+    "pleaseSelectDeleteUser": "请选择要删除的用户"
+  },
   "modules": {
     "system": {
       "menu": {
@@ -103,14 +107,21 @@
           "component": "组件",
           "description": "描述",
           "icon": "图标",
+          "keepAlive": "页面缓存",
           "layout": "布局",
           "name": "菜单名",
           "order": "排序",
           "path": "路径",
           "pid": "父级",
+          "pleaseInputCode": "请输入权限代码",
+          "pleaseInputComponent": "请输入组件地址",
+          "pleaseInputDescription": "请输入描述",
+          "pleaseInputName": "请输入菜单名",
+          "pleaseInputPath": "请输入路由地址",
           "redirect": "重定向",
           "show": "是否显示",
-          "type": "菜单类型"
+          "type": "菜单类型",
+          "withContentCard": "是否包含默认Card组件"
         },
         "table": {
           "title": "菜单列表"
@@ -126,6 +137,9 @@
           "code": "角色代码",
           "menu": "菜单权限",
           "name": "角色名",
+          "pleaseInputCode": "请输入角色代码",
+          "pleaseInputDescription": "请输入角色描述",
+          "pleaseInputRoleName": "请输入角色名",
           "setAuth": "分配权限"
         },
         "table": {
@@ -137,7 +151,13 @@
           "activate": "启用",
           "deactivate": "禁用",
           "disable": "禁用",
-          "enable": "启用"
+          "enable": "启用",
+          "pleaseInputCorrectPhone": "请输入正确的手机号",
+          "pleaseInputPhone": "请输入手机号",
+          "pleaseInputUsername": "请输入用户名",
+          "usernameLengthMaxError": "用户名长度不能超过16位",
+          "usernameLengthMinError": "用户名长度不能小于2位",
+          "usernameTip": "用户名是用户的唯一标识"
         },
         "table": {
           "title": "用户列表"

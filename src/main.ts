@@ -8,12 +8,13 @@
  *
  */
 import { i18n } from '@/locales';
+import store from '@/store';
 import 'virtual:uno.css';
 import { createApp } from 'vue';
 import App from './App.vue';
 import './assets/styles/style.scss';
+import setDirectives from './directives';
 import { setupRouter } from './router';
-import store from './store/index'; // 在vue中使用pinia
 import './style.css';
 
 const start = async () => {
@@ -28,6 +29,8 @@ const start = async () => {
 
   // 注册路由
   await setupRouter(app);
+
+  app.use(setDirectives);
 
   app.mount('#app');
 
