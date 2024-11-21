@@ -9,13 +9,11 @@
  */
 // src/utils/common/i18n.ts
 
-import { getI18nInstance } from '@/locales/index';
+import { i18n } from '@/locales/index';
 import type { NDateLocale, NLocale } from 'naive-ui';
 import { dateEnUS, dateZhCN, enUS, zhCN } from 'naive-ui';
-import { I18n } from 'vue-i18n';
 
-export async function setLocale(locale: App.lang) {
-  const i18n: I18n = await getI18nInstance();
+export function setLocale(locale: App.lang) {
   if (isRef(i18n.global.locale)) {
     i18n.global.locale.value = locale;
   } else {
