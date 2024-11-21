@@ -12,7 +12,7 @@ function renderDropTabsIcon(option: any) {
 }
 
 const router = useRouter();
-function handleDropTabs(key: string, option: any) {
+function handleDropTabs(_key: string, option: any) {
   router.push(option.path);
 }
 </script>

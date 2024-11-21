@@ -43,7 +43,8 @@ const userStore = useUserStore();
 const layouts: any = new Map();
 
 const naiveLocale: any = computed(() => {
-  return naiveI18nOptions[appStore.lang] ? naiveI18nOptions[appStore.lang] : naiveI18nOptions.enUS;
+  const { lang }: { lang: App.lang } = appStore;
+  return naiveI18nOptions[lang] ? naiveI18nOptions[lang] : naiveI18nOptions.enUS;
 });
 
 onMounted(() => {
