@@ -1,6 +1,16 @@
+/*
+ * @Author: jdm
+ * @Date: 2024-04-13 15:45:42
+ * @LastEditors: jdm
+ * @LastEditTime: 2024-10-18 18:03:05
+ * @FilePath: \vite-vue3-jdm\config\vitePlugins.ts
+ * @Description:
+ *
+ */
 // vitePlugins.ts
-import type { Plugin } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
+import type { Plugin } from 'vite';
 
 // 自动引入插件
 import AutoImport from 'unplugin-auto-import/vite';
@@ -14,12 +24,13 @@ import UnoCSS from 'unocss/vite';
 import { ConfigEnv } from 'vite';
 
 export default (env: ConfigEnv) => {
-  console.log('🚀 ~ env:', env);
+  console.debug('🚀 ~ env:', env);
   const vitePlugins: (Plugin | Plugin[])[] = [
     vue({
       include: [/.vue$/],
     }),
     UnoCSS(),
+    vueJsx(),
     AutoImport({
       imports: [
         'vue',
@@ -38,6 +49,7 @@ export default (env: ConfigEnv) => {
         filepath: './.eslintrc-auto-import.json', // Default `./.eslintrc-auto-import.json`
         globalsPropValue: true, // Default `true`, (true | false | 'readonly' | 'readable' | 'writable' | 'writeable')
       },
+      dts: 'typings/auto-imports.d.ts',
     }),
     Components({
       // dirs 指定组件所在位置，默认为 src/components
@@ -47,6 +59,7 @@ export default (env: ConfigEnv) => {
       extensions: ['vue'],
       // 解析的 UI 组件库，这里以 NaiveUI 为例
       resolvers: [NaiveUiResolver()],
+      dts: 'typings/components.d.ts',
     }),
     viteMockServe({
       // 模拟服务的文件夹，在设置了configPath后失效

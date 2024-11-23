@@ -7,7 +7,6 @@ const getToken = (): string | null | undefined => {
 };
 
 const setToken = (token: string): void => {
-  console.log('🚀 ~ setToken ~ token:', token);
   if (tokenKey) return lStorage.setItem(tokenKey, token);
 };
 
@@ -15,4 +14,4 @@ const removeToken = (): void => {
   if (tokenKey) return lStorage.removeItem(tokenKey);
 };
 
-export { getToken, setToken, removeToken };
+export { getToken, removeToken, setToken };

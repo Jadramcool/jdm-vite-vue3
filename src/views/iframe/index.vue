@@ -6,5 +6,4 @@
 
 <script lang="ts" setup>
 const route: any = useRoute();
-console.log(route.meta.originPath);
 </script>

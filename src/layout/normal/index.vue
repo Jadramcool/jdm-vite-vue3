@@ -5,19 +5,19 @@
       collapse-mode="width"
       :collapsed-width="64"
       :width="240"
-      content-style="display: flex;flex-direction: column;min-height:100%;border-right: 1px solid var(--border-color);"
+      content-style="display: flex;flex-direction: column;min-height:100%;border-right: 1px solid var(--border-color); transition: border-color 0.3s ease;"
     >
       <SideLogo v-if="appStore.showLogo" />
       <n-scrollbar class="flex-1">
         <SideMenu />
       </n-scrollbar>
     </n-layout-sider>
-    <n-layout
-      class="layout h-full flex flex-col"
-      content-style="display: flex;flex-direction: column"
-      embedded
-    >
-      <n-layout-header bordered class="z-1 flex-x-center justify-between">
+    <n-layout class="layout h-full" content-style="display: flex;flex-direction: column" embedded>
+      <n-layout-header
+        bordered
+        class="z-1 flex-x-center justify-between"
+        content-style="transition: border-color 0.3s ease;"
+      >
         <div class="flex-x-center h-60px">
           <div class="flex-x-center h-full">
             <MenuCollapse />
@@ -33,13 +33,17 @@
       </n-layout-header>
       <n-layout-content embedded class="h-full flex-1 overflow-hidden" :native-scrollbar="true">
         <div class="wh-full flex-col">
-          <AppCard class="cus-scroll m-12 h-0 flex-1 rounded-8 p-24" bordered>
+          <AppCard
+            class="cus-scroll m-12px h-0 flex-1"
+            :class="withContentCard ? 'p-24px' : ''"
+            :style="{ background: !withContentCard && 'transparent' }"
+            :bordered="!!withContentCard"
+          >
             <Transition :name="appStore.transitionAnimation" mode="out-in">
               <slot />
             </Transition>
           </AppCard>
         </div>
-        <!-- <slot name="default"></slot> -->
       </n-layout-content>
       <n-layout-footer bordered class="h-40px" v-if="appStore.showFooter">
         <AppCard class="flex-1 h-full flex-center">
@@ -50,19 +54,25 @@
   </n-layout>
 </template>
 
-<script setup>
-import { useAppStore } from '@/store';
+<script setup lang="ts">
 import {
+  Breadcrumb,
+  Footer,
+  HeaderTools,
+  MenuCollapse,
   SideLogo,
   SideMenu,
-  MenuCollapse,
-  Breadcrumb,
-  HeaderTools,
   TabBar,
-  Footer,
 } from '@/layout/components';
+import { useAppStore } from '@/store';
 
 const appStore = useAppStore();
+
+const attrs = useAttrs();
+
+const withContentCard = computed(() => {
+  return attrs?.withContentCard ?? true;
+});
 </script>
 
 <style lang="scss" scoped></style>

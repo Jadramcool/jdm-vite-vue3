@@ -29,7 +29,11 @@ export const useTabStore = defineStore('tab', {
     setTabs(tabs: Array<{ path: string; keepAlive?: boolean }>): void {
       this.tabs = tabs;
     },
-    addTab(tab: { path: string; keepAlive?: boolean } = { path: '' }): void {
+    addTab(
+      tab: { name?: string; path: string; title?: string; icon?: string; keepAlive?: boolean } = {
+        path: '',
+      },
+    ): void {
       const findIndex = this.tabs.findIndex((item) => item.path === tab.path);
       // 如果 findIndex 返回的索引不是 -1，表示已经存在相同路径的标签页，此时需要更新现有标签页。
       if (findIndex !== -1) {
@@ -61,7 +65,7 @@ export const useTabStore = defineStore('tab', {
         useRouterStore().router?.push(this.tabs[this.tabs.length - 1].path);
       }
     },
-    removeOther(curPath = this.activeTab): void {
+    removeOther(state: any, curPath: string = state.activeTab): void {
       this.setTabs(this.tabs.filter((tab) => tab.path === curPath));
       if (curPath !== this.activeTab) {
         useRouterStore().router?.push(this.tabs[this.tabs.length - 1].path);
@@ -69,7 +73,7 @@ export const useTabStore = defineStore('tab', {
     },
     removeLeft(curPath: string): void {
       const curIndex = this.tabs.findIndex((item) => item.path === curPath);
-      const filterTabs = this.tabs.filter((item, index) => index >= curIndex);
+      const filterTabs = this.tabs.filter((_item, index) => index >= curIndex);
       this.setTabs(filterTabs);
       if (!filterTabs.find((item) => item.path === this.activeTab)) {
         useRouterStore().router?.push(filterTabs[filterTabs.length - 1].path);
@@ -77,9 +81,9 @@ export const useTabStore = defineStore('tab', {
     },
     removeRight(curPath: string): void {
       const curIndex = this.tabs.findIndex((item) => item.path === curPath);
-      const filterTabs = this.tabs.filter((item, index) => index <= curIndex);
+      const filterTabs = this.tabs.filter((_item, index) => index <= curIndex);
       this.setTabs(filterTabs);
-      if (!filterTabs.find((item) => item.path === this.activeTab.value)) {
+      if (!filterTabs.find((item) => item.path === this.activeTab)) {
         useRouterStore().router?.push(filterTabs[filterTabs.length - 1].path);
       }
     },

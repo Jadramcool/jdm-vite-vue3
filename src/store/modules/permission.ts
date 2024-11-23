@@ -1,7 +1,7 @@
+import { arrayToTree, isExternal, renderIcon } from '@/utils/common'; // 导入自定义的 isExternal 函数，用于判断链接是否为外部链接
 import { hyphenate } from '@vueuse/core'; // 导入 Vue 通用实用函数库中的 hyphenate 函数
-import { defineStore } from 'pinia'; // 导入 Pinia 库中的 defineStore 函数
-import { isExternal, renderIcon, arrayToTree } from '@/utils/common'; // 导入自定义的 isExternal 函数，用于判断链接是否为外部链接
 import _ from 'lodash';
+import { defineStore } from 'pinia'; // 导入 Pinia 库中的 defineStore 函数
 
 export const routeComponents = import.meta.glob('/src/views/**/*.vue');
 // 定义一个名为 usePermissionStore 的 Pinia store
@@ -11,40 +11,76 @@ export const usePermissionStore = defineStore('permission', {
     accessRoutes: <any>{}, // 存储访问路由的数组
     permissions: <any[]>[], // 存储权限的数组
     menus: <any[]>[], // 存储菜单的数组
+    buttonPermissions: <any[]>[],
+    buttonPermissionKeys: <string[]>[],
   }),
+  getters: {
+    getButtonPermissionKeys: (state) => state.buttonPermissionKeys,
+  },
   // 定义 store 中的 actions
   actions: {
     // 设置权限的
-    async setPermissions(permissions: any[]) {
-      this.permissions = _.cloneDeep(permissions);
+    async setPermissions(menus: System.Menu[]) {
+      this.permissions = _.cloneDeep(menus);
     },
 
-    // 设置权限的
-    async setMenus(permissions: any[]) {
-      const temp = _.cloneDeep(permissions);
+    // 设置菜单的
+    async setMenus(menus: System.Menu[]) {
+      const cloneMenus = _.cloneDeep(menus);
+
       this.menus = arrayToTree(
-        temp
-          .filter((item) => item.type === 'MENU')
+        cloneMenus
+          .filter((item) => item.type !== 'BUTTON')
           .map((item) => this.getMenuItem(item))
           .filter((item) => !!item)
-          .sort((a, b): any => a.order - b.order),
+          .sort(
+            (a: System.Menu, b: System.Menu): any => (a.order ?? Infinity) - (b.order ?? Infinity),
+          ),
       );
     },
 
-    async setRoutes(permissions: any[]) {
-      const temp1 = _.cloneDeep(permissions);
-      this.createRoutes(temp1);
+    async setRoutes(menus: System.Menu[]) {
+      const cloneMenus = _.cloneDeep(menus);
+      this.createRoutes(cloneMenus);
     },
 
-    createRoutes(permissions: any[]) {
-      const accessRoutes = arrayToTree(
-        permissions
-          .map((item) => this.generateRoute(item))
-          .filter((item) => !!item)
-          .sort((a, b) => a.order - b.order),
-      );
-      // this.accessRoutes = arrayToTree(accessRoutes);
+    createRoutes(menus: System.Menu[]) {
+      if (!Array.isArray(menus)) {
+        throw new Error('无效的参数，请传入菜单数组');
+      }
+      const btnPermissions: System.Menu[] = []; // 按钮权限
+      const nonButtonMenus: System.Menu[] = []; // 非按钮菜单
 
+      const routeCache: { [key: string]: any } = {};
+
+      menus.forEach((item) => {
+        if (item.type === 'BUTTON') {
+          btnPermissions.push(item);
+        } else {
+          nonButtonMenus.push(item);
+        }
+      });
+
+      this.buttonPermissions = btnPermissions;
+      this.buttonPermissionKeys = btnPermissions.map((item) => item.code);
+
+      //  非按钮权限
+      const formatSortMenus = nonButtonMenus
+        .map((item) => {
+          if (routeCache[item.id]) {
+            return routeCache[item.id];
+          }
+          const route = this.generateRoute(item);
+          if (route && typeof route === 'object') {
+            routeCache[item.id] = route;
+            return route;
+          }
+          return null;
+        })
+        .filter((item) => !!item)
+        .sort((a, b) => a.order - b.order);
+
+      const accessRoutes = arrayToTree(formatSortMenus);
       this.accessRoutes = {
         path: '/',
         name: 'Home',
@@ -58,9 +94,9 @@ export const usePermissionStore = defineStore('permission', {
       };
     },
 
-    getMenuItem(item: any) {
+    getMenuItem(item: System.Menu) {
       let originPath;
-      if (isExternal(item.path)) {
+      if (item.path && isExternal(item.path)) {
         originPath = item.path;
         item.component = '/src/views/iframe/index.vue';
         item.path = `/iframe/${hyphenate(item.code)}`;
@@ -88,13 +124,14 @@ export const usePermissionStore = defineStore('permission', {
         item.component = '/src/views/iframe/index.vue'; // 将组件路径设置为内置的 iframe 组件
         item.path = `/iframe/${hyphenate(item.code)}`; // 将路径设置为以 /iframe/ 开头并将权限项的 code 转为连字符分隔的形式
       }
+
       return {
         id: item.id, // 路由的唯一标识符
         name: item.code, // 路由的名称
         path: item.path, // 路由的路径
         redirect: item.redirect, // 路由的重定向路径
         component: routeComponents[item.component] || undefined, // 路由对应的组件
-        pid: item.pid, // 父路由的唯一标识符
+        pid: item.pid || null, // 父路由的唯一标识符
         meta: {
           originPath, // 原始路径
           icon: item.icon, // 路由对应的图标
@@ -102,9 +139,7 @@ export const usePermissionStore = defineStore('permission', {
           title: item.name, // 路由的标题
           layout: item.layout || null, // 路由的布局
           keepAlive: !!item.keepAlive, // 是否缓存路由组件
-          btns: item.children
-            ?.filter((item: any) => item.type === 'BUTTON') // 过滤出类型为 BUTTON 的子权限项
-            .map((item: any) => ({ code: item.code, name: item.name })), // 转换为按钮对象数组
+          extraData: JSON.parse(item.extraData) || null, // 额外数据
         },
       };
     },
@@ -114,33 +149,3 @@ export const usePermissionStore = defineStore('permission', {
     },
   },
 });
-// 获取菜单项的 action
-// getMenuItem(item: any, parent: any): any {
-//   const route = this.generateRoute(item, item.show ? parent : null); // 根据权限项生成路由对象
-//   if (item.enable && route.path && !route.path.startsWith('http'))
-//     this.accessRoutes.push(route); // 如果权限项启用且路由路径有效且不是外部链接，则将路由对象存储到 accessRoutes 数组中
-//   if (!item.show) return null; // 如果权限项不显示，则返回空
-//   const menuItem: any = {
-//     id: item.id, // 菜单项的唯一标识符
-//     label: route.meta.title, // 菜单项的标题
-//     key: route.name, // 菜单项的唯一标识符
-//     path: route.path, // 菜单项对应的路径
-//     originPath: route.meta.originPath, // 原始路径
-//     icon: route.meta.icon ? renderIcon(route.meta.icon) : undefined,
-//     // 想用 unocss/icon 的图标，但是因为是动态的，需要加载到safeList中，所以这里直接使用了 iconify 的图标
-//     // icon: () => h('i', { class: `${route.meta.icon} text-16` }),
-//     // icon: route.meta.icon, // 菜单项的图标
-//     order: item.order ?? 0, // 菜单项的排序值，默认为 0
-//     pid: route.pid, // 父菜单项的唯一标识符
-//   };
-//   // 如果权限项有子菜单，则递归处理子菜单
-//   const children = item.children?.filter((item: any) => item.type === 'MENU') || [];
-//   if (children.length) {
-//     menuItem.children = children
-//       .map((child: any) => this.getMenuItem(child, menuItem.id)) // 递归获取子菜单项
-//       .filter((item: any) => !!item) // 过滤掉空对象
-//       .sort((a: any, b: any) => a.order - b.order); // 根据 order 字段排序
-//     if (!menuItem.children.length) delete menuItem.children; // 如果子菜单为空，则删除 children 字段
-//   }
-//   return menuItem; // 返回菜单项对象
-// },

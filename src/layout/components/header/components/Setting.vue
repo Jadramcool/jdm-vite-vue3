@@ -9,7 +9,9 @@
   </n-tooltip>
   <n-drawer v-model:show="drawerActive" :width="360" placement="right">
     <n-drawer-content :title="t('app.setting')">
-      <n-divider title-placement="left"> {{ $t('app.themeSetting') }} </n-divider>
+      <n-divider title-placement="left">
+        <p class="divider-style">{{ $t('app.themeSetting') }}</p>
+      </n-divider>
       <n-space vertical>
         <n-space justify="space-between">
           {{ $t('app.weakColor') }}:
@@ -38,7 +40,9 @@
           />
         </n-space>
 
-        <n-divider title-placement="left"> {{ $t('app.themeSetting') }} </n-divider>
+        <n-divider title-placement="left">
+          <p class="divider-style">{{ $t('app.themeSetting') }}</p>
+        </n-divider>
 
         <n-space vertical>
           <n-space justify="space-between">

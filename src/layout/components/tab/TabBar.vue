@@ -34,8 +34,8 @@
 <script lang="ts" setup>
 import { useTabStore } from '@/store';
 import ContextMenu from './ContextMenu.vue';
-import Reload from './Reload.vue';
 import DropTabs from './DropTabs.vue';
+import Reload from './Reload.vue';
 
 const router = useRouter();
 const tabStore = useTabStore();
@@ -78,6 +78,7 @@ async function handleContextMenu(e: any, tagItem: any) {
   padding: 2px;
   padding: 0 16px;
   border-bottom: 1px solid var(--border-color);
+  transition: border-color 0.3s ease;
 }
 
 :deep(.n-tabs) {

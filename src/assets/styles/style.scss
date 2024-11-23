@@ -46,8 +46,10 @@
 // 色弱模式
 .weak-color {
   filter: invert(80%);
+  -webkit-filter: invert(80%);
 }
 // 灰色模式
 .gray-mode {
   filter: grayscale(100%);
+  -webkit-filter: grayscale(100%);
 }

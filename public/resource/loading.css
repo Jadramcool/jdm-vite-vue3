@@ -1,94 +1,63 @@
-/**********************************
- * @Author: Ronnie Zhang
- * @LastEditor: Ronnie Zhang
- * @LastEditTime: 2023/12/04 22:50:18
- * @Email: zclzone@outlook.com
- * Copyright © 2023 Ronnie Zhang(大脸怪) | https://isme.top
- **********************************/
-
-.loading-container {
-  position: fixed;
-  left: 0;
-  top: 0;
+.loading-body {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%;
+  height: 100vh;
+  background-color: #f5f5f5;
 }
 
-.loading-spin__container {
-  width: 56px;
-  height: 56px;
-  margin: 36px 0;
+.loader {
+  display: inline-grid;
+  width: 90px;
+  aspect-ratio: 1;
+  transform: rotate(90deg);
+  animation: l4 1s linear infinite;
 }
-
-.loading-spin {
-  position: relative;
-  height: 100%;
-  animation: loadingSpin 1s linear infinite;
+.loader:before,
+.loader:after {
+  content: '';
+  grid-area: 1/1;
 }
-
-.left-0 {
-  left: 0;
+.loader:before {
+  clip-path: polygon(
+    100% 50%,
+    90.45% 79.39%,
+    65.45% 97.55%,
+    34.55% 97.55%,
+    9.55% 79.39%,
+    0% 50%,
+    9.55% 20.61%,
+    34.55% 2.45%,
+    65.45% 2.45%,
+    90.45% 20.61%,
+    100% 50%,
+    85.6% 24.14%,
+    63.6% 8.15%,
+    36.4% 8.15%,
+    14.4% 24.14%,
+    6% 50%,
+    14.4% 75.86%,
+    36.4% 91.85%,
+    63.6% 91.85%,
+    85.6% 75.86%,
+    94% 50%,
+    85.6% 24.14%
+  );
+  background: #574951;
 }
-.right-0 {
-  right: 0;
+.loader:after {
+  background: #83988e;
+  clip-path: polygon(100% 50%, 65.45% 97.55%, 9.55% 79.39%, 9.55% 20.61%, 65.45% 2.45%);
+  margin: 27%;
+  translate: 46% 0;
+  transform-origin: right;
+  animation: inherit;
 }
-.top-0 {
-  top: 0;
-}
-.bottom-0 {
-  bottom: 0;
-}
-
-.loading-spin-item {
-  position: absolute;
-  height: 16px;
-  width: 16px;
-  background-color: var(--primary-color);
-  border-radius: 8px;
-  -webkit-animation: loadingPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  animation: loadingPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes loadingSpin {
-  from {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
+@keyframes l4 {
+  0% {
+    rotate: 18deg;
   }
   to {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
+    rotate: -18deg;
   }
-}
-
-@keyframes loadingPulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-.loading-delay-500 {
-  -webkit-animation-delay: 500ms;
-  animation-delay: 500ms;
-}
-.loading-delay-1000 {
-  -webkit-animation-delay: 1000ms;
-  animation-delay: 1000ms;
-}
-.loading-delay-1500 {
-  -webkit-animation-delay: 1500ms;
-  animation-delay: 1500ms;
-}
-
-.loading-title {
-  font-size: 28px;
-  font-weight: 500;
-  color: var(--primary-color);
 }

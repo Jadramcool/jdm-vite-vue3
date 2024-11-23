@@ -1,5 +1,14 @@
-import { defineConfig, loadEnv, ConfigEnv } from 'vite';
+/*
+ * @Author: Jay
+ * @Date: 2024-05-06 10:22:58
+ * @LastEditors: jdm
+ * @LastEditTime: 2024-10-18 18:02:38
+ * @FilePath: \vite-vue3-jdm\vite.config.ts
+ * @Description:
+ *
+ */
 import path from 'path';
+import { ConfigEnv, defineConfig, loadEnv } from 'vite';
 
 import vitePlugins from './config/vitePlugins';
 
@@ -8,7 +17,6 @@ import vitePlugins from './config/vitePlugins';
 export default defineConfig((env: ConfigEnv) => {
   // 加载环境变量
   const viteEnv = loadEnv(env.mode, './env', 'VITE');
-  console.log('🚀jay, viteEnv', viteEnv);
   return {
     base: viteEnv.VITE_BASE,
     envDir: './env', // 指定环境变量文件目录
@@ -22,8 +30,8 @@ export default defineConfig((env: ConfigEnv) => {
     },
     server: {
       host: '0.0.0.0',
-      port: 8080,
-      open: true,
+      port: 4000,
+      open: false,
       https: false,
       // proxy: {
       //   '/api': {

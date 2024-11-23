@@ -19,9 +19,9 @@
 </template>
 
 <script setup lang="ts">
-import { NFlex } from 'naive-ui';
 import { useAppStore } from '@/store';
 import { renderIcon } from '@/utils/common';
+import { NFlex } from 'naive-ui';
 
 const { t } = useI18n();
 

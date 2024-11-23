@@ -1,8 +1,17 @@
+<!--
+ * @Author: Jay
+ * @Date: 2024-04-13 15:45:42
+ * @LastEditors: jdm
+ * @LastEditTime: 2024-09-03 17:33:52
+ * @FilePath: \vite-vue3-jdm\src\layout\components\tab\Reload.vue
+ * @Description: 
+ * 
+-->
 <template>
   <n-tooltip placement="bottom" trigger="hover">
     <template #trigger>
       <CommonWrapper @click="handleReload">
-        <JayIcon :icon="'icon-park-outline:refresh'" :class="{ 'animate-spin': loading }" />
+        <jay-icon :icon="'icon-park-outline:refresh'" :class="{ 'animate-spin': loading }" />
       </CommonWrapper>
     </template>
     <span>{{ $t('common.reload') }}</span>

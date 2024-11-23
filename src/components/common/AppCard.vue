@@ -1,14 +1,12 @@
 <template>
   <n-el
     tag="div"
+    class="rounded-8px"
     :class="{ 'card-border': bordered }"
-    style="background-color: var(--card-color); transition: 0.3s var(--cubic-bezier-ease-in-out)"
+    style="background-color: var(--card-color)"
   >
     <slot />
   </n-el>
-  <!-- <div class="auto-bg" :class="{ 'card-border': bordered }">
-    <slot />
-  </div> -->
 </template>
 
 <script lang="ts" setup>

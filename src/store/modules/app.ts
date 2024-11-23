@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia';
 // import { useDark } from '@vueuse/core';
 import {
-  defaultLayout,
-  naiveThemeOverrides,
   darkThemeOverrides,
+  defaultLayout,
   lightThemeOverrides,
+  naiveThemeOverrides,
 } from '@/settings';
-import { lStorage, setLocale } from '@/utils';
-import chroma from 'chroma-js'; // 极小且零依赖的 JavaScript 颜色库
-import { type GlobalThemeOverrides } from 'naive-ui';
-import _ from 'lodash';
+import { getRgb, lStorage, setLocale } from '@/utils';
 import { useCssVar } from '@vueuse/core';
+import chroma from 'chroma-js'; // 极小且零依赖的 JavaScript 颜色库
+import _ from 'lodash';
+import { type GlobalThemeOverrides } from 'naive-ui';
 
 // 引用 HTML 文档的根元素
 const docEle = ref(document.documentElement);
@@ -31,7 +31,7 @@ export const useAppStore = defineStore('app', {
     theme: naiveThemeOverrides as GlobalThemeOverrides,
     layout: defaultLayout, // 布局配置
     // naiveThemeOverrides, // naive-ui 主题配置
-    lang: 'zhCN', // 语言
+    lang: lStorage.getItem('lang') || 'zhCN', // 语言
     primaryColor: naiveThemeOverrides.common.primaryColor, // 主题色
     weakColor: false, // 弱色
     grayMode: false, // 黑白模式
@@ -44,6 +44,9 @@ export const useAppStore = defineStore('app', {
     showBreadcrumb: true, // 是否显示面包屑
     showBreadcrumbIcon: true, // 是否显示面包屑图标
     showWatermark: false, // 是否显示水印
+    loginSet: {
+      formShowLabel: false,
+    },
   }),
   getters: {
     fullScreen() {
@@ -54,6 +57,9 @@ export const useAppStore = defineStore('app', {
     },
     colorMode() {
       return store.value === 'auto' ? system.value : store.value;
+    },
+    getLang() {
+      return () => this.lang;
     },
   },
   actions: {
@@ -76,15 +82,18 @@ export const useAppStore = defineStore('app', {
       this.lang = lang;
       lStorage.setItem('lang', lang);
     },
+
     // 提取主题变量并设置全局 CSS 变量
     setupCssVar() {
       const common: any = this.theme?.common || {};
       Object.keys(common).forEach((key) => {
         const value: string = common[key];
-        if (key === 'borderColor') {
-          console.log('borderColor', value);
-        }
+        const rgb = getRgb(value);
+        // 全局css变量-十六进制
         useCssVar(`--${_.kebabCase(key)}`, document.documentElement).value = value || '';
+        // 全局css变量-rgb, xx xx xx 形式, 如: 255 255 255,给uno使用
+        useCssVar(`--${_.kebabCase(key)}-rgb`, document.documentElement).value =
+          rgb.join(' ') || '';
 
         // 特别处理 primaryColor，将其存入本地存储
         if (key === 'primaryColor') {
@@ -94,10 +103,9 @@ export const useAppStore = defineStore('app', {
     },
     // 设置主题色
     setPrimaryColor(color: string = '') {
-      console.log('设置主题色', color);
-      if (this.storeColorMode === 'dark') {
+      if (this.colorMode === 'dark') {
         this.theme = _.merge(this.theme, darkThemeOverrides);
-      } else {
+      } else if (this.colorMode === 'light') {
         this.theme = _.merge(this.theme, lightThemeOverrides);
       }
       if (color) {

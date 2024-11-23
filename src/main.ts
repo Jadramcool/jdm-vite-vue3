@@ -1,21 +1,36 @@
-import { createApp } from 'vue';
-import './style.css';
-import './assets/styles/style.scss';
-import i18n from '@/locales/index';
-import App from './App.vue';
-import { setupRouter } from './router';
-import store from './store/index'; // 在vue中使用pinia
+/*
+ * @Author: jdm
+ * @Date: 2024-08-01 18:30:07
+ * @LastEditors: jdm
+ * @LastEditTime: 2024-09-24 11:07:31
+ * @FilePath: \vite-vue3-jdm\src\main.ts
+ * @Description: main.ts
+ *
+ */
+import { i18n } from '@/locales';
+import store from '@/store';
 import 'virtual:uno.css';
+import { createApp } from 'vue';
+import App from './App.vue';
+import './assets/styles/style.scss';
+import setDirectives from './directives';
+import { setupRouter } from './router';
+import './style.css';
 
 const start = async () => {
   const app = createApp(App);
 
+  // 初始化 i18n 实例
+  // const i18n = await createI18nInstance();
+  app.config.globalProperties.$t = i18n.global.t;
   app.use(i18n);
 
   app.use(store);
 
   // 注册路由
   await setupRouter(app);
+
+  app.use(setDirectives);
 
   app.mount('#app');
 

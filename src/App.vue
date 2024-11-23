@@ -1,3 +1,12 @@
+<!--
+ * @Author: Jay
+ * @Date: 2024-05-06 10:22:58
+ * @LastEditors: jdm
+ * @LastEditTime: 2024-09-03 18:26:10
+ * @FilePath: \vite-vue3-jdm\src\App.vue
+ * @Description: 
+ * 
+-->
 <template>
   <n-config-provider
     class="wh-full"
@@ -9,31 +18,33 @@
   >
     <Application>
       <router-view v-if="Layout" v-slot="{ Component, route: curRoute }">
-        <component :is="Layout">
+        <component :is="Layout" v-bind="routeExtraData">
           <KeepAlive :include="keepAliveNames">
             <component :is="Component" v-if="appStore.loadFlag" :key="curRoute.fullPath" />
           </KeepAlive>
         </component>
       </router-view>
-      <Watermark :show-watermark="appStore.showWatermark" />
+      <Watermark :show-watermark="appStore.showWatermark" :text="userStore.userInfo.username" />
     </Application>
   </n-config-provider>
 </template>
 
 <script setup lang="ts" name="App">
-import { darkTheme } from 'naive-ui';
-import { useAppStore, useTabStore } from '@/store';
+import { useAppStore, useTabStore, useUserStore } from '@/store';
 import { naiveI18nOptions } from '@/utils';
+import { darkTheme } from 'naive-ui';
 import Application from './components/application/Application.vue';
 
 const route = useRoute();
 const appStore = useAppStore();
 const tabStore = useTabStore();
+const userStore = useUserStore();
 
 const layouts: any = new Map();
 
-const naiveLocale = computed(() => {
-  return naiveI18nOptions[appStore.lang] ? naiveI18nOptions[appStore.lang] : naiveI18nOptions.enUS;
+const naiveLocale: any = computed(() => {
+  const { lang }: { lang: App.lang } = appStore;
+  return naiveI18nOptions[lang] ? naiveI18nOptions[lang] : naiveI18nOptions.enUS;
 });
 
 onMounted(() => {
@@ -49,24 +60,15 @@ const getLayout = (name: string): void => {
   return layout;
 };
 
-// // 设置全局样式
-// const setupCssVar = () => {
-//   const common: any = appStore.naiveThemeOverrides?.common || {};
-//   // 使用 Object.keys() 获取对象的键数组，然后对数组进行迭代
-//   Object.keys(common).forEach((key) => {
-//     const value: string = common[key];
-//     useCssVar(`--${kebabCase(key)}`, document.documentElement).value = value || '';
-//     if (key === 'primaryColor') {
-//       window.localStorage.setItem('__THEME_COLOR__', value || '');
-//     }
-//   });
-// };
-// setupCssVar();
-
 // 返回当前路由对应的layout
 const Layout: any = computed(() => {
   if (!route.matched?.length) return null;
   return getLayout((route.meta?.layout as string) || appStore.layout);
+});
+
+// 返回当前路由额外数据
+const routeExtraData: any = computed(() => {
+  return route.meta?.extraData || null;
 });
 // 获取keep-alive的所有组件名称
 const keepAliveNames = computed(() => {
@@ -74,4 +76,4 @@ const keepAliveNames = computed(() => {
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss"></style>
