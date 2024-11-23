@@ -11,12 +11,11 @@
         :action="uploadUrl"
         :headers="headers"
         :data="{
-          fileInfo: 'avatar',
           type: 'single',
         }"
         @before-upload="beforeUpload"
         :show-file-list="false"
-        @finish="handleUploadSuccess"
+        :on-finish="handleUploadSuccess"
       >
         <n-button type="primary">{{ $t('modules.appCenter.basicSetting.uploadAvatar') }}</n-button>
       </n-upload>
@@ -102,7 +101,7 @@ const beforeUpload = async (data: { file: UploadFileInfo; fileList: UploadFileIn
 };
 
 const handleUploadSuccess = ({ event }: { file: UploadFileInfo; event?: ProgressEvent }) => {
-  const response = JSON.parse((event?.target as XMLHttpRequest).response);
+  const response = JSON.parse((event?.target as XMLHttpRequest)?.response);
   const avatarUrl = response?.data?.fileUrl;
   if (avatarUrl) {
     userStore.setUser({ avatar: avatarUrl });
