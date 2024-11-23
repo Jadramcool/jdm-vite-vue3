@@ -1,22 +1,34 @@
 <template>
   <n-list hoverable clickable bordered>
     <n-list-item>
-      <n-thing title="实名认证" content-style="margin-top: 10px;">
+      <n-thing
+        :title="$t('modules.appCenter.securitySetting.realNameAuth')"
+        content-style="margin-top: 10px;"
+      >
         <template #description>
-          <span class="text-gray"> 认证信息：{{ userInfo.name || '-' }}</span>
+          <span class="text-gray">
+            {{ $t('modules.appCenter.securitySetting.authInfo') }}{{ userInfo.name || '-' }}</span
+          >
         </template>
       </n-thing>
       <template #suffix>
         <n-tag :type="userInfo.name ? 'success' : 'error'" size="small" :bordered="false">
-          {{ userInfo.name ? '已认证' : '未认证' }}
+          {{
+            userInfo.name
+              ? $t('modules.appCenter.securitySetting.authSuccess')
+              : $t('modules.appCenter.securitySetting.authFailed')
+          }}
         </n-tag>
       </template>
     </n-list-item>
     <n-list-item>
-      <n-thing title="账户密码" content-style="margin-top: 10px;">
+      <n-thing
+        :title="$t('modules.appCenter.securitySetting.password')"
+        content-style="margin-top: 10px;"
+      >
         <template #description>
           <span class="text-gray">
-            密码6-18位字符，支持数字、字母和除空格外的特殊字符，且必须同时包含数字和小写字母。
+            {{ $t('modules.appCenter.securitySetting.passwordTip') }}
           </span>
         </template>
       </n-thing>
@@ -27,9 +39,15 @@
       </template>
     </n-list-item>
     <n-list-item>
-      <n-thing title="密保手机" content-style="margin-top: 10px;">
+      <n-thing
+        :title="$t('modules.appCenter.securitySetting.phone')"
+        content-style="margin-top: 10px;"
+      >
         <template #description>
-          <span class="text-gray"> 已绑定手机：{{ maskPhone(userInfo.phone) || '-' }} </span>
+          <span class="text-gray">
+            {{ $t('modules.appCenter.securitySetting.phoneInfo')
+            }}{{ maskPhone(userInfo.phone) || '-' }}
+          </span>
         </template>
       </n-thing>
       <template #suffix>
@@ -39,9 +57,14 @@
       </template>
     </n-list-item>
     <n-list-item>
-      <n-thing title="安全邮箱" content-style="margin-top: 10px;">
+      <n-thing
+        :title="$t('modules.appCenter.securitySetting.email')"
+        content-style="margin-top: 10px;"
+      >
         <template #description>
-          <span class="text-gray"> 已绑定邮箱：{{ userInfo.email || '-' }} </span>
+          <span class="text-gray">
+            {{ $t('modules.appCenter.securitySetting.emailInfo') }}{{ userInfo.email || '-' }}
+          </span>
         </template>
       </n-thing>
       <template #suffix>

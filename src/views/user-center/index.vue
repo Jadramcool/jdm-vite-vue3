@@ -61,6 +61,7 @@
 </template>
 
 <script setup lang="ts">
+import { $t } from '@/locales';
 import { useUserStore } from '@/store';
 import { BasicSetting, PasswordSetting, SecuritySetting } from './components';
 
@@ -75,32 +76,44 @@ const userInfo = computed(() => ({
 // 用户信息表格
 const userTableDetail = computed(() => [
   {
-    title: '所属角色',
+    title: $t('modules.appCenter.info.role'),
     icon: 'solar:users-group-rounded-broken',
     content: userInfo.value?.roles?.map((item) => item.name).join(','),
   },
-  { title: '所属组织', icon: 'ph:buildings-duotone', content: '...' },
-  { title: '手机号', icon: 'solar:phone-calling-outline', content: userInfo.value?.phone || '-' },
-  { title: '邮箱', icon: 'ic:outline-attach-email', content: userInfo.value?.email || '-' },
   {
-    title: '详细地址',
+    title: $t('modules.appCenter.info.organization'),
+    icon: 'ph:buildings-duotone',
+    content: '...',
+  },
+  {
+    title: $t('user.phone'),
+    icon: 'solar:phone-calling-outline',
+    content: userInfo.value?.phone || '-',
+  },
+  {
+    title: $t('user.email'),
+    icon: 'ic:outline-attach-email',
+    content: userInfo.value?.email || '-',
+  },
+  {
+    title: $t('user.addressDetail'),
     icon: 'solar:buildings-3-linear',
-    content: `${userInfo.value?.addressDetail}${userInfo.value?.address}` || '-',
+    content: userInfo.value?.addressDetail || '-',
   },
 ]);
 
-const tabs = ref([
+const tabs = computed(() => [
   {
     key: '1',
-    label: '基本信息',
+    label: $t('modules.appCenter.info.basicSetting'),
   },
   {
     key: '2',
-    label: '安全设置',
+    label: $t('modules.appCenter.info.securitySetting'),
   },
   {
     key: '3',
-    label: '修改密码',
+    label: $t('modules.appCenter.info.passwordSetting'),
   },
 ]);
 

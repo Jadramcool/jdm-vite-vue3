@@ -34,7 +34,8 @@
       <n-layout-content embedded class="h-full flex-1 overflow-hidden" :native-scrollbar="true">
         <div class="wh-full flex-col">
           <AppCard
-            class="cus-scroll m-12px h-0 flex-1 p-24px"
+            class="cus-scroll m-12px h-0 flex-1"
+            :class="withContentCard ? 'p-24px' : ''"
             :style="{ background: !withContentCard && 'transparent' }"
             :bordered="!!withContentCard"
           >

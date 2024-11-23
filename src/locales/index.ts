@@ -7,7 +7,6 @@
  * @Description:
  *
  */
-// src/locales/index.ts
 
 import { lStorage } from '@/utils';
 import { createI18n, I18n } from 'vue-i18n';
@@ -37,6 +36,8 @@ export const i18n: I18n = createI18n({
     return key;
   },
 });
+
+export const $t = i18n.global.t as any;
 
 // import { lStorage } from '@/utils';
 // import { createI18n, I18n, I18nOptions } from 'vue-i18n';

@@ -25,7 +25,15 @@
               </NTooltip>
             </template>
             <template v-if="schema.component === 'NRadioGroup'">
-              <NRadioGroup v-bind="schema.componentProps" v-model:value="formModel[schema.field]">
+              <NRadioGroup
+                v-bind="schema.componentProps"
+                v-model:value="formModel[schema.field]"
+                :ref="
+                  (el: any) => {
+                    setComponentRef(schema.field, el);
+                  }
+                "
+              >
                 <NRadio
                   v-for="option in (schema.componentProps && schema.componentProps.options) || []"
                   :key="option.value"
@@ -36,7 +44,14 @@
               </NRadioGroup>
             </template>
             <template v-else-if="schema.component === 'NCheckboxGroup'">
-              <NCheckboxGroup v-model:value="formModel[schema.field]">
+              <NCheckboxGroup
+                v-model:value="formModel[schema.field]"
+                :ref="
+                  (el: any) => {
+                    setComponentRef(schema.field, el);
+                  }
+                "
+              >
                 <NCheckbox
                   v-for="option in (schema.componentProps && schema.componentProps.options) || []"
                   :key="option.value"
@@ -50,12 +65,22 @@
               <ApiSelect
                 v-bind="getComponentProps(schema)"
                 v-model:value="formModel[schema.field]"
+                :ref="
+                  (el: any) => {
+                    setComponentRef(schema.field, el);
+                  }
+                "
               />
             </template>
             <template v-else-if="schema.component === 'ApiTreeSelect'">
               <ApiTreeSelect
                 v-bind="getComponentProps(schema)"
                 v-model:value="formModel[schema.field]"
+                :ref="
+                  (el: any) => {
+                    setComponentRef(schema.field, el);
+                  }
+                "
               />
             </template>
 
@@ -63,10 +88,23 @@
               <DatePicker
                 v-bind="getComponentProps(schema)"
                 v-model:value="formModel[schema.field]"
+                :ref="
+                  (el: any) => {
+                    setComponentRef(schema.field, el);
+                  }
+                "
               />
             </template>
             <template v-else-if="schema.component === 'ApiTree'">
-              <ApiTree v-bind="getComponentProps(schema)" v-model:value="formModel[schema.field]" />
+              <ApiTree
+                v-bind="getComponentProps(schema)"
+                v-model:value="formModel[schema.field]"
+                :ref="
+                  (el: any) => {
+                    setComponentRef(schema.field, el);
+                  }
+                "
+              />
             </template>
             <!--判断插槽-->
             <template v-else>
@@ -78,6 +116,11 @@
                   isFull:
                     schema.isFull != false && getProps.isFull && schema.component !== 'NSwitch',
                 }"
+                :ref="
+                  (el: HTMLElement) => {
+                    setComponentRef(schema.field, el);
+                  }
+                "
               />
             </template>
           </NFormItemGi>
@@ -144,6 +187,14 @@ const loadingSub = ref<boolean>(false); // 表单提交loading
 const overflow = ref<boolean>(false); // 表单是否折叠
 const isUpdateDefault = ref<boolean>(false); // 是否更新默认值
 
+// 收集动态组件的实例
+const componentInstances = ref<Record<string, any>>({});
+
+const setComponentRef = (field: string, el: any) => {
+  if (el) {
+    componentInstances.value[field] = el;
+  }
+};
 // 获取props
 const getProps = computed((): NewFormProps => {
   // const formProps = { ...props, ...unref(propsRef) } as NewFormProps;
@@ -295,6 +346,11 @@ const unfoldToggle = () => {
   overflow.value = gridCollapsed.value;
 };
 
+// 获取组件实例
+const getComponentInstance = (field: string) => {
+  return componentInstances.value[field];
+};
+
 const formActionType = {
   getFieldsValue,
   setFieldsValue,
@@ -305,6 +361,7 @@ const formActionType = {
   clearValidate,
   submit: handleSubmit,
   updateSchema,
+  getComponentInstance, // 获取组件实例
 };
 
 onMounted(() => {

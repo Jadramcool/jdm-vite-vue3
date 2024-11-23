@@ -49,6 +49,7 @@
     "search": "Search",
     "status": "Status",
     "submit": "Submit",
+    "submitSuccess": "Update Success",
     "system": {
       "menu": {
         "schema": {
@@ -100,6 +101,48 @@
     "pleaseSelectDeleteUser": "Please select the user to delete"
   },
   "modules": {
+    "appCenter": {
+      "basicSetting": {
+        "avatarInfo": "Avatar Info",
+        "uploadAvatar": "Choose Avatar",
+        "uploadSuccess": "Upload success",
+        "uploadTypeError": "Only picture files in png/jpeg format can be uploaded. Please upload again.",
+        "userInfo": "UserInfo"
+      },
+      "info": {
+        "basicSetting": "Basic Setting",
+        "organization": "Organization",
+        "passwordSetting": "Change Password",
+        "role": "Role",
+        "securitySetting": "Security Settings"
+      },
+      "passwordSetting": {
+        "digit": "digit",
+        "newPassword": "New Password",
+        "originPassword": "Origin Password",
+        "passwordFormatError": "Passwords can only contain numbers, lower case letters, upper case letters, or underscores",
+        "passwordLengthMax": "Password length cannot be greater than",
+        "passwordLengthMin": "Password length cannot be less than",
+        "passwordNotMatch": "The passwords you entered twice do not match",
+        "pleaseInputOriginPassword": "Please enter the original password",
+        "pleaseInputPassword": "Please enter your password",
+        "pleaseInputReenteredPassword": "Please enter your password again",
+        "repeatPassword": "Repeat Password",
+        "updateSuccess": "Password modified successfully"
+      },
+      "securitySetting": {
+        "authFailed": "Unauthenticated",
+        "authInfo": "Authentication information:",
+        "authSuccess": "Authenticated",
+        "email": "Secure email",
+        "emailInfo": "Bound email:",
+        "password": "Password",
+        "passwordTip": "The password is 6-18 characters, supports numbers, letters and special characters other than spaces, and must contain both numbers and lowercase letters.",
+        "phone": "Secured mobile phone",
+        "phoneInfo": "Mobile phone has been bound:",
+        "realNameAuth": "Real-name authentication"
+      }
+    },
     "system": {
       "menu": {
         "schema": {
@@ -182,6 +225,7 @@
   },
   "user": {
     "address": "Address",
+    "addressDetail": "Detailed address",
     "birthday": "Birthday",
     "city": "City",
     "email": "Email",

@@ -64,9 +64,9 @@ declare namespace System {
     isDeleted?: boolean;
     status: number; // 0: 未激活, 1: 激活
     roleType?: string; // 角色类型 admin, user, doctor
-    city?: string;
-    address?: string;
-    addressDetail?: string;
+    city?: Nullable<string>;
+    address?: Nullable<string>;
+    addressDetail?: Nullable<string>;
     roles?: UserRole[]; // 需要定义 UserRole 类型
   };
 }

@@ -1,6 +1,9 @@
 <template>
   <n-form ref="formRef" :model="passwordModel" :rules="rules">
-    <n-form-item path="originPassword" label="原密码">
+    <n-form-item
+      path="originPassword"
+      :label="$t('modules.appCenter.passwordSetting.originPassword')"
+    >
       <n-input
         type="password"
         v-model:value="passwordModel.originPassword"
@@ -8,7 +11,7 @@
         @keydown.enter.prevent
       />
     </n-form-item>
-    <n-form-item path="password" label="密码">
+    <n-form-item path="password" :label="$t('modules.appCenter.passwordSetting.newPassword')">
       <n-input
         v-model:value="passwordModel.password"
         type="password"
@@ -16,7 +19,12 @@
         @keydown.enter.prevent
       />
     </n-form-item>
-    <n-form-item ref="rPasswordFormItemRef" first path="reenteredPassword" label="重复密码">
+    <n-form-item
+      ref="rPasswordFormItemRef"
+      first
+      path="reenteredPassword"
+      :label="$t('modules.appCenter.passwordSetting.repeatPassword')"
+    >
       <n-input
         v-model:value="passwordModel.reenteredPassword"
         show-password-on="click"
@@ -43,6 +51,7 @@
 <script lang="ts" setup>
 import { UserApi } from '@/api';
 import { common } from '@/config';
+import { $t } from '@/locales';
 import type { FormInst, FormRules } from 'naive-ui';
 import { FormItemRule } from 'naive-ui';
 
@@ -65,10 +74,14 @@ const rules = ref<FormRules>({
       validator: (_rule: FormItemRule, value: string) => {
         return new Promise<void>((resolve, reject) => {
           if (!value) {
-            reject(new Error('请输入原密码'));
+            reject(new Error($t('modules.appCenter.passwordSetting.pleaseInputOriginPassword')));
           }
           if (value.length < common.passwordMinLength) {
-            reject(new Error(`密码长度不能小于${common.passwordMinLength}位`));
+            reject(
+              new Error(
+                `${$t('modules.appCenter.passwordSetting.passwordLengthMin')}} ${common.passwordMaxLength} ${$t('modules.appCenter.passwordSetting.digit')}}`,
+              ),
+            );
           }
           UserApi.checkPassword({ password: value })
             .then((res) => {
@@ -92,7 +105,7 @@ const rules = ref<FormRules>({
   reenteredPassword: [
     {
       required: true,
-      message: '请再次输入密码',
+      message: $t('modules.appCenter.passwordSetting.pleaseInputReenteredPassword'),
       trigger: ['input', 'blur'],
     },
     {
@@ -100,7 +113,7 @@ const rules = ref<FormRules>({
       validator: (_rule: FormItemRule, value: string) => {
         return new Promise<void>((resolve, reject) => {
           if (value !== passwordModel.password) {
-            reject(new Error('两次密码不一致'));
+            reject(new Error($t('modules.appCenter.passwordSetting.passwordNotMatch')));
           }
           resolve();
         });
@@ -113,18 +126,26 @@ const rules = ref<FormRules>({
 const passwordValidator = (value: string): Promise<void> | Error => {
   return new Promise((resolve, reject) => {
     if (!value) {
-      reject(new Error('请输入密码'));
+      reject(new Error($t('modules.appCenter.passwordSetting.pleaseInputPassword')));
     }
     if (value.length < common.passwordMinLength) {
-      reject(new Error(`密码长度不能小于${common.passwordMinLength}位`));
+      reject(
+        new Error(
+          `${$t('modules.appCenter.passwordSetting.passwordLengthMin')}} ${common.passwordMaxLength} ${$t('modules.appCenter.passwordSetting.digit')}}`,
+        ),
+      );
     }
     if (value.length > common.passwordMaxLength) {
-      reject(new Error(`密码长度不能大于${common.passwordMaxLength}位`));
+      reject(
+        new Error(
+          `${$t('modules.appCenter.passwordSetting.passwordLengthMax')}} ${common.passwordMaxLength} ${$t('modules.appCenter.passwordSetting.digit')}}`,
+        ),
+      );
     }
     // 正则表达式判断是否包含除了数字，小写字母，大写字母，下划线以外的输入
     const regex = /^[a-zA-Z0-9_]*$/;
     if (!regex.test(value)) {
-      reject(new Error('密码只能包含数字、小写字母、大写字母或下划线'));
+      reject(new Error($t('modules.appCenter.passwordSetting.passwordFormatError')));
     }
     resolve();
   });
@@ -138,7 +159,7 @@ const handleSubmit = async (e: MouseEvent) => {
     await UserApi.updatePassword({
       password: passwordModel.password,
     });
-    window.$message.success('密码修改成功');
+    window.$message.success($t('modules.appCenter.passwordSetting.updateSuccess'));
     passwordModel.originPassword = null;
     passwordModel.password = null;
     passwordModel.reenteredPassword = null;

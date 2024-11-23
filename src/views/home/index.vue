@@ -1,37 +1,16 @@
 <template>
   <div>
-    <div class="test">home</div>
+    <AppCard> </AppCard>
+    <div id="container"></div>
     <n-button type="warning" @click="handleLogout">退出登录</n-button>
-    <n-button type="warning" @click="handlePage">跳转路由</n-button>
-    <div class="card card-bg dark:card-bg-dark card-shadow">123</div>
   </div>
 </template>
 
 <script setup lang="ts">
-// import { setToken } from '@/utils/token';
 import { lStorage } from '@/utils/storage';
 
-const router = useRouter();
 const handleLogout = () => {
   lStorage.clearAll();
-};
-
-// onMounted(() => {
-//   setTimeout(() => {
-//     getData();
-//   }, 3000);
-// });
-
-// const getData = async () => {
-//   if (import.meta.env.VIET_MOCK) {
-//     await ExampleApi.mockGetUserInfoAPI();
-//   } else {
-//     await UserApi.getUserInfo();
-//   }
-// };
-
-const handlePage = () => {
-  router.push('/base/components');
 };
 </script>
 

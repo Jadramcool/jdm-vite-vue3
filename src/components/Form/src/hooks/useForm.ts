@@ -83,6 +83,11 @@ export const useForm = (props?: any) => {
       const form = await getForm();
       return form.submit();
     },
+    getComponentInstance: async (key: string) => {
+      const form = await getForm();
+      const instance = await form.getComponentInstance(key);
+      return instance;
+    },
   };
 
   return [register, methods];

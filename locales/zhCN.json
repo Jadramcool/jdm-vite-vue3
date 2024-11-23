@@ -49,6 +49,7 @@
     "search": "查询",
     "status": "状态",
     "submit": "提交",
+    "submitSuccess": "更新成功",
     "system": {
       "menu": {
         "schema": {
@@ -100,6 +101,48 @@
     "pleaseSelectDeleteUser": "请选择要删除的用户"
   },
   "modules": {
+    "appCenter": {
+      "basicSetting": {
+        "avatarInfo": "头像信息",
+        "uploadAvatar": "选择头像",
+        "uploadSuccess": "上传成功",
+        "uploadTypeError": "只能上传png/jpeg格式的图片文件，请重新上传",
+        "userInfo": "个人信息"
+      },
+      "info": {
+        "basicSetting": "基本信息",
+        "organization": "所属组织",
+        "passwordSetting": "修改密码",
+        "role": "所属角色",
+        "securitySetting": "安全设置"
+      },
+      "passwordSetting": {
+        "digit": "位",
+        "newPassword": "新密码",
+        "originPassword": "原密码",
+        "passwordFormatError": "密码只能包含数字、小写字母、大写字母或下划线",
+        "passwordLengthMax": "密码长度不能大于",
+        "passwordLengthMin": "密码长度不能小于",
+        "passwordNotMatch": "两次输入密码不一致",
+        "pleaseInputOriginPassword": "请输入原密码",
+        "pleaseInputPassword": "请输入密码",
+        "pleaseInputReenteredPassword": "请再次输入密码",
+        "repeatPassword": "重复密码",
+        "updateSuccess": "密码修改成功"
+      },
+      "securitySetting": {
+        "authFailed": "未认证",
+        "authInfo": "认证信息：",
+        "authSuccess": "已认证",
+        "email": "安全邮箱",
+        "emailInfo": "已绑定邮箱：",
+        "password": "账户密码",
+        "passwordTip": "密码6-18位字符，支持数字、字母和除空格外的特殊字符，且必须同时包含数字和小写字母。",
+        "phone": "密保手机",
+        "phoneInfo": "已绑定手机：",
+        "realNameAuth": "实名认证"
+      }
+    },
     "system": {
       "menu": {
         "schema": {
@@ -182,6 +225,7 @@
   },
   "user": {
     "address": "地址",
+    "addressDetail": "详细地址",
     "birthday": "生日",
     "city": "所属城市",
     "email": "邮箱",
