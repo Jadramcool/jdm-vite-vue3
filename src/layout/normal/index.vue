@@ -31,11 +31,15 @@
       <n-layout-header embedded>
         <TabBar v-if="appStore.showTabs"></TabBar>
       </n-layout-header>
-      <n-layout-content embedded class="h-full flex-1 overflow-hidden" :native-scrollbar="true">
+      <n-layout-content
+        embedded
+        class="h-full flex-1 overflow-hidden"
+        :native-scrollbar="!!withContentCard"
+      >
         <div class="wh-full flex-col">
           <AppCard
-            class="cus-scroll m-12px h-0 flex-1"
-            :class="withContentCard ? 'p-24px' : ''"
+            class="m-12px h-0 flex-1"
+            :class="withContentCard ? 'p-24px cus-scroll' : ''"
             :style="{ background: !withContentCard && 'transparent' }"
             :bordered="!!withContentCard"
           >

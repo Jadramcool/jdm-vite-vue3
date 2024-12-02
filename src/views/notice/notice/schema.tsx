@@ -1,21 +1,16 @@
-import { MenuApi } from '@/api';
-import { MenuTypeColorMap, MenuTypeOptions } from '@/constants';
+import { NoticeTypeColorMap, NoticeTypeOptions } from '@/constants';
 import { $t } from '@/locales/i18n';
-import { arrayToTree, columnsUtil, editFormSchemaUtil, formSchemaUtil } from '@/utils';
+import { columnsUtil, editFormSchemaUtil, formSchemaUtil } from '@/utils';
 import dayjs from 'dayjs';
+import { toLower } from 'lodash';
 import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import { computed } from 'vue';
 
-export const useRoleSchema = (methods: any = {}) => {
+const locales = (field: string) => $t(`modules.notice.notice.${field}`);
+
+export const useNoticeSchema = (methods: any = {}) => {
   const schema = computed(() => ({
     properties: [
-      {
-        table: {
-          type: 'selection',
-          options: ['all', 'none'],
-          disabled: (row: any) => row.code === 'DEFAULT',
-        },
-      },
       {
         key: 'id',
         label: $t('common.id'),
@@ -29,76 +24,97 @@ export const useRoleSchema = (methods: any = {}) => {
             precision: 0,
           },
         },
+        table: {
+          width: 60,
+        },
         editForm: {
           componentProps: {
             showButton: false,
             disabled: true,
           },
         },
+      },
+      {
+        key: 'type',
+        label: $t('modules.notice.notice.schema.type'),
         table: {
-          width: 60,
+          render: (row: any) => {
+            return (
+              <NTag type={NoticeTypeColorMap[row.type]} bordered={false} size="small">
+                {locales(`typeMap.${toLower(row.type)}`)}
+              </NTag>
+            );
+          },
+        },
+        form: {
+          component: 'NSelect',
+          componentProps: {
+            options: unref(NoticeTypeOptions),
+          },
+        },
+        editForm: {
+          rules: [
+            {
+              required: true,
+              message: `${$t('common.pleaseSelect')}`,
+            },
+          ],
         },
       },
       {
-        key: 'name',
-        label: $t('modules.system.role.schema.name'),
+        key: 'title',
+        label: $t('modules.notice.notice.schema.title'),
         defaultValue: undefined,
         form: {
           component: 'NInput',
           query: 'in',
           componentProps: {
-            placeholder: $t('modules.system.role.schema.pleaseInputRoleName'),
+            placeholder: $t('modules.notice.notice.schema.pleaseInputTitle'),
           },
         },
         editForm: {
           rules: [
             {
               required: true,
-              message: $t('modules.system.role.schema.pleaseInputRoleName'),
+              message: $t('modules.notice.notice.schema.pleaseInputTitle'),
             },
           ],
         },
       },
       {
-        key: 'code',
-        label: $t('modules.system.role.schema.code'),
+        key: 'content',
+        label: $t('modules.notice.notice.schema.content'),
         defaultValue: undefined,
+        table: {
+          ellipsis: {
+            tooltip: true,
+          },
+        },
         form: {
           component: 'NInput',
+          query: 'in',
           componentProps: {
-            placeholder: $t('modules.system.role.schema.pleaseInputCode'),
+            placeholder: $t('modules.notice.notice.schema.pleaseInputContent'),
           },
-        },
-        editForm: {
-          rules: [
-            {
-              required: true,
-              message: $t('modules.system.role.schema.pleaseInputCode'),
-            },
-          ],
-        },
-      },
-      {
-        key: 'description',
-        label: $t('modules.system.menu.schema.description'),
-        defaultValue: undefined,
-        form: {
-          component: 'NInput',
         },
         editForm: {
           componentProps: {
             type: 'textarea',
-            placeholder: $t('modules.system.role.schema.pleaseInputDescription'),
-            maxlength: '50',
-            rows: 4,
+            maxlength: '100',
             showCount: true,
+            clearable: true,
           },
         },
+      },
+      {
+        key: 'author',
+        label: $t('modules.notice.notice.schema.author'),
+        defaultValue: undefined,
+        form: {
+          component: 'NInput',
+        },
         table: {
-          render: (row: any) => row.description || '-',
-          ellipsis: {
-            tooltip: true,
-          },
+          render: (row: any) => row.author?.name || row.author?.username || '-',
         },
       },
       {
@@ -121,12 +137,12 @@ export const useRoleSchema = (methods: any = {}) => {
         key: 'operate',
         label: $t('common.operate'),
         table: {
-          width: 240,
+          width: 200,
           fixed: 'right',
           render: (row: any) => (
             <NSpace justify="center">
-              <NButton type="success" ghost size="small" onClick={() => methods.handleSetAuth(row)}>
-                {$t('modules.system.role.schema.setAuth')}
+              <NButton type="primary" ghost size="small" onClick={() => methods.handleSend(row)}>
+                {$t('modules.notice.notice.schema.send')}
               </NButton>
               <NButton type="primary" ghost size="small" onClick={() => methods.handleEdit(row)}>
                 {$t('common.edit')}
@@ -142,37 +158,11 @@ export const useRoleSchema = (methods: any = {}) => {
                     ),
                   }}
                 >
-                  是否确认删除用户 {row.username}？
+                  {$t('common.phrase.confirmDelete')}?
                 </NPopconfirm>
               ) : null}
             </NSpace>
           ),
-        },
-      },
-      {
-        key: 'menu',
-        label: $t('modules.system.role.schema.menu'),
-        form: {
-          component: 'ApiTree',
-          componentProps: {
-            api: MenuApi.menuList,
-            afterRequest: (data: any) => {
-              return arrayToTree(data);
-            },
-            keyField: 'id',
-            labelField: 'name',
-            renderPrefix: (node: any) => {
-              const { option } = node;
-              const type = unref(MenuTypeOptions).find((item) => item.value === option.type)?.label;
-              return (
-                type && (
-                  <NTag size="small" type={MenuTypeColorMap[option.type]}>
-                    {type}
-                  </NTag>
-                )
-              );
-            },
-          },
         },
       },
     ],
@@ -183,16 +173,16 @@ export const useRoleSchema = (methods: any = {}) => {
   // 表格和表单字段
   const tableFields = [
     'id',
-    'code',
-    'name',
-    'description',
+    'type',
+    'title',
+    'content',
+    'author',
     'createdTime',
     'updatedTime',
     'operate',
   ];
-  const formFields = ['id', 'code', 'name'];
-  const editFormFields = ['id', 'code', 'name', 'description'];
-  const authFormFields = ['menu'];
+  const formFields = ['id', 'type', 'title', 'content'];
+  const editFormFields = ['id', 'title', 'type', 'content'];
 
   // 表格列配置
   const columns = computed(() => columnsUtil(schema.value, tableFields));
@@ -201,7 +191,5 @@ export const useRoleSchema = (methods: any = {}) => {
 
   const editFormSchemas = computed(() => editFormSchemaUtil(schema.value, editFormFields));
 
-  const authFormSchemas = computed(() => editFormSchemaUtil(schema.value, authFormFields));
-
-  return { columns, formSchemas, editFormSchemas, authFormSchemas };
+  return { columns, formSchemas, editFormSchemas };
 };

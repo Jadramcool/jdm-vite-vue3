@@ -19,7 +19,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    "types": ["vite/client", "node"],
+    "jsxImportSource": "vue", // vue3.4之后Vue 不再隐式注册全局JSX命名空间。要指示 TypeScript 使用 Vue 的 JSX 类型定义
+    "types": ["vite/client", "node", "vue"],
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,

@@ -20,7 +20,12 @@
       <router-view v-if="Layout" v-slot="{ Component, route: curRoute }">
         <component :is="Layout" v-bind="routeExtraData">
           <KeepAlive :include="keepAliveNames">
-            <component :is="Component" v-if="appStore.loadFlag" :key="curRoute.fullPath" />
+            <component
+              :is="Component"
+              v-if="appStore.loadFlag"
+              :key="curRoute.fullPath"
+              @vue:mounted="onVNodeMounted"
+            />
           </KeepAlive>
         </component>
       </router-view>
@@ -47,6 +52,11 @@ const naiveLocale: any = computed(() => {
   return naiveI18nOptions[lang] ? naiveI18nOptions[lang] : naiveI18nOptions.enUS;
 });
 
+// TODO 待删除 获取组件实例
+const onVNodeMounted = (vnode: { type: any }) => {
+  console.log('Component:', vnode.type.name);
+};
+
 onMounted(() => {
   // 初始化主题
   appStore.setPrimaryColor();
@@ -72,6 +82,8 @@ const routeExtraData: any = computed(() => {
 });
 // 获取keep-alive的所有组件名称
 const keepAliveNames = computed(() => {
+  console.log(tabStore.tabs);
+  console.log(tabStore.tabs.filter((item: any) => item.keepAlive).map((item: any) => item?.name));
   return tabStore.tabs.filter((item: any) => item.keepAlive).map((item: any) => item?.name);
 });
 </script>

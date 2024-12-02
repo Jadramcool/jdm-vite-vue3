@@ -7,6 +7,7 @@
  * @Description:
  *
  */
+import { $t } from '@/locales';
 import { ComponentType } from './types/index';
 
 /**
@@ -14,12 +15,12 @@ import { ComponentType } from './types/index';
  */
 export function createPlaceholderMessage(component: ComponentType | undefined) {
   if (!component) return '';
-  if (component === 'NInput') return '请输入';
+  if (component === 'NInput') return $t('common.pleaseInput');
   if (
     ['NPicker', 'NSelect', 'NCheckbox', 'NRadio', 'NSwitch', 'NDatePicker', 'NTimePicker'].includes(
       component,
     )
   )
-    return '请选择';
+    return $t('common.pleaseSelect');
   return '';
 }

@@ -109,7 +109,6 @@ export const useUserSchema = (methods: any = {}) => {
         defaultValue: undefined,
         form: {
           component: 'NInput',
-          defaultValue: '15952054087',
           componentProps: {
             placeholder: $t('modules.system.user.schema.pleaseInputPhone'),
             showButton: false,

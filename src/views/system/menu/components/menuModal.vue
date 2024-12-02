@@ -51,7 +51,7 @@ const [register, { closeModal, setModalProps }] = useModalInner(async (data) => 
   isUpdate.value = !!data?.isUpdate;
   entityId.value = data?.record?.id;
 
-  const extraData = JSON.parse(data?.record?.extraData) || {};
+  const extraData = data?.record?.extraData ? JSON.parse(data?.record?.extraData) : {};
   if (isUpdate.value) {
     setFieldsValue(data.record);
     setFieldsValue2(extraData);
