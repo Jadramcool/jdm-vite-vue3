@@ -1,6 +1,7 @@
 <template>
   <div>
     <BasicForm @register="register" @submit="handleSubmit" ref="formRef"> </BasicForm>
+    <RoleUserSelect></RoleUserSelect>
 
     <n-divider dashed />
 
