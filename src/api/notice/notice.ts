@@ -2,9 +2,11 @@ import request from '@/utils/http/axios';
 
 enum API {
   list = '/notice/list',
+  detail = '/notice/detail',
   create = '/notice/create',
   update = '/notice/update',
   delete = '/notice/delete',
+  send = '/notice/send',
 }
 
 /**
@@ -14,6 +16,15 @@ export const noticeList = (params?: any) => {
   return request.get<Notice.Notice[]>({
     url: API.list,
     params,
+  });
+};
+
+/**
+ * @description: 获取公告详细信息
+ */
+export const noticeDetail = (noticeId: number) => {
+  return request.get<Notice.Notice[]>({
+    url: `${API.detail}/${noticeId}`,
   });
 };
 
@@ -43,5 +54,15 @@ export const updateNotice = (data: any) => {
 export const deleteNotice = (id: number) => {
   return request.delete<Notice.Notice>({
     url: `${API.delete}/${id}`,
+  });
+};
+
+/**
+ * @description: 发送公告
+ */
+export const sendNotice = (data: { id: number; userIds: number[] }) => {
+  return request.post<Notice.Notice>({
+    url: API.send,
+    data,
   });
 };

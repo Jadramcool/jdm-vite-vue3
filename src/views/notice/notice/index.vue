@@ -1,7 +1,6 @@
 <template>
   <div>
     <BasicForm @register="register" @submit="handleSubmit" ref="formRef"> </BasicForm>
-    <RoleUserSelect></RoleUserSelect>
 
     <n-divider dashed />
 
@@ -12,7 +11,7 @@
       :filters="queryParams"
       :request="loadNoticeList"
       :rowKey="(row: NaiveUI.RowData) => row.id"
-      :scroll-x="1200"
+      scroll-x="1400"
       @update:checked-row-keys="handleCheck"
       @add="handleAdd"
     />
@@ -32,7 +31,6 @@ import { useNoticeSchema } from './schema';
 defineOptions({ name: 'Notice' });
 onMounted(() => {
   // 获取表格数据
-  console.log(1111);
 });
 
 // 表格/表单配置  采用computed（适配i18n）
@@ -80,9 +78,6 @@ const [registerSendModal, { openModal: openSendModal }] = useModal();
 // 表格数据请求
 const loadNoticeList = async (data: Query.GetParams) => {
   data.filters = { ...(data.filters || {}), ...getFieldsValue() };
-  const res = await NoticeApi.noticeList(data);
-  console.log('🚀 ~ loadNoticeList ~ res:', res);
-
   return NoticeApi.noticeList(data);
 };
 

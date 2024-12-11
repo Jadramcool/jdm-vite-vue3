@@ -76,7 +76,10 @@
     },
     "updatedTime": "更新时间",
     "username": "用户名",
-    "yes": "是"
+    "yes": "是",
+    "total": "共",
+    "people": "位",
+    "totalSelect": "共选择"
   },
   "layout": {
     "normal": "普通",
@@ -110,7 +113,9 @@
   },
   "message": {
     "notSelectDefaultTop": "不选默认为顶级",
-    "pleaseSelectDeleteUser": "请选择要删除的用户"
+    "pleaseSelectDeleteUser": "请选择要删除的用户",
+    "notSetName": "此用户暂未设置姓名",
+    "roleUserSelectTip": "橙色用户标签代表该用户不仅在当前角色下被选中,不影响操作"
   },
   "modules": {
     "appCenter": {
@@ -168,7 +173,8 @@
           "pleaseInputTitle": "请输入公告标题",
           "send": "发送",
           "title": "公告标题",
-          "type": "类型"
+          "type": "类型",
+          "status": "状态"
         },
         "table": {
           "title": "公告列表"
@@ -177,6 +183,10 @@
           "activity": "活动",
           "info": "消息",
           "notice": "通知"
+        },
+        "statusMap": {
+          "enable": "已发送",
+          "disable": "未发送"
         }
       }
     },
@@ -281,6 +291,14 @@
     "status": {
       "disable": "禁用",
       "enable": "启用"
+    }
+  },
+  "component": {
+    "roleUserSelect": "角色用户",
+    "message": {
+      "selectUserTip": "请选择用户!",
+      "sent": "已发送",
+      "selectRoleUserSentTip": "已被发送的用户，将不可选择再次发送"
     }
   }
 }

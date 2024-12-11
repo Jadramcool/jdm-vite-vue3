@@ -40,3 +40,15 @@ export const NoticeTypeOptions = computed(() => [
   { label: $t('modules.notice.notice.typeMap.info'), value: 'INFO' },
   { label: $t('modules.notice.notice.typeMap.activity'), value: 'ACTIVITY' },
 ]);
+
+/** @description: 公告状态配置 */
+export const NoticeStatusOptions = computed(() => [
+  { label: $t('modules.notice.notice.statusMap.enable'), value: 1 },
+  { label: $t('modules.notice.notice.statusMap.disable'), value: 0 },
+]);
+
+/** @description: 全局状态样式配置 */
+export const GlobalStatusOptions: Record<number, 'success' | 'error'> = {
+  1: 'success',
+  0: 'error',
+};

@@ -1,11 +1,17 @@
 <template>
   <NModal v-bind="getBindValue" ref="modalElRef">
-    <NCard style="width: 800px" size="small" closable :segmented="true" :on-close="handleClose">
+    <NCard
+      :style="{ width: getBindValue.cardWidth }"
+      size="small"
+      closable
+      :segmented="true"
+      :on-close="handleClose"
+    >
       <template #header>
         {{ getBindValue.title || '弹窗' }}
       </template>
       <template #default>
-        <NScrollbar content-class="modal-content" style="height: 420px">
+        <NScrollbar content-class="modal-content" :style="{ height: getBindValue.cardHeight }">
           <div class="mx-6">
             <slot></slot>
           </div>

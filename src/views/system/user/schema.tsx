@@ -104,6 +104,14 @@ export const useUserSchema = (methods: any = {}) => {
         },
       },
       {
+        key: 'name',
+        label: $t('user.name'),
+        defaultValue: undefined,
+        table: {
+          render: (row: any) => row.name || '-',
+        },
+      },
+      {
         key: 'phone',
         label: $t('user.phone'),
         defaultValue: undefined,
@@ -326,6 +334,7 @@ export const useUserSchema = (methods: any = {}) => {
   const tableFields = [
     'id',
     'username',
+    'name',
     'phone',
     'roleType',
     'role',

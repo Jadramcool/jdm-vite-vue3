@@ -5,6 +5,7 @@ declare namespace Notice {
     title: string;
     content?: string;
     authorId?: number;
+    status: number;
     createdTime: Date;
     updatedTime: Date;
     receivers?: Recordable;

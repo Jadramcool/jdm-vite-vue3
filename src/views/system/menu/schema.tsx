@@ -189,9 +189,6 @@ export const useMenuSchema = (methods: any = {}) => {
         },
       },
       {
-        key: 'status',
-      },
-      {
         key: 'createdTime',
         label: $t('common.createdTime'),
         defaultValue: undefined,
@@ -413,7 +410,7 @@ export const useMenuSchema = (methods: any = {}) => {
     'updatedTime',
     'operate',
   ];
-  const formFields = ['id', 'name', 'status'];
+  const formFields = ['id', 'name'];
   const editFormFields = [
     'type',
     'pid',

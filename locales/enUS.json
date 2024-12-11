@@ -76,7 +76,10 @@
     },
     "updatedTime": "UpdatedTime",
     "username": "Username",
-    "yes": "Yes"
+    "yes": "Yes",
+    "total": "Total",
+    "people": "people",
+    "totalSelect": "Total selected"
   },
   "layout": {
     "normal": "Normal",
@@ -110,7 +113,9 @@
   },
   "message": {
     "notSelectDefaultTop": "Default to top level if not selected",
-    "pleaseSelectDeleteUser": "Please select the user to delete"
+    "pleaseSelectDeleteUser": "Please select the user to delete",
+    "notSetName": "This user has not set a name yet",
+    "roleUserSelectTip": "The orange user label means that the user is not only selected under the current role, but also does not affect the operation"
   },
   "modules": {
     "appCenter": {
@@ -168,7 +173,8 @@
           "pleaseInputTitle": "Please enter the notice title",
           "send": "Send",
           "title": "Notice title",
-          "type": "Type"
+          "type": "Type",
+          "status": "Status"
         },
         "table": {
           "title": "Notice Table"
@@ -177,6 +183,10 @@
           "activity": "Activity",
           "info": "Info",
           "notice": "Notice"
+        },
+        "statusMap": {
+          "enable": "Sent",
+          "disable": "Not sent"
         }
       }
     },
@@ -281,6 +291,14 @@
     "status": {
       "disable": "Disabled",
       "enable": "Enabled"
+    }
+  },
+  "component": {
+    "roleUserSelect": "Role User",
+    "message": {
+      "selectUserTip": "Please select a user!",
+      "sent": "Sent",
+      "selectRoleUserSentTip": "Users who have already been sent will not be able to choose to send again"
     }
   }
 }

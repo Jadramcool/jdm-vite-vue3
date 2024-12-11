@@ -1,4 +1,9 @@
-import { NoticeTypeColorMap, NoticeTypeOptions } from '@/constants';
+import {
+  GlobalStatusOptions,
+  NoticeStatusOptions,
+  NoticeTypeColorMap,
+  NoticeTypeOptions,
+} from '@/constants';
 import { $t } from '@/locales/i18n';
 import { columnsUtil, editFormSchemaUtil, formSchemaUtil } from '@/utils';
 import dayjs from 'dayjs';
@@ -114,7 +119,29 @@ export const useNoticeSchema = (methods: any = {}) => {
           component: 'NInput',
         },
         table: {
-          render: (row: any) => row.author?.name || row.author?.username || '-',
+          render: (row: Notice.Notice) => row.author?.name || row.author?.username || '-',
+        },
+      },
+      {
+        key: 'status',
+        label: $t('modules.notice.notice.schema.status'),
+        defaultValue: undefined,
+        form: {
+          component: 'NSelect',
+          componentProps: {
+            options: unref(NoticeStatusOptions),
+          },
+        },
+        table: {
+          render: (row: Notice.Notice) => {
+            const status = row.status ? 'enable' : 'disable';
+
+            return (
+              <NTag type={GlobalStatusOptions[row.status]} bordered={false} size="small">
+                {locales(`statusMap.${toLower(status)}`)}
+              </NTag>
+            );
+          },
         },
       },
       {
@@ -122,7 +149,8 @@ export const useNoticeSchema = (methods: any = {}) => {
         label: $t('common.createdTime'),
         defaultValue: undefined,
         table: {
-          render: (row: any) => dayjs(row.createdTime).format('YYYY-MM-DD HH:mm:ss'),
+          // width: '180',
+          render: (row: Notice.Notice) => dayjs(row.createdTime).format('YYYY-MM-DD HH:mm:ss'),
         },
       },
       {
@@ -130,7 +158,8 @@ export const useNoticeSchema = (methods: any = {}) => {
         label: $t('common.updatedTime'),
         form: {},
         table: {
-          render: (row: any) => dayjs(row.updatedTime).format('YYYY-MM-DD HH:mm:ss'),
+          // width: '180',
+          render: (row: Notice.Notice) => dayjs(row.updatedTime).format('YYYY-MM-DD HH:mm:ss'),
         },
       },
       {
@@ -139,28 +168,28 @@ export const useNoticeSchema = (methods: any = {}) => {
         table: {
           width: 200,
           fixed: 'right',
-          render: (row: any) => (
+          render: (row: Notice.Notice) => (
             <NSpace justify="center">
               <NButton type="primary" ghost size="small" onClick={() => methods.handleSend(row)}>
                 {$t('modules.notice.notice.schema.send')}
               </NButton>
-              <NButton type="primary" ghost size="small" onClick={() => methods.handleEdit(row)}>
-                {$t('common.edit')}
-              </NButton>
-              {row.code !== 'DEFAULT' ? (
-                <NPopconfirm
-                  onPositiveClick={() => methods.handleDelete(row)}
-                  v-slots={{
-                    trigger: () => (
-                      <NButton type="error" ghost size="small">
-                        {$t('common.delete')}
-                      </NButton>
-                    ),
-                  }}
-                >
-                  {$t('common.phrase.confirmDelete')}?
-                </NPopconfirm>
-              ) : null}
+              {!row.status && (
+                <NButton type="primary" ghost size="small" onClick={() => methods.handleEdit(row)}>
+                  {$t('common.edit')}
+                </NButton>
+              )}
+              <NPopconfirm
+                onPositiveClick={() => methods.handleDelete(row)}
+                v-slots={{
+                  trigger: () => (
+                    <NButton type="error" ghost size="small">
+                      {$t('common.delete')}
+                    </NButton>
+                  ),
+                }}
+              >
+                {$t('common.phrase.confirmDelete')}?
+              </NPopconfirm>
             </NSpace>
           ),
         },
@@ -177,11 +206,12 @@ export const useNoticeSchema = (methods: any = {}) => {
     'title',
     'content',
     'author',
+    'status',
     'createdTime',
     'updatedTime',
     'operate',
   ];
-  const formFields = ['id', 'type', 'title', 'content'];
+  const formFields = ['id', 'type', 'title', 'status', 'content'];
   const editFormFields = ['id', 'title', 'type', 'content'];
 
   // 表格列配置
