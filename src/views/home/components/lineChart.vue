@@ -1,6 +1,6 @@
 <template>
   <div id="container">
-    <div ref="testRef" class="h-300px w-400px" />
+    <div ref="testRef" class="h-300px w-100%" />
   </div>
 </template>
 

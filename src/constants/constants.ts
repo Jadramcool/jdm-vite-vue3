@@ -34,12 +34,21 @@ export const NoticeTypeColorMap: Record<string, 'success' | 'warning' | 'info'> 
   [NOTICE_TYPE.ACTIVITY]: 'warning',
 };
 
-/** @description: 公告类型配置 */
+/** @description: 公告类型选项配置 */
 export const NoticeTypeOptions = computed(() => [
   { label: $t('modules.notice.notice.typeMap.notice'), value: 'NOTICE' },
   { label: $t('modules.notice.notice.typeMap.info'), value: 'INFO' },
   { label: $t('modules.notice.notice.typeMap.activity'), value: 'ACTIVITY' },
 ]);
+
+/** @description: 公告类型对照 */
+export const NoticeType = computed((): Recordable => {
+  return {
+    NOTICE: $t('modules.notice.notice.typeMap.notice'),
+    INFO: $t('modules.notice.notice.typeMap.info'),
+    ACTIVITY: $t('modules.notice.notice.typeMap.activity'),
+  };
+});
 
 /** @description: 公告状态配置 */
 export const NoticeStatusOptions = computed(() => [

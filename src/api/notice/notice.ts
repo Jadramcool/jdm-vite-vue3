@@ -1,4 +1,5 @@
 import request from '@/utils/http/axios';
+import { List } from '../types';
 
 enum API {
   list = '/notice/list',
@@ -7,6 +8,8 @@ enum API {
   update = '/notice/update',
   delete = '/notice/delete',
   send = '/notice/send',
+  userNotice = '/notice/userNotice',
+  read = '/notice/read',
 }
 
 /**
@@ -63,6 +66,26 @@ export const deleteNotice = (id: number) => {
 export const sendNotice = (data: { id: number; userIds: number[] }) => {
   return request.post<Notice.Notice>({
     url: API.send,
+    data,
+  });
+};
+
+/**
+ * @description: 用户公告
+ */
+export const getUserNotice = (params?: any) => {
+  return request.get<List<Notice.UserNotice>>({
+    url: API.userNotice,
+    params,
+  });
+};
+
+/**
+ * @description: 用户阅读公告
+ */
+export const updateUserNoticeRead = (data: any) => {
+  return request.put<number>({
+    url: API.read,
     data,
   });
 };

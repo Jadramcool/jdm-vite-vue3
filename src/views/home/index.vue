@@ -1,40 +1,29 @@
 <template>
   <div>
-    <n-grid x-gap="12" cols="1 m:24" responsive="screen">
+    <n-card class="header" bordered hoverable>
+      <template class="flex flex-row flex-x-center">
+        <n-avatar :src="userInfo.avatar" :size="80" round :bordered="true"></n-avatar>
+        <div class="ml-20px">
+          <n-h3 strong class="text-18px font-semibold mb-4px">
+            {{ getTimeofDay }}, {{ userInfo.name || userInfo.username }},{{
+              $t('common.phrase.welcome')
+            }}!
+          </n-h3>
+          <n-text class="text-tips">
+            {{ weatherLiveData.city }}, 今日天气{{ weatherLiveData.weather }}, 温度
+            {{ weatherLiveData.temperature }}℃
+          </n-text>
+        </div>
+      </template>
+    </n-card>
+    <n-grid x-gap="10" y-gap="10" cols="1 m:24" responsive="screen" class="mt-10px">
       <n-gi span="16">
-        <n-card class="header" bordered hoverable>
-          <template class="flex flex-row flex-x-center">
-            <n-avatar :src="userInfo.avatar" :size="80" round :bordered="true"></n-avatar>
-            <div class="ml-20px">
-              <n-h3 strong class="text-18px font-semibold mb-4px">
-                {{ getTimeofDay }}, {{ userInfo.name || userInfo.username }},{{
-                  $t('common.phrase.welcome')
-                }}!
-              </n-h3>
-              <n-text class="text-tips">
-                {{ weatherLiveData.city }}, 今日天气{{ weatherLiveData.weather }}, 温度
-                {{ weatherLiveData.temperature }}℃
-              </n-text>
-            </div>
-          </template>
+        <n-card bordered hoverable>
+          <LineChart />
         </n-card>
       </n-gi>
       <n-gi span="8">
-        <n-card :title="$t('modules.home.notice')" class="notice" bordered hoverable>
-          <template #header-extra>
-            <n-button text type="primary" size="small" @click="handleLogout">{{
-              $t('common.more')
-            }}</n-button>
-          </template>
-        </n-card>
-      </n-gi>
-      <n-gi>
-        <AppCard class="card-shadow h-300px my-12px">
-          <LineChart />
-        </AppCard>
-      </n-gi>
-      <n-gi>
-        <div class="green" />
+        <Notice></Notice>
       </n-gi>
     </n-grid>
 
@@ -48,7 +37,7 @@ import { $t } from '@/locales';
 import { useUserStore } from '@/store';
 import { lStorage } from '@/utils/storage';
 import dayjs from 'dayjs';
-import { LineChart } from './components';
+import { LineChart, Notice } from './components';
 
 const userStore = useUserStore();
 const { userInfo } = userStore;

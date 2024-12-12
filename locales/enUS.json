@@ -187,6 +187,10 @@
         "statusMap": {
           "enable": "Sent",
           "disable": "Not sent"
+        },
+        "readTypeMap": {
+          "read": "read",
+          "unread": "unread"
         }
       }
     },

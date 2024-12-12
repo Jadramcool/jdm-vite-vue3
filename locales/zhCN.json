@@ -187,6 +187,10 @@
         "statusMap": {
           "enable": "已发送",
           "disable": "未发送"
+        },
+        "readTypeMap": {
+          "read": "已读",
+          "unread": "未读"
         }
       }
     },
