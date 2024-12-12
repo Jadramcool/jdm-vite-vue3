@@ -167,7 +167,7 @@ export const useRoleSchema = (methods: any = {}) => {
               return (
                 type && (
                   <NTag size="small" type={MenuTypeColorMap[option.type]}>
-                    {type}+{option.id}
+                    {type}
                   </NTag>
                 )
               );

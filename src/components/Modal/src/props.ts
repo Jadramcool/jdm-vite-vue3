@@ -44,4 +44,12 @@ export const basicProps = {
     type: [Function, Object] as PropType<any>,
     default: null,
   },
+  cardWidth: {
+    type: [String, Number] as PropType<string | number>,
+    default: '800px',
+  },
+  cardHeight: {
+    type: [String, Number] as PropType<string | number>,
+    default: '420px',
+  },
 };

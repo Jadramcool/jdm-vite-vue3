@@ -12,7 +12,9 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@antv/g2": "^5.2.7",
+    "@visactor/vchart": "^1.12.13",
+    "@visactor/vchart-theme": "^1.12.2",
+    "@visactor/vgrammar-core": "^0.14.16",
     "@vitejs/plugin-vue-jsx": "^4.0.1",
     "@vueuse/core": "^10.9.0",
     "axios": "^1.6.8",

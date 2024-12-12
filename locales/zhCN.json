@@ -33,14 +33,20 @@
     "cancel": "取消",
     "close": "关闭",
     "confirm": "确认",
+    "copySuccess": "复制成功",
     "createdTime": "创建时间",
     "delete": "删除",
     "edit": "编辑",
     "id": "ID",
     "input": "输入",
+    "more": "更多",
     "no": "否",
     "open": "打开",
     "operate": "操作",
+    "phrase": {
+      "confirmDelete": "是否确认删除",
+      "welcome": "今天又是充满活力的一天"
+    },
     "pleaseInput": "请输入",
     "pleaseSelect": "请选择",
     "reload": "重新加载",
@@ -50,6 +56,7 @@
     "status": "状态",
     "submit": "提交",
     "submitSuccess": "更新成功",
+    "success": "成功",
     "system": {
       "menu": {
         "schema": {
@@ -62,9 +69,17 @@
         }
       }
     },
+    "time": {
+      "goodAfternoon": "下午好",
+      "goodEvening": "晚上好",
+      "goodMorning": "上午好"
+    },
     "updatedTime": "更新时间",
     "username": "用户名",
-    "yes": "是"
+    "yes": "是",
+    "total": "共",
+    "people": "位",
+    "totalSelect": "共选择"
   },
   "layout": {
     "normal": "普通",
@@ -98,7 +113,9 @@
   },
   "message": {
     "notSelectDefaultTop": "不选默认为顶级",
-    "pleaseSelectDeleteUser": "请选择要删除的用户"
+    "pleaseSelectDeleteUser": "请选择要删除的用户",
+    "notSetName": "此用户暂未设置姓名",
+    "roleUserSelectTip": "橙色用户标签代表该用户不仅在当前角色下被选中,不影响操作"
   },
   "modules": {
     "appCenter": {
@@ -141,6 +158,40 @@
         "phone": "密保手机",
         "phoneInfo": "已绑定手机：",
         "realNameAuth": "实名认证"
+      }
+    },
+    "home": {
+      "notice": "公告"
+    },
+    "notice": {
+      "notice": {
+        "notice": "公告",
+        "schema": {
+          "author": "作者",
+          "content": "公告内容",
+          "pleaseInputContent": "请输入公告内容",
+          "pleaseInputTitle": "请输入公告标题",
+          "send": "发送",
+          "title": "公告标题",
+          "type": "类型",
+          "status": "状态"
+        },
+        "table": {
+          "title": "公告列表"
+        },
+        "typeMap": {
+          "activity": "活动",
+          "info": "消息",
+          "notice": "通知"
+        },
+        "statusMap": {
+          "enable": "已发送",
+          "disable": "未发送"
+        },
+        "readTypeMap": {
+          "read": "已读",
+          "unread": "未读"
+        }
       }
     },
     "system": {
@@ -244,6 +295,14 @@
     "status": {
       "disable": "禁用",
       "enable": "启用"
+    }
+  },
+  "component": {
+    "roleUserSelect": "角色用户",
+    "message": {
+      "selectUserTip": "请选择用户!",
+      "sent": "已发送",
+      "selectRoleUserSentTip": "已被发送的用户，将不可选择再次发送"
     }
   }
 }

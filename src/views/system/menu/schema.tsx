@@ -1,4 +1,5 @@
 import { MenuApi } from '@/api';
+import { JayIcon } from '@/components';
 import { layoutOptions, MenuTypeColorMap, MenuTypeOptions } from '@/constants';
 import { $t } from '@/locales/i18n';
 import { arrayToTree, columnsUtil, editFormSchemaUtil, formSchemaUtil } from '@/utils';
@@ -49,7 +50,6 @@ export const useMenuSchema = (methods: any = {}) => {
           },
         },
         editForm: {
-          defaultValue: '1',
           rules: [
             {
               required: true,
@@ -70,7 +70,6 @@ export const useMenuSchema = (methods: any = {}) => {
           },
         },
         editForm: {
-          defaultValue: '1',
           rules: [
             {
               required: true,
@@ -107,7 +106,14 @@ export const useMenuSchema = (methods: any = {}) => {
         label: $t('modules.system.menu.schema.path'),
         defaultValue: undefined,
         table: {
-          render: (row: any) => row.path || '-',
+          render: (row: any) => {
+            const path = row.path || '-';
+            return (
+              <div onClick={() => methods.copy(path)} class="cursor-pointer">
+                {path}
+              </div>
+            );
+          },
         },
         form: {
           component: 'NInput',
@@ -181,9 +187,6 @@ export const useMenuSchema = (methods: any = {}) => {
         editForm: {
           labelMessage: $t('message.notSelectDefaultTop'),
         },
-      },
-      {
-        key: 'status',
       },
       {
         key: 'createdTime',
@@ -319,6 +322,11 @@ export const useMenuSchema = (methods: any = {}) => {
       {
         key: 'icon',
         label: $t('modules.system.menu.schema.icon'),
+        table: {
+          render: (row: any) => {
+            return <JayIcon icon={row.icon} size={20} />;
+          },
+        },
         form: {
           component: 'NInput',
         },
@@ -394,6 +402,7 @@ export const useMenuSchema = (methods: any = {}) => {
     'code',
     'path',
     'component',
+    'icon',
     'order',
     'layout',
     'description',
@@ -401,7 +410,7 @@ export const useMenuSchema = (methods: any = {}) => {
     'updatedTime',
     'operate',
   ];
-  const formFields = ['id', 'name', 'status'];
+  const formFields = ['id', 'name'];
   const editFormFields = [
     'type',
     'pid',

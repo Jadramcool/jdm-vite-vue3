@@ -79,7 +79,7 @@ const rules = ref<FormRules>({
           if (value.length < common.passwordMinLength) {
             reject(
               new Error(
-                `${$t('modules.appCenter.passwordSetting.passwordLengthMin')}} ${common.passwordMaxLength} ${$t('modules.appCenter.passwordSetting.digit')}}`,
+                `${$t('modules.appCenter.passwordSetting.passwordLengthMin')} ${common.passwordMaxLength} ${$t('modules.appCenter.passwordSetting.digit')}`,
               ),
             );
           }
@@ -131,14 +131,14 @@ const passwordValidator = (value: string): Promise<void> | Error => {
     if (value.length < common.passwordMinLength) {
       reject(
         new Error(
-          `${$t('modules.appCenter.passwordSetting.passwordLengthMin')}} ${common.passwordMaxLength} ${$t('modules.appCenter.passwordSetting.digit')}}`,
+          `${$t('modules.appCenter.passwordSetting.passwordLengthMin')} ${common.passwordMaxLength} ${$t('modules.appCenter.passwordSetting.digit')}`,
         ),
       );
     }
     if (value.length > common.passwordMaxLength) {
       reject(
         new Error(
-          `${$t('modules.appCenter.passwordSetting.passwordLengthMax')}} ${common.passwordMaxLength} ${$t('modules.appCenter.passwordSetting.digit')}}`,
+          `${$t('modules.appCenter.passwordSetting.passwordLengthMax')} ${common.passwordMaxLength} ${$t('modules.appCenter.passwordSetting.digit')}`,
         ),
       );
     }

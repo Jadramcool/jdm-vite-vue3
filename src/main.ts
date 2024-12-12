@@ -35,11 +35,11 @@ const start = async () => {
   app.mount('#app');
 
   // 在生产环境中使用mock服务
-  if (process.env.NODE_ENV === 'production') {
-    import('./mockProdServer').then(({ setupProdMockServer }) => {
-      setupProdMockServer();
-    });
-  }
+  // if (process.env.NODE_ENV === 'production') {
+  //   import('./mockProdServer').then(({ setupProdMockServer }) => {
+  //     setupProdMockServer();
+  //   });
+  // }
 };
 
 start();

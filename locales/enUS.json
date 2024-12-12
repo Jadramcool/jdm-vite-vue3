@@ -33,14 +33,20 @@
     "cancel": "Cancel",
     "close": "Close",
     "confirm": "Confirm",
+    "copySuccess": "Copy",
     "createdTime": "CreatedTime",
     "delete": "Delete",
     "edit": "Edit",
     "id": "ID",
     "input": "Input",
+    "more": "more",
     "no": "No",
     "open": "Open",
     "operate": "Operate",
+    "phrase": {
+      "confirmDelete": "Are you sure you wish to delete",
+      "welcome": "Today is another day full of energy"
+    },
     "pleaseInput": "Please Input",
     "pleaseSelect": "Please Select",
     "reload": "Reload",
@@ -50,6 +56,7 @@
     "status": "Status",
     "submit": "Submit",
     "submitSuccess": "Update Success",
+    "success": "Success",
     "system": {
       "menu": {
         "schema": {
@@ -62,9 +69,17 @@
         }
       }
     },
+    "time": {
+      "goodAfternoon": "Good afternoon",
+      "goodEvening": "Good evening",
+      "goodMorning": "Good morning"
+    },
     "updatedTime": "UpdatedTime",
     "username": "Username",
-    "yes": "Yes"
+    "yes": "Yes",
+    "total": "Total",
+    "people": "people",
+    "totalSelect": "Total selected"
   },
   "layout": {
     "normal": "Normal",
@@ -98,7 +113,9 @@
   },
   "message": {
     "notSelectDefaultTop": "Default to top level if not selected",
-    "pleaseSelectDeleteUser": "Please select the user to delete"
+    "pleaseSelectDeleteUser": "Please select the user to delete",
+    "notSetName": "This user has not set a name yet",
+    "roleUserSelectTip": "The orange user label means that the user is not only selected under the current role, but also does not affect the operation"
   },
   "modules": {
     "appCenter": {
@@ -141,6 +158,40 @@
         "phone": "Secured mobile phone",
         "phoneInfo": "Mobile phone has been bound:",
         "realNameAuth": "Real-name authentication"
+      }
+    },
+    "home": {
+      "notice": "Announcement"
+    },
+    "notice": {
+      "notice": {
+        "notice": "Notice",
+        "schema": {
+          "author": "Author",
+          "content": "Content",
+          "pleaseInputContent": "Please enter the notice content",
+          "pleaseInputTitle": "Please enter the notice title",
+          "send": "Send",
+          "title": "Notice title",
+          "type": "Type",
+          "status": "Status"
+        },
+        "table": {
+          "title": "Notice Table"
+        },
+        "typeMap": {
+          "activity": "Activity",
+          "info": "Info",
+          "notice": "Notice"
+        },
+        "statusMap": {
+          "enable": "Sent",
+          "disable": "Not sent"
+        },
+        "readTypeMap": {
+          "read": "read",
+          "unread": "unread"
+        }
       }
     },
     "system": {
@@ -244,6 +295,14 @@
     "status": {
       "disable": "Disabled",
       "enable": "Enabled"
+    }
+  },
+  "component": {
+    "roleUserSelect": "Role User",
+    "message": {
+      "selectUserTip": "Please select a user!",
+      "sent": "Sent",
+      "selectRoleUserSentTip": "Users who have already been sent will not be able to choose to send again"
     }
   }
 }

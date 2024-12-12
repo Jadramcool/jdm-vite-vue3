@@ -104,12 +104,19 @@ export const useUserSchema = (methods: any = {}) => {
         },
       },
       {
+        key: 'name',
+        label: $t('user.name'),
+        defaultValue: undefined,
+        table: {
+          render: (row: any) => row.name || '-',
+        },
+      },
+      {
         key: 'phone',
         label: $t('user.phone'),
         defaultValue: undefined,
         form: {
           component: 'NInput',
-          defaultValue: '15952054087',
           componentProps: {
             placeholder: $t('modules.system.user.schema.pleaseInputPhone'),
             showButton: false,
@@ -327,6 +334,7 @@ export const useUserSchema = (methods: any = {}) => {
   const tableFields = [
     'id',
     'username',
+    'name',
     'phone',
     'roleType',
     'role',

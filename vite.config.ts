@@ -32,7 +32,7 @@ export default defineConfig((env: ConfigEnv) => {
       host: '0.0.0.0',
       port: 4000,
       open: false,
-      https: false,
+      // https: false,
       // proxy: {
       //   '/api': {
       //     target: '要代理的地址',
