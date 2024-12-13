@@ -46,6 +46,8 @@ export default defineConfig((env: ConfigEnv) => {
       preprocessorOptions: {
         scss: {
           additionalData: '@import "@/assets/styles/index.scss";',
+          // TODO
+          silenceDeprecations: ['legacy-js-api'], // Dart Sass 2.0.0 将完全移除旧版 API
         },
       },
     },
