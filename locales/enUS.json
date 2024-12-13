@@ -43,6 +43,7 @@
     "no": "No",
     "open": "Open",
     "operate": "Operate",
+    "people": "people",
     "phrase": {
       "confirmDelete": "Are you sure you wish to delete",
       "welcome": "Today is another day full of energy"
@@ -74,12 +75,19 @@
       "goodEvening": "Good evening",
       "goodMorning": "Good morning"
     },
+    "total": "Total",
+    "totalSelect": "Total selected",
     "updatedTime": "UpdatedTime",
     "username": "Username",
-    "yes": "Yes",
-    "total": "Total",
-    "people": "people",
-    "totalSelect": "Total selected"
+    "yes": "Yes"
+  },
+  "component": {
+    "message": {
+      "selectRoleUserSentTip": "Users who have already been sent will not be able to choose to send again",
+      "selectUserTip": "Please select a user!",
+      "sent": "Sent"
+    },
+    "roleUserSelect": "Role User"
   },
   "layout": {
     "normal": "Normal",
@@ -113,8 +121,8 @@
   },
   "message": {
     "notSelectDefaultTop": "Default to top level if not selected",
-    "pleaseSelectDeleteUser": "Please select the user to delete",
     "notSetName": "This user has not set a name yet",
+    "pleaseSelectDeleteUser": "Please select the user to delete",
     "roleUserSelectTip": "The orange user label means that the user is not only selected under the current role, but also does not affect the operation"
   },
   "modules": {
@@ -161,20 +169,29 @@
       }
     },
     "home": {
-      "notice": "Announcement"
+      "notice": "Announcement",
+      "todolist": "TodoList"
     },
     "notice": {
       "notice": {
         "notice": "Notice",
+        "readTypeMap": {
+          "read": "read",
+          "unread": "unread"
+        },
         "schema": {
           "author": "Author",
           "content": "Content",
           "pleaseInputContent": "Please enter the notice content",
           "pleaseInputTitle": "Please enter the notice title",
           "send": "Send",
+          "status": "Status",
           "title": "Notice title",
-          "type": "Type",
-          "status": "Status"
+          "type": "Type"
+        },
+        "statusMap": {
+          "disable": "Not sent",
+          "enable": "Sent"
         },
         "table": {
           "title": "Notice Table"
@@ -183,14 +200,6 @@
           "activity": "Activity",
           "info": "Info",
           "notice": "Notice"
-        },
-        "statusMap": {
-          "enable": "Sent",
-          "disable": "Not sent"
-        },
-        "readTypeMap": {
-          "read": "read",
-          "unread": "unread"
         }
       }
     },
@@ -295,14 +304,6 @@
     "status": {
       "disable": "Disabled",
       "enable": "Enabled"
-    }
-  },
-  "component": {
-    "roleUserSelect": "Role User",
-    "message": {
-      "selectUserTip": "Please select a user!",
-      "sent": "Sent",
-      "selectRoleUserSentTip": "Users who have already been sent will not be able to choose to send again"
     }
   }
 }

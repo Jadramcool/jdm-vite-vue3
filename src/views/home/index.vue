@@ -23,7 +23,10 @@
         </n-card>
       </n-gi>
       <n-gi span="8">
-        <Notice></Notice>
+        <n-space vertical :size="[0, 10]">
+          <Notice></Notice>
+          <TodoList></TodoList>
+        </n-space>
       </n-gi>
     </n-grid>
 
@@ -37,7 +40,7 @@ import { $t } from '@/locales';
 import { useUserStore } from '@/store';
 import { lStorage } from '@/utils/storage';
 import dayjs from 'dayjs';
-import { LineChart, Notice } from './components';
+import { LineChart, Notice, TodoList } from './components';
 
 const userStore = useUserStore();
 const { userInfo } = userStore;

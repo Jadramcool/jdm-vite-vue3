@@ -83,7 +83,7 @@ export const usePermissionStore = defineStore('permission', {
       const accessRoutes = arrayToTree(formatSortMenus);
       this.accessRoutes = {
         path: '/',
-        name: 'Home',
+        name: 'pageHome',
         redirect: import.meta.env.VITE_HOME_PATH,
         component: undefined,
         meta: {
