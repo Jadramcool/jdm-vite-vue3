@@ -30,7 +30,7 @@
       </n-gi>
     </n-grid>
 
-    <n-button type="warning" @click="handleLogout">退出登录</n-button>
+    <!-- <n-button type="warning" @click="handleLogout">退出登录</n-button> -->
   </div>
 </template>
 
@@ -38,7 +38,6 @@
 import { GaodeApi } from '@/api';
 import { $t } from '@/locales';
 import { useUserStore } from '@/store';
-import { lStorage } from '@/utils/storage';
 import dayjs from 'dayjs';
 import { LineChart, Notice, TodoList } from './components';
 
@@ -69,9 +68,9 @@ onMounted(() => {
   getLocationWeather();
 });
 
-const handleLogout = () => {
-  lStorage.clearAll();
-};
+// const handleLogout = () => {
+//   lStorage.clearAll();
+// };
 </script>
 
 <style lang="scss" scoped>

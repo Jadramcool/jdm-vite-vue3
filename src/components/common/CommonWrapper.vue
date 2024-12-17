@@ -2,7 +2,7 @@
 
 <template>
   <n-el class="el p-6px cursor-pointer rounded">
-    <n-flex align="center" :wrap="false" class="h-full">
+    <n-flex align="center" :wrap="false" class="h-full" justify="center">
       <slot />
     </n-flex>
   </n-el>

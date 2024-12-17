@@ -34,8 +34,10 @@
     "close": "Close",
     "confirm": "Confirm",
     "copySuccess": "Copy",
+    "createSuccess": "Create Success",
     "createdTime": "CreatedTime",
     "delete": "Delete",
+    "deleteSuccess": "Delete Success",
     "edit": "Edit",
     "id": "ID",
     "input": "Input",
@@ -77,6 +79,7 @@
     },
     "total": "Total",
     "totalSelect": "Total selected",
+    "updateSuccess": "Update Success",
     "updatedTime": "UpdatedTime",
     "username": "Username",
     "yes": "Yes"
