@@ -9,6 +9,7 @@ import axios, {
 import { router } from '@/router';
 import { useAuthStore } from '@/store';
 import { lStorage } from '@/utils';
+import { isString } from 'lodash';
 import { getToken } from '../token/index';
 import { CodeConfig as HttpCodeConfig } from './codeConfig.ts';
 import { ResponseModel, UploadFileItemModel, UploadRequestConfig } from './types/index.ts';
@@ -54,7 +55,8 @@ class HttpRequest {
             default:
               break;
           }
-          return Promise.reject(data.errMsg || data.message || 'Unknown error');
+          // const errMsg = data.errMsg || data.message || 'Unknown error';
+          return Promise.reject(data);
         }
         return data;
       },
@@ -91,7 +93,11 @@ class HttpRequest {
           window.$message.error('登录信息已过期，请重新登录！');
         }
         const lang: string = lStorage.getItem('lang') || 'zhCN';
-        const errMsg = (error as { [key: string]: any })[lang] || '接口请求失败，请稍后再试';
+        const errMsg =
+          (error.errMsg as { [key: string]: any })[lang] ||
+          (isString(error.errMsg) && error.errMsg) ||
+          error.message ||
+          '接口请求失败，请稍后再试';
         return Promise.reject(errMsg);
       }
       return Promise.reject(error);

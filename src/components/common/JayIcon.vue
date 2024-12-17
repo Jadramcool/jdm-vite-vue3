@@ -12,7 +12,7 @@
     v-if="props.icon"
     :size="props.size"
     :depth="props.depth"
-    :color="props.color"
+    :color="iconColor || props.color"
     :class="props.hover ? 'cursor-pointer' : ''"
   >
     <Icon :icon="props.icon" />
@@ -20,7 +20,10 @@
 </template>
 
 <script setup lang="ts">
+import { useAppStore } from '@/store';
 import { Icon } from '@iconify/vue';
+
+const appStore = useAppStore();
 
 interface iconProps {
   /* 图标名称 */
@@ -33,10 +36,20 @@ interface iconProps {
   depth?: 1 | 2 | 3 | 4 | 5;
   /* 其他属性 */
   hover?: boolean;
+
+  type?: string;
 }
 const props = withDefaults(defineProps<iconProps>(), {
   size: 18,
 });
+
+// 获取全局的primaryColor
+const iconColor = computed(() => {
+  if (props.color) return props.color;
+  const common: Recordable = appStore?.theme?.common || {};
+  const typeColor: string = common[`${props.type}Color`] || '';
+  return typeColor;
+});
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped></style>

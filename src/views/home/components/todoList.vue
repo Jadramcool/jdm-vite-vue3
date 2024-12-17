@@ -5,77 +5,51 @@
         $t('common.more')
       }}</n-button>
     </template>
-    <n-list>
-      <n-list-item v-for="notice in notices" :key="notice.id">
-        <n-flex justify="space-between" align="center">
-          <n-space align="center">
-            <n-tag :bordered="false" :type="NoticeTypeColorMap[notice.notice.type]">
-              {{ NoticeType[notice.notice.type] }}
-            </n-tag>
-
-            <n-tooltip trigger="hover" :disabled="!notice.notice.content">
-              <template #trigger>
-                <n-button text tag="a" @click="handleRead(notice)">
-                  {{ notice.notice.title }}
-                </n-button>
-              </template>
-              {{ notice.notice.content }}
-            </n-tooltip>
-          </n-space>
-          <n-tag
-            :type="GlobalStatusOptions[notice.readTime ? 1 : 0]"
-            size="small"
-            :bordered="false"
-          >
-            {{ $t(`modules.notice.notice.readTypeMap.${notice.readTime ? 'read' : 'unread'}`) }}
-          </n-tag>
-        </n-flex>
-      </n-list-item>
-    </n-list>
+    <n-timeline>
+      <n-timeline-item
+        v-for="(item, index) in todoTimeLine"
+        :key="item.id"
+        :type="index === todoTimeLine.length - 1 ? 'default' : 'success'"
+        :title="item.title"
+        :time="dayjs(item.doneTime).format('YYYY-MM-DD HH:mm:ss')"
+        :lineType="index === todoTimeLine.length - 2 ? 'dashed' : 'default'"
+      >
+        <template #default>
+          <n-tag size="small" type="success" :bordered="false">{{ item.parent?.title }}</n-tag>
+        </template>
+      </n-timeline-item>
+    </n-timeline>
   </n-card>
 </template>
 
 <script setup lang="ts">
-import { NoticeApi } from '@/api';
-import { GlobalStatusOptions, NoticeType, NoticeTypeColorMap } from '@/constants';
+import { TodoApi } from '@/api';
 import { $t } from '@/locales';
+import dayjs from 'dayjs';
+import { useRouter } from 'vue-router';
 
-const notices = ref<Notice.UserNotice[]>([]);
+const router = useRouter();
+
+const todoTimeLine = ref<Notice.Todo[]>([]);
 
 onMounted(() => {
-  getNotice();
+  getTodo();
 });
 
 // 更多
 const handleMore = () => {
-  window.$notification.info({
-    title: '更多等待开发',
-    duration: 3000,
-    keepAliveOnHover: true,
-  });
+  router.push('/notice/todo');
 };
 
 // 获取通知
-const getNotice = async () => {
-  const data = {
-    pagination: {
-      page: 1,
-      pageSize: 4,
-    },
-  };
-  const res = await NoticeApi.getUserNotice(data);
-  notices.value = res.data;
-};
-
-// 阅读
-const handleRead = async (notice: Notice.UserNotice) => {
-  if (notice.readTime) return;
-  try {
-    await NoticeApi.updateUserNoticeRead({ id: notice.noticeId });
-    notice.readTime = new Date().toISOString();
-  } catch (error) {
-    console.log(error);
+const getTodo = async () => {
+  const res = await TodoApi.getTodoTimeLine();
+  if (res.length > 2) {
+    todoTimeLine.value = [...res.slice(0, 6), res[res.length - 1]];
+  } else {
+    todoTimeLine.value = res;
   }
+  console.log('🚀 ~ getTodo ~ todoTimeLine.value:', todoTimeLine.value);
 };
 </script>
 
