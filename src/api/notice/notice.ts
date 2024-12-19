@@ -26,7 +26,7 @@ export const noticeList = (params?: any) => {
  * @description: 获取公告详细信息
  */
 export const noticeDetail = (noticeId: number) => {
-  return request.get<Notice.Notice[]>({
+  return request.get<Notice.Notice>({
     url: `${API.detail}/${noticeId}`,
   });
 };

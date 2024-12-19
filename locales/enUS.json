@@ -38,6 +38,7 @@
     "createdTime": "CreatedTime",
     "delete": "Delete",
     "deleteSuccess": "Delete Success",
+    "detail": "Detail",
     "edit": "Edit",
     "id": "ID",
     "input": "Input",
@@ -300,6 +301,7 @@
     "role": "Role",
     "roleType": {
       "admin": "Admin",
+      "doctor": "Doctor",
       "user": "User"
     },
     "roleTypeName": "RoleType",

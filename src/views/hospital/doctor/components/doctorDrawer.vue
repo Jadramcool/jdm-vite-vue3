@@ -1,17 +1,16 @@
 <template>
   <BasicDrawer v-bind="attrs" @register="register" @ok="handleOk" :headTitle="getTitle">
-    <!-- <template #header> 自定义抽屉头 </template>
-    <template #footer> <n-button> 额外的按钮 </n-button> </template> -->
     <BasicForm @register="registerForm"></BasicForm>
   </BasicDrawer>
 </template>
 
 <script setup lang="ts">
-import { UserManagerApi } from '@/api';
+import { DoctorApi } from '@/api';
 import { BasicDrawer, BasicForm, useDrawerInner, useForm } from '@/components';
 import { $t } from '@/locales/i18n';
+import { flattenObject } from '@/utils';
 import dayjs from 'dayjs';
-import { useUserSchema } from '../schema';
+import { useDoctorSchema } from '../schema';
 
 const attrs = useAttrs();
 
@@ -25,7 +24,7 @@ const getTitle = computed(() => {
   );
 });
 
-const { editFormSchemas } = useUserSchema();
+const { editFormSchemas } = useDoctorSchema();
 
 const [
   registerForm,
@@ -38,17 +37,17 @@ const [
   submitFunc: async () => {
     // 自定义验证
     try {
-      await validateFields(['username', 'phone']);
+      await validateFields(['username']);
       const values = getFieldsValue();
 
-      values.roles = values.role;
-      delete values.role;
-
+      values['user.roles'] = values['user.role'];
+      delete values['user.role'];
       if (values) {
         if (!unref(isUpdate)) {
-          await UserManagerApi.addUser(values);
+          await DoctorApi.create(values);
         } else {
-          await UserManagerApi.updateUser(values);
+          values.id = entityId.value;
+          await DoctorApi.update(values);
         }
         closeDrawer();
         emit('success');
@@ -68,21 +67,8 @@ const [register, { closeDrawer, setDrawerProps }] = useDrawerInner(async (data) 
   if (!unref(isUpdate)) {
     await updateSchema([
       {
-        field: 'id',
-        componentProps: {
-          disabled: false,
-        },
-        ifShow: false,
-      },
-      {
-        field: 'username',
+        field: 'user.username',
         defaultValue: `user${dayjs().format('DD~HH:mm:ss')}`,
-        componentProps: {
-          disabled: false,
-        },
-      },
-      {
-        field: 'roleType',
         componentProps: {
           disabled: false,
         },
@@ -92,9 +78,15 @@ const [register, { closeDrawer, setDrawerProps }] = useDrawerInner(async (data) 
 
   // isUpdate填充数据
   if (unref(isUpdate)) {
-    data.record.role = data.record.roles.map((role: System.Role) => role.id);
+    data.record.user.role = data.record.user.roles.map((role: System.Role) => role.id);
+    const newObj = flattenObject(data.record);
+    console.log(
+      '🚀 ~ const[register,{closeDrawer,setDrawerProps}]=useDrawerInner ~ newObj:',
+      newObj,
+    );
+
     await setFieldsValue({
-      ...data.record,
+      ...newObj,
     });
   }
 });

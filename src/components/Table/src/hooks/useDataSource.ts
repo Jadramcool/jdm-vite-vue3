@@ -55,9 +55,7 @@ export const useDataSource = (
         options,
         ...toRaw(filters),
       };
-
       const res: any = await request(params);
-
       dataSourceRef.value = res?.data || res || [];
       // 设置分页信息
       const pageInfo = res.pagination || {};

@@ -1,7 +1,7 @@
 import { RoleApi } from '@/api';
 import { JayIcon } from '@/components';
 import { $t } from '@/locales/i18n';
-import { columnsUtil, editFormSchemaUtil, formSchemaUtil, isPhone } from '@/utils';
+import { columnsUtil, editFormSchemaUtil, formSchemaUtil } from '@/utils';
 import dayjs from 'dayjs';
 import { FormItemRule, NButton, NFlex, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import { RowData } from 'naive-ui/es/data-table/src/interface';
@@ -28,24 +28,18 @@ const roleTypeOptions = computed(() => [
 ]);
 
 // 表格和表单配置函数
-export const useUserSchema = (methods: any = {}) => {
+export const useDoctorSchema = (methods: any = {}) => {
   const schema = computed(() => ({
     properties: [
       {
         table: {
           type: 'selection',
           options: ['all', 'none'],
-          disabled: (row: any) => row.username === 'admin',
+          disabled: (row: RowData) => row.user.username === 'admin',
         },
       },
       {
-        table: {
-          type: 'expand',
-          renderExpand: (rowData: any) => `${rowData.username} is a good guy.`,
-        },
-      },
-      {
-        key: 'id',
+        key: 'user.id',
         label: $t('common.id'),
         defaultValue: undefined,
         form: {
@@ -66,9 +60,18 @@ export const useUserSchema = (methods: any = {}) => {
         },
       },
       {
-        key: 'username',
+        key: 'user.username',
         label: $t('common.username'),
         defaultValue: undefined,
+        table: {
+          render: (row: RowData) => {
+            return (
+              <NButton text type="primary" onClick={() => methods.handleDetail(row)}>
+                {row.user.username}
+              </NButton>
+            );
+          },
+        },
         form: {
           component: 'NInput',
           labelMessage: $t('modules.system.user.schema.usernameTip'),
@@ -105,15 +108,20 @@ export const useUserSchema = (methods: any = {}) => {
         },
       },
       {
-        key: 'name',
+        key: 'user.name',
         label: $t('user.name'),
         defaultValue: undefined,
         table: {
-          render: (row: any) => row.name || '-',
+          render: (row: RowData) => row.user.name || '-',
+        },
+        form: {
+          component: 'NInput',
+          query: 'in',
+          componentProps: {},
         },
       },
       {
-        key: 'phone',
+        key: 'user.phone',
         label: $t('user.phone'),
         defaultValue: undefined,
         form: {
@@ -123,30 +131,13 @@ export const useUserSchema = (methods: any = {}) => {
             showButton: false,
           },
         },
-        editForm: {
-          rules: [
-            {
-              type: 'string',
-              required: true,
-              trigger: ['blur', 'input'],
-              validator: (_rule: FormItemRule, value: string) => {
-                if (!value) {
-                  return new Error($t('modules.system.user.schema.pleaseInputPhone'));
-                }
-                if (isPhone(value)) {
-                  return true;
-                }
-                return new Error($t('modules.system.user.schema.pleaseInputCorrectPhone'));
-              },
-            },
-          ],
-        },
         table: {
-          render: (row: any) => row.phone || '-',
+          width: 120,
+          render: (row: RowData) => row.user.phone || '-',
         },
       },
       {
-        key: 'role',
+        key: 'user.role',
         label: $t('user.role'),
         defaultValue: undefined,
         form: {
@@ -157,6 +148,9 @@ export const useUserSchema = (methods: any = {}) => {
             placeholder: `${$t('common.pleaseSelect')} ${$t('user.role')}`,
             labelField: 'name',
             valueField: 'id',
+            onUpdateValue: (value: any) => {
+              console.log(value);
+            },
           },
         },
         editForm: {
@@ -173,7 +167,7 @@ export const useUserSchema = (methods: any = {}) => {
         },
         table: {
           render: (row: RowData) => {
-            const roles = row.roles.map((role: System.Role) => role.name);
+            const roles = row.user.roles?.map((role: System.Role) => role.name);
             return (
               <NFlex>
                 {roles.map((role: string, index: number) => (
@@ -197,7 +191,7 @@ export const useUserSchema = (methods: any = {}) => {
         },
       },
       {
-        key: 'roleType',
+        key: 'user.roleType',
         label: $t('user.roleTypeName'),
         defaultValue: undefined,
         form: {
@@ -215,11 +209,12 @@ export const useUserSchema = (methods: any = {}) => {
           },
         },
         table: {
+          width: 100,
           render: (row: RowData) => {
             const roleType = unref(roleTypeOptions).find(
-              (item) => item.value === row.roleType,
+              (item) => item.value === row.user.roleType,
             )?.label;
-            const color = row.roleType === 'admin' ? 'primary' : 'info';
+            const color = row.user.roleType === 'admin' ? 'primary' : 'info';
             return (
               <NTag bordered={false} type={color} size="small">
                 {roleType}
@@ -229,7 +224,7 @@ export const useUserSchema = (methods: any = {}) => {
         },
       },
       {
-        key: 'sex',
+        key: 'user.sex',
         label: $t('user.sex'),
         defaultValue: undefined,
         form: {
@@ -240,11 +235,13 @@ export const useUserSchema = (methods: any = {}) => {
           },
         },
         table: {
-          render: (row: any) => unref(sexOptions).find((item) => item.value === row.sex)?.label,
+          width: 100,
+          render: (row: RowData) =>
+            unref(sexOptions).find((item) => item.value === row.user.sex)?.label,
         },
       },
       {
-        key: 'status',
+        key: 'user.status',
         label: $t('common.status'),
         defaultValue: [0, 1],
         form: {
@@ -258,9 +255,12 @@ export const useUserSchema = (methods: any = {}) => {
           componentProps: { placeholder: $t('common.pleaseSelect'), options: unref(statusOptions) },
         },
         table: {
+          width: 100,
           render: (row: RowData) => {
-            const status = unref(statusOptions).find((item) => item.value === row.status)?.label;
-            const color = row.status === 1 ? 'success' : 'warning';
+            const status = unref(statusOptions).find(
+              (item) => item.value === row.user.status,
+            )?.label;
+            const color = row.user.status === 1 ? 'success' : 'warning';
             return (
               <NTag bordered={false} type={color} size="small">
                 {status}
@@ -270,7 +270,42 @@ export const useUserSchema = (methods: any = {}) => {
         },
       },
       {
-        key: 'createdTime',
+        key: 'registrationFee',
+        label: '挂号费',
+        defaultValue: undefined,
+        table: {
+          width: 100,
+          render: (row: RowData) => row.registrationFee?.toFixed(2) || '-',
+        },
+        form: {
+          component: 'NInputNumber',
+          componentProps: {
+            showButton: false,
+            min: 0,
+            max: 200,
+            step: 1,
+            precision: 2,
+          },
+        },
+      },
+      {
+        key: 'introduction',
+        label: '简介',
+        defaultValue: undefined,
+        table: {
+          render: (row: RowData) => row.introduction || '-',
+          ellipsis: {
+            tooltip: true,
+          },
+        },
+        form: {
+          component: 'NInput',
+          componentProps: { type: 'textarea' },
+          query: 'in',
+        },
+      },
+      {
+        key: 'user.createdTime',
         label: $t('common.createdTime'),
         defaultValue: undefined,
         form: {
@@ -285,11 +320,12 @@ export const useUserSchema = (methods: any = {}) => {
           },
         },
         table: {
-          render: (row: any) => dayjs(row.createdTime).format('YYYY-MM-DD HH:mm:ss'),
+          width: 200,
+          render: (row: RowData) => dayjs(row.user.createdTime).format('YYYY-MM-DD HH:mm:ss'),
         },
       },
       {
-        key: 'updatedTime',
+        key: 'user.updatedTime',
         label: $t('common.updatedTime'),
         form: {
           component: 'NDatePicker',
@@ -300,7 +336,8 @@ export const useUserSchema = (methods: any = {}) => {
           },
         },
         table: {
-          render: (row: any) => dayjs(row.updatedTime).format('YYYY-MM-DD HH:mm:ss'),
+          width: 200,
+          render: (row: RowData) => dayjs(row.user.updatedTime).format('YYYY-MM-DD HH:mm:ss'),
         },
       },
       {
@@ -312,12 +349,12 @@ export const useUserSchema = (methods: any = {}) => {
           render: (row: RowData) => (
             <NSpace justify="center">
               <NButton
-                type={row.status === 1 ? 'error' : 'primary'}
+                type={row.user.status === 1 ? 'warning' : 'primary'}
                 ghost
                 size="small"
                 onClick={() => methods.handleEnable(row)}
               >
-                {row.status === 0
+                {row.user.status === 0
                   ? $t('modules.system.user.schema.enable')
                   : $t('modules.system.user.schema.disable')}
               </NButton>
@@ -334,7 +371,7 @@ export const useUserSchema = (methods: any = {}) => {
                   ),
                 }}
               >
-                是否确认删除用户 {row.username}？
+                是否确认删除用户 {row.user.username}？
               </NPopconfirm>
             </NSpace>
           ),
@@ -342,37 +379,47 @@ export const useUserSchema = (methods: any = {}) => {
       },
     ],
     // 表格/表单统一配置
-    setting: {
-      table: { resizable: true },
-    },
+    setting: {},
   }));
 
   // 表格和表单字段
   const tableFields = [
-    'id',
-    'username',
-    'name',
-    'phone',
-    'roleType',
-    'role',
-    'sex',
-    'status',
-    'createdTime',
-    'updatedTime',
+    'user.id',
+    'user.username',
+    'user.name',
+    'user.phone',
+    'registrationFee',
+    'user.roleType',
+    'user.role',
+    'user.sex',
+    'user.status',
+    'introduction',
+    'user.createdTime',
+    'user.updatedTime',
     'operate',
   ];
   const formFields = [
-    'id',
-    'username',
-    'phone',
-    'roleType',
-    'role',
-    'sex',
-    'status',
-    'createdTime',
-    'updatedTime',
+    // 'user.id',
+    'user.username',
+    'user.phone',
+    'user.role',
+    'user.sex',
+    'user.status',
+    'registrationFee',
+    'user.createdTime',
+    'user.updatedTime',
   ];
-  const editFormFields = ['id', 'username', 'phone', 'roleType', 'role', 'sex', 'status'];
+  const editFormFields = [
+    // 'user.id',
+    'user.username',
+    'user.name',
+    'user.phone',
+    'user.role',
+    'user.sex',
+    'registrationFee',
+    'user.status',
+    'introduction',
+  ];
 
   // 表格列配置
   const columns = computed(() => columnsUtil(schema.value, tableFields));

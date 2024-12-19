@@ -84,7 +84,7 @@
               >
                 <n-checkbox
                   :checked="todo.isDone"
-                  :on-update:checked="(checked) => handleChecked(checked, todo)"
+                  :on-update:checked="(checked: boolean) => handleChecked(checked, todo)"
                 >
                 </n-checkbox>
                 <div class="input-form flex-1">

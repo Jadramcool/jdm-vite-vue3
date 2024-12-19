@@ -38,6 +38,7 @@
     "createdTime": "创建时间",
     "delete": "删除",
     "deleteSuccess": "删除成功",
+    "detail": "详情",
     "edit": "编辑",
     "id": "ID",
     "input": "输入",
@@ -302,6 +303,7 @@
     "role": "角色",
     "roleType": {
       "admin": "管理员",
+      "doctor": "医生",
       "user": "用户"
     },
     "roleTypeName": "角色类型",
