@@ -80,11 +80,6 @@ const [register, { closeDrawer, setDrawerProps }] = useDrawerInner(async (data) 
   if (unref(isUpdate)) {
     data.record.user.role = data.record.user.roles.map((role: System.Role) => role.id);
     const newObj = flattenObject(data.record);
-    console.log(
-      '🚀 ~ const[register,{closeDrawer,setDrawerProps}]=useDrawerInner ~ newObj:',
-      newObj,
-    );
-
     await setFieldsValue({
       ...newObj,
     });

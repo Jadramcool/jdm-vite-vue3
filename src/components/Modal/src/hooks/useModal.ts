@@ -68,7 +68,13 @@ export const useModal = () => {
   return [register, methods];
 };
 
-export const useModalInner = (callbackFn?: Fn) => {
+/**
+ * 内部modal
+ * @param callbackFn 执行方法
+ * @param immediate 是否在dom加载完就执行，默认false，目前在针对非表单的时候建议使用true，避免内部组件渲染异常
+ * @returns
+ */
+export const useModalInner = (callbackFn?: Fn, immediate: boolean = false) => {
   const modalInstanceRef = ref<Nullable<any>>(null);
   const currentInstance = getCurrentInstance();
   const uidRef = ref<number>(0);
@@ -95,6 +101,7 @@ export const useModalInner = (callbackFn?: Fn) => {
     uidRef.value = uuid;
 
     modalInstanceRef.value = modalInnerInstance;
+
     currentInstance?.emit('register', modalInnerInstance, uuid);
   }
 
@@ -102,9 +109,14 @@ export const useModalInner = (callbackFn?: Fn) => {
     const data = dataTransferRef[unref(uidRef)];
     if (!data) return;
     if (!callbackFn || !isFunction(callbackFn)) return;
-    nextTick(() => {
+
+    if (immediate) {
       callbackFn(data);
-    });
+    } else {
+      nextTick(() => {
+        callbackFn(data);
+      });
+    }
   });
 
   const methods: any = {

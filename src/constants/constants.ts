@@ -61,3 +61,17 @@ export const GlobalStatusOptions: Record<number, 'success' | 'error'> = {
   1: 'success',
   0: 'error',
 };
+
+/** @description: 性别选项配置 */
+export const sexOptions = computed(() => [
+  { label: $t('user.male'), value: 'MALE' },
+  { label: $t('user.female'), value: 'FEMALE' },
+  { label: $t('user.other'), value: 'OTHER' },
+]);
+
+/** @description: 角色类型选项配置 */
+export const roleTypeOptions = computed(() => [
+  { label: $t('user.roleType.admin'), value: 'admin' },
+  { label: $t('user.roleType.user'), value: 'user' },
+  { label: $t('user.roleType.doctor'), value: 'doctor' },
+]);

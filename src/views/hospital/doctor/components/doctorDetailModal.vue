@@ -1,31 +1,37 @@
 <template>
-  <BasicModal v-bind="attrs" @register="register" :title="getTitle" :showCancelButton="false">
-    <n-descriptions label-placement="left" bordered :column="6">
-      <n-descriptions-item :span="3">
-        <template #label> 早餐 </template>
-        苹果
-      </n-descriptions-item>
-    </n-descriptions>
+  <BasicModal
+    v-bind="attrs"
+    @register="register"
+    :title="getTitle"
+    :showCancelButton="false"
+    @ok="handleOk"
+  >
+    <BasicDescription :data="entityData" :schemas="descriptionSchemas"></BasicDescription>
   </BasicModal>
 </template>
 
 <script setup lang="ts">
-import { BasicModal, useModalInner } from '@/components';
+import { BasicDescription, BasicModal, useModalInner } from '@/components';
+import { useDoctorSchema } from '../schema';
 
 defineOptions({ name: 'noticeModal' });
 
 const attrs = useAttrs();
 
 const entityId = ref<number>(0); // 实体ID
+const entityData = ref<any>(null);
 
 const getTitle = computed(() => {
   return '医生详情';
 });
-// const { editFormSchemas } = useDepartmentSchema();
+const { descriptionSchemas } = useDoctorSchema();
 
-const [register] = useModalInner(async (data) => {
-  console.log('🚀 ~ const[register,{closeModal,setModalProps}]=useModalInner ~ data:', data.record);
-
+const [register, { closeModal }] = useModalInner(async (data) => {
+  entityData.value = data?.record;
   entityId.value = data?.record?.id;
-});
+}, true);
+
+const handleOk = () => {
+  closeModal();
+};
 </script>

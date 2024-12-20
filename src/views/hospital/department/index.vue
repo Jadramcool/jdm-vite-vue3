@@ -1,7 +1,6 @@
 <template>
   <div>
     <BasicForm @register="register" @submit="handleSubmit" ref="formRef"> </BasicForm>
-
     <n-divider dashed />
 
     <BasicTable
@@ -26,7 +25,7 @@ import { BasicForm, BasicTable, useForm, useModal } from '@/components';
 import { DepartmentModal } from './components';
 import { useDepartmentSchema } from './schema';
 
-defineOptions({ name: 'Role' });
+defineOptions({ name: 'Department' });
 
 // 表格/表单配置  采用computed（适配i18n）
 const tableRef = ref<any>(null);

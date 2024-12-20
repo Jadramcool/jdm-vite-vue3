@@ -35,11 +35,13 @@ import { hasPermission } from '@/utils';
 import { DoctorDetailModal, DoctorDrawer } from './components';
 import { useDoctorSchema } from './schema';
 
-defineOptions({ name: 'UserManager' });
+defineOptions({ name: 'Doctor' });
 
 // 表格/表单配置  采用computed（适配i18n）
 const tableRef = ref<any>(null);
 const formRef = ref<any>(null);
+
+const testData = ref<any>({});
 
 const checkedRows = ref<Array<number | string>>([]);
 
@@ -93,6 +95,10 @@ const [registerModal, { openModal }] = useModal();
 // 表格数据请求
 const loadUserList = async (data: Query.GetParams) => {
   data.filters = { ...(data.filters || {}), ...getFieldsValue() };
+  const res = await DoctorApi.list(data);
+  const [firstItem] = res.data;
+  testData.value = firstItem;
+
   return DoctorApi.list(data);
 };
 

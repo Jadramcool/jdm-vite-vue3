@@ -100,7 +100,7 @@ export const useDepartmentSchema = (methods: any = {}) => {
         key: 'operate',
         label: $t('common.operate'),
         table: {
-          width: 240,
+          width: 180,
           fixed: 'right',
           render: (row: any) => (
             <NSpace justify="center">

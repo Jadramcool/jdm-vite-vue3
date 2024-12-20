@@ -7,4 +7,16 @@ declare namespace Hospital {
     createdTime: Date;
     updatedTime: Date;
   };
+
+  // Doctor 类型声明
+  interface Doctor {
+    id: number;
+    userId: number;
+    departmentId?: number;
+    introduction?: string;
+    registrationFee?: number;
+    user?: System.User;
+    department?: Department;
+    createdTime: string;
+  }
 }

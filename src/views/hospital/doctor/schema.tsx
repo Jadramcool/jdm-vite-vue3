@@ -1,31 +1,12 @@
-import { RoleApi } from '@/api';
+import { DepartmentApi, RoleApi } from '@/api';
 import { JayIcon } from '@/components';
+import { roleTypeOptions, sexOptions, statusOptions } from '@/constants';
 import { $t } from '@/locales/i18n';
-import { columnsUtil, editFormSchemaUtil, formSchemaUtil } from '@/utils';
+import { columnsUtil, descriptionSchemaUtil, editFormSchemaUtil, formSchemaUtil } from '@/utils';
 import dayjs from 'dayjs';
 import { FormItemRule, NButton, NFlex, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import { RowData } from 'naive-ui/es/data-table/src/interface';
 import { computed, unref } from 'vue';
-
-// 性别选项配置
-const sexOptions = computed(() => [
-  { label: $t('user.male'), value: 'MALE' },
-  { label: $t('user.female'), value: 'FEMALE' },
-  { label: $t('user.other'), value: 'OTHER' },
-]);
-
-// 状态选项配置
-const statusOptions = computed(() => [
-  { label: $t('user.status.enable'), value: 1 },
-  { label: $t('user.status.disable'), value: 0 },
-]);
-
-// 角色类型选项配置
-const roleTypeOptions = computed(() => [
-  { label: $t('user.roleType.admin'), value: 'admin' },
-  { label: $t('user.roleType.user'), value: 'user' },
-  { label: $t('user.roleType.doctor'), value: 'doctor' },
-]);
 
 // 表格和表单配置函数
 export const useDoctorSchema = (methods: any = {}) => {
@@ -42,6 +23,9 @@ export const useDoctorSchema = (methods: any = {}) => {
         key: 'user.id',
         label: $t('common.id'),
         defaultValue: undefined,
+        table: {
+          width: 80,
+        },
         form: {
           component: 'NInputNumber',
           labelMessage: 'ID是用户的唯一标识',
@@ -64,12 +48,18 @@ export const useDoctorSchema = (methods: any = {}) => {
         label: $t('common.username'),
         defaultValue: undefined,
         table: {
+          fixed: 'left',
           render: (row: RowData) => {
             return (
               <NButton text type="primary" onClick={() => methods.handleDetail(row)}>
                 {row.user.username}
               </NButton>
             );
+          },
+        },
+        description: {
+          render: (row: RowData) => {
+            return <a type="primary">{row.user.username}</a>;
           },
         },
         form: {
@@ -209,7 +199,7 @@ export const useDoctorSchema = (methods: any = {}) => {
           },
         },
         table: {
-          width: 100,
+          width: 80,
           render: (row: RowData) => {
             const roleType = unref(roleTypeOptions).find(
               (item) => item.value === row.user.roleType,
@@ -235,7 +225,7 @@ export const useDoctorSchema = (methods: any = {}) => {
           },
         },
         table: {
-          width: 100,
+          width: 80,
           render: (row: RowData) =>
             unref(sexOptions).find((item) => item.value === row.user.sex)?.label,
         },
@@ -275,7 +265,7 @@ export const useDoctorSchema = (methods: any = {}) => {
         defaultValue: undefined,
         table: {
           width: 100,
-          render: (row: RowData) => row.registrationFee?.toFixed(2) || '-',
+          render: (row: RowData) => `￥${row.registrationFee?.toFixed(2)}` || '-',
         },
         form: {
           component: 'NInputNumber',
@@ -287,12 +277,16 @@ export const useDoctorSchema = (methods: any = {}) => {
             precision: 2,
           },
         },
+        description: {
+          span: 2,
+        },
       },
       {
         key: 'introduction',
         label: '简介',
         defaultValue: undefined,
         table: {
+          width: 150,
           render: (row: RowData) => row.introduction || '-',
           ellipsis: {
             tooltip: true,
@@ -303,16 +297,15 @@ export const useDoctorSchema = (methods: any = {}) => {
           componentProps: { type: 'textarea' },
           query: 'in',
         },
+        description: {
+          span: 2,
+        },
       },
       {
         key: 'user.createdTime',
         label: $t('common.createdTime'),
         defaultValue: undefined,
         form: {
-          defaultValue: [
-            dayjs('2024-01-01 00:00:00').valueOf(),
-            dayjs('2024-12-31 23:59:59').valueOf(),
-          ],
           component: 'NDatePicker',
           componentProps: {
             type: 'daterange',
@@ -338,6 +331,46 @@ export const useDoctorSchema = (methods: any = {}) => {
         table: {
           width: 200,
           render: (row: RowData) => dayjs(row.user.updatedTime).format('YYYY-MM-DD HH:mm:ss'),
+        },
+      },
+      {
+        key: 'departmentId',
+        label: '所属科室',
+        defaultValue: undefined,
+        form: {
+          component: 'ApiSelect',
+          componentProps: {
+            api: DepartmentApi.departmentList,
+            placeholder: `请选择科室`,
+            labelField: 'name',
+            valueField: 'id',
+            onUpdateValue: (value: any) => {
+              console.log(value);
+            },
+          },
+        },
+        editForm: {
+          componentProps: {
+            api: DepartmentApi.departmentList,
+            placeholder: `${$t('common.pleaseSelect')} ${$t('user.role')}`,
+            labelField: 'name',
+            valueField: 'id',
+            onUpdateValue: (value: any) => {
+              console.log(value);
+            },
+          },
+        },
+        table: {
+          render: (row: RowData) => {
+            const departmentName = row?.department?.name || '';
+            return departmentName ? (
+              <NTag bordered={false} type="info" size="small">
+                {row.department.name}
+              </NTag>
+            ) : (
+              '-'
+            );
+          },
         },
       },
       {
@@ -388,12 +421,13 @@ export const useDoctorSchema = (methods: any = {}) => {
     'user.username',
     'user.name',
     'user.phone',
+    'departmentId',
     'registrationFee',
     'user.roleType',
     'user.role',
     'user.sex',
     'user.status',
-    'introduction',
+    // 'introduction',
     'user.createdTime',
     'user.updatedTime',
     'operate',
@@ -403,9 +437,10 @@ export const useDoctorSchema = (methods: any = {}) => {
     'user.username',
     'user.phone',
     'user.role',
+    'departmentId',
     'user.sex',
-    'user.status',
     'registrationFee',
+    'user.status',
     'user.createdTime',
     'user.updatedTime',
   ];
@@ -417,7 +452,18 @@ export const useDoctorSchema = (methods: any = {}) => {
     'user.role',
     'user.sex',
     'registrationFee',
+    'departmentId',
     'user.status',
+    'introduction',
+  ];
+  const descriptionFields = [
+    'user.username',
+    'user.name',
+    'user.phone',
+    'user.role',
+    'user.sex',
+    'user.status',
+    'registrationFee',
     'introduction',
   ];
 
@@ -428,5 +474,8 @@ export const useDoctorSchema = (methods: any = {}) => {
   const formSchemas = computed(() => formSchemaUtil(schema.value, formFields));
 
   const editFormSchemas = computed(() => editFormSchemaUtil(schema.value, editFormFields));
-  return { columns, formSchemas, editFormSchemas };
+
+  const descriptionSchemas = computed(() => descriptionSchemaUtil(schema.value, descriptionFields));
+
+  return { columns, formSchemas, editFormSchemas, descriptionSchemas };
 };

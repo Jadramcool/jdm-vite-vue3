@@ -1,4 +1,5 @@
 import request from '@/utils/http/axios';
+import { List } from '../types';
 import { BasicModel } from '../types/base';
 
 enum API {
@@ -14,7 +15,7 @@ enum API {
  * @description: 获取医生列表
  */
 export const list = (params: any) => {
-  return request.get<BasicModel[]>({
+  return request.get<List<Hospital.Doctor>>({
     url: API.list,
     params,
   });
