@@ -302,7 +302,8 @@
     "roleType": {
       "admin": "Admin",
       "doctor": "Doctor",
-      "user": "User"
+      "user": "User",
+      "patient": "Patient"
     },
     "roleTypeName": "RoleType",
     "sex": "Sex",

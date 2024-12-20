@@ -6,7 +6,7 @@
 
     <BasicTable
       ref="tableRef"
-      :title="'医生列表'"
+      :title="'患者列表'"
       :columns="columns"
       :filters="queryParams"
       :request="loadUserList"
@@ -15,27 +15,27 @@
       :showAddBtn="hasPermission('system:user:create')"
       :showBatchDeleteBtn="true"
       :checked-row-keys="checkedRows"
-      :scroll-x="1800"
+      :scroll-x="1500"
       @update:checked-row-keys="handleCheck"
       @add="handleAdd"
       @batchDelete="handleBatchDelete"
     >
     </BasicTable>
 
-    <DoctorDrawer @register="registerDrawer" @success="handleSuccess"> </DoctorDrawer>
-    <DoctorDetailModal @register="registerModal" @success="handleSuccess"></DoctorDetailModal>
+    <PatientDrawer @register="registerDrawer" @success="handleSuccess"> </PatientDrawer>
+    <PatientDetailModal @register="registerModal" @success="handleSuccess"></PatientDetailModal>
   </div>
 </template>
 
 <script lang="tsx" setup>
-import { DoctorApi } from '@/api';
+import { PatientApi } from '@/api';
 import { BasicForm, BasicTable, useDrawer, useForm, useModal } from '@/components';
 import { $t } from '@/locales/i18n';
 import { hasPermission } from '@/utils';
-import { DoctorDetailModal, DoctorDrawer } from './components';
-import { useDoctorSchema } from './schema';
+import { PatientDetailModal, PatientDrawer } from './components';
+import { usePatientSchema } from './schema';
 
-defineOptions({ name: 'Doctor' });
+defineOptions({ name: 'Patient' });
 
 // 表格/表单配置  采用computed（适配i18n）
 const tableRef = ref<any>(null);
@@ -55,7 +55,7 @@ const schemaMethods = {
     });
   },
   handleDelete(record: NaiveUI.RowData) {
-    DoctorApi.deleteDoctor(record.id).then(() => {
+    PatientApi.deletePatient(record.id).then(() => {
       tableRef.value.reload();
     });
   },
@@ -66,7 +66,7 @@ const schemaMethods = {
     });
   },
   handleEnable(record: NaiveUI.RowData) {
-    DoctorApi.enable(record.id, record.user.status === 0 ? 1 : 0).then(() => {
+    PatientApi.enable(record.id, record.user.status === 0 ? 1 : 0).then(() => {
       tableRef.value.reload();
     });
   },
@@ -79,7 +79,7 @@ const handleAdd = () => {
 };
 
 // 表格/表单配置  采用computed（适配i18n）
-const { columns, formSchemas } = useDoctorSchema(schemaMethods);
+const { columns, formSchemas } = usePatientSchema(schemaMethods);
 
 const [register, { getFieldsValue }] = useForm({
   gridProps: { cols: '1 s:1 m:2 l:3 xl:4 2xl:4' },
@@ -94,7 +94,7 @@ const [registerModal, { openModal }] = useModal();
 const loadUserList = async (data: Query.GetParams) => {
   data.filters = { ...(data.filters || {}), ...getFieldsValue() };
 
-  return DoctorApi.list(data);
+  return PatientApi.list(data);
 };
 
 // 表单提交
@@ -114,7 +114,7 @@ const handleBatchDelete = () => {
     window.$message.error($t('message.pleaseSelectDeleteUser'));
     return;
   }
-  DoctorApi.batchDelete(checkedRows.value).then(() => {
+  PatientApi.batchDelete(checkedRows.value).then(() => {
     checkedRows.value = [];
     tableRef.value.reload();
   });

@@ -5,12 +5,12 @@
 </template>
 
 <script setup lang="ts">
-import { DoctorApi } from '@/api';
+import { PatientApi } from '@/api';
 import { BasicDrawer, BasicForm, useDrawerInner, useForm } from '@/components';
 import { $t } from '@/locales/i18n';
 import { flattenObject } from '@/utils';
 import dayjs from 'dayjs';
-import { useDoctorSchema } from '../schema';
+import { usePatientSchema } from '../schema';
 
 const attrs = useAttrs();
 
@@ -24,7 +24,7 @@ const getTitle = computed(() => {
   );
 });
 
-const { editFormSchemas } = useDoctorSchema();
+const { editFormSchemas } = usePatientSchema();
 
 const [
   registerForm,
@@ -44,10 +44,10 @@ const [
       delete values['user.role'];
       if (values) {
         if (!unref(isUpdate)) {
-          await DoctorApi.create(values);
+          await PatientApi.create(values);
         } else {
           values.id = entityId.value;
-          await DoctorApi.update(values);
+          await PatientApi.update(values);
         }
         closeDrawer();
         emit('success');
@@ -69,7 +69,7 @@ const [register, { closeDrawer, setDrawerProps }] = useDrawerInner(async (data) 
       {
         field: 'user.username',
         // TODO mock模拟数据
-        defaultValue: `医生${dayjs().format('DD-HH:mm:ss')}`,
+        defaultValue: `患者${dayjs().format('DD-HH:mm:ss')}`,
         componentProps: {
           disabled: false,
         },

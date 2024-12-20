@@ -76,7 +76,8 @@ const [register, { closeDrawer, setDrawerProps }] = useDrawerInner(async (data) 
       },
       {
         field: 'username',
-        defaultValue: `user${dayjs().format('DD~HH:mm:ss')}`,
+        // TODO mock模拟数据
+        defaultValue: `用户${dayjs().format('DD-HH:mm:ss')}`,
         componentProps: {
           disabled: false,
         },

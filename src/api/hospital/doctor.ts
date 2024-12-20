@@ -1,6 +1,5 @@
 import request from '@/utils/http/axios';
 import { List } from '../types';
-import { BasicModel } from '../types/base';
 
 enum API {
   list = '/hospital/doctor/list',
@@ -25,7 +24,7 @@ export const list = (params: any) => {
  * @description: 新增医生
  */
 export const create = (data: any) => {
-  return request.post<BasicModel>({
+  return request.post<Hospital.Doctor>({
     url: API.create,
     data,
   });
@@ -35,7 +34,7 @@ export const create = (data: any) => {
  * @description: 更新医生
  */
 export const update = (data: any) => {
-  return request.put<BasicModel>({
+  return request.put<Hospital.Doctor>({
     url: API.update,
     data,
   });
@@ -45,7 +44,7 @@ export const update = (data: any) => {
  * @description: 删除医生
  */
 export const deleteDoctor = (id: number) => {
-  return request.delete<BasicModel>({
+  return request.delete<Hospital.Doctor>({
     url: `${API.delete}/${id}`,
   });
 };
@@ -54,7 +53,7 @@ export const deleteDoctor = (id: number) => {
  * @description: 批量删除医生
  */
 export const batchDelete = (ids: Array<number | string>) => {
-  return request.delete<BasicModel>({
+  return request.delete<Hospital.Doctor>({
     url: API.batchDelete,
     data: {
       ids,
@@ -66,7 +65,7 @@ export const batchDelete = (ids: Array<number | string>) => {
  * @description: 启用医生
  */
 export const enable = (id: number, status: number) => {
-  return request.put<BasicModel>({
+  return request.put<Hospital.Doctor>({
     url: `${API.enable}/${id}`,
     data: {
       status,

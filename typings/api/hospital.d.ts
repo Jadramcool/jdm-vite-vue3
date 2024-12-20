@@ -19,4 +19,11 @@ declare namespace Hospital {
     department?: Department;
     createdTime: string;
   }
+
+  interface Patient {
+    id: number;
+    userId: number;
+    user?: System.User;
+    createdTime: string;
+  }
 }

@@ -206,8 +206,7 @@
           "notice": "通知"
         }
       },
-      "todoList": {
-      }
+      "todoList": {}
     },
     "system": {
       "menu": {
@@ -304,7 +303,8 @@
     "roleType": {
       "admin": "管理员",
       "doctor": "医生",
-      "user": "用户"
+      "user": "用户",
+      "patient": "患者"
     },
     "roleTypeName": "角色类型",
     "sex": "性别",
