@@ -156,8 +156,6 @@ export const descriptionSchemaUtil = (schema: any, descriptionFields: string[]) 
       ...description,
       render: description?.render || table?.render || null,
     }));
-  console.log('🚀 ~ descriptionSchemaUtil ~ result:', result);
-
   // 根据 formFields 中的顺序对 result 进行排序
   return result.sort((a: Recordable, b: Recordable) => {
     const indexA = formFieldsIndex[a.field];

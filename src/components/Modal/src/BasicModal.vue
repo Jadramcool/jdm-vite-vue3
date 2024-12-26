@@ -1,7 +1,11 @@
 <template>
   <NModal v-bind="getBindValue" ref="modalElRef">
     <NCard
-      :style="{ width: getBindValue.cardWidth }"
+      :style="{
+        width: isNumber(getBindValue.cardWidth)
+          ? getBindValue.cardWidth + 'px'
+          : getBindValue.cardWidth,
+      }"
       size="small"
       closable
       :segmented="true"
@@ -11,10 +15,15 @@
         {{ getBindValue.title || '弹窗' }}
       </template>
       <template #default>
-        <NScrollbar content-class="modal-content" :style="{ height: getBindValue.cardHeight }">
-          <div class="mx-6">
-            <slot></slot>
-          </div>
+        <NScrollbar
+          content-class="modal-content"
+          :style="{
+            height: isNumber(getBindValue.cardHeight)
+              ? getBindValue.cardHeight + 'px'
+              : getBindValue.cardHeight,
+          }"
+        >
+          <slot></slot>
         </NScrollbar>
       </template>
       <template #footer>
@@ -32,7 +41,7 @@
 
 <script setup lang="ts">
 import { isFunction } from '@/utils';
-import _ from 'lodash';
+import _, { isNumber } from 'lodash';
 import { BasicModalFooter } from './components';
 import { basicProps } from './props';
 import { NewModalProps } from './types';
@@ -109,3 +118,12 @@ const handleClose = async () => {
   showRef.value = false;
 };
 </script>
+
+<style>
+.modal-content {
+  padding: 0 6px;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+</style>

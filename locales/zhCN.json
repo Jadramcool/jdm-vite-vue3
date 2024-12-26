@@ -67,6 +67,11 @@
           "menu": "菜单"
         }
       },
+      "role": {
+        "schema": {
+          "role": "角色"
+        }
+      },
       "user": {
         "schema": {
           "user": "用户"
@@ -206,7 +211,8 @@
           "notice": "通知"
         }
       },
-      "todoList": {}
+      "todoList": {
+      }
     },
     "system": {
       "menu": {
@@ -303,8 +309,8 @@
     "roleType": {
       "admin": "管理员",
       "doctor": "医生",
-      "user": "用户",
-      "patient": "患者"
+      "patient": "患者",
+      "user": "用户"
     },
     "roleTypeName": "角色类型",
     "sex": "性别",

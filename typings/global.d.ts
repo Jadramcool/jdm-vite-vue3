@@ -20,6 +20,7 @@ declare namespace Query {
     filters?: Filters;
     options?: Options;
     pagination?: Pagination;
+    sort?: Recordable;
   }
 }
 

@@ -69,13 +69,27 @@ class HttpRequest {
   // 执行请求
   private async executeRequest<T = any>(config: AxiosRequestConfig): Promise<T> {
     try {
+      // 这个方法会影响原始参数，导致isEqual方法返回false
+      // if (config.params) {
+      //   Object.entries(config.params).forEach(([key, value]) => {
+      //     if (Array.isArray(value) || typeof value === 'object') {
+      //       config.params[key] = JSON.stringify(value);
+      //     }
+      //   });
+      // }
       // 将请求参数中的数组和对象转换JSON字符串
       if (config.params) {
-        Object.entries(config.params).forEach(([key, value]) => {
-          if (Array.isArray(value) || typeof value === 'object') {
-            config.params[key] = JSON.stringify(value);
-          }
-        });
+        config.params = Object.entries(config.params).reduce(
+          (acc, [key, value]) => {
+            if (Array.isArray(value) || typeof value === 'object') {
+              acc[key] = JSON.stringify(value);
+            } else {
+              acc[key] = value;
+            }
+            return acc;
+          },
+          {} as Record<string, any>,
+        );
       }
       const response = await this.service.request<T>(config);
       return response.data;

@@ -29,7 +29,7 @@ const { descriptionSchemas } = useDoctorSchema();
 const [register, { closeModal }] = useModalInner(async (data) => {
   entityData.value = data?.record;
   entityId.value = data?.record?.id;
-}, true);
+});
 
 const handleOk = () => {
   closeModal();

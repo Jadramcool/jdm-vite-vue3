@@ -44,6 +44,7 @@ export default defineConfig({
     'divider-style': 'font-bold text-lg',
     'card-header': 'font-bold text-base',
     'box-shadow': 'shadow-[0_2px_8px_rgba(0,0,0,0.2)]',
+    'cursor-hover': 'rounded-sm px-10px py-4px cursor-pointer hover:bg-#F3F3F5',
   },
   theme: {
     ...themeVars,

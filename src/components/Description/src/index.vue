@@ -1,18 +1,24 @@
 <template>
-  <n-descriptions v-bind="getProps">
-    <n-descriptions-item v-for="(item, index) in descriptions" :key="index" :span="item.span || 1">
-      <template #label>{{ item.description.label }}</template>
-      <template #default>
-        <template v-if="item.description.render">
-          <template v-if="typeof item.description.render === 'string'">
-            {{ item.description.render }}
+  <n-spin :show="loading">
+    <n-descriptions v-bind="getProps">
+      <n-descriptions-item
+        v-for="(item, index) in descriptions"
+        :key="index"
+        :span="item.span || 1"
+      >
+        <template #label>{{ item.description.label }}</template>
+        <template #default>
+          <template v-if="item.description.render">
+            <template v-if="typeof item.description.render === 'string'">
+              {{ item.description.render }}
+            </template>
+            <component v-else :is="item.description.render" />
           </template>
-          <component v-else :is="item.description.render" />
+          <template v-else>{{ item.description.value }}</template>
         </template>
-        <template v-else>{{ item.description.value }}</template>
-      </template>
-    </n-descriptions-item>
-  </n-descriptions>
+      </n-descriptions-item>
+    </n-descriptions>
+  </n-spin>
 </template>
 
 <script setup lang="ts" name="BasicTable">
@@ -29,6 +35,7 @@ const getProps = computed(() => ({
 
 const dataSource = computed(() => getProps.value.data);
 const getSchemas = computed(() => getProps.value.schemas);
+const loading = computed(() => getProps.value.loading);
 
 const descriptions = ref<any[]>([]);
 
@@ -56,9 +63,17 @@ const generateDescription = () => {
   return desc;
 };
 
-onMounted(() => {
-  descriptions.value = generateDescription();
-});
+// onMounted(() => {
+//   descriptions.value = generateDescription();
+// });
+
+watch(
+  () => dataSource.value,
+  () => {
+    descriptions.value = generateDescription();
+  },
+  { deep: true, immediate: true },
+);
 </script>
 
 <style lang="scss" scoped></style>

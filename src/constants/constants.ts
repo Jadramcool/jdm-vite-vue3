@@ -76,3 +76,10 @@ export const roleTypeOptions = computed(() => [
   { label: $t('user.roleType.doctor'), value: 'doctor' },
   { label: $t('user.roleType.patient'), value: 'patient' },
 ]);
+// -----------------------自定义配置--------------------------
+/** @description: 排班日期配置 */
+export const timePeriodOptions = computed(() => [
+  { label: '上午', value: 'MORNING' },
+  { label: '下午', value: 'AFTERNOON' },
+  { label: '全天', value: 'DAY' },
+]);

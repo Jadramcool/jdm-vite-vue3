@@ -1,13 +1,14 @@
 <template>
-  <n-select :options="options" v-model:value="modelValue" :multiple="multiple" />
+  <n-select v-model:value="modelValue" :options="options" :multiple="multiple" />
 </template>
 
 <script setup lang="ts">
-import { isEmpty, isEqual } from 'lodash';
+import { get, isEqual } from 'lodash';
 import type { SelectOption } from 'naive-ui';
 
 defineOptions({ name: 'ApiSelect' });
 const modelValue: any = defineModel('value');
+
 // type ApiSearchOption = {
 //   // 展示搜索
 //   show?: boolean;
@@ -51,12 +52,12 @@ const props = defineProps({
     type: String as PropType<string>,
     default: 'value',
   },
-  //   autoLoad 是否自动加载
+  // TODO   autoLoad 是否自动加载
   autoLoad: {
     type: Boolean as PropType<boolean>,
     default: true,
   },
-  //   autoLoad 是否自动加载
+  //   immediate 是否立即
   immediate: {
     type: Boolean as PropType<boolean>,
     default: true,
@@ -81,24 +82,22 @@ const apiMethod = computed(() => {
 
 const options: any = ref([]);
 
-const fetch = async () => {
+const fetch = async (value: Recordable) => {
+  options.value = [];
   if (unref(apiMethod)) {
-    const res = await unref(apiMethod)();
+    const res = await unref(apiMethod)(value);
 
     const data = Array.isArray(res) ? res : res.data;
 
     let optionData: any = data;
-
     if (unref(getProps).afterRequest) {
       optionData = unref(getProps).afterRequest(data);
     }
 
-    options.value.push(
-      ...optionData.map((item: Recordable) => ({
-        label: item[unref(getProps).labelField],
-        value: item[unref(getProps).valueField],
-      })),
-    );
+    options.value = optionData.map((item: Recordable) => ({
+      label: get(item, unref(getProps).labelField),
+      value: get(item, unref(getProps).valueField),
+    }));
   }
 };
 
@@ -106,21 +105,21 @@ watch(
   () => props.params,
   (value, oldValue) => {
     if (isEqual(value, oldValue)) return;
-    fetch();
+    fetch(value);
   },
   { deep: true, immediate: props.immediate },
 );
 
 // TODO 这个还没做
-watch(
-  () => unref(getProps).searchParams,
-  (value, oldValue) => {
-    if (isEmpty(value) || isEqual(value, oldValue)) return;
-    (async () => {
-      await fetch();
-      unref(getProps).searchParams = {};
-    })();
-  },
-  { deep: true, immediate: props.immediate },
-);
+// watch(
+//   () => unref(getProps).searchParams,
+//   (value, oldValue) => {
+//     if (isEmpty(value) || isEqual(value, oldValue)) return;
+//     (async () => {
+//       await fetch(value);
+//       unref(getProps).searchParams = {};
+//     })();
+//   },
+//   { deep: true, immediate: props.immediate },
+// );
 </script>

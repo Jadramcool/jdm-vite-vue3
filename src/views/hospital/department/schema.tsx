@@ -11,7 +11,7 @@ export const useDepartmentSchema = (methods: any = {}) => {
         table: {
           type: 'selection',
           options: ['all', 'none'],
-          disabled: (row: any) => row.code === 'DEFAULT',
+          disabled: (row: any) => row.code === 'ADMIN',
         },
       },
       {

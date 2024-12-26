@@ -67,6 +67,11 @@
           "menu": "Menu"
         }
       },
+      "role": {
+        "schema": {
+          "role": "Role"
+        }
+      },
       "user": {
         "schema": {
           "user": "User"
@@ -302,8 +307,8 @@
     "roleType": {
       "admin": "Admin",
       "doctor": "Doctor",
-      "user": "User",
-      "patient": "Patient"
+      "patient": "Patient",
+      "user": "User"
     },
     "roleTypeName": "RoleType",
     "sex": "Sex",

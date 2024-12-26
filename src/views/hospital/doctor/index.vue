@@ -9,10 +9,9 @@
       :title="'医生列表'"
       :columns="columns"
       :filters="queryParams"
-      :request="loadUserList"
+      :request="loadDoctorList"
       :rowKey="(row: NaiveUI.RowData) => row.id"
       :pagination="{ pageSize: 10 }"
-      :showAddBtn="hasPermission('system:user:create')"
       :showBatchDeleteBtn="true"
       :checked-row-keys="checkedRows"
       :scroll-x="1800"
@@ -31,7 +30,6 @@
 import { DoctorApi } from '@/api';
 import { BasicForm, BasicTable, useDrawer, useForm, useModal } from '@/components';
 import { $t } from '@/locales/i18n';
-import { hasPermission } from '@/utils';
 import { DoctorDetailModal, DoctorDrawer } from './components';
 import { useDoctorSchema } from './schema';
 
@@ -91,7 +89,7 @@ const [registerDrawer, { openDrawer }] = useDrawer();
 const [registerModal, { openModal }] = useModal();
 
 // 表格数据请求
-const loadUserList = async (data: Query.GetParams) => {
+const loadDoctorList = async (data: Query.GetParams) => {
   data.filters = { ...(data.filters || {}), ...getFieldsValue() };
 
   return DoctorApi.list(data);

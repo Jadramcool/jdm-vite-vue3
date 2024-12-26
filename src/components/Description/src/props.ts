@@ -23,4 +23,8 @@ export const basicProps = {
     default: () => [],
     required: true,
   },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 };

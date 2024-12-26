@@ -18,7 +18,7 @@ const isUpdate = ref<boolean>(false); // 是否是更新
 const entityId = ref<Nullable<number>>(null); // 实体id
 const getTitle = computed(() => {
   return (
-    (unref(isUpdate) ? $t('common.edit') : $t('common.add')) + $t('common.system.user.schema.user')
+    (unref(isUpdate) ? $t('common.edit') : $t('common.add')) + $t('common.system.role.schema.role')
   );
 });
 
@@ -43,7 +43,7 @@ const [register, { closeDrawer, setDrawerProps }] = useDrawerInner(async (data) 
         ifShow: false,
       },
     ]);
-  } else if (data.record.code === 'DEFAULT') {
+  } else if (data.record.code === 'ADMIN') {
     await updateSchema([
       {
         field: 'code',

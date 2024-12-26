@@ -8,6 +8,7 @@ enum API {
   delete = '/hospital/doctor/delete',
   batchDelete = '/hospital/doctor/batchDelete',
   enable = '/hospital/doctor/status',
+  detail = '/hospital/doctor/detail',
 }
 
 /**
@@ -17,6 +18,26 @@ export const list = (params: any) => {
   return request.get<List<Hospital.Doctor>>({
     url: API.list,
     params,
+  });
+};
+
+/**
+ * @description: 获取所有医生列表
+ */
+export const listAll = (params: any) => {
+  params.options = { ...params.options, showPagination: false };
+  return request.get<List<Hospital.Doctor>>({
+    url: API.list,
+    params,
+  });
+};
+
+/**
+ * @description: 获取医生详情
+ */
+export const detail = (id: number) => {
+  return request.get<Hospital.Doctor>({
+    url: `${API.detail}/${id}`,
   });
 };
 
