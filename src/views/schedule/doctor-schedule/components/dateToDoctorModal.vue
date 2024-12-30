@@ -61,7 +61,7 @@ import { BasicModal, useModalInner } from '@/components';
 import { timePeriodOptions } from '@/constants';
 import { useCommonStore } from '@/store';
 import dayjs from 'dayjs';
-import { differenceBy, intersectionBy } from 'lodash';
+import { differenceBy } from 'lodash';
 
 const commonStore = useCommonStore();
 
@@ -196,19 +196,23 @@ const handleOk = async () => {
   try {
     setModalProps({ confirmLoading: true });
     console.log('scheduleDetail.value', scheduleDetail.value);
-    const dayDoctor = intersectionBy(
-      scheduleDetail.value.MORNING,
-      scheduleDetail.value.AFTERNOON,
-      'doctorId',
-    );
+    // const dayDoctor = intersectionBy(
+    //   scheduleDetail.value.MORNING,
+    //   scheduleDetail.value.AFTERNOON,
+    //   'doctorId',
+    // );
+    // const values = {
+    //   DAY: dayDoctor.map((item: any) => item.doctorId),
+    //   MORNING: differenceBy(scheduleDetail.value.MORNING, dayDoctor, 'doctorId').map(
+    //     (item: any) => item.doctorId,
+    //   ),
+    //   AFTERNOON: differenceBy(scheduleDetail.value.AFTERNOON, dayDoctor, 'doctorId').map(
+    //     (item: any) => item.doctorId,
+    //   ),
+    // };
     const values = {
-      DAY: dayDoctor.map((item: any) => item.doctorId),
-      MORNING: differenceBy(scheduleDetail.value.MORNING, dayDoctor, 'doctorId').map(
-        (item: any) => item.doctorId,
-      ),
-      AFTERNOON: differenceBy(scheduleDetail.value.AFTERNOON, dayDoctor, 'doctorId').map(
-        (item: any) => item.doctorId,
-      ),
+      MORNING: scheduleDetail.value.MORNING.map((item: any) => item.doctorId),
+      AFTERNOON: scheduleDetail.value.AFTERNOON.map((item: any) => item.doctorId),
     };
     const data: any = [];
 

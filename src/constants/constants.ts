@@ -82,7 +82,7 @@ export const roleTypeOptions = computed(() => [
 export const timePeriodOptions = computed(() => [
   { label: '上午', value: 'MORNING' },
   { label: '下午', value: 'AFTERNOON' },
-  { label: '全天', value: 'DAY' },
+  // { label: '全天', value: 'DAY' },
 ]);
 /** @description: 排班日期样式配置 */
 export const timePeriodTypeOptions: { [key: string]: 'warning' | 'info' | 'success' } = {

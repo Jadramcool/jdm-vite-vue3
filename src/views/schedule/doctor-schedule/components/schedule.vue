@@ -217,8 +217,8 @@ const filterTimePeriod = (schedules: Schedule.DoctorSchedule[]) => {
   };
 
   // 使用提取的过滤逻辑
-  dayScheduleDetail.value.AFTERNOON = filterByTimePeriod(['AFTERNOON', 'DAY']);
-  dayScheduleDetail.value.MORNING = filterByTimePeriod(['MORNING', 'DAY']);
+  dayScheduleDetail.value.AFTERNOON = filterByTimePeriod(['AFTERNOON']);
+  dayScheduleDetail.value.MORNING = filterByTimePeriod(['MORNING']);
 };
 
 // 当前所选的科室

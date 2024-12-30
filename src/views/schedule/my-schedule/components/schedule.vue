@@ -4,14 +4,17 @@
       {{ year }}年{{ month }}月 - {{ userStore.getUser.name }}</template
     >
     <template #default="{ year, month, date }">
-      <n-tag
-        v-if="scheduleObj[`${year}-${month}-${date}`]"
-        :type="timePeriodTypeOptions[scheduleObj[`${year}-${month}-${date}`]['timePeriod']]"
-        size="small"
-        class="w-full flex justify-center mt-10px"
-      >
-        {{ timePeriodOptions.find((item2: any) => item2.value === scheduleObj[`${year}-${month}-${date}`]['timePeriod'])?.label }}
-      </n-tag>
+      <template v-if="scheduleObj[`${year}-${month}-${date}`]">
+        <n-tag
+          v-for="(schedule, index) in scheduleObj[`${year}-${month}-${date}`]"
+          :key="index"
+          :type="timePeriodTypeOptions[schedule['timePeriod']]"
+          size="small"
+          class="w-full flex justify-center mt-10px"
+        >
+          {{ timePeriodOptions.find((item2: any) => item2.value === schedule['timePeriod'])?.label }}
+        </n-tag>
+      </template>
     </template>
   </n-calendar>
 </template>
@@ -37,8 +40,6 @@ const formParams: any = computed(() => {
 });
 
 const userStore = useUserStore();
-console.log('🚀 ~ userStore:', userStore.getUser);
-
 // 今天时间戳
 const today = ref<number>(dayjs().valueOf());
 
@@ -56,8 +57,6 @@ onMounted(async () => {
   loadScheduleList();
 });
 
-// 加载科室列表
-
 // 加载排班列表 updateTimePeriod 默认为 true,是否更新右侧的排班详情
 const loadScheduleList = async () => {
   scheduleObj.value = {};
@@ -74,16 +73,11 @@ const loadScheduleList = async () => {
   const res = await MyScheduleApi.list(queryParams);
 
   const { data } = res;
-  console.log('%c [ data ]-95', 'font-size:13px; background:pink; color:#bf2c9f;', data);
-
   data.forEach((item: any) => {
     const year = dayjs(item.date).year();
     const month = dayjs(item.date).month() + 1;
     const day = dayjs(item.date).date();
     scheduleObj.value[`${year}-${month}-${day}`] = item.schedule;
-  });
-  nextTick(() => {
-    console.log('🚀 ~ scheduleObj:', scheduleObj.value);
   });
 };
 

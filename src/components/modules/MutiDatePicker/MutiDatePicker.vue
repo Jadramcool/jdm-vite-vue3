@@ -21,16 +21,16 @@
             <div>
               {{ dayjs(key).format('YYYY-MM-DD ddd') }}
             </div>
-            <n-radio-group
+            <n-checkbox-group
               v-model:value="dateWithPeriod[dayjs(key).format('YYYY-MM-DD')]"
               @update:value="(value) => handleUpdateRadio(value, key)"
             >
               <n-space>
-                <n-radio value="MORNING" label="上午" />
-                <n-radio value="AFTERNOON" label="下午" />
-                <n-radio value="DAY" label="全天" />
+                <n-checkbox value="MORNING" label="上午" />
+                <n-checkbox value="AFTERNOON" label="下午" />
+                <!-- <n-checkbox value="DAY" label="全天" /> -->
               </n-space>
-            </n-radio-group>
+            </n-checkbox-group>
           </div>
         </n-list-item>
       </n-list>
@@ -99,20 +99,29 @@ const fetch = async (value: Recordable) => {
     const res = await unref(apiMethod)(value);
 
     const data = Array.isArray(res) ? res : res.data;
+    console.log('🚀 ~ fetch ~ data:', data);
+
     let resultData: any = data;
     if (unref(getProps).afterRequest) {
       resultData = unref(getProps).afterRequest(data);
     }
     dateWithPeriod.value = {};
+
     const selectedDate = [
       ...resultData.map((item: Recordable) => {
         const day = dayjs(item.date).format('YYYY-MM-DD');
-        if (dayjs(startDate.value).isSameOrBefore(dayjs(day), 'day')) {
-          dateWithPeriod.value[day] = item.timePeriod;
+        const dayKey = day;
+        if (!Array.isArray(dateWithPeriod.value[dayKey])) {
+          dateWithPeriod.value[dayKey] = [];
         }
+        if (dayjs(startDate.value).isSameOrBefore(dayjs(day), 'day')) {
+          dateWithPeriod.value[dayKey].push(item.timePeriod);
+        }
+
         return day;
       }),
     ];
+    console.log(' dateWithPeriod.value', dateWithPeriod.value);
 
     date.value = [...selectedDate];
     modelValue.value = Object.entries(dateWithPeriod.value).map(([key, value]) => {
@@ -131,7 +140,7 @@ const handleUpdate = (modelData: any) => {
   const days = modelData.map((item: any) => {
     const day = dayjs(item).format('YYYY-MM-DD');
     if (!dateWithPeriod.value[day]) {
-      dateWithPeriod.value[day] = 'DAY';
+      dateWithPeriod.value[day] = ['MORNING', 'AFTERNOON'];
     }
     return day;
   });
@@ -164,7 +173,7 @@ const handleUpdate = (modelData: any) => {
 };
 
 // 更新单选时间
-const handleUpdateRadio = (value: string, date: string) => {
+const handleUpdateRadio = (value: (string | number)[], date: string) => {
   dateWithPeriod.value[date] = value;
   modelValue.value = Object.entries(dateWithPeriod.value).map(([key, value]) => ({
     date: key,
