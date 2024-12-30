@@ -22,7 +22,7 @@
 import { BasicForm, useForm } from '@/components';
 import { useTemplateRef } from 'vue';
 import { Schedule, ScheduleList } from './components';
-import { useDoctorScheduleSchema } from './schema';
+import { useScheduleSchema } from './schema';
 
 defineOptions({ name: 'Schedule' });
 
@@ -31,7 +31,7 @@ const listRef = useTemplateRef<any>('list');
 const scheduleRef = useTemplateRef<any>('schedule');
 const tabValue = ref('schedule');
 
-const { formSchemas } = useDoctorScheduleSchema();
+const { formSchemas } = useScheduleSchema();
 const [register, { getFieldsValue }] = useForm({
   gridProps: { cols: '1 s:1 m:2 l:3 xl:4 2xl:4' },
   schemas: formSchemas,

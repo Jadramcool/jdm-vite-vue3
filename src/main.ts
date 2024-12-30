@@ -11,6 +11,7 @@ import { i18n } from '@/locales';
 import store from '@/store';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
+import calendar from 'dayjs/plugin/calendar';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import 'virtual:uno.css';
@@ -39,6 +40,7 @@ const start = async () => {
   dayjs.locale('zh-cn');
   dayjs.extend(isSameOrAfter);
   dayjs.extend(isSameOrBefore);
+  dayjs.extend(calendar);
 
   app.mount('#app');
 

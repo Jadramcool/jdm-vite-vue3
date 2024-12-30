@@ -16,7 +16,7 @@ import { DoctorScheduleApi } from '@/api';
 import { BasicForm, BasicModal, useForm, useModalInner } from '@/components';
 import { $t } from '@/locales/i18n';
 import { useCommonStore } from '@/store';
-import { useDoctorScheduleSchema } from '../schema';
+import { useScheduleSchema } from '../schema';
 
 defineOptions({ name: 'ScheduleModal' });
 
@@ -36,7 +36,7 @@ const getTitle = computed(() => {
   return unref(isUpdate) ? '编辑排班' : '新增排班';
 });
 
-const { editFormSchemas } = useDoctorScheduleSchema();
+const { editFormSchemas } = useScheduleSchema();
 
 const [registerForm, { setFieldsValue, resetFields, submit, updateSchema }] = useForm({
   labelWidth: 120,

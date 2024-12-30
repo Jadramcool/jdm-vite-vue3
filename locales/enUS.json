@@ -99,6 +99,7 @@
     "roleUserSelect": "Role User"
   },
   "layout": {
+    "fullContent": "Full Content",
     "normal": "Normal",
     "normalWithOutCard": "NormalWithoutCard"
   },

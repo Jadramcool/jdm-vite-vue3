@@ -3,12 +3,12 @@ import { $t } from '@/locales/i18n';
 import { useCommonStore } from '@/store';
 import { columnsUtil, editFormSchemaUtil, formSchemaUtil } from '@/utils';
 import dayjs from 'dayjs';
-import { NButton, NPopconfirm, NSpace } from 'naive-ui';
+import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import { computed } from 'vue';
 
 const commonStore = useCommonStore();
 
-export const useDoctorScheduleSchema = (methods: any = {}) => {
+export const useScheduleSchema = (methods: any = {}) => {
   const schema = computed(() => ({
     properties: [
       {
@@ -57,69 +57,15 @@ export const useDoctorScheduleSchema = (methods: any = {}) => {
             valueField: 'id',
           },
         },
-        editForm: {
-          component: 'ApiSelect',
-          componentProps: ({ formModel }: any) => {
-            return {
-              api: DoctorApi.list,
-              params: {
-                filters: {
-                  departmentId: formModel.departmentId,
-                },
-                options: {
-                  showPagination: false,
-                },
-              },
-              immediate: false,
-              multiple: false,
-              placeholder: '请选择医生',
-              labelField: 'user.name',
-              valueField: 'id',
-            };
-          },
-        },
       },
       {
         key: 'departmentId',
         label: '所属科室',
         defaultValue: undefined,
-        editForm: {
-          component: 'NRadioGroup',
-          componentProps: ({ formActionType }: any) => {
-            return {
-              placeholder: $t('common.pleaseSelect'),
-              options: unref(commonStore.getDepartmentOptions),
-              onUpdateValue: () => {
-                formActionType.setFieldsValue({ doctorId: null });
-              },
-            };
-          },
-        },
         table: {
           render: (row: any) => row.doctor?.department?.name || '-',
         },
       },
-      // {
-      //   key: 'dateType',
-      //   label: '排班类型',
-      //   defaultValue: undefined,
-      //   editForm: {
-      //     component: 'NRadioGroup',
-      //     defaultValue: 'fixed',
-      //     componentProps: {
-      //       options: [
-      //         {
-      //           label: '固定排班',
-      //           value: 'fixed',
-      //         },
-      //         {
-      //           label: '周排班',
-      //           value: 'week',
-      //         },
-      //       ],
-      //     },
-      //   },
-      // },
       {
         key: 'date',
         label: '排班日期',
@@ -156,60 +102,21 @@ export const useDoctorScheduleSchema = (methods: any = {}) => {
         },
       },
       {
-        key: 'timePeriod',
-        label: '时间段',
+        key: 'appointCount',
+        label: '已挂号数',
         defaultValue: undefined,
         table: {
-          render: (row: any) =>
-            row.timePeriod === 'AFTERNOON' ? '下午' : row.timePeriod === 'MORNING' ? '上午' : '-',
+          render: (row: any) => <NTag type="success">{row.appointCount}</NTag>,
         },
       },
-      // {
-      //   key: 'weekday',
-      //   label: '星期排班',
-      //   defaultValue: undefined,
-      //   editForm: {
-      //     component: 'NCheckboxGroup',
-      //     componentProps: {
-      //       options: [
-      //         {
-      //           label: '星期一',
-      //           value: 'MONDAY',
-      //         },
-      //         {
-      //           label: '星期二',
-      //           value: 'TUESDAY',
-      //         },
-      //         {
-      //           label: '星期三',
-      //           value: 'WEDNESDAY',
-      //         },
-      //         {
-      //           label: '星期四',
-      //           value: 'THURSDAY',
-      //         },
-      //         {
-      //           label: '星期五',
-      //           value: 'FRIDAY',
-      //         },
-      //         {
-      //           label: '星期六',
-      //           value: 'SATURDAY',
-      //         },
-      //         {
-      //           label: '星期日',
-      //           value: 'SUNDAY',
-      //         },
-      //       ],
-      //     },
-      //     ifShow: ({ values }: any) => {
-      //       if (values.dateType === 'fixed') {
-      //         return false;
-      //       }
-      //       return true;
-      //     },
-      //   },
-      // },
+      {
+        key: 'maxCount',
+        label: '最大挂号数',
+        defaultValue: undefined,
+        table: {
+          render: (row: any) => <NTag type="info">{row.maxCount}</NTag>,
+        },
+      },
       {
         key: 'createdTime',
         label: $t('common.createdTime'),
@@ -260,8 +167,8 @@ export const useDoctorScheduleSchema = (methods: any = {}) => {
   }));
 
   // 表格和表单字段
-  const tableFields = ['id', 'doctorId', 'date', 'timePeriod', 'departmentId', 'operate'];
-  const formFields = ['id', 'doctorId', 'date'];
+  const tableFields = ['id', 'doctorId', 'date', 'appointCount', 'maxCount', 'operate'];
+  const formFields = ['date'];
   const editFormFields = ['departmentId', 'doctorId', 'date'];
 
   // 表格列配置

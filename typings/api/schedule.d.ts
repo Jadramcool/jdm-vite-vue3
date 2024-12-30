@@ -5,10 +5,11 @@ declare namespace Schedule {
     id: number;
     doctorId: number;
     doctor: Hospital.Doctor;
-    weekday?: string;
     date: string;
     timePeriod: TimePeriod;
     status: number;
+    appointCount: number; // 挂号人数
+    maxCount: number; // 最大挂号人数
     createdTime: string;
     updatedTime: string;
   };

@@ -99,6 +99,7 @@
     "roleUserSelect": "角色用户"
   },
   "layout": {
+    "fullContent": "主内容",
     "normal": "普通",
     "normalWithOutCard": "普通-不含默认Card"
   },

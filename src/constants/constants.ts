@@ -11,6 +11,7 @@ export const MenuTypeOptions = computed(() => [
 /** @description: 页面布局 */
 export const layoutOptions = computed(() => [
   { label: $t('layout.normal'), value: 'normal' },
+  { label: $t('layout.fullContent'), value: 'full-content' },
   // { label: $t('layout.normalWithOutCard'), value: 'normal-without-card' },
 ]);
 
@@ -83,3 +84,9 @@ export const timePeriodOptions = computed(() => [
   { label: '下午', value: 'AFTERNOON' },
   { label: '全天', value: 'DAY' },
 ]);
+/** @description: 排班日期样式配置 */
+export const timePeriodTypeOptions: { [key: string]: 'warning' | 'info' | 'success' } = {
+  MORNING: 'warning',
+  AFTERNOON: 'info',
+  DAY: 'success',
+};

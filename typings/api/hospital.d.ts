@@ -17,7 +17,7 @@ declare namespace Hospital {
     registrationFee?: number;
     user?: System.User;
     department?: Department;
-    createdTime: string;
+    createdTime?: string;
   }
 
   interface Patient {
