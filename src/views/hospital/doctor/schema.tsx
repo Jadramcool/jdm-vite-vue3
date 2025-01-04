@@ -138,9 +138,6 @@ export const useDoctorSchema = (methods: any = {}) => {
             placeholder: `${$t('common.pleaseSelect')} ${$t('user.role')}`,
             labelField: 'name',
             valueField: 'id',
-            onUpdateValue: (value: any) => {
-              console.log(value);
-            },
           },
         },
         editForm: {
@@ -150,9 +147,6 @@ export const useDoctorSchema = (methods: any = {}) => {
             placeholder: `${$t('common.pleaseSelect')} ${$t('user.role')}`,
             labelField: 'name',
             valueField: 'id',
-            onUpdateValue: (value: any) => {
-              console.log(value);
-            },
           },
         },
         table: {
@@ -344,9 +338,6 @@ export const useDoctorSchema = (methods: any = {}) => {
             placeholder: `请选择科室`,
             labelField: 'name',
             valueField: 'id',
-            onUpdateValue: (value: any) => {
-              console.log(value);
-            },
           },
         },
         editForm: {
@@ -355,9 +346,6 @@ export const useDoctorSchema = (methods: any = {}) => {
             placeholder: `${$t('common.pleaseSelect')} ${$t('user.role')}`,
             labelField: 'name',
             valueField: 'id',
-            onUpdateValue: (value: any) => {
-              console.log(value);
-            },
           },
         },
         table: {

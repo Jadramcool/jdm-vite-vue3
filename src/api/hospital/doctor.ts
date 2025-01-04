@@ -9,6 +9,7 @@ enum API {
   batchDelete = '/hospital/doctor/batchDelete',
   enable = '/hospital/doctor/status',
   detail = '/hospital/doctor/detail',
+  info = '/hospital/doctor/info',
 }
 
 /**
@@ -35,9 +36,18 @@ export const listAll = (params: any) => {
 /**
  * @description: 获取医生详情
  */
-export const detail = (id: number) => {
+export const detail = (id?: number) => {
   return request.get<Hospital.Doctor>({
     url: `${API.detail}/${id}`,
+  });
+};
+
+/**
+ * @description: 获取医生个人信息
+ */
+export const info = () => {
+  return request.get<Hospital.Doctor>({
+    url: API.info,
   });
 };
 

@@ -1,25 +1,37 @@
 <template>
   <div>
     <n-card class="header" bordered hoverable>
-      <template class="flex flex-row flex-x-center">
-        <n-avatar
-          v-if="props.showAvatar"
-          :src="userInfo.avatar"
-          :size="80"
-          round
-          :bordered="true"
-        ></n-avatar>
-        <div class="ml-20px">
-          <n-h3 strong class="text-18px font-semibold mb-4px">
-            {{ getTimeofDay }}, {{ userInfo.name || userInfo.username }},{{
-              $t('common.phrase.welcome')
-            }}!
-          </n-h3>
-          <n-text class="text-tips">
-            {{ weatherLiveData.city }}, 今日天气{{ weatherLiveData.weather }}, 温度
-            {{ weatherLiveData.temperature }}℃
-          </n-text>
-        </div>
+      <template #default>
+        <n-flex justify="space-between">
+          <div class="flex flex-row flex-x-center">
+            <n-avatar
+              v-if="props.showAvatar"
+              :src="userInfo.avatar"
+              :size="80"
+              round
+              :bordered="true"
+            ></n-avatar>
+            <div class="ml-20px">
+              <n-h3 strong class="text-18px font-semibold mb-4px">
+                {{ getTimeofDay }}, {{ userInfo.name || userInfo.username }},{{
+                  $t('common.phrase.welcome')
+                }}!
+              </n-h3>
+              <n-text class="text-tips">
+                {{ weatherLiveData.city }}, 今日天气{{ weatherLiveData.weather }}, 温度
+                {{ weatherLiveData.temperature }}℃
+              </n-text>
+            </div>
+          </div>
+          <n-statistic
+            v-if="showAppointments"
+            label="今日挂号"
+            :value="doctorAppointments?.finished || 0"
+          >
+            <template #prefix> </template>
+            <template #suffix> / {{ doctorAppointments?.total || 0 }} </template>
+          </n-statistic>
+        </n-flex>
       </template>
     </n-card>
   </div>
@@ -35,6 +47,17 @@ const props = defineProps({
   showAvatar: {
     type: Boolean,
     default: true,
+  },
+  showAppointments: {
+    type: Boolean,
+    default: false,
+  },
+  doctorAppointments: {
+    type: Object,
+    default: () => ({
+      total: 0,
+      finished: 0,
+    }),
   },
 });
 

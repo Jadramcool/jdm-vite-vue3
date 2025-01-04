@@ -90,7 +90,7 @@ watch(
   },
 );
 
-// 设置表格props，注册时调用
+// 设置弹窗props，注册时调用
 async function setModalProps(modalProps: Partial<any>): Promise<void> {
   propsRef.value = _.merge(unref(propsRef) || {}, modalProps);
 

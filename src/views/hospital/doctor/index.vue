@@ -22,7 +22,7 @@
     </BasicTable>
 
     <DoctorDrawer @register="registerDrawer" @success="handleSuccess"> </DoctorDrawer>
-    <DoctorDetailModal @register="registerModal" @success="handleSuccess"></DoctorDetailModal>
+    <UserDetailModal @register="registerModal" :roleType="'doctor'"></UserDetailModal>
   </div>
 </template>
 
@@ -30,7 +30,7 @@
 import { DoctorApi } from '@/api';
 import { BasicForm, BasicTable, useDrawer, useForm, useModal } from '@/components';
 import { $t } from '@/locales/i18n';
-import { DoctorDetailModal, DoctorDrawer } from './components';
+import { DoctorDrawer } from './components';
 import { useDoctorSchema } from './schema';
 
 defineOptions({ name: 'Doctor' });
@@ -59,9 +59,7 @@ const schemaMethods = {
   },
 
   handleDetail(record: NaiveUI.RowData) {
-    openModal({
-      record,
-    });
+    openModal(record);
   },
   handleEnable(record: NaiveUI.RowData) {
     DoctorApi.enable(record.id, record.user.status === 0 ? 1 : 0).then(() => {
@@ -97,7 +95,6 @@ const loadDoctorList = async (data: Query.GetParams) => {
 
 // 表单提交
 const handleSubmit = (data: any) => {
-  console.log(getFieldsValue());
   data && tableRef.value.reload();
 };
 

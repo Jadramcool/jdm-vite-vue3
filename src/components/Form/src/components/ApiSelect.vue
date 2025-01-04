@@ -1,5 +1,10 @@
 <template>
-  <n-select v-model:value="modelValue" :options="options" :multiple="multiple" />
+  <n-select
+    v-model:value="modelValue"
+    :options="options"
+    :multiple="multiple"
+    :filterable="filterable"
+  />
 </template>
 
 <script setup lang="ts">
@@ -69,6 +74,10 @@ const props = defineProps({
   afterRequest: {
     type: Function as PropType<(res: any) => any>,
     default: null,
+  },
+  filterable: {
+    type: Boolean as PropType<boolean>,
+    default: false,
   },
 });
 

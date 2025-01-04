@@ -13,15 +13,16 @@
         <Schedule ref="schedule" :formParams="queryParams"></Schedule>
       </n-tab-pane>
       <n-tab-pane name="list" display-directive="show" tab="列表视图">
-        <ScheduleList ref="list" :queryParams="queryParams"></ScheduleList>
+        <ScheduleList ref="list" :queryParams="queryParams" @detail="handleDetail"></ScheduleList>
       </n-tab-pane>
     </n-tabs>
+    <ScheduleDetailModal @register="registerModal"> </ScheduleDetailModal>
   </div>
 </template>
 <script setup lang="tsx">
-import { BasicForm, useForm } from '@/components';
+import { BasicForm, useForm, useModal } from '@/components';
 import { useTemplateRef } from 'vue';
-import { Schedule, ScheduleList } from './components';
+import { Schedule, ScheduleDetailModal, ScheduleList } from './components';
 import { useScheduleSchema } from './schema';
 
 defineOptions({ name: 'Schedule' });
@@ -29,7 +30,9 @@ defineOptions({ name: 'Schedule' });
 const formRef = ref(null);
 const listRef = useTemplateRef<any>('list');
 const scheduleRef = useTemplateRef<any>('schedule');
-const tabValue = ref('schedule');
+const tabValue = ref('list');
+
+const [registerModal, { openModal }] = useModal();
 
 const { formSchemas } = useScheduleSchema();
 const [register, { getFieldsValue }] = useForm({
@@ -56,5 +59,9 @@ const handleChangeTab = (value: string) => {
   } else {
     listRef.value.refresh();
   }
+};
+
+const handleDetail = (record: any) => {
+  openModal(record);
 };
 </script>

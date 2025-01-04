@@ -7,6 +7,8 @@ enum API {
   updateByDate = '/schedule/doctorSchedule/updateByDate',
   update = '/schedule/doctorSchedule/update',
   delete = '/schedule/doctorSchedule/delete',
+  detail = '/schedule/doctorSchedule/detail',
+  current = '/schedule/doctorSchedule/current',
 }
 
 /**
@@ -55,5 +57,20 @@ export const update = (data: any) => {
 export const deleteSchedule = (id: number) => {
   return request.delete<Schedule.DoctorSchedule>({
     url: `${API.delete}/${id}`,
+  });
+};
+
+export const detail = (id: number) => {
+  return request.get<Schedule.DoctorSchedule>({
+    url: `${API.detail}/${id}`,
+  });
+};
+/**
+ * @description: 获取当前时间的排班
+ */
+export const current = (params?: any) => {
+  return request.get<Schedule.DoctorSchedule>({
+    url: API.current,
+    params,
   });
 };

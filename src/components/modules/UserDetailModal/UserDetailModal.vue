@@ -15,9 +15,9 @@
 </template>
 
 <script setup lang="ts">
-import { DoctorApi } from '@/api';
+import { DoctorApi, PatientApi } from '@/api';
 import { BasicDescription, BasicModal, useModalInner } from '@/components';
-import { useDoctorSchema } from './schema';
+import { useDoctorSchema, usePatientSchema } from './schema';
 
 defineOptions({ name: 'userDetailModal' });
 
@@ -29,7 +29,7 @@ const props = defineProps({
   // 角色类型
   roleType: {
     type: String,
-    default: 'Doctor',
+    default: 'doctor',
   },
   dataSource: {
     type: Object,
@@ -37,17 +37,17 @@ const props = defineProps({
   },
 });
 
-const nowSchemas = computed(() => {
-  // 优先使用自定义的schema
-  if (!props.schemas) {
-    if (props.roleType === 'Doctor') {
-      return descriptionSchemas.value;
-    }
-  }
-  return props.schemas;
-});
+const nowSchemas = ref<any>([]);
 
-const { descriptionSchemas } = useDoctorSchema();
+// const nowSchemas = computed(() => {
+//   // 优先使用自定义的schema
+//   if (!props.schemas) {
+//     if (props.roleType === 'doctor') {
+//       return descriptionSchemas.value;
+//     }
+//   }
+//   return props.schemas;
+// });
 
 const attrs = useAttrs();
 
@@ -56,21 +56,47 @@ const entityData = ref<any>(null);
 const loading = ref<boolean>(false);
 
 const getTitle = computed(() => {
-  return '医生详情';
+  if (props.roleType === 'doctor') {
+    return '医生详情';
+  }
+  if (props.roleType === 'patient') {
+    return '患者详情';
+  }
+  return '详情';
 });
 
 const [register, { closeModal }] = useModalInner(async (data) => {
-  // entityData.value = data;
+  loading.value = true;
   entityId.value = data?.id;
-  if (props.roleType === 'Doctor') {
-    loading.value = true;
-    await getDoctorDetail(entityId.value);
-    loading.value = false;
+
+  if (!props.schemas) {
+    if (props.roleType === 'doctor') {
+      const { descriptionSchemas } = useDoctorSchema();
+      nowSchemas.value = unref(descriptionSchemas);
+    } else if (props.roleType === 'patient') {
+      const { descriptionSchemas } = usePatientSchema();
+      nowSchemas.value = unref(descriptionSchemas);
+    }
+  } else {
+    nowSchemas.value = props.schemas;
   }
+
+  if (props.roleType === 'doctor') {
+    await getDoctorDetail(entityId.value);
+  } else if (props.roleType === 'patient') {
+    await getPatientDetail(entityId.value);
+  }
+
+  loading.value = false;
 });
 
 const getDoctorDetail = async (id: number) => {
   const res = await DoctorApi.detail(id);
+  entityData.value = res;
+};
+
+const getPatientDetail = async (id: number) => {
+  const res = await PatientApi.detail(id);
   entityData.value = res;
 };
 

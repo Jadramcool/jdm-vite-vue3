@@ -4,9 +4,11 @@
       <n-descriptions-item
         v-for="(item, index) in descriptions"
         :key="index"
-        :span="item.span || 1"
+        :span="item?.span || 1"
       >
-        <template #label>{{ item.description.label }}</template>
+        <template #label>
+          <n-text class="font-bold">{{ item.description.label }}</n-text>
+        </template>
         <template #default>
           <template v-if="item.description.render">
             <template v-if="typeof item.description.render === 'string'">
@@ -70,6 +72,12 @@ const generateDescription = () => {
 watch(
   () => dataSource.value,
   () => {
+    if (!dataSource.value) return;
+    // 判断 dataSource 是否是空对象
+    if (Object.keys(dataSource.value).length === 0) {
+      descriptions.value = [];
+      return;
+    }
     descriptions.value = generateDescription();
   },
   { deep: true, immediate: true },

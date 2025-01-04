@@ -23,7 +23,7 @@
     </BasicTable>
 
     <PatientDrawer @register="registerDrawer" @success="handleSuccess"> </PatientDrawer>
-    <PatientDetailModal @register="registerModal" @success="handleSuccess"></PatientDetailModal>
+    <UserDetailModal @register="registerUserDetailModal" :roleType="'patient'"></UserDetailModal>
   </div>
 </template>
 
@@ -32,7 +32,7 @@ import { PatientApi } from '@/api';
 import { BasicForm, BasicTable, useDrawer, useForm, useModal } from '@/components';
 import { $t } from '@/locales/i18n';
 import { hasPermission } from '@/utils';
-import { PatientDetailModal, PatientDrawer } from './components';
+import { PatientDrawer } from './components';
 import { usePatientSchema } from './schema';
 
 defineOptions({ name: 'Patient' });
@@ -61,9 +61,7 @@ const schemaMethods = {
   },
 
   handleDetail(record: NaiveUI.RowData) {
-    openModal({
-      record,
-    });
+    openUserDetailModal(record);
   },
   handleEnable(record: NaiveUI.RowData) {
     PatientApi.enable(record.id, record.user.status === 0 ? 1 : 0).then(() => {
@@ -88,7 +86,7 @@ const [register, { getFieldsValue }] = useForm({
 });
 
 const [registerDrawer, { openDrawer }] = useDrawer();
-const [registerModal, { openModal }] = useModal();
+const [registerUserDetailModal, { openModal: openUserDetailModal }] = useModal();
 
 // 表格数据请求
 const loadUserList = async (data: Query.GetParams) => {
@@ -99,7 +97,6 @@ const loadUserList = async (data: Query.GetParams) => {
 
 // 表单提交
 const handleSubmit = (data: any) => {
-  console.log(getFieldsValue());
   data && tableRef.value.reload();
 };
 

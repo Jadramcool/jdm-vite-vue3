@@ -1,9 +1,10 @@
 import { DoctorApi, DoctorScheduleApi } from '@/api';
+import { timePeriodOptions, timePeriodTypeOptions } from '@/constants';
 import { $t } from '@/locales/i18n';
 import { useCommonStore } from '@/store';
-import { columnsUtil, editFormSchemaUtil, formSchemaUtil } from '@/utils';
+import { columnsUtil, descriptionSchemaUtil, editFormSchemaUtil, formSchemaUtil } from '@/utils';
 import dayjs from 'dayjs';
-import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
+import { NButton, NSpace, NTag } from 'naive-ui';
 import { computed } from 'vue';
 
 const commonStore = useCommonStore();
@@ -65,6 +66,9 @@ export const useScheduleSchema = (methods: any = {}) => {
         table: {
           render: (row: any) => row.doctor?.department?.name || '-',
         },
+        description: {
+          render: (row: any) => row.doctor?.department?.name || '-',
+        },
       },
       {
         key: 'date',
@@ -102,6 +106,20 @@ export const useScheduleSchema = (methods: any = {}) => {
         },
       },
       {
+        key: 'timePeriod',
+        label: '排班时间段',
+        defaultValue: undefined,
+        table: {
+          render: (row: any) => {
+            const timePeriodType = unref(timePeriodOptions).find(
+              (item: any) => item.value === row.timePeriod,
+            )?.label;
+
+            return <NTag type={timePeriodTypeOptions[row.timePeriod]}>{timePeriodType}</NTag>;
+          },
+        },
+      },
+      {
         key: 'appointCount',
         label: '已挂号数',
         defaultValue: undefined,
@@ -135,6 +153,33 @@ export const useScheduleSchema = (methods: any = {}) => {
       },
 
       {
+        key: 'appointment',
+        label: '挂号患者',
+        defaultValue: undefined,
+        description: {
+          render: (row: any) => {
+            const patients = row.appointment?.map((item: any) => {
+              return item.patient;
+            });
+            return (
+              <NSpace vertical>
+                {patients.map((patient: any, index: number) => (
+                  <NButton
+                    text
+                    key={index}
+                    type="primary"
+                    onClick={() => methods.handlePatientDetail(patient)}
+                  >
+                    {patient?.user?.name}
+                  </NButton>
+                ))}
+              </NSpace>
+            );
+          },
+        },
+      },
+
+      {
         key: 'operate',
         label: $t('common.operate'),
         table: {
@@ -142,21 +187,9 @@ export const useScheduleSchema = (methods: any = {}) => {
           fixed: 'right',
           render: (row: any) => (
             <NSpace justify="center">
-              <NButton type="primary" ghost size="small" onClick={() => methods.handleEdit(row)}>
-                {$t('common.edit')}
+              <NButton type="primary" ghost size="small" onClick={() => methods.handleDetail(row)}>
+                {$t('common.detail')}
               </NButton>
-              <NPopconfirm
-                onPositiveClick={() => methods.handleDelete(row)}
-                v-slots={{
-                  trigger: () => (
-                    <NButton type="error" ghost size="small">
-                      {$t('common.delete')}
-                    </NButton>
-                  ),
-                }}
-              >
-                是否确认删除该排班？
-              </NPopconfirm>
             </NSpace>
           ),
         },
@@ -167,9 +200,27 @@ export const useScheduleSchema = (methods: any = {}) => {
   }));
 
   // 表格和表单字段
-  const tableFields = ['id', 'doctorId', 'date', 'appointCount', 'maxCount', 'operate'];
+  const tableFields = [
+    'id',
+    'doctorId',
+    'date',
+    'timePeriod',
+    'appointCount',
+    'maxCount',
+    'operate',
+  ];
   const formFields = ['date'];
   const editFormFields = ['departmentId', 'doctorId', 'date'];
+
+  const descriptionFields = [
+    'doctorId',
+    'departmentId',
+    'date',
+    'timePeriod',
+    'appointCount',
+    'maxCount',
+    'appointment',
+  ];
 
   // 表格列配置
   const columns = computed(() => columnsUtil(schema.value, tableFields));
@@ -178,7 +229,9 @@ export const useScheduleSchema = (methods: any = {}) => {
 
   const editFormSchemas = computed(() => editFormSchemaUtil(schema.value, editFormFields));
 
-  return { columns, formSchemas, editFormSchemas };
+  const descriptionSchemas = computed(() => descriptionSchemaUtil(schema.value, descriptionFields));
+
+  return { columns, formSchemas, editFormSchemas, descriptionSchemas };
 };
 
 export const useEditScheduleSchema = () => {

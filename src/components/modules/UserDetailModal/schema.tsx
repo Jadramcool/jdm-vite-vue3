@@ -6,7 +6,6 @@ import { NButton, NFlex, NTag } from 'naive-ui';
 import { RowData } from 'naive-ui/es/data-table/src/interface';
 import { computed, unref } from 'vue';
 
-// 表格和表单配置函数
 export const useDoctorSchema = (methods: any = {}) => {
   const schema = computed(() => ({
     properties: [
@@ -48,11 +47,6 @@ export const useDoctorSchema = (methods: any = {}) => {
         defaultValue: undefined,
         table: {
           render: (row: RowData) => row.user.name || '-',
-        },
-        form: {
-          component: 'NInput',
-          query: 'in',
-          componentProps: {},
         },
       },
       {
@@ -181,6 +175,161 @@ export const useDoctorSchema = (methods: any = {}) => {
               </NTag>
             ) : (
               '-'
+            );
+          },
+        },
+      },
+    ],
+    // 表格/表单统一配置
+    setting: {},
+  }));
+
+  const descriptionFields = [
+    'user.username',
+    'user.name',
+    'user.phone',
+    'user.role',
+    'user.sex',
+    'user.status',
+    'registrationFee',
+    'introduction',
+  ];
+
+  // 表格列配置
+
+  const descriptionSchemas = computed(() => descriptionSchemaUtil(schema.value, descriptionFields));
+
+  return { descriptionSchemas };
+};
+
+export const usePatientSchema = (methods: any = {}) => {
+  const schema = computed(() => ({
+    properties: [
+      {
+        table: {
+          type: 'selection',
+          options: ['all', 'none'],
+          disabled: (row: RowData) => row.user.username === 'admin',
+        },
+      },
+      {
+        key: 'user.id',
+        label: $t('common.id'),
+        defaultValue: undefined,
+        table: {
+          width: 80,
+        },
+      },
+      {
+        key: 'user.username',
+        label: $t('common.username'),
+        defaultValue: undefined,
+        table: {
+          fixed: 'left',
+          render: (row: RowData) => {
+            return (
+              <NButton text type="primary" onClick={() => methods.handleDetail(row)}>
+                {row.user.username}
+              </NButton>
+            );
+          },
+        },
+        description: {
+          render: (row: RowData) => {
+            return <a type="primary">{row.user.username}</a>;
+          },
+        },
+      },
+      {
+        key: 'user.name',
+        label: $t('user.name'),
+        defaultValue: undefined,
+        table: {
+          render: (row: RowData) => row.user.name || '-',
+        },
+      },
+      {
+        key: 'user.phone',
+        label: $t('user.phone'),
+        defaultValue: undefined,
+        table: {
+          width: 120,
+          render: (row: RowData) => row.user.phone || '-',
+        },
+      },
+      {
+        key: 'user.role',
+        label: $t('user.role'),
+        defaultValue: undefined,
+        table: {
+          render: (row: RowData) => {
+            const roles = row.user.roles?.map((role: System.Role) => role.name);
+            return (
+              <NFlex>
+                {roles.map((role: string, index: number) => (
+                  <NTag
+                    key={index}
+                    bordered={false}
+                    type="warning"
+                    size="small"
+                    v-slots={{
+                      icon: () => {
+                        return <JayIcon icon={'carbon:user-role'} />;
+                      },
+                    }}
+                  >
+                    {role}
+                  </NTag>
+                ))}
+              </NFlex>
+            );
+          },
+        },
+      },
+      {
+        key: 'user.roleType',
+        label: $t('user.roleTypeName'),
+        defaultValue: undefined,
+        table: {
+          width: 80,
+          render: (row: RowData) => {
+            const roleType = unref(roleTypeOptions).find(
+              (item) => item.value === row.user.roleType,
+            )?.label;
+            const color = row.user.roleType === 'admin' ? 'primary' : 'info';
+            return (
+              <NTag bordered={false} type={color} size="small">
+                {roleType}
+              </NTag>
+            );
+          },
+        },
+      },
+      {
+        key: 'user.sex',
+        label: $t('user.sex'),
+        defaultValue: undefined,
+        table: {
+          width: 80,
+          render: (row: RowData) =>
+            unref(sexOptions).find((item) => item.value === row.user.sex)?.label,
+        },
+      },
+      {
+        key: 'user.status',
+        label: $t('common.status'),
+        defaultValue: [0, 1],
+        table: {
+          width: 100,
+          render: (row: RowData) => {
+            const status = unref(statusOptions).find(
+              (item) => item.value === row.user.status,
+            )?.label;
+            const color = row.user.status === 1 ? 'success' : 'warning';
+            return (
+              <NTag bordered={false} type={color} size="small">
+                {status}
+              </NTag>
             );
           },
         },

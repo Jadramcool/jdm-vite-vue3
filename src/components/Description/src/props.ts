@@ -16,7 +16,7 @@ export const basicProps = {
   },
   data: {
     type: Object,
-    default: () => ({}),
+    default: () => null,
   },
   schemas: {
     type: [Array],

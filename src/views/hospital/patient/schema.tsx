@@ -138,9 +138,6 @@ export const usePatientSchema = (methods: any = {}) => {
             placeholder: `${$t('common.pleaseSelect')} ${$t('user.role')}`,
             labelField: 'name',
             valueField: 'id',
-            onUpdateValue: (value: any) => {
-              console.log(value);
-            },
           },
         },
         editForm: {
@@ -150,9 +147,6 @@ export const usePatientSchema = (methods: any = {}) => {
             placeholder: `${$t('common.pleaseSelect')} ${$t('user.role')}`,
             labelField: 'name',
             valueField: 'id',
-            onUpdateValue: (value: any) => {
-              console.log(value);
-            },
           },
         },
         table: {

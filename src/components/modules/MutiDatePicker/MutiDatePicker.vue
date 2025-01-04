@@ -99,8 +99,6 @@ const fetch = async (value: Recordable) => {
     const res = await unref(apiMethod)(value);
 
     const data = Array.isArray(res) ? res : res.data;
-    console.log('🚀 ~ fetch ~ data:', data);
-
     let resultData: any = data;
     if (unref(getProps).afterRequest) {
       resultData = unref(getProps).afterRequest(data);
@@ -111,10 +109,11 @@ const fetch = async (value: Recordable) => {
       ...resultData.map((item: Recordable) => {
         const day = dayjs(item.date).format('YYYY-MM-DD');
         const dayKey = day;
-        if (!Array.isArray(dateWithPeriod.value[dayKey])) {
-          dateWithPeriod.value[dayKey] = [];
-        }
+
         if (dayjs(startDate.value).isSameOrBefore(dayjs(day), 'day')) {
+          if (!Array.isArray(dateWithPeriod.value[dayKey])) {
+            dateWithPeriod.value[dayKey] = [];
+          }
           dateWithPeriod.value[dayKey].push(item.timePeriod);
         }
 
@@ -172,7 +171,7 @@ const handleUpdate = (modelData: any) => {
   }));
 };
 
-// 更新单选时间
+// 更新多选时间
 const handleUpdateRadio = (value: (string | number)[], date: string) => {
   dateWithPeriod.value[date] = value;
   modelValue.value = Object.entries(dateWithPeriod.value).map(([key, value]) => ({

@@ -86,9 +86,11 @@ export const useDataSource = (
   }
 
   onMounted(() => {
-    setTimeout(() => {
-      fetch({});
-    }, 16);
+    if (unref(propsRef).autoLoad) {
+      setTimeout(() => {
+        fetch({});
+      }, 16);
+    }
   });
 
   // 获取表格数据

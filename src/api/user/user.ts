@@ -16,7 +16,7 @@ enum API {
  * @param {loginModel} data
  */
 export const login = (data: System.loginModel) => {
-  return request.post<BasicModel[]>({
+  return request.post<System.User>({
     url: API.login,
     data,
   });
@@ -27,7 +27,7 @@ export const login = (data: System.loginModel) => {
  * @param {loginModel} data
  */
 export const register = (data: System.loginModel) => {
-  return request.post<BasicModel[]>({
+  return request.post<System.User>({
     url: API.register,
     data,
   });
@@ -37,7 +37,7 @@ export const register = (data: System.loginModel) => {
  * @description: 获取用户信息
  */
 export const getUserInfo = () => {
-  return request.get<BasicModel[]>({
+  return request.get<System.User>({
     url: API.userInfo,
   });
 };

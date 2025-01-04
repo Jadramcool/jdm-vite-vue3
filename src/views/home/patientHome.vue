@@ -36,17 +36,22 @@
           <Welcome :show-avatar="false"></Welcome>
           <n-grid cols="3" x-gap="12">
             <n-gi span="1">
-              <AppCard hoverable bordered class="p-24px" @click="handleJump('appointment')">
+              <AppCard hoverable bordered class="p-24px h-400px" @click="handleJump('appointment')">
                 立即挂号
               </AppCard>
             </n-gi>
             <n-gi span="1">
-              <AppCard bordered hoverable class="p-24px" @click="handleJump('my-appointment')">
+              <AppCard
+                bordered
+                hoverable
+                class="p-24px h-400px"
+                @click="handleJump('my-appointment')"
+              >
                 我的挂号
               </AppCard>
             </n-gi>
             <n-gi span="1">
-              <AppCard hoverable bordered class="p-24px" @click="handleJump('cases')">
+              <AppCard hoverable bordered class="p-24px h-400px" @click="handleJump('my-cases')">
                 我的病例
               </AppCard>
             </n-gi>

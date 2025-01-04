@@ -1,13 +1,6 @@
 <template>
   <div class="h-full">
-    <n-tabs
-      type="card"
-      animated
-      placement="left"
-      v-model:value="tabValue"
-      @update:value="handleChangeDepartment"
-      class="h-full"
-    >
+    <n-tabs type="card" animated placement="left" v-model:value="tabValue" class="h-full">
       <n-tab-pane
         v-for="department in departmentList"
         :key="department.id"
@@ -40,10 +33,6 @@ const loadDepartmentList = async () => {
   if (departmentList.value.length > 0) {
     tabValue.value = departmentList.value[0].id;
   }
-};
-
-const handleChangeDepartment = (value: number) => {
-  console.log('🚀 ~ handleChangeDepartment ~ value:', value);
 };
 
 onMounted(() => {

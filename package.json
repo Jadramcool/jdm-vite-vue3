@@ -19,6 +19,8 @@
     "@vitejs/plugin-vue-jsx": "^4.0.1",
     "@vuepic/vue-datepicker": "^10.0.0",
     "@vueuse/core": "^10.9.0",
+    "@wangeditor/editor": "^5.1.23",
+    "@wangeditor/editor-for-vue": "^5.1.12",
     "axios": "^1.6.8",
     "chroma-js": "^2.4.2",
     "date-fns": "^4.1.0",

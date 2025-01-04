@@ -31,3 +31,6 @@ declare type Undefinedable<T> = T | undefined; // 类型别名，表示可以为
 declare interface Fn<T = any, R = T> {
   (...arg: T[]): R;
 }
+
+// declarations.d.ts
+declare module '@wangeditor/editor-for-vue';
