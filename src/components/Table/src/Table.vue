@@ -19,6 +19,7 @@
         v-model:columns="columnChecks"
         :showBatchDeleteBtn="getProps.showBatchDeleteBtn"
         :showAddBtn="getProps.showAddBtn"
+        :showColumnsSetting="getProps.showColumnsSetting"
         @refresh="handleRefresh"
         @add="handleAdd"
         @batch-delete="handleBatchDelete"
@@ -70,9 +71,9 @@ const getProps: any = computed(() => {
   const newProps = { ...props };
   delete newProps.title;
   return {
+    ...customProps.value,
     ...newProps,
     cardTitle,
-    ...customProps.value,
   };
   // return { ...props, ...customProps.value };
 });

@@ -1,30 +1,12 @@
 import { RoleApi } from '@/api';
 import { JayIcon } from '@/components';
+import { roleTypeOptions, sexOptions, statusOptions } from '@/constants';
 import { $t } from '@/locales/i18n';
 import { columnsUtil, editFormSchemaUtil, formSchemaUtil, isPhone } from '@/utils';
 import dayjs from 'dayjs';
 import { FormItemRule, NButton, NFlex, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import { RowData } from 'naive-ui/es/data-table/src/interface';
 import { computed, unref } from 'vue';
-
-// 性别选项配置
-const sexOptions = computed(() => [
-  { label: $t('user.male'), value: 'MALE' },
-  { label: $t('user.female'), value: 'FEMALE' },
-  { label: $t('user.other'), value: 'OTHER' },
-]);
-
-// 状态选项配置
-const statusOptions = computed(() => [
-  { label: $t('user.status.enable'), value: 1 },
-  { label: $t('user.status.disable'), value: 0 },
-]);
-
-// 角色类型选项配置
-const roleTypeOptions = computed(() => [
-  { label: $t('user.roleType.admin'), value: 'admin' },
-  { label: $t('user.roleType.user'), value: 'user' },
-]);
 
 // 表格和表单配置函数
 export const useUserSchema = (methods: any = {}) => {
@@ -152,6 +134,15 @@ export const useUserSchema = (methods: any = {}) => {
           component: 'ApiSelect',
           componentProps: {
             api: RoleApi.getAllRoleList,
+            multiple: false,
+            placeholder: `${$t('common.pleaseSelect')} ${$t('user.role')}`,
+            labelField: 'name',
+            valueField: 'id',
+          },
+        },
+        editForm: {
+          componentProps: {
+            api: RoleApi.getAllRoleList,
             multiple: true,
             placeholder: `${$t('common.pleaseSelect')} ${$t('user.role')}`,
             labelField: 'name',
@@ -195,6 +186,13 @@ export const useUserSchema = (methods: any = {}) => {
           componentProps: {
             placeholder: `${$t('common.pleaseSelect')} ${$t('user.roleTypeName')}`,
             options: unref(roleTypeOptions),
+          },
+        },
+        editForm: {
+          component: 'NSelect',
+          componentProps: {
+            options: unref(roleTypeOptions),
+            disabled: true,
           },
         },
         table: {

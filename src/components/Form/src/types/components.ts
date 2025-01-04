@@ -30,4 +30,5 @@ export type ComponentType =
   | 'NCascader'
   | 'ApiSelect'
   | 'ApiTreeSelect'
-  | 'ApiTree';
+  | 'ApiTree'
+  | 'MutiDatePicker';

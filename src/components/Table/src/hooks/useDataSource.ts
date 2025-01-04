@@ -55,9 +55,7 @@ export const useDataSource = (
         options,
         ...toRaw(filters),
       };
-
       const res: any = await request(params);
-
       dataSourceRef.value = res?.data || res || [];
       // 设置分页信息
       const pageInfo = res.pagination || {};
@@ -88,9 +86,11 @@ export const useDataSource = (
   }
 
   onMounted(() => {
-    setTimeout(() => {
-      fetch({});
-    }, 16);
+    if (unref(propsRef).autoLoad) {
+      setTimeout(() => {
+        fetch({});
+      }, 16);
+    }
   });
 
   // 获取表格数据

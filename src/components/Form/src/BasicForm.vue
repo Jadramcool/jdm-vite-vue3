@@ -24,9 +24,10 @@
                 {{ schema.labelMessage }}
               </NTooltip>
             </template>
+            <!-- TODO 考虑把所有的都改成componentPropsMap[schema.field]，等待有空修改然后测试 -->
             <template v-if="schema.component === 'NRadioGroup'">
               <NRadioGroup
-                v-bind="schema.componentProps"
+                v-bind="componentPropsMap[schema.field]"
                 v-model:value="formModel[schema.field]"
                 :ref="
                   (el: any) => {
@@ -35,7 +36,7 @@
                 "
               >
                 <NRadio
-                  v-for="option in (schema.componentProps && schema.componentProps.options) || []"
+                  v-for="option in componentPropsMap[schema.field]?.options ?? []"
                   :key="option.value"
                   :value="option.value"
                 >
@@ -45,6 +46,7 @@
             </template>
             <template v-else-if="schema.component === 'NCheckboxGroup'">
               <NCheckboxGroup
+                v-bind="getComponentProps(schema)"
                 v-model:value="formModel[schema.field]"
                 :ref="
                   (el: any) => {
@@ -53,7 +55,7 @@
                 "
               >
                 <NCheckbox
-                  v-for="option in (schema.componentProps && schema.componentProps.options) || []"
+                  v-for="option in getComponentProps(schema)?.options ?? []"
                   :key="option.value"
                   :value="option.value"
                   :label="option.label"
@@ -105,6 +107,18 @@
                   }
                 "
               />
+            </template>
+            <template v-else-if="schema.component === 'MutiDatePicker'">
+              <MutiDatePicker
+                v-bind="getComponentProps(schema)"
+                v-model:value="formModel[schema.field]"
+                :ref="
+                  (el: any) => {
+                    setComponentRef(schema.field, el);
+                  }
+                "
+              >
+              </MutiDatePicker>
             </template>
             <!--判断插槽-->
             <template v-else>
@@ -164,7 +178,7 @@
 <script setup lang="ts">
 import { isArray, isBoolean, isFunction } from '@/utils';
 import _ from 'lodash';
-import { NRadio, type GridProps } from 'naive-ui';
+import { NCheckboxGroup, NRadio, type GridProps } from 'naive-ui';
 import { componentMap } from './componentMap';
 import { ApiSelect, ApiTree, ApiTreeSelect, DatePicker } from './components';
 import { createPlaceholderMessage } from './helper';
@@ -285,9 +299,35 @@ const {
   handleFormatFormValues,
 });
 
+// 缓存特定的 schema 的 componentProps
+const componentPropsMap = computed(() => {
+  // 确保 getSchema.value 存在且为数组
+  const schemaArray = getSchema.value || [];
+
+  return schemaArray.reduce(
+    (acc, schema: any) => {
+      // 只处理特定组件类型的 schema
+      if (['NRadioGroup', 'NCheckboxGroup'].includes(schema.component)) {
+        const props = getComponentProps(schema);
+        // 确保 props 是有效的对象
+        if (props !== undefined && typeof props === 'object') {
+          acc[schema.field] = props;
+        }
+      }
+      return acc;
+    },
+    {} as Record<string, Recordable>,
+  );
+});
+
 // 获取表单动态组件的props
-const getComponentProps = (schema: FormSchema) => {
-  const { component, componentProps = {} } = schema; // 使用解构赋值
+const getComponentProps = (schema: FormSchema): Recordable => {
+  const { component } = schema; // 使用解构赋值
+  let { componentProps = {} } = schema;
+
+  if (isFunction(componentProps)) {
+    componentProps = componentProps({ schema, formModel, formActionType }) ?? {};
+  }
   return {
     // clearable: true,
     placeholder: createPlaceholderMessage(unref(component)),
@@ -367,6 +407,8 @@ const formActionType = {
 onMounted(() => {
   emit('register', formActionType);
 });
+
+defineExpose(formActionType);
 </script>
 
 <style lang="scss" scoped>

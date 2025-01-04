@@ -38,6 +38,7 @@
     "createdTime": "CreatedTime",
     "delete": "Delete",
     "deleteSuccess": "Delete Success",
+    "detail": "Detail",
     "edit": "Edit",
     "id": "ID",
     "input": "Input",
@@ -64,6 +65,11 @@
       "menu": {
         "schema": {
           "menu": "Menu"
+        }
+      },
+      "role": {
+        "schema": {
+          "role": "Role"
         }
       },
       "user": {
@@ -93,6 +99,7 @@
     "roleUserSelect": "Role User"
   },
   "layout": {
+    "fullContent": "Full Content",
     "normal": "Normal",
     "normalWithOutCard": "NormalWithoutCard"
   },
@@ -300,6 +307,8 @@
     "role": "Role",
     "roleType": {
       "admin": "Admin",
+      "doctor": "Doctor",
+      "patient": "Patient",
       "user": "User"
     },
     "roleTypeName": "RoleType",

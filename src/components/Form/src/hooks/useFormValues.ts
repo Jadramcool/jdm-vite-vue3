@@ -8,7 +8,7 @@
  *
  */
 import { isArray, isFunction, isNullOrUnDef, isObject, isString } from '@/utils';
-import { set } from 'lodash';
+// import { set } from 'lodash';
 import type { FormSchema } from '../types/form';
 
 interface UseFormValuesContext {
@@ -38,7 +38,8 @@ export const useFormValues = ({ defaultFormModel, getSchema, formModel }: UseFor
         if (isString(value)) {
           value = value.trim(); // 删除空格
         }
-        set(res, key, value);
+        // set(res, key, value);
+        res[key] = value;
       }
     }
     return res;

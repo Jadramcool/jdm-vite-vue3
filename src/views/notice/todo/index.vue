@@ -13,7 +13,7 @@
       :animation="150"
       filter=".none_draggable"
       @update="handleUpdateSortParent"
-      class="inline-flex flex-nowrap gap-x-8px gap-y-12px h-80%"
+      class="inline-flex flex-nowrap gap-x-8px gap-y-12px h-90%"
     >
       <n-skeleton v-if="loading" height="100%" width="320px" />
       <n-card
@@ -52,7 +52,7 @@
           </template>
         </template>
 
-        <div class="max-h-400px cus-scroll">
+        <div class="max-h-500px cus-scroll">
           <!-- 进度条 -->
           <n-progress
             class="mb-20px"
@@ -84,7 +84,7 @@
               >
                 <n-checkbox
                   :checked="todo.isDone"
-                  :on-update:checked="(checked) => handleChecked(checked, todo)"
+                  :on-update:checked="(checked: boolean) => handleChecked(checked, todo)"
                 >
                 </n-checkbox>
                 <div class="input-form flex-1">

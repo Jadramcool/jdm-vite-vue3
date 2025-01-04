@@ -63,19 +63,33 @@ export const columnsUtil = (schema: any, tableFields: string[]): DataTableColumn
 export const formSchemaUtil = (schema: any, formFields: string[]) => {
   const { properties, setting } = schema;
 
-  return (
-    properties
-      // TODO visible考虑改成ifShow
-      .filter(({ key, form }: any) => formFields.includes(key) && form?.visible !== false)
-      .map(({ key, label, defaultValue, form, ifShow }: any) => ({
-        field: key,
-        label,
-        ...(ifShow !== undefined ? { ifShow } : {}),
-        defaultValue: form?.defaultValue ?? defaultValue, // 使用 nullish 合并运算符
-        ...(setting.form || {}),
-        ...form,
-      }))
+  // 创建一个映射，记录 formFields 中每个 key 的位置
+  const formFieldsIndex: { [key: string]: number } = formFields.reduce(
+    (acc: Recordable, key, index) => {
+      acc[key] = index;
+      return acc;
+    },
+    {},
   );
+
+  // 过滤并映射字段配置
+  const result = properties
+    .filter(({ key, form }: any) => formFields.includes(key) && form?.visible !== false)
+    .map(({ key, label, defaultValue, form, ifShow }: any) => ({
+      field: key,
+      label,
+      ...(ifShow !== undefined ? { ifShow } : {}),
+      defaultValue: form?.defaultValue ?? defaultValue, // 使用 nullish 合并运算符
+      ...(setting.form || {}),
+      ...form,
+    }));
+
+  // 根据 formFields 中的顺序对 result 进行排序
+  return result.sort((a: Recordable, b: Recordable) => {
+    const indexA = formFieldsIndex[a.field];
+    const indexB = formFieldsIndex[b.field];
+    return indexA - indexB; // 按照顺序排序
+  });
 };
 
 // 编辑表单字段配置
@@ -115,6 +129,37 @@ export const editFormSchemaUtil = (schema: any, editFormFields: string[]) => {
   return result.sort((a: Recordable, b: Recordable) => {
     const indexA = editFormFieldsIndex[a.field];
     const indexB = editFormFieldsIndex[b.field];
+    return indexA - indexB; // 按照顺序排序
+  });
+};
+
+// 详情字段配置
+export const descriptionSchemaUtil = (schema: any, descriptionFields: string[]) => {
+  const { properties } = schema;
+
+  // 创建一个映射，记录 formFields 中每个 key 的位置
+  const formFieldsIndex: { [key: string]: number } = descriptionFields.reduce(
+    (acc: Recordable, key, index) => {
+      acc[key] = index;
+      return acc;
+    },
+    {},
+  );
+
+  // 过滤并映射字段配置
+  const result = properties
+    .filter(({ key }: any) => descriptionFields.includes(key))
+    .map(({ key, label, defaultValue, description, table }: any) => ({
+      field: key,
+      label,
+      defaultValue: description?.defaultValue ?? defaultValue, // 使用 nullish 合并运算符
+      ...description,
+      render: description?.render || table?.render || null,
+    }));
+  // 根据 formFields 中的顺序对 result 进行排序
+  return result.sort((a: Recordable, b: Recordable) => {
+    const indexA = formFieldsIndex[a.field];
+    const indexB = formFieldsIndex[b.field];
     return indexA - indexB; // 按照顺序排序
   });
 };

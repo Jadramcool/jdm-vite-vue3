@@ -15,7 +15,7 @@ export async function getUserInfo() {
   try {
     const res = await UserApi.getUserInfo();
 
-    const userInfo = res || {};
+    const userInfo: System.User = res;
     return userInfo;
   } catch (error) {
     // console.error(error);

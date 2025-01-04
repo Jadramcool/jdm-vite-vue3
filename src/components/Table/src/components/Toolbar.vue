@@ -36,7 +36,7 @@
           </template>
           {{ $t('table.refresh') }}
         </NButton>
-        <NPopover placement="bottom-end" trigger="click">
+        <NPopover v-if="attrs.showColumnsSetting" placement="bottom-end" trigger="click">
           <template #trigger>
             <NButton ghost size="small">
               <template #icon>

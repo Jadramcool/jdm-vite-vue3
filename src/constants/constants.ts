@@ -11,6 +11,7 @@ export const MenuTypeOptions = computed(() => [
 /** @description: 页面布局 */
 export const layoutOptions = computed(() => [
   { label: $t('layout.normal'), value: 'normal' },
+  { label: $t('layout.fullContent'), value: 'full-content' },
   // { label: $t('layout.normalWithOutCard'), value: 'normal-without-card' },
 ]);
 
@@ -60,4 +61,50 @@ export const NoticeStatusOptions = computed(() => [
 export const GlobalStatusOptions: Record<number, 'success' | 'error'> = {
   1: 'success',
   0: 'error',
+};
+
+/** @description: 性别选项配置 */
+export const sexOptions = computed(() => [
+  { label: $t('user.male'), value: 'MALE' },
+  { label: $t('user.female'), value: 'FEMALE' },
+  { label: $t('user.other'), value: 'OTHER' },
+]);
+
+/** @description: 角色类型选项配置 */
+export const roleTypeOptions = computed(() => [
+  { label: $t('user.roleType.admin'), value: 'admin' },
+  // { label: $t('user.roleType.user'), value: 'user' },
+  { label: $t('user.roleType.doctor'), value: 'doctor' },
+  { label: $t('user.roleType.patient'), value: 'patient' },
+]);
+// -----------------------自定义配置--------------------------
+/** @description: 排班日期配置 */
+export const timePeriodOptions = computed(() => [
+  { label: '上午', value: 'MORNING' },
+  { label: '下午', value: 'AFTERNOON' },
+  // { label: '全天', value: 'DAY' },
+]);
+/** @description: 排班日期样式配置 */
+export const timePeriodTypeOptions: { [key: string]: 'warning' | 'info' | 'success' } = {
+  MORNING: 'warning',
+  AFTERNOON: 'info',
+  // DAY: 'success',
+};
+/** @description: 排班日期配置 */
+export const AppointmentStatusOptions = [
+  { label: '未就诊', value: 'UNFINISHED' },
+  { label: '已就诊', value: 'FINISHED' },
+  { label: '已取消', value: 'CANCELED' },
+  { label: '已叫号', value: 'CALLED' },
+  { label: '已过期', value: 'EXPIRED' },
+];
+/** @description: 排班日期样式配置 */
+export const AppointmentStatusTypeOptions: {
+  [key: string]: 'warning' | 'info' | 'success' | 'primary' | 'error';
+} = {
+  UNFINISHED: 'info',
+  FINISHED: 'success',
+  CANCELED: 'warning',
+  CALLED: 'primary',
+  EXPIRED: 'error',
 };

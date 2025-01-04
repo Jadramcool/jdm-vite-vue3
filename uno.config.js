@@ -40,10 +40,13 @@ export default defineConfig({
     'flex-x-center': 'flex items-center',
     'flex-x-end': 'flex items-end',
     'card-border': 'border border-solid border-light_border dark:border-dark_border',
+    borderd: 'border border-solid border-light_border dark:border-dark_border',
     'auto-bg': 'bg-white dark:bg-#18181C',
     'divider-style': 'font-bold text-lg',
     'card-header': 'font-bold text-base',
     'box-shadow': 'shadow-[0_2px_8px_rgba(0,0,0,0.2)]',
+    'cursor-hover': 'rounded-sm px-10px py-4px cursor-pointer hover:bg-#F3F3F5',
+    'card-hover': 'hover:shadow-[var(--box-shadow-1)] transition-all duration-500 cursor-pointer',
   },
   theme: {
     ...themeVars,

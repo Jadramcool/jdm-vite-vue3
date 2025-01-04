@@ -27,3 +27,22 @@ export const maskPhone = (phone: string | undefined): string => {
   if (!phone) return '-';
   return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
 };
+
+// 展平对象key
+export const flattenObject = (
+  obj: any,
+  parentKey: string = '',
+  result: { [key: string]: any } = {},
+): { [key: string]: any } => {
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      const newKey = parentKey ? `${parentKey}.${key}` : key;
+      if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+        flattenObject(obj[key], newKey, result);
+      } else {
+        result[newKey] = obj[key];
+      }
+    }
+  }
+  return result;
+};

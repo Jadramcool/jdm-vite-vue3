@@ -57,4 +57,13 @@ export const basicProps = {
     type: Boolean,
     default: false,
   },
+  autoLoad: {
+    type: Boolean,
+    default: true,
+  },
+  // 是否显示列设置
+  showColumnsSetting: {
+    type: Boolean,
+    default: true,
+  },
 };

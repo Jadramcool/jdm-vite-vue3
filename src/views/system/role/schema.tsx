@@ -13,7 +13,7 @@ export const useRoleSchema = (methods: any = {}) => {
         table: {
           type: 'selection',
           options: ['all', 'none'],
-          disabled: (row: any) => row.code === 'DEFAULT',
+          disabled: (row: any) => row.code === 'ADMIN',
         },
       },
       {
@@ -131,7 +131,7 @@ export const useRoleSchema = (methods: any = {}) => {
               <NButton type="primary" ghost size="small" onClick={() => methods.handleEdit(row)}>
                 {$t('common.edit')}
               </NButton>
-              {row.code !== 'DEFAULT' ? (
+              {row.code !== 'ADMIN' ? (
                 <NPopconfirm
                   onPositiveClick={() => methods.handleDelete(row)}
                   v-slots={{

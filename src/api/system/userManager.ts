@@ -9,7 +9,7 @@
  */
 import request from '@/utils/http/axios';
 // import qs from 'qs';
-import { BasicModel } from '../types/base';
+import { List } from '../types';
 
 enum API {
   list = '/system/user/list',
@@ -24,7 +24,7 @@ enum API {
  * @description: 获取用户列表
  */
 export const userList = (params: any) => {
-  return request.get<BasicModel[]>({
+  return request.get<List<System.User>>({
     url: API.list,
     params,
   });
@@ -34,7 +34,7 @@ export const userList = (params: any) => {
  * @description: 新增用户
  */
 export const addUser = (data: any) => {
-  return request.post<BasicModel>({
+  return request.post<System.User>({
     url: API.create,
     data,
   });
@@ -44,7 +44,7 @@ export const addUser = (data: any) => {
  * @description: 更新用户
  */
 export const updateUser = (data: any) => {
-  return request.put<BasicModel>({
+  return request.put<System.User>({
     url: API.update,
     data,
   });
@@ -54,7 +54,7 @@ export const updateUser = (data: any) => {
  * @description: 删除用户
  */
 export const deleteUser = (id: number) => {
-  return request.put<BasicModel>({
+  return request.put<System.User>({
     url: `${API.delete}/${id}`,
   });
 };
@@ -63,7 +63,7 @@ export const deleteUser = (id: number) => {
  * @description: 批量删除用户
  */
 export const batchDeleteUser = (ids: Array<number | string>) => {
-  return request.put<BasicModel>({
+  return request.put<System.User>({
     url: API.batchDelete,
     data: {
       ids,
@@ -75,7 +75,7 @@ export const batchDeleteUser = (ids: Array<number | string>) => {
  * @description: 启用用户
  */
 export const enableUser = (id: number, status: number) => {
-  return request.put<BasicModel>({
+  return request.put<System.User>({
     url: `${API.enable}/${id}`,
     data: {
       status,

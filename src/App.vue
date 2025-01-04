@@ -82,8 +82,8 @@ const routeExtraData: any = computed(() => {
 });
 // 获取keep-alive的所有组件名称
 const keepAliveNames = computed(() => {
-  console.log(tabStore.tabs);
-  console.log(tabStore.tabs.filter((item: any) => item.keepAlive).map((item: any) => item?.name));
+  // console.log(tabStore.tabs);
+  // console.log(tabStore.tabs.filter((item: any) => item.keepAlive).map((item: any) => item?.name));
   return tabStore.tabs.filter((item: any) => item.keepAlive).map((item: any) => item?.name);
 });
 </script>

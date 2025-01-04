@@ -200,12 +200,39 @@ const handleLogin = async (e: MouseEvent) => {
 };
 
 const handleExperience = async () => {
-  window.$notification.info({
-    title: '一键体验',
-    meta: '一键体验功能暂未开放',
-    duration: 3000,
-    keepAliveOnHover: true,
+  // window.$notification.info({
+  //   title: '一键体验',
+  //   meta: '一键体验功能暂未开放',
+  //   duration: 3000,
+  //   keepAliveOnHover: true,
+  // });
+  mockLogin('patient');
+  // mockLogin('doctor');
+  // mockLogin('admin');
+};
+
+const mockLogin = async (roleType: string) => {
+  const messageReactive = window.$message.loading(`${t('login.status.logining')}...`, {
+    duration: 0,
   });
+  const data = {
+    username: roleType,
+    password: '123456..',
+  };
+  try {
+    const res = await UserApi.login(data);
+    onLoginSuccess(res);
+    messageReactive.destroy();
+  } catch (error) {
+    console.error('error', error);
+    window.$notification.error({
+      title: `${t('login.status.loginFailed')}`,
+      content: error as string,
+      duration: 3000,
+      keepAliveOnHover: true,
+    });
+    messageReactive.destroy();
+  }
 };
 async function onLoginSuccess(data: any = {}) {
   // 存储登录表单

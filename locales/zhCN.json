@@ -38,6 +38,7 @@
     "createdTime": "创建时间",
     "delete": "删除",
     "deleteSuccess": "删除成功",
+    "detail": "详情",
     "edit": "编辑",
     "id": "ID",
     "input": "输入",
@@ -64,6 +65,11 @@
       "menu": {
         "schema": {
           "menu": "菜单"
+        }
+      },
+      "role": {
+        "schema": {
+          "role": "角色"
         }
       },
       "user": {
@@ -93,6 +99,7 @@
     "roleUserSelect": "角色用户"
   },
   "layout": {
+    "fullContent": "主内容",
     "normal": "普通",
     "normalWithOutCard": "普通-不含默认Card"
   },
@@ -302,6 +309,8 @@
     "role": "角色",
     "roleType": {
       "admin": "管理员",
+      "doctor": "医生",
+      "patient": "患者",
       "user": "用户"
     },
     "roleTypeName": "角色类型",
