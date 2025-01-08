@@ -91,7 +91,7 @@ export const useMyCasesSchema = (methods: any = {}) => {
         },
       },
       {
-        key: 'date',
+        key: 'appointment.doctorSchedule.date',
         label: '就诊日期',
         defaultValue: undefined,
         table: {
@@ -185,12 +185,17 @@ export const useMyCasesSchema = (methods: any = {}) => {
     'id',
     'doctor.id',
     'doctor.department.id',
-    'date',
+    'appointment.doctorSchedule.date',
     'appointment.status',
     'appointment.appointmentDate',
     'operate',
   ];
-  const formFields = ['doctor.id', 'doctor.department.id', 'date', 'appointment.status'];
+  const formFields = [
+    'doctor.id',
+    'doctor.department.id',
+    'appointment.doctorSchedule.date',
+    'appointment.status',
+  ];
 
   // 表格列配置
   const columns = computed(() => columnsUtil(schema.value, tableFields));

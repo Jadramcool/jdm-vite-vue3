@@ -81,16 +81,30 @@ export const usePermissionStore = defineStore('permission', {
         .sort((a, b) => a.order - b.order);
 
       const accessRoutes = arrayToTree(formatSortMenus);
-      console.log('[ user.roleType ] >', user.roleType);
 
       let homePath = import.meta.env.VITE_HOME_PATH;
       // 针对不同角色类型，设置不同的首页路由
       if (user.roleType === 'patient') {
         homePath = '/patient/patientHome';
+        accessRoutes.find((item) => {
+          if (item.name === 'UserCenter') {
+            item.meta.layout = 'full-content';
+            return true; // 找到后返回 true，停止遍历
+          }
+          return false;
+        });
       }
       if (user.roleType === 'doctor') {
         homePath = '/doctorHome';
+        accessRoutes.find((item) => {
+          if (item.name === 'UserCenter') {
+            item.meta.layout = 'full-content';
+            return true; // 找到后返回 true，停止遍历
+          }
+          return false;
+        });
       }
+      console.log('[ accessRoutes ] >', accessRoutes);
       this.accessRoutes = {
         path: '/',
         name: 'pageHome',

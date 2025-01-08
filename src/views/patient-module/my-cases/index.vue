@@ -28,12 +28,16 @@
 <script lang="tsx" setup>
 import { MedicalRecordApi } from '@/api';
 import { BasicForm, BasicTable, useForm, useModal } from '@/components';
+import { useUserStore } from '@/store';
 import { useRouter } from 'vue-router';
 import { useMyCasesSchema } from './schema';
 
 defineOptions({ name: 'MyCases' });
 
 const router = useRouter();
+const userStore = useUserStore();
+
+const patientId = computed(() => userStore.userInfo?.patient?.id);
 
 const tableRef = ref<any>(null);
 const formRef = ref<any>(null);
@@ -65,7 +69,11 @@ const [registerModal, { openModal }] = useModal();
 
 // 表格数据请求
 const loadMedicalRecordList = async (data: Query.GetParams) => {
-  data.filters = { ...(data.filters || {}), ...getFieldsValue() };
+  data.filters = {
+    ...(data.filters || {}),
+    ...getFieldsValue(),
+    patientId: patientId.value,
+  };
   return MedicalRecordApi.list(data);
 };
 

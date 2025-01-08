@@ -53,20 +53,12 @@
               </n-flex>
             </div>
           </n-flex>
-          <n-grid cols="3" x-gap="12">
-            <n-gi span="1">
-              <AppCard hoverable bordered class="p-24px h-400px" @click="handleJump('appointment')">
-                开始叫号
-              </AppCard>
-            </n-gi>
-            <n-gi span="1">
-              <AppCard bordered hoverable class="p-24px h-400px" @click="handleJump('my-patient')">
-                我的病人
-              </AppCard>
-            </n-gi>
-            <n-gi span="1">
-              <AppCard hoverable bordered class="p-24px h-400px" @click="handleJump('my-cases')">
-                我的病例
+          <n-grid cols="2" x-gap="12">
+            <n-gi span="1" v-for="(item, index) in operateCard" :key="index">
+              <AppCard hoverable bordered class="p-24px h-400px" @click="handleJump(item.path)">
+                <n-h1 class="text-center">
+                  {{ item.title }}
+                </n-h1>
               </AppCard>
             </n-gi>
           </n-grid>
@@ -87,6 +79,17 @@ const router = useRouter();
 const doctorDetail = ref<any>(null);
 
 const doctorAppointments = ref<any>(null);
+
+const operateCard = ref<any>([
+  {
+    title: '开始叫号',
+    path: 'appointment',
+  },
+  {
+    title: '我的病人',
+    path: 'my-patient',
+  },
+]);
 
 const doctorInfo = async () => {
   const res = await DoctorApi.info();

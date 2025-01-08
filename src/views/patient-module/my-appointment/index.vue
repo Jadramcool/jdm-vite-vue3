@@ -28,12 +28,16 @@
 <script lang="tsx" setup>
 import { AppointmentApi } from '@/api';
 import { BasicForm, BasicTable, useForm, useModal } from '@/components';
+import { useUserStore } from '@/store';
 import { useRouter } from 'vue-router';
 import { useAppointmentSchema } from './schema';
 
 defineOptions({ name: 'MyAppointment' });
 
 const router = useRouter();
+const userStore = useUserStore();
+
+const patientId = computed(() => userStore.userInfo?.patient?.id);
 
 const tableRef = ref<any>(null);
 const formRef = ref<any>(null);
@@ -64,7 +68,7 @@ const [registerModal, { openModal }] = useModal();
 
 // 表格数据请求
 const loadAppointmentList = async (data: Query.GetParams) => {
-  data.filters = { ...(data.filters || {}), ...getFieldsValue() };
+  data.filters = { ...(data.filters || {}), ...getFieldsValue(), patientId: patientId.value };
   return AppointmentApi.list(data);
 };
 

@@ -68,5 +68,7 @@ declare namespace System {
     address?: Nullable<string>;
     addressDetail?: Nullable<string>;
     roles?: UserRole[]; // 需要定义 UserRole 类型
+    doctor?: Hospital.Doctor;
+    patient?: Hospital.Patient;
   };
 }

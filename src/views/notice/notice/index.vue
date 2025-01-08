@@ -61,7 +61,6 @@ const handleAdd = () => {
   });
 };
 
-// 表格/表单配置  采用computed（适配i18n）
 const { columns, formSchemas } = useNoticeSchema(schemaMethods);
 
 const [register, { getFieldsValue }] = useForm({

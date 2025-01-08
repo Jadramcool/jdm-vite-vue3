@@ -133,7 +133,7 @@ const loginFormRules: FormRules = {
 const isRemember = ref<boolean>(false);
 
 onMounted(async () => {
-  await checkLocalAccount();
+  checkLocalAccount();
 });
 
 const toOtherForm = (type: any) => {
@@ -164,7 +164,7 @@ const checkLocalAccount = () => {
 // 登录
 const handleLogin = async (e: MouseEvent) => {
   const messageReactive = window.$message.loading(`${t('login.status.logining')}...`, {
-    duration: 0,
+    duration: 1000,
   });
   e.preventDefault();
   loginFormRef.value?.validate(async (errors) => {
