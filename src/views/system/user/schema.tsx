@@ -255,10 +255,6 @@ export const useUserSchema = (methods: any = {}) => {
         label: $t('common.createdTime'),
         defaultValue: undefined,
         form: {
-          defaultValue: [
-            dayjs('2024-01-01 00:00:00').valueOf(),
-            dayjs('2024-12-31 23:59:59').valueOf(),
-          ],
           component: 'NDatePicker',
           componentProps: {
             type: 'daterange',

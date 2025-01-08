@@ -1,4 +1,4 @@
-import { DepartmentApi, DoctorApi } from '@/api';
+import { DepartmentApi, PatientApi } from '@/api';
 import {
   AppointmentStatusOptions,
   AppointmentStatusTypeOptions,
@@ -12,7 +12,7 @@ import { NButton, NSpace, NTag } from 'naive-ui';
 import { RowData } from 'naive-ui/es/data-table/src/interface';
 import { computed } from 'vue';
 
-export const useMyCasesSchema = (methods: any = {}) => {
+export const useMyPatientSchema = (methods: any = {}) => {
   const schema = computed(() => ({
     properties: [
       {
@@ -40,15 +40,31 @@ export const useMyCasesSchema = (methods: any = {}) => {
       },
 
       {
-        key: 'doctor.id',
+        key: 'doctorSchedule.doctor.id',
         label: '医生',
         defaultValue: undefined,
         table: {
           // render: (row: any) => row.doctorSchedule.doctor?.user?.name || '-',
           render: (row: RowData) => {
             return (
-              <NButton text type="primary" onClick={() => methods.handleDoctorDetail(row)}>
-                {row.doctor?.user?.name}
+              <NButton text type="primary" onClick={() => methods.handleDetail(row)}>
+                {row.doctorSchedule.doctor?.user?.name}
+              </NButton>
+            );
+          },
+        },
+      },
+
+      {
+        key: 'patient.id',
+        label: '患者',
+        defaultValue: undefined,
+        table: {
+          // render: (row: any) => row.doctorSchedule.doctor?.user?.name || '-',
+          render: (row: RowData) => {
+            return (
+              <NButton text type="primary" onClick={() => methods.handlePatientDetail(row)}>
+                {row.patient?.user?.name}
               </NButton>
             );
           },
@@ -56,7 +72,7 @@ export const useMyCasesSchema = (methods: any = {}) => {
         form: {
           component: 'ApiSelect',
           componentProps: {
-            api: DoctorApi.list,
+            api: PatientApi.list,
             params: {
               options: {
                 showPagination: false,
@@ -64,14 +80,14 @@ export const useMyCasesSchema = (methods: any = {}) => {
             },
             multiple: false,
             filterable: true,
-            placeholder: '请选择医生',
+            placeholder: '请选择患者',
             labelField: 'user.name',
             valueField: 'id',
           },
         },
       },
       {
-        key: 'doctor.department.id',
+        key: 'doctorSchedule.doctor.department.id',
         label: '所属科室',
         defaultValue: undefined,
         form: {
@@ -87,16 +103,16 @@ export const useMyCasesSchema = (methods: any = {}) => {
           },
         },
         table: {
-          render: (row: any) => row.doctor?.department?.name || '-',
+          render: (row: any) => row.doctorSchedule.doctor?.department?.name || '-',
         },
       },
       {
-        key: 'date',
+        key: 'doctorSchedule.date',
         label: '就诊日期',
         defaultValue: undefined,
         table: {
           render: (row: any) => {
-            const { date, timePeriod } = row.appointment.doctorSchedule;
+            const { date, timePeriod } = row.doctorSchedule;
             const newDate = dayjs(date).format('YYYY-MM-DD');
             const newTimePeriod = unref(timePeriodOptions).find(
               (item: any) => item.value === timePeriod,
@@ -113,13 +129,13 @@ export const useMyCasesSchema = (methods: any = {}) => {
         },
       },
       {
-        key: 'appointment.status',
+        key: 'status',
         label: '就诊状态',
         defaultValue: undefined,
         table: {
           render: (row: any) => {
             const statusString = AppointmentStatusOptions.find(
-              (item) => item.value === row.appointment.status,
+              (item) => item.value === row.status,
             )?.label;
             const color = AppointmentStatusTypeOptions[row.status];
             return (
@@ -137,11 +153,11 @@ export const useMyCasesSchema = (methods: any = {}) => {
         },
       },
       {
-        key: 'appointment.appointmentDate',
+        key: 'appointmentDate',
         label: '挂号时间',
         defaultValue: undefined,
         table: {
-          render: (row: any) => dayjs(row.appointment.createdTime).format('YYYY-MM-DD HH:mm:ss'),
+          render: (row: any) => dayjs(row.createdTime).format('YYYY-MM-DD HH:mm:ss'),
         },
       },
       {
@@ -168,9 +184,16 @@ export const useMyCasesSchema = (methods: any = {}) => {
           width: 180,
           render: (row: any) => (
             <NSpace justify="center">
-              <NButton type="primary" ghost size="small" onClick={() => methods.handleDetail(row)}>
-                查看
-              </NButton>
+              {row.status === 'FINISHED' && (
+                <NButton
+                  type="primary"
+                  ghost
+                  size="small"
+                  onClick={() => methods.handleRecord(row)}
+                >
+                  查看
+                </NButton>
+              )}
             </NSpace>
           ),
         },
@@ -183,14 +206,14 @@ export const useMyCasesSchema = (methods: any = {}) => {
   // 表格和表单字段
   const tableFields = [
     'id',
-    'doctor.id',
-    'doctor.department.id',
-    'date',
-    'appointment.status',
-    'appointment.appointmentDate',
+    'doctorSchedule.doctor.id',
+    'patient.id',
+    'doctorSchedule.date',
+    'status',
+    'appointmentDate',
     'operate',
   ];
-  const formFields = ['doctor.id', 'doctor.department.id', 'date', 'appointment.status'];
+  const formFields = ['patient.id', 'doctorSchedule.date', 'status'];
 
   // 表格列配置
   const columns = computed(() => columnsUtil(schema.value, tableFields));
@@ -200,7 +223,7 @@ export const useMyCasesSchema = (methods: any = {}) => {
   return { columns, formSchemas };
 };
 
-export const useMedicalRecordSchema = () => {
+export const usePatientRecordSchema = () => {
   const schema = computed(() => ({
     properties: [
       {
@@ -228,48 +251,48 @@ export const useMedicalRecordSchema = () => {
       },
 
       {
-        key: 'patient.user.name',
+        key: 'user.name',
         label: '患者姓名',
         description: {
-          render: (row: RowData) => row.patient.user.name || '-',
+          render: (row: RowData) => row.user.name || '-',
         },
       },
       {
-        key: 'patient.user.sex',
+        key: 'user.sex',
         label: '性别',
         description: {
           render: (row: RowData) =>
-            unref(sexOptions).find((item) => item.value === row.patient.user.sex)?.label,
+            unref(sexOptions).find((item) => item.value === row.user.sex)?.label,
         },
       },
       {
-        key: 'patient.user.phone',
+        key: 'user.phone',
         label: '手机号',
         description: {
-          render: (row: RowData) => row.patient.user.phone || '-',
+          render: (row: RowData) => row.user.phone || '-',
         },
       },
       {
-        key: 'patient.user.addressDetail',
+        key: 'user.addressDetail',
         label: '详细地址',
         description: {
-          render: (row: RowData) => row.patient.user.addressDetail || '-',
+          render: (row: RowData) => row.user.addressDetail || '-',
           span: 2,
         },
       },
       {
-        key: 'patient.user.email',
+        key: 'user.email',
         label: '电子邮箱',
         description: {
-          render: (row: RowData) => row.patient.user.email || '-',
+          render: (row: RowData) => row.user.email || '-',
         },
       },
       {
-        key: 'patient.user.birthday',
+        key: 'user.birthday',
         label: '年龄',
         description: {
           render: (row: RowData) => {
-            const birth = dayjs(row.patient.user.birthday);
+            const birth = dayjs(row.user.birthday);
             const today = dayjs();
             const age = today.diff(birth, 'year');
             return age ? `${age}岁` : '-';
@@ -338,12 +361,15 @@ export const useMedicalRecordSchema = () => {
   }));
 
   const descriptionFields = [
-    'patient.user.name',
-    'patient.user.sex',
-    'patient.user.birthday',
-    'patient.user.phone',
-    'patient.user.email',
-    'patient.user.addressDetail',
+    'user.name',
+    'user.sex',
+    'user.birthday',
+    'user.phone',
+    'user.email',
+    'user.addressDetail',
+  ];
+
+  const descriptionMedicalRecordFields = [
     'mainComplaint',
     'nowSickness',
     'diagnostic',
@@ -355,5 +381,10 @@ export const useMedicalRecordSchema = () => {
   // 患者信息
   const descriptionSchemas = computed(() => descriptionSchemaUtil(schema.value, descriptionFields));
 
-  return { descriptionSchemas };
+  // 病例信息
+  const descriptionMedicalRecordSchemas = computed(() =>
+    descriptionSchemaUtil(schema.value, descriptionMedicalRecordFields),
+  );
+
+  return { descriptionSchemas, descriptionMedicalRecordSchemas };
 };

@@ -25,5 +25,7 @@ declare namespace Hospital {
     userId: number;
     user?: System.User;
     createdTime: string;
+    appointment?: Appointment.Appointment[];
+    medicalRecord?: MedicalRecord.MedicalRecord[];
   }
 }

@@ -1,41 +1,45 @@
 <template>
   <NModal v-bind="getBindValue" ref="modalElRef">
-    <NCard
-      :style="{
-        width: isNumber(getBindValue.cardWidth)
-          ? getBindValue.cardWidth + 'px'
-          : getBindValue.cardWidth,
-      }"
-      size="small"
-      closable
-      :segmented="true"
-      :on-close="handleClose"
-    >
-      <template #header>
-        {{ getBindValue.title || '弹窗' }}
-      </template>
-      <template #default>
-        <NScrollbar
-          content-class="modal-content"
-          :style="{
-            height: isNumber(getBindValue.cardHeight)
-              ? getBindValue.cardHeight + 'px'
-              : getBindValue.cardHeight,
-          }"
-        >
-          <slot></slot>
-        </NScrollbar>
-      </template>
-      <template #footer>
-        <slot v-if="$slots.footer" name="footer"></slot>
-      </template>
-      <template #action>
-        <NFlex justify="end">
-          <slot v-if="$slots.action" name="action"></slot>
-          <BasicModalFooter v-bind="getProps" @ok="handleOk" @close="handleClose" />
-        </NFlex>
-      </template>
-    </NCard>
+    <template #default="{ draggableClass }">
+      <NCard
+        :style="{
+          width: isNumber(getBindValue.cardWidth)
+            ? getBindValue.cardWidth + 'px'
+            : getBindValue.cardWidth,
+        }"
+        size="small"
+        closable
+        :segmented="true"
+        :on-close="handleClose"
+      >
+        <template #header>
+          <div :class="draggableClass">
+            {{ getBindValue.title || '弹窗' }}
+          </div>
+        </template>
+        <template #default>
+          <NScrollbar
+            content-class="modal-content"
+            :style="{
+              height: isNumber(getBindValue.cardHeight)
+                ? getBindValue.cardHeight + 'px'
+                : getBindValue.cardHeight,
+            }"
+          >
+            <slot></slot>
+          </NScrollbar>
+        </template>
+        <template #footer>
+          <slot v-if="$slots.footer" name="footer"></slot>
+        </template>
+        <template #action>
+          <NFlex justify="end">
+            <slot v-if="$slots.action" name="action"></slot>
+            <BasicModalFooter v-bind="getProps" @ok="handleOk" @close="handleClose" />
+          </NFlex>
+        </template>
+      </NCard>
+    </template>
   </NModal>
 </template>
 
@@ -76,6 +80,7 @@ const getProps = computed((): NewModalProps => {
 });
 
 const getBindValue = computed(() => {
+  console.log('[ getProps.value ] >', getProps.value);
   return { ...unref(getProps) } as Recordable;
 });
 

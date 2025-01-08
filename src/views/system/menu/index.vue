@@ -32,7 +32,6 @@ defineOptions({ name: 'MenuManager' });
 
 const { copy } = useClipboard();
 
-// 表格/表单配置  采用computed（适配i18n）
 const tableRef = ref<any>(null);
 const formRef = ref<any>(null);
 
@@ -59,7 +58,6 @@ const schemaMethods = {
   },
 };
 
-// 表格/表单配置  采用computed（适配i18n）
 const { columns, formSchemas } = useMenuSchema(schemaMethods);
 
 const [register, { getFieldsValue }] = useForm({

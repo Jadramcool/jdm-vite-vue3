@@ -21,12 +21,14 @@
               :key="index"
             >
               <n-flex
-                class="h-120px borderd rounded cursor-hover"
+                class="h-120px borderd rounded"
                 vertical
                 align="center"
                 justify="center"
                 :class="
-                  item.date === selectedDate ? 'bg-primary transition-all delay-100 text-white' : ''
+                  item.date === selectedDate
+                    ? 'bg-primary transition-all delay-100 text-white'
+                    : 'cursor-hover'
                 "
               >
                 <div>{{ item.date }}</div>
@@ -40,8 +42,8 @@
                     :color="
                       item.date === selectedDate
                         ? timePeriod === 'MORNING'
-                          ? { color: '#f0a02085', textColor: '#eee', borderColor: '#eee' }
-                          : { color: '#2080f088', textColor: '#eee', borderColor: '#eee' }
+                          ? { color: '#f0a020ff', textColor: '#eee', borderColor: '#eee' }
+                          : { color: '#2080f0ff', textColor: '#eee', borderColor: '#eee' }
                         : undefined
                     "
                   >
@@ -58,13 +60,8 @@
               </AppCard>
             </n-gi>
             <n-gi span="1">
-              <AppCard
-                bordered
-                hoverable
-                class="p-24px h-400px"
-                @click="handleJump('my-appointment')"
-              >
-                我的挂号
+              <AppCard bordered hoverable class="p-24px h-400px" @click="handleJump('my-patient')">
+                我的病人
               </AppCard>
             </n-gi>
             <n-gi span="1">

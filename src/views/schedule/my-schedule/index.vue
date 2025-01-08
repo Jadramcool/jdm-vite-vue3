@@ -30,7 +30,7 @@ defineOptions({ name: 'Schedule' });
 const formRef = ref(null);
 const listRef = useTemplateRef<any>('list');
 const scheduleRef = useTemplateRef<any>('schedule');
-const tabValue = ref('list');
+const tabValue = ref('schedule');
 
 const [registerModal, { openModal }] = useModal();
 

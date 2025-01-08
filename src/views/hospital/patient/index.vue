@@ -37,7 +37,6 @@ import { usePatientSchema } from './schema';
 
 defineOptions({ name: 'Patient' });
 
-// 表格/表单配置  采用computed（适配i18n）
 const tableRef = ref<any>(null);
 const formRef = ref<any>(null);
 
@@ -76,7 +75,6 @@ const handleAdd = () => {
   });
 };
 
-// 表格/表单配置  采用computed（适配i18n）
 const { columns, formSchemas } = usePatientSchema(schemaMethods);
 
 const [register, { getFieldsValue }] = useForm({

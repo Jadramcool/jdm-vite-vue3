@@ -81,9 +81,9 @@ export const usePermissionStore = defineStore('permission', {
         .sort((a, b) => a.order - b.order);
 
       const accessRoutes = arrayToTree(formatSortMenus);
+      console.log('[ user.roleType ] >', user.roleType);
 
       let homePath = import.meta.env.VITE_HOME_PATH;
-
       // 针对不同角色类型，设置不同的首页路由
       if (user.roleType === 'patient') {
         homePath = '/patient/patientHome';
@@ -149,7 +149,7 @@ export const usePermissionStore = defineStore('permission', {
           title: item.name, // 路由的标题
           layout: item.layout || null, // 路由的布局
           keepAlive: !!item.keepAlive, // 是否缓存路由组件
-          extraData: JSON.parse(item.extraData) || null, // 额外数据
+          extraData: item.extraData ? JSON.parse(item.extraData) : null, // 额外数据
         },
       };
     },

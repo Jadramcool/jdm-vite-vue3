@@ -39,16 +39,6 @@ const props = defineProps({
 
 const nowSchemas = ref<any>([]);
 
-// const nowSchemas = computed(() => {
-//   // 优先使用自定义的schema
-//   if (!props.schemas) {
-//     if (props.roleType === 'doctor') {
-//       return descriptionSchemas.value;
-//     }
-//   }
-//   return props.schemas;
-// });
-
 const attrs = useAttrs();
 
 const entityId = ref<number>(0); // 实体ID

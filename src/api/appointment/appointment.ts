@@ -7,6 +7,7 @@ enum API {
   cancel = '/appointment/cancel',
   call = '/appointment/call',
   finish = '/appointment/finish',
+  expired = '/appointment/expired',
   doctorAppointmentList = '/appointment/doctorAppointmentList',
   detail = '/appointment/detail',
 }
@@ -60,11 +61,20 @@ export const call = (appointmentId: number) => {
 };
 
 /**
- * @description: 叫号
+ * @description: 完成就诊
  */
 export const finish = (appointmentId: number) => {
   return request.post<Appointment.Appointment>({
     url: `${API.finish}/${appointmentId}`,
+  });
+};
+
+/**
+ * @description: 过号
+ */
+export const expired = (appointmentId: number) => {
+  return request.post<Appointment.Appointment>({
+    url: `${API.expired}/${appointmentId}`,
   });
 };
 
