@@ -36,6 +36,7 @@ export function createPermissionGuard(router: any) {
         // const [user, permissions] = await Promise.all([getUserInfo(), getMenus()]);
         const user: any = await getUserInfo();
         const menus = await getMenus();
+
         userStore.setUser(user);
         // 路由初始化失败
         if (!menus) {
@@ -48,7 +49,7 @@ export function createPermissionGuard(router: any) {
         permissionStore.setMenus(menus);
         // 设置路由
         permissionStore.setRoutes(menus, user);
-        router.addRoute(permissionStore.accessRoutes);
+        await router.addRoute(permissionStore.accessRoutes);
         return { ...to, replace: true };
       }
 

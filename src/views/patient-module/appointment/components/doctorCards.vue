@@ -22,11 +22,7 @@
 
     <n-scrollbar x-scrollable v-for="timePeriod in validTimePeriods" :key="timePeriod">
       <n-flex class="doctor mt-20px" :wrap="false">
-        <AppCard
-          bordered
-          hoverable
-          class="w-100px h-400px flex justify-center items-center border-gray"
-        >
+        <AppCard bordered hoverable class="w-100px h-400px flex justify-center items-center">
           <n-h2 style="writing-mode: vertical-rl; letter-spacing: 30px">
             {{ timePeriodOptions.find((item: any) => item.value === timePeriod)?.label }}
           </n-h2>

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-around h-full">
+  <div class="h-full">
     <n-grid x-gap="12" cols="1 l:12" responsive="screen" item-responsive>
       <n-gi span="1 m:4">
         <AppCard bordered class="p-24px">
@@ -57,15 +57,22 @@
         </AppCard>
       </n-gi>
     </n-grid>
+
+    <n-flex v-if="userInfo.roleType !== 'admin'" class="mt-30px" align="center" justify="center">
+      <n-button type="primary" @click="router.back()">返回</n-button>
+    </n-flex>
   </div>
 </template>
 
 <script setup lang="ts">
 import { $t } from '@/locales';
 import { useUserStore } from '@/store';
+import { useRouter } from 'vue-router';
 import { BasicSetting, PasswordSetting, SecuritySetting } from './components';
 
 defineOptions({ name: 'UserCenter' });
+
+const router = useRouter();
 
 const userStore = useUserStore();
 

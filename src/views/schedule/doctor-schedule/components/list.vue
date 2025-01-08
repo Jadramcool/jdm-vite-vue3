@@ -30,7 +30,6 @@ const props = defineProps({
   },
 });
 
-// 表格/表单配置  采用computed（适配i18n）
 const tableRef = ref<any>(null);
 
 // 表格/表单方法

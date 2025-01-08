@@ -5,15 +5,25 @@ enum API {
   list = '/medicalRecord/list',
   create = '/medicalRecord/create',
   update = '/medicalRecord/update',
+  detail = '/medicalRecord/detail',
 }
 
 /**
- * @description: 获取挂号列表
+ * @description: 获取病例列表
  */
 export const list = (params: any) => {
   return request.get<List<MedicalRecord.MedicalRecord>>({
     url: API.list,
     params,
+  });
+};
+
+/**
+ * @description: 获取病例详情
+ */
+export const detail = (medicalRecordId: number) => {
+  return request.get<MedicalRecord.MedicalRecord>({
+    url: `${API.detail}/${medicalRecordId}`,
   });
 };
 

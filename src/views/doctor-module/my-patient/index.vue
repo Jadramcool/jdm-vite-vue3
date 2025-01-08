@@ -7,28 +7,30 @@
     <BasicTable
       ref="tableRef"
       :size="'large'"
-      :title="'我的病例'"
+      :title="'我的病人'"
       :columns="columns"
       :filters="queryParams"
-      :request="loadAppointmentList"
+      :request="loadPatientList"
       :rowKey="(row: NaiveUI.RowData) => row.id"
       :pagination="{ pageSize: 10 }"
       :showAddBtn="false"
     >
     </BasicTable>
 
-    <UserDetailModal @register="registerModal"></UserDetailModal>
+    <UserDetailModal @register="registerModal" :roleType="'patient'"></UserDetailModal>
   </div>
 </template>
 
 <script lang="tsx" setup>
 import { AppointmentApi } from '@/api';
 import { BasicForm, BasicTable, useForm, useModal } from '@/components';
-import { useAppointmentSchema } from './schema';
+import dayjs from 'dayjs';
+import { useRouter } from 'vue-router';
+import { useMyPatientSchema } from './schema';
 
-defineOptions({ name: 'MyCases' });
+defineOptions({ name: 'MyPatient' });
 
-// 表格/表单配置  采用computed（适配i18n）
+const router = useRouter();
 const tableRef = ref<any>(null);
 const formRef = ref<any>(null);
 
@@ -38,18 +40,23 @@ const queryParams = ref<Query.GetParams>({});
 // 表格/表单方法
 const schemaMethods = {
   handleCancel: async (record: NaiveUI.RowData) => {
-    console.log('🚀 ~ schemaMethods.record:', record);
     await AppointmentApi.cancel(record.id);
     tableRef.value.reload();
   },
 
-  handleDetail(record: NaiveUI.RowData) {
-    openModal(record?.doctorSchedule?.doctor);
+  handlePatientDetail(record: NaiveUI.RowData) {
+    openModal(record?.patient);
+  },
+
+  handleRecord(record: NaiveUI.RowData) {
+    router.push({
+      path: `/doctor/my-patient/detail/${record.patient.id}`,
+      query: { date: dayjs(record?.doctorSchedule?.date).format('YYYY-MM-DD') },
+    });
   },
 };
 
-// 表格/表单配置  采用computed（适配i18n）
-const { columns, formSchemas } = useAppointmentSchema(schemaMethods);
+const { columns, formSchemas } = useMyPatientSchema(schemaMethods);
 
 const [register, { getFieldsValue }] = useForm({
   gridProps: { cols: '1 s:1 m:2 l:3 xl:4 2xl:4' },
@@ -59,9 +66,10 @@ const [register, { getFieldsValue }] = useForm({
 const [registerModal, { openModal }] = useModal();
 
 // 表格数据请求
-const loadAppointmentList = async (data: Query.GetParams) => {
+const loadPatientList = async (data: Query.GetParams) => {
   data.filters = { ...(data.filters || {}), ...getFieldsValue() };
-  return AppointmentApi.list(data);
+  const res = await AppointmentApi.doctorAppointmentList(data);
+  return res;
 };
 
 // 表单提交

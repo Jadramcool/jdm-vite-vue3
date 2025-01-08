@@ -17,6 +17,10 @@
     >
     </BasicTable>
 
+    <n-flex class="mt-30px" align="center" justify="center">
+      <n-button type="primary" @click="router.back()">返回</n-button>
+    </n-flex>
+
     <UserDetailModal @register="registerModal"></UserDetailModal>
   </div>
 </template>
@@ -24,11 +28,17 @@
 <script lang="tsx" setup>
 import { AppointmentApi } from '@/api';
 import { BasicForm, BasicTable, useForm, useModal } from '@/components';
+import { useUserStore } from '@/store';
+import { useRouter } from 'vue-router';
 import { useAppointmentSchema } from './schema';
 
 defineOptions({ name: 'MyAppointment' });
 
-// 表格/表单配置  采用computed（适配i18n）
+const router = useRouter();
+const userStore = useUserStore();
+
+const patientId = computed(() => userStore.userInfo?.patient?.id);
+
 const tableRef = ref<any>(null);
 const formRef = ref<any>(null);
 
@@ -47,7 +57,6 @@ const schemaMethods = {
   },
 };
 
-// 表格/表单配置  采用computed（适配i18n）
 const { columns, formSchemas } = useAppointmentSchema(schemaMethods);
 
 const [register, { getFieldsValue }] = useForm({
@@ -59,7 +68,7 @@ const [registerModal, { openModal }] = useModal();
 
 // 表格数据请求
 const loadAppointmentList = async (data: Query.GetParams) => {
-  data.filters = { ...(data.filters || {}), ...getFieldsValue() };
+  data.filters = { ...(data.filters || {}), ...getFieldsValue(), patientId: patientId.value };
   return AppointmentApi.list(data);
 };
 

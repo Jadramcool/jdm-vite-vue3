@@ -24,9 +24,10 @@ export const list = (params: any) => {
 /**
  * @description: 获取患者详情
  */
-export const detail = (id: number) => {
+export const detail = (id: number, options?: any) => {
   return request.get<Hospital.Patient>({
     url: `${API.detail}/${id}`,
+    params: options,
   });
 };
 

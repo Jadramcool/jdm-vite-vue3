@@ -52,4 +52,8 @@ export const basicProps = {
     type: [String, Number] as PropType<string | number>,
     default: '420px',
   },
+  draggable: {
+    type: Boolean,
+    default: true,
+  },
 };

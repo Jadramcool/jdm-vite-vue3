@@ -234,11 +234,14 @@ export const useDoctorAppointmentSchema = (methods: any = {}) => {
 
   // 表格列配置
   const columns = computed(() => columnsUtil(schema.value, tableFields));
+  // 患者详细信息
   const descriptionSchemas = computed(() => descriptionSchemaUtil(schema.value, descriptionFields));
+  // 病例信息
   const descriptionSchemasDetail = computed(() =>
     descriptionSchemaUtil(schema.value, descriptionDetailFields),
   );
 
+  // 医生信息
   const descriptionDoctorSchemas = computed(() =>
     descriptionSchemaUtil(schema.value, descriptionDoctorFields),
   );

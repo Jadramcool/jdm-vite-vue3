@@ -23,11 +23,39 @@
             <template #header>{{ nowAppointment?.patient?.user?.name }}</template>
             <template #header-extra>
               <n-space v-if="doctorScheduleId">
-                <n-button type="success" @click="handleSave">保存</n-button>
-                <n-button type="success" @click="handleFinished">完成就诊</n-button>
+                <n-popconfirm @positive-click="handleExpired">
+                  <template #trigger>
+                    <n-button
+                      type="error"
+                      :disabled="
+                        nowAppointment?.status === 'FINISHED' ||
+                        nowAppointment?.status === 'EXPIRED' ||
+                        allFinishedTag
+                      "
+                      >过号</n-button
+                    >
+                  </template>
+                  是否过号？
+                </n-popconfirm>
+                <n-button
+                  type="success"
+                  @click="handleSave"
+                  :disabled="
+                    nowAppointment?.status === 'FINISHED' || nowAppointment?.status === 'EXPIRED'
+                  "
+                  >保存</n-button
+                >
+                <n-button
+                  type="success"
+                  @click="handleFinished"
+                  :disabled="
+                    nowAppointment?.status === 'FINISHED' || nowAppointment?.status === 'EXPIRED'
+                  "
+                  >完成就诊</n-button
+                >
                 <n-popconfirm @positive-click="handleNext">
                   <template #trigger>
-                    <n-button type="primary">下一叫号</n-button>
+                    <n-button type="primary" :disabled="allFinishedTag">下一叫号</n-button>
                   </template>
                   是否确认完成该患者的诊查，继续下一叫号？
                 </n-popconfirm>
@@ -46,7 +74,8 @@
 
                 <template
                   v-if="
-                    nowAppointment?.status === 'UNFINISHED' || nowAppointment?.status === 'CALLED'
+                    nowAppointment?.status &&
+                    ['UNFINISHED', 'CALLED'].includes(nowAppointment?.status)
                   "
                 >
                   <n-form
@@ -118,7 +147,8 @@
 
               <BasicDescription
                 v-if="
-                  nowAppointment?.status !== 'UNFINISHED' && nowAppointment?.status !== 'CALLED'
+                  nowAppointment?.status &&
+                  !['UNFINISHED', 'CALLED', 'EXPIRED'].includes(nowAppointment?.status)
                 "
                 :data="nowAppointment"
                 :schemas="descriptionDoctorSchemas"
@@ -151,6 +181,8 @@ const showSpin = ref<boolean>(true);
 
 const nowAppointment = ref<Nullable<Appointment.Appointment>>(null);
 const appointmentList = ref<Appointment.Appointment[]>([]);
+
+const allFinishedTag = ref<boolean>(false);
 
 const rowProps = (row: NaiveUI.RowData) => {
   return {
@@ -211,10 +243,7 @@ const { columns, descriptionSchemas, descriptionSchemasDetail, descriptionDoctor
 // 加载当前排班，后端根据时间处理
 const loadCurrentSchedule = async () => {
   try {
-    console.log('[ 22 ] >', 11);
     const res = await DoctorScheduleApi.current();
-    console.log('🚀 ~ loadCurrentSchedule ~ res:', res);
-
     if (res) {
       doctorScheduleId.value = res.id;
       if (doctorScheduleId.value) {
@@ -238,23 +267,37 @@ const loadAppointments = async (data: Query.GetParams) => {
       showPagination: false,
     };
     const res = await AppointmentApi.doctorAppointmentList(data);
-    console.log('🚀 ~ loadAppointments ~ res:', res);
-
-    if (res) {
+    if (res && res.data.length > 0) {
       appointmentList.value = res.data.filter(
         (item: Appointment.Appointment) => item.status === 'UNFINISHED' || item.status === 'CALLED',
       );
+      // 判断是否全部完成，全部完成则设置allFinishedTag为true
+      if (appointmentList.value.length === 0) {
+        appointmentList.value = res.data;
+        allFinishedTag.value = true;
+      } else {
+        allFinishedTag.value = false;
+      }
       // 第一次加载后，拿取第一个未完成的挂号
       if (firstLoad.value) {
         const [firstAppointment] = appointmentList.value;
-        await getAppointmentDetail(firstAppointment.id);
+        if (firstAppointment) {
+          await getAppointmentDetail(firstAppointment.id);
+        }
 
         firstLoad.value = false;
       }
       return res;
     }
+
+    return {
+      data: [],
+      pagination: null,
+    };
   } catch (error: any) {
     window.$message.error(error);
+  } finally {
+    showSpin.value = false;
   }
 };
 
@@ -270,6 +313,7 @@ const getAppointmentDetail = async (id: number) => {
 
   try {
     const [res] = await Promise.all([apiRequest, timer]);
+
     nowAppointment.value = res;
     if (res && (res.status === 'UNFINISHED' || res.status === 'CALLED')) {
       // 如果是未完成的挂号，则加载其详情
@@ -317,6 +361,16 @@ const handleSave = async () => {
   }
 };
 
+// 过号
+const handleExpired = async () => {
+  try {
+    await AppointmentApi.expired(nowAppointment.value?.id as number);
+    tableRef.value.reload();
+  } catch (error: any) {
+    window.$message.error(error);
+  }
+};
+
 // 就诊完成
 const handleFinished = async () => {
   try {
@@ -331,9 +385,12 @@ const handleFinished = async () => {
 // 下一叫号
 const handleNext = async () => {
   try {
-    await handleFinished();
-    await schemaMethods.handleCall(appointmentList.value[0]);
-    // await AppointmentApi.next(nowAppointment.value?.id as number);
+    if (nowAppointment.value?.status === 'CALLED') {
+      await handleFinished();
+    }
+    if (appointmentList.value[0].status === 'UNFINISHED') {
+      await schemaMethods.handleCall(appointmentList.value[0]);
+    }
     tableRef.value.reload();
   } catch (error: any) {
     window.$message.error(error);

@@ -35,24 +35,11 @@
         <n-space vertical>
           <Welcome :show-avatar="false"></Welcome>
           <n-grid cols="3" x-gap="12">
-            <n-gi span="1">
-              <AppCard hoverable bordered class="p-24px h-400px" @click="handleJump('appointment')">
-                立即挂号
-              </AppCard>
-            </n-gi>
-            <n-gi span="1">
-              <AppCard
-                bordered
-                hoverable
-                class="p-24px h-400px"
-                @click="handleJump('my-appointment')"
-              >
-                我的挂号
-              </AppCard>
-            </n-gi>
-            <n-gi span="1">
-              <AppCard hoverable bordered class="p-24px h-400px" @click="handleJump('my-cases')">
-                我的病例
+            <n-gi span="1" v-for="(item, index) in operateCard" :key="index">
+              <AppCard hoverable bordered class="p-24px h-400px" @click="handleJump(item.path)">
+                <n-h1 class="text-center">
+                  {{ item.title }}
+                </n-h1>
               </AppCard>
             </n-gi>
           </n-grid>
@@ -74,6 +61,21 @@ const userStore = useUserStore();
 const userInfo = computed(() => ({
   ...userStore.getUser,
 }));
+
+const operateCard = ref<any>([
+  {
+    title: '立即挂号',
+    path: 'appointment',
+  },
+  {
+    title: '我的挂号',
+    path: 'my-appointment',
+  },
+  {
+    title: '我的病例',
+    path: 'my-cases',
+  },
+]);
 
 // 用户信息表格
 const userTableDetail = computed(() => [
