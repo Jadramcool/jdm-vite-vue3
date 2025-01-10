@@ -127,7 +127,9 @@
     },
     "thirdPartyLogin": "Third Party Login",
     "title": "jdm's Login Page",
-    "username": "Username"
+    "username": "Username",
+    "name": "Name",
+    "phone": "Phone"
   },
   "message": {
     "notSelectDefaultTop": "Default to top level if not selected",

@@ -34,12 +34,17 @@
       <n-gi span="1 m:8">
         <n-space vertical>
           <Welcome :show-avatar="false"></Welcome>
-          <n-grid cols="3" x-gap="12">
+          <n-grid cols="3" x-gap="12" y-gap="12">
             <n-gi span="1" v-for="(item, index) in operateCard" :key="index">
               <AppCard hoverable bordered class="p-24px h-400px" @click="handleJump(item.path)">
                 <n-h1 class="text-center">
                   {{ item.title }}
                 </n-h1>
+              </AppCard>
+            </n-gi>
+            <n-gi span="3">
+              <AppCard hoverable bordered class="p-24px h-200px" @click="handleJump('ai-chat')">
+                <n-h1 class="text-center"> AI问诊 </n-h1>
               </AppCard>
             </n-gi>
           </n-grid>

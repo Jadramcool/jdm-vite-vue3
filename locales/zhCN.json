@@ -127,7 +127,9 @@
     },
     "thirdPartyLogin": "第三方登录",
     "title": "jdm Admin",
-    "username": "用户名"
+    "username": "用户名",
+    "name": "姓名",
+    "phone": "手机号"
   },
   "message": {
     "notSelectDefaultTop": "不选默认为顶级",
@@ -212,8 +214,7 @@
           "notice": "通知"
         }
       },
-      "todoList": {
-      }
+      "todoList": {}
     },
     "system": {
       "menu": {

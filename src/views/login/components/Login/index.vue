@@ -47,9 +47,15 @@
       </n-form>
 
       <div class="flex justify-around">
-        <n-button class="min-w-100px" type="info" @click="handleExperience">{{
-          $t('login.experience')
-        }}</n-button>
+        <n-space>
+          <n-button class="min-w-100px" type="info" @click="handleExperience('doctor')">{{
+            $t('login.experience') + '-医生'
+          }}</n-button>
+          <n-button class="min-w-100px" type="warning" @click="handleExperience('patient')">{{
+            $t('login.experience') + '-患者'
+          }}</n-button>
+        </n-space>
+
         <n-button class="min-w-100px" type="primary" @click="handleLogin">{{
           $t('login.login')
         }}</n-button>
@@ -199,15 +205,14 @@ const handleLogin = async (e: MouseEvent) => {
   });
 };
 
-const handleExperience = async () => {
+const handleExperience = async (roleType: string) => {
   // window.$notification.info({
   //   title: '一键体验',
   //   meta: '一键体验功能暂未开放',
   //   duration: 3000,
   //   keepAliveOnHover: true,
   // });
-  mockLogin('patient');
-  // mockLogin('doctor');
+  mockLogin(roleType);
   // mockLogin('admin');
 };
 

@@ -77,6 +77,13 @@ export const roleTypeOptions = computed(() => [
   { label: $t('user.roleType.doctor'), value: 'doctor' },
   { label: $t('user.roleType.patient'), value: 'patient' },
 ]);
+
+/** @description: 角色类型选项配置 */
+export const roleTypeTypeOptions: { [key: string]: 'warning' | 'info' | 'success' } = {
+  admin: 'warning',
+  doctor: 'info',
+  patient: 'success',
+};
 // -----------------------自定义配置--------------------------
 /** @description: 排班日期配置 */
 export const timePeriodOptions = computed(() => [

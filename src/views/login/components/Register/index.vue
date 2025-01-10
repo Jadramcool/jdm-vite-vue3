@@ -23,6 +23,23 @@
             <template #prefix> <JayIcon :icon="'solar:user-rounded-line-duotone'" /> </template>
           </n-input>
         </n-form-item>
+        <n-form-item :label="$t('login.name')" path="name">
+          <n-input
+            v-model:value="registerForm.name"
+            :placeholder="$t('common.pleaseInput') + ' ' + $t('login.name')"
+          >
+            <template #prefix> <JayIcon :icon="'icon-park-outline:edit-name'" /> </template>
+          </n-input>
+        </n-form-item>
+        <n-form-item :label="$t('login.phone')" path="phone">
+          <n-input
+            v-model:value="registerForm.phone"
+            :placeholder="$t('common.pleaseInput') + ' ' + $t('login.phone')"
+          >
+            <template #prefix> <JayIcon :icon="'material-symbols:add-call-outline'" /> </template>
+            <template #password-invisible-icon></template>
+          </n-input>
+        </n-form-item>
         <n-form-item :label="$t('login.password')" path="password">
           <n-input
             type="password"
@@ -70,6 +87,7 @@ import { UserApi } from '@/api/user';
 import TheLogo from '@/components/common/TheLogo.vue';
 import { common } from '@/config';
 import { useAppStore } from '@/store';
+import { isPhone } from '@/utils';
 import { FormInst, FormItemRule, FormRules } from 'naive-ui';
 import { useI18n } from 'vue-i18n';
 
@@ -77,6 +95,8 @@ interface RegisterForm {
   username: string;
   password: string;
   repeatPassword: string;
+  name?: string;
+  phone?: string;
 }
 const { t } = useI18n();
 
@@ -85,9 +105,11 @@ const appStore = useAppStore();
 const registerFormRef = ref<FormInst | null>(null);
 
 const registerForm = ref<RegisterForm>({
-  username: '123',
-  password: '123456',
-  repeatPassword: '123456',
+  username: '',
+  name: '',
+  phone: '',
+  password: '',
+  repeatPassword: '',
 });
 
 const emit = defineEmits(['update:modelValue']);
@@ -99,6 +121,28 @@ const registerFormRules: FormRules = {
       required: true,
       message: `${t('common.pleaseInput')} ${t('login.username')}`,
       trigger: 'blur',
+    },
+  ],
+  name: [
+    {
+      required: true,
+      message: `${t('common.pleaseInput')} ${t('login.name')}`,
+      trigger: 'blur',
+    },
+  ],
+  phone: [
+    {
+      required: true,
+      trigger: 'blur',
+      validator: (_rule: FormItemRule, value: string) => {
+        if (!value) {
+          return new Error(t('modules.system.user.schema.pleaseInputPhone'));
+        }
+        if (isPhone(value)) {
+          return true;
+        }
+        return new Error(t('modules.system.user.schema.pleaseInputCorrectPhone'));
+      },
     },
   ],
   password: [
@@ -157,6 +201,10 @@ const handleRegister = async (e: MouseEvent) => {
         const data = {
           username: registerForm.value.username,
           password: registerForm.value.password,
+          name: registerForm.value?.name,
+          phone: registerForm.value.phone,
+          // 默认只让注册患者
+          roleType: 'patient',
         };
 
         await UserApi.register(data);
@@ -188,20 +236,6 @@ const handleRegister = async (e: MouseEvent) => {
     }
   });
 };
-// async function onLoginSuccess(data: any = {}) {
-//   authStore.setToken(data);
-//   try {
-//     if (route.query.redirect) {
-//       const path: string = route.query.redirect as string;
-//       delete route.query.redirect;
-//       router.push({ path, query: route.query });
-//     } else {
-//       router.push('/');
-//     }
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
 </script>
 
 <style lang="scss" scoped></style>

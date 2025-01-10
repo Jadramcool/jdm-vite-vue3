@@ -38,7 +38,7 @@ const formComponets: any = {
     width: 60%;
     max-width: 800px;
     min-width: 300px;
-    height: 450px;
+    min-height: 450px;
     border-radius: 10px;
     img {
       max-width: 45%;

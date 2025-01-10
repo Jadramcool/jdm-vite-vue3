@@ -1,6 +1,6 @@
 import { RoleApi } from '@/api';
 import { JayIcon } from '@/components';
-import { roleTypeOptions, sexOptions, statusOptions } from '@/constants';
+import { roleTypeOptions, roleTypeTypeOptions, sexOptions, statusOptions } from '@/constants';
 import { $t } from '@/locales/i18n';
 import { columnsUtil, editFormSchemaUtil, formSchemaUtil, isPhone } from '@/utils';
 import dayjs from 'dayjs';
@@ -200,7 +200,7 @@ export const useUserSchema = (methods: any = {}) => {
             const roleType = unref(roleTypeOptions).find(
               (item) => item.value === row.roleType,
             )?.label;
-            const color = row.roleType === 'admin' ? 'primary' : 'info';
+            const color = roleTypeTypeOptions[row.roleType];
             return (
               <NTag bordered={false} type={color} size="small">
                 {roleType}
