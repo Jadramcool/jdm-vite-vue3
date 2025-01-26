@@ -8,7 +8,6 @@
  *
  */
 import { UserApi } from '@/api';
-import * as ExampleAPI from '@/api/example';
 import { baseMenus } from '@/settings';
 
 export async function getUserInfo() {
@@ -18,7 +17,6 @@ export async function getUserInfo() {
     const userInfo: System.User = res;
     return userInfo;
   } catch (error) {
-    // console.error(error);
     return {};
   }
 }
@@ -27,11 +25,7 @@ export async function getMenus() {
   let asyncMenus: any = [];
   try {
     let res: any = [];
-    if (import.meta.env.VITE_MOCK === 'true') {
-      res = await ExampleAPI.mockPermissionAPI();
-    } else {
-      res = await UserApi.menuAPI();
-    }
+    res = await UserApi.menuAPI();
     asyncMenus = res?.data || res || [];
   } catch (error) {
     console.error(error);

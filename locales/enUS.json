@@ -100,8 +100,7 @@
   },
   "layout": {
     "fullContent": "Full Content",
-    "normal": "Normal",
-    "normalWithOutCard": "NormalWithoutCard"
+    "normal": "Normal"
   },
   "login": {
     "experience": "Experience Account",

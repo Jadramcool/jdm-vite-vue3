@@ -100,8 +100,7 @@
   },
   "layout": {
     "fullContent": "主内容",
-    "normal": "普通",
-    "normalWithOutCard": "普通-不含默认Card"
+    "normal": "普通"
   },
   "login": {
     "experience": "体验账号",
@@ -212,8 +211,7 @@
           "notice": "通知"
         }
       },
-      "todoList": {
-      }
+      "todoList": {}
     },
     "system": {
       "menu": {
@@ -309,8 +307,6 @@
     "role": "角色",
     "roleType": {
       "admin": "管理员",
-      "doctor": "医生",
-      "patient": "患者",
       "user": "用户"
     },
     "roleTypeName": "角色类型",

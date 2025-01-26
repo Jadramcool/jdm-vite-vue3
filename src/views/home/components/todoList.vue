@@ -49,7 +49,6 @@ const getTodo = async () => {
   } else {
     todoTimeLine.value = res;
   }
-  console.log('🚀 ~ getTodo ~ todoTimeLine.value:', todoTimeLine.value);
 };
 </script>
 

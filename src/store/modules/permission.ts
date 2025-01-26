@@ -2,6 +2,7 @@ import { arrayToTree, isExternal, renderIcon } from '@/utils/common'; // 导入�
 import { hyphenate } from '@vueuse/core'; // 导入 Vue 通用实用函数库中的 hyphenate 函数
 import _ from 'lodash';
 import { defineStore } from 'pinia'; // 导入 Pinia 库中的 defineStore 函数
+import { RouteRecordRaw } from 'vue-router';
 
 export const routeComponents = import.meta.glob('/src/views/**/*.vue');
 // 定义一个名为 usePermissionStore 的 Pinia store
@@ -81,7 +82,6 @@ export const usePermissionStore = defineStore('permission', {
         .sort((a, b) => a.order - b.order);
 
       const accessRoutes = arrayToTree(formatSortMenus);
-
       let homePath = import.meta.env.VITE_HOME_PATH;
       // 针对不同角色类型，设置不同的首页路由
       if (user.roleType === 'patient') {
@@ -104,7 +104,6 @@ export const usePermissionStore = defineStore('permission', {
           return false;
         });
       }
-      console.log('[ accessRoutes ] >', accessRoutes);
       this.accessRoutes = {
         path: '/',
         name: 'pageHome',
@@ -118,6 +117,52 @@ export const usePermissionStore = defineStore('permission', {
       };
     },
 
+    setMenusLocal(routers: RouteRecordRaw[]) {
+      const cloneRouter = _.cloneDeep(routers);
+      this.menus = this.getMenuLocal(cloneRouter);
+    },
+
+    async setRoutesLocal(routers: RouteRecordRaw[]) {
+      const cloneRouters = _.cloneDeep(routers);
+      this.createRoutesLocal(cloneRouters);
+    },
+
+    createRoutesLocal(routers: RouteRecordRaw[]) {
+      if (!Array.isArray(routers)) {
+        throw new Error('无效的参数，请传入菜单数组');
+      }
+
+      const func = (item: any) => {
+        const routerItem = this.generateRouteLocal(item);
+        if (item.children && Array.isArray(item.children) && item.children.length > 0) {
+          const children = item.children
+            .map((child: RouteRecordRaw) => func(child))
+            .filter(Boolean);
+          return { ...routerItem, children };
+        }
+        return routerItem;
+      };
+      const newRouters: RouteRecordRaw[] = [];
+      routers.forEach((item) => {
+        const processedItem = func(item);
+        if (processedItem) {
+          newRouters.push(processedItem);
+        }
+      });
+      const homePath = import.meta.env.VITE_HOME_PATH;
+      this.accessRoutes = {
+        path: '/',
+        name: 'pageHome',
+        redirect: homePath,
+        component: undefined,
+        meta: {
+          title: '首页',
+          icon: 'icon-park-outline:home',
+        },
+        children: newRouters,
+      };
+    },
+
     getMenuItem(item: System.Menu) {
       let originPath;
       if (item.path && isExternal(item.path)) {
@@ -127,6 +172,7 @@ export const usePermissionStore = defineStore('permission', {
       }
       if (!item.show) return null;
       const menuItem: any = {
+        ...item,
         id: item.id,
         label: item.name,
         key: item.code,
@@ -137,6 +183,51 @@ export const usePermissionStore = defineStore('permission', {
         pid: item.pid || null,
       };
       return menuItem; // 返回菜单项对象
+    },
+
+    // 本地路由的生成菜单
+    getMenuLocal(routers: RouteRecordRaw[]) {
+      const newRouters: any = [];
+      const func = (item: any) => {
+        let originPath: string | undefined;
+
+        if (item.path && isExternal(item.path)) {
+          originPath = item.path;
+          item.component = '/src/views/iframe/index.vue';
+          item.path = `/iframe/${hyphenate(item.name)}`;
+        }
+
+        if ('show' in item.meta && !item.meta.show) {
+          return null;
+        }
+
+        const menuItem = {
+          label: item.meta.title,
+          key: item.name,
+          path: item.path,
+          originPath,
+          icon: item.meta.icon ? renderIcon(item.meta.icon) : undefined,
+          order: item.order ?? 0,
+        };
+
+        if (item.children && Array.isArray(item.children) && item.children.length > 0) {
+          const children = item.children
+            .map((child: RouteRecordRaw) => func(child))
+            .filter(Boolean);
+          return { ...menuItem, children };
+        }
+
+        return menuItem;
+      };
+
+      routers.forEach((item) => {
+        const processedItem = func(item);
+        if (processedItem) {
+          newRouters.push(processedItem);
+        }
+      });
+
+      return newRouters;
     },
 
     // 生成路由对象的 action
@@ -164,6 +255,32 @@ export const usePermissionStore = defineStore('permission', {
           layout: item.layout || null, // 路由的布局
           keepAlive: !!item.keepAlive, // 是否缓存路由组件
           extraData: item.extraData ? JSON.parse(item.extraData) : null, // 额外数据
+        },
+      };
+    },
+
+    // 生成路由对象的 action
+    generateRouteLocal(item: any): any {
+      let originPath; // 原始路径
+      if (isExternal(item.path)) {
+        // 如果路径为外部链接
+        originPath = item.path; // 将原始路径设置为路径值
+        item.component = '/src/views/iframe/index.vue'; // 将组件路径设置为内置的 iframe 组件
+        item.path = `/iframe/${hyphenate(item.name)}`; // 将路径设置为以 /iframe/ 开头并将权限项的 code 转为连字符分隔的形式
+      }
+
+      return {
+        name: item.name, // 路由的名称
+        path: item.path, // 路由的路径
+        redirect: item.redirect, // 路由的重定向路径
+        component: routeComponents[item.component] || undefined, // 路由对应的组件
+        meta: {
+          originPath, // 原始路径
+          icon: item.meta.icon, // 路由对应的图标
+          title: item.meta.title, // 路由的标题
+          layout: item.meta.layout || null, // 路由的布局
+          keepAlive: !!item.meta.keepAlive, // 是否缓存路由组件
+          extraData: item.meta.extraData ? JSON.parse(item.meta.extraData) : null, // 额外数据
         },
       };
     },

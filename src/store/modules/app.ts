@@ -45,7 +45,7 @@ export const useAppStore = defineStore('app', {
     showBreadcrumbIcon: true, // 是否显示面包屑图标
     showWatermark: false, // 是否显示水印
     loginSet: {
-      formShowLabel: false,
+      formShowLabel: true,
     },
   }),
   getters: {

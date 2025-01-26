@@ -12,7 +12,6 @@ export const MenuTypeOptions = computed(() => [
 export const layoutOptions = computed(() => [
   { label: $t('layout.normal'), value: 'normal' },
   { label: $t('layout.fullContent'), value: 'full-content' },
-  // { label: $t('layout.normalWithOutCard'), value: 'normal-without-card' },
 ]);
 
 /** @description: 菜单类型主题 */
