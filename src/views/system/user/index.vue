@@ -21,7 +21,7 @@
       :request="loadUserList"
       :rowKey="(row: NaiveUI.RowData) => row.id"
       :pagination="{ pageSize: 10 }"
-      :showAddBtn="hasPermission('system:user:create')"
+      :showAddBtn="true"
       :showBatchDeleteBtn="true"
       :checked-row-keys="checkedRows"
       :scroll-x="1500"
@@ -39,7 +39,6 @@
 import { UserManagerApi } from '@/api/system';
 import { BasicForm, BasicTable, useDrawer, useForm } from '@/components';
 import { $t } from '@/locales/i18n';
-import { hasPermission } from '@/utils';
 import { UserDrawer } from './components';
 import { useUserSchema } from './schema';
 

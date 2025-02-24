@@ -40,12 +40,12 @@ export const usePermissionStore = defineStore('permission', {
       );
     },
 
-    async setRoutes(menus: System.Menu[], user: System.User) {
+    async setRoutes(menus: System.Menu[]) {
       const cloneMenus = _.cloneDeep(menus);
-      this.createRoutes(cloneMenus, user);
+      this.createRoutes(cloneMenus);
     },
 
-    createRoutes(menus: System.Menu[], user: System.User) {
+    createRoutes(menus: System.Menu[]) {
       if (!Array.isArray(menus)) {
         throw new Error('无效的参数，请传入菜单数组');
       }
@@ -82,28 +82,7 @@ export const usePermissionStore = defineStore('permission', {
         .sort((a, b) => a.order - b.order);
 
       const accessRoutes = arrayToTree(formatSortMenus);
-      let homePath = import.meta.env.VITE_HOME_PATH;
-      // 针对不同角色类型，设置不同的首页路由
-      if (user.roleType === 'patient') {
-        homePath = '/patient/patientHome';
-        accessRoutes.find((item) => {
-          if (item.name === 'UserCenter') {
-            item.meta.layout = 'full-content';
-            return true; // 找到后返回 true，停止遍历
-          }
-          return false;
-        });
-      }
-      if (user.roleType === 'doctor') {
-        homePath = '/doctorHome';
-        accessRoutes.find((item) => {
-          if (item.name === 'UserCenter') {
-            item.meta.layout = 'full-content';
-            return true; // 找到后返回 true，停止遍历
-          }
-          return false;
-        });
-      }
+      const homePath = import.meta.env.VITE_HOME_PATH;
       this.accessRoutes = {
         path: '/',
         name: 'pageHome',

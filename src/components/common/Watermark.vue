@@ -4,7 +4,7 @@
  * @LastEditors: Jay
  * @LastEditTime: 2024-07-23 11:23:22
  * @FilePath: \vite-vue3-jdm\src\components\common\Watermark.vue
- * @Description: 
+ * @Description: 水印
  * 
 -->
 <template>

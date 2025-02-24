@@ -20,20 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { GaodeApi } from '@/api';
 import { LineChart, Notice, TodoList, Welcome } from './components';
-
-const weatherLiveData = ref<Recordable>({});
-
-const getLocationWeather = async () => {
-  const weatherData = await GaodeApi.cityWeather();
-  const [liveWeather] = weatherData.lives;
-  weatherLiveData.value = liveWeather;
-};
-
-onMounted(() => {
-  getLocationWeather();
-});
 </script>
 
 <style lang="scss" scoped>

@@ -6,7 +6,7 @@ const needLoginTag = import.meta.env.VITE_NEED_LOGIN === 'true';
 const localRouteMode = import.meta.env.VITE_ROUTER_MODE;
 // ---------------判断是否需要登录---------------
 
-const WHITE_LIST = ['/login', '/404'];
+const WHITE_LIST = ['/login', '/404', '/403'];
 export function createPermissionGuard(router: any) {
   router.beforeEach(async (to: any) => {
     try {
@@ -15,13 +15,11 @@ export function createPermissionGuard(router: any) {
         // TODO 先做不登陆+本地路由
         if (localRouteMode === 'local') {
           if (permissionStore.menus.length === 0) {
-            const localRouter = (
-              await import(`../local-router/${import.meta.env.VITE_ROUTER_LOCAL_NAME}`)
-            ).default;
-
-            permissionStore.setMenusLocal(localRouter);
-            permissionStore.setRoutesLocal(localRouter);
+            const localRouter: any = await import(`../local-router/router-config.ts`);
+            permissionStore.setMenusLocal(localRouter?.default);
+            permissionStore.setRoutesLocal(localRouter?.default);
             await router.addRoute(permissionStore.accessRoutes);
+
             return { ...to };
           }
         }
@@ -67,7 +65,7 @@ export function createPermissionGuard(router: any) {
           // 设置菜单
           permissionStore.setMenus(menus);
           // 设置路由
-          permissionStore.setRoutes(menus, user);
+          permissionStore.setRoutes(menus);
           await router.addRoute(permissionStore.accessRoutes);
           return { ...to, replace: true };
         }

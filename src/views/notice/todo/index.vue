@@ -6,8 +6,6 @@
         <n-step v-for="todos in todoList" :key="todos.id" :title="todos.title" status="finish" />
       </n-steps>
     </n-card> -->
-    <!-- 生成模拟数据 -->
-    <n-button v-if="false" @click="handleAddMock">模拟数据</n-button>
     <VueDraggable
       v-model="todoList"
       :animation="150"
@@ -144,7 +142,6 @@
 <script lang="ts" setup>
 import { TodoApi } from '@/api';
 import { $t } from '@/locales';
-import { adminTodo, doctorTodo, patientTodo } from '@/mockData/todo';
 import { VueDraggable } from 'vue-draggable-plus';
 // import JayIcon from '@/components/common/JayIcon.vue';
 
@@ -366,41 +363,5 @@ const handleAdd = async (event: any) => {
   } catch (error: any) {
     window.$message.error(error.errMsg || error.message || error);
   }
-};
-
-// 模拟数据
-const handleAddMock = async () => {
-  console.log('adminTodo', adminTodo);
-  console.log('doctorTodo', doctorTodo);
-  console.log('patientTodo', patientTodo);
-  todoList.value.forEach(async (item: any) => {
-    if (item.title === '管理员角色') {
-      adminTodo.forEach(async (todo: any, index: number) => {
-        await TodoApi.createTodo({
-          title: todo,
-          sortOrder: index,
-          pid: item.id,
-        });
-      });
-    }
-    if (item.title === '医生角色') {
-      doctorTodo.forEach(async (todo: any, index: number) => {
-        await TodoApi.createTodo({
-          title: todo,
-          sortOrder: index,
-          pid: item.id,
-        });
-      });
-    }
-    if (item.title === '患者角色') {
-      patientTodo.forEach(async (todo: any, index: number) => {
-        await TodoApi.createTodo({
-          title: todo,
-          sortOrder: index,
-          pid: item.id,
-        });
-      });
-    }
-  });
 };
 </script>
