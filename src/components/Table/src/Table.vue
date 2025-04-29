@@ -92,15 +92,17 @@ const { getLoading, setLoading } = useLoading(getProps);
 // -----------分页处理-----------
 const { getPaginationInfo, setPagination } = usePagination(getProps);
 // 分页数据
-const pagination = computed(() => toRaw(unref(getPaginationInfo)));
+const pagination = computed(() => {
+  return toRaw(unref(getPaginationInfo));
+});
 
 // -----------表格数据处理-----------
-const { getDataSourceRef, reload } = useDataSource(getProps, {
-  getPaginationInfo,
-  setPagination,
-  useLoading,
-  setLoading,
-});
+const { dataSourceRef, getDataSourceRef, reload, handleLocalPagination, fullDataSourceRef } =
+  useDataSource(getProps, {
+    getPaginationInfo,
+    setPagination,
+    setLoading,
+  });
 
 // 表格数据,组装表格信息
 const getTableValue: any = computed(() => {
@@ -121,7 +123,11 @@ const getTableValue: any = computed(() => {
  */
 const updatePage = (page: any) => {
   setPagination({ page });
-  reload(page);
+  if (!unref(getProps).localPagination) {
+    reload(page);
+  } else {
+    dataSourceRef.value = handleLocalPagination(fullDataSourceRef.value);
+  }
 };
 
 /**
@@ -130,7 +136,11 @@ const updatePage = (page: any) => {
  */
 const updatePageSize = (size: any) => {
   setPagination({ page: 1, pageSize: size });
-  reload({});
+  if (!unref(getProps).localPagination) {
+    reload({});
+  } else {
+    dataSourceRef.value = handleLocalPagination(fullDataSourceRef.value);
+  }
 };
 
 /**

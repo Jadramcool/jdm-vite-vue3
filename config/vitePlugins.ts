@@ -30,7 +30,10 @@ export default (env: ConfigEnv) => {
       include: [/.vue$/],
     }),
     UnoCSS(),
-    vueJsx(),
+    vueJsx({
+      // 开启响应式转换
+      transformOn: true,
+    }),
     AutoImport({
       imports: [
         'vue',
