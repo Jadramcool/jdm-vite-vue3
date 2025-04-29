@@ -53,10 +53,6 @@ const [register, { closeModal, setModalProps }] = useModalInner(async (data) => 
   entity.value = data?.record;
   const receivers = entity.value?.receivers || [];
   receiverIds.value = receivers.map((item: any) => item.userId);
-  console.log(
-    '🚀 ~ const[register,{closeModal,setModalProps}]=useModalInner ~ receiverIds.value:',
-    receiverIds.value,
-  );
   entityId.value = data?.record?.id;
 });
 

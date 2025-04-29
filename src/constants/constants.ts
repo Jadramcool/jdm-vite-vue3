@@ -75,3 +75,29 @@ export const roleTypeOptions = computed(() => [
   { label: $t('user.roleType.user'), value: 'user' },
 ]);
 // -----------------------自定义配置--------------------------
+export const xiaochengTypeOptions = computed(() => [
+  { label: '需求', value: 'REQ' },
+  { label: '优化', value: 'OPT' },
+  { label: 'BUG', value: 'BUG' },
+]);
+
+export const xiaochengTypeColorMap: Record<string, 'success' | 'warning' | 'error'> = {
+  REQ: 'success',
+  OPT: 'warning',
+  BUG: 'error',
+};
+
+export const xiaochengLaneColorMap: Record<any, any> = {
+  今日计划: '#9DC8C8',
+  待测试: '#99CC99',
+  待上线: '#FFCCCC',
+  测试中: '#D1B6E1',
+  开发: '#58C9B9',
+  开发测试: '#519D9E',
+};
+
+export const xiaochengStatusColorMap: Record<any, any> = {
+  未开始: '#FFCDD2',
+  进行中: '#C8E6C9',
+  已完成: '#80CBC4',
+};

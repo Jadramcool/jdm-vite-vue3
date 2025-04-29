@@ -66,4 +66,9 @@ export const basicProps = {
     type: Boolean,
     default: true,
   },
+  // 表格是否本地分页
+  localPagination: {
+    type: Boolean,
+    default: false,
+  },
 };

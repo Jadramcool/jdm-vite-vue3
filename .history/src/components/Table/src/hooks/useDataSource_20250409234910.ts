@@ -10,6 +10,11 @@
 import { isBoolean } from '@/utils/common';
 import { APISETTING } from '../const';
 
+interface PaginationParams {
+  page?: number;
+  pageSize?: number;
+}
+
 interface TableProps {
   request?: (params: any) => Promise<any>;
   pagination?: boolean | Record<string, any>;
