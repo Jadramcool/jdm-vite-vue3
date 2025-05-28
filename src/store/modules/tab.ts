@@ -65,9 +65,9 @@ export const useTabStore = defineStore('tab', {
         useRouterStore().router?.push(this.tabs[this.tabs.length - 1].path);
       }
     },
-    removeOther(state: any, curPath: string = state.activeTab): void {
-      this.setTabs(this.tabs.filter((tab) => tab.path === curPath));
-      if (curPath !== this.activeTab) {
+    removeOther(path: string): void {
+      this.setTabs(this.tabs.filter((tab) => tab.path === path));
+      if (!this.tabs.find((item) => item.path === this.activeTab)) {
         useRouterStore().router?.push(this.tabs[this.tabs.length - 1].path);
       }
     },

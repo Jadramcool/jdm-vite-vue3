@@ -17,7 +17,6 @@ import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import 'virtual:uno.css';
 import { createApp } from 'vue';
 import App from './App.vue';
-import './assets/styles/style.scss';
 import setDirectives from './directives';
 import { setupRouter } from './router';
 import './style.css';

@@ -24,7 +24,7 @@
             <Breadcrumb v-if="appStore.showBreadcrumb" />
           </div>
         </div>
-        <div class="info flex-x-center gap-1 h-full p-x-xl">
+        <div class="flex-x-center gap-1 h-full p-x-xl">
           <HeaderTools />
         </div>
       </n-layout-header>

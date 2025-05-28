@@ -16,6 +16,7 @@
     :locale="naiveLocale.locale"
     :date-locale="naiveLocale.dateLocale"
   >
+    <n-global-style />
     <Application>
       <router-view v-if="Layout" v-slot="{ Component, route: curRoute }">
         <component :is="Layout" v-bind="routeExtraData">
@@ -42,6 +43,7 @@ import Application from './components/application/Application.vue';
 
 const route = useRoute();
 const appStore = useAppStore();
+console.log('🚀 ~ appStore:', appStore.theme);
 const tabStore = useTabStore();
 const userStore = useUserStore();
 

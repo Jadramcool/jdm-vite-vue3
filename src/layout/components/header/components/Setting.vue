@@ -8,7 +8,7 @@
     <span>{{ $t('app.setting') }}</span>
   </n-tooltip>
   <n-drawer v-model:show="drawerActive" :width="360" placement="right">
-    <n-drawer-content :title="t('app.setting')">
+    <n-drawer-content :title="t('app.setting')" closable>
       <n-divider title-placement="left">
         <p class="divider-style">{{ $t('app.themeSetting') }}</p>
       </n-divider>
@@ -24,7 +24,7 @@
         <n-space justify="space-between">
           {{ $t('app.themeColor') }}:
           <n-color-picker
-            class="w-200px"
+            class="w-120px"
             :swatches="palette"
             v-model:value="appStore.primaryColor"
             @update:value="appStore.setPrimaryColor"
@@ -41,7 +41,7 @@
         </n-space>
 
         <n-divider title-placement="left">
-          <p class="divider-style">{{ $t('app.themeSetting') }}</p>
+          <p class="divider-style">{{ $t('app.themeDisplay') }}</p>
         </n-divider>
 
         <n-space vertical>
@@ -87,7 +87,6 @@ import { useAppStore } from '@/store';
 
 const appStore = useAppStore();
 const { t } = useI18n();
-
 const palette = [
   '#ffb8b8',
   '#d03050',

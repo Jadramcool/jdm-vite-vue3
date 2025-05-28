@@ -89,7 +89,7 @@ const actionMap = new Map([
   [
     'close',
     () => {
-      tabStore.removeTab(props.currentPath);
+      tabStore.removeRight(props.currentPath);
     },
   ],
   [
@@ -117,6 +117,7 @@ function handleHideDropdown() {
 }
 
 function handleSelect(key: any) {
+  console.log('🚀 ~ handleSelect ~ key:', key);
   const actionFn = actionMap.get(key);
   if (actionFn) {
     actionFn();
