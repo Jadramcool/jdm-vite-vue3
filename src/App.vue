@@ -43,7 +43,6 @@ import Application from './components/application/Application.vue';
 
 const route = useRoute();
 const appStore = useAppStore();
-console.log('🚀 ~ appStore:', appStore.theme);
 const tabStore = useTabStore();
 const userStore = useUserStore();
 

@@ -52,7 +52,6 @@ onMounted(() => {
   const collections = listIcons();
   const res = _api.getAPIConfig();
   console.log('🚀 ~ onMounted ~ res:', res);
-
   console.log('🚀 ~ onMounted ~ collections:', collections);
 });
 

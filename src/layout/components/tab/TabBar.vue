@@ -60,12 +60,10 @@ function hideContextMenu() {
 }
 function setContextMenu(x: number, y: number, currentPath: string) {
   Object.assign(contextMenuOption, { x, y, currentPath });
-  console.log('🚀 ~ setContextMenu ~ contextMenuOption:', contextMenuOption);
 }
 
 // 右击菜单
 async function handleContextMenu(e: any, tagItem: any) {
-  console.log('🚀 ~ handleContextMenu ~ tagItem:', tagItem);
   const { clientX, clientY } = e;
   hideContextMenu();
   setContextMenu(clientX, clientY, tagItem.path);

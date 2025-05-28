@@ -25,9 +25,6 @@ const getTitle = computed(() => {
     (unref(isUpdate) ? $t('common.edit') : $t('common.add')) + $t('common.system.menu.schema.menu')
   );
 });
-
-console.log('🚀 ~ menuModal.vue ~ getTitle.value:', getTitle.value);
-
 const { editFormSchemas, extraDataFromSchemas } = useMenuSchema();
 
 const [registerForm, { setFieldsValue, resetFields, submit }] = useForm({

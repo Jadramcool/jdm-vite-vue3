@@ -117,7 +117,6 @@ function handleHideDropdown() {
 }
 
 function handleSelect(key: any) {
-  console.log('🚀 ~ handleSelect ~ key:', key);
   const actionFn = actionMap.get(key);
   if (actionFn) {
     actionFn();
