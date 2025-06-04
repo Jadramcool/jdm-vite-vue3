@@ -8,7 +8,7 @@
         </n-card>
       </n-gi>
       <n-gi span="8">
-        <n-space vertical :size="[0, 10]">
+        <n-space vertical :size="[0, 10]" v-if="needLoginTag">
           <Notice></Notice>
           <TodoList></TodoList>
         </n-space>
@@ -19,6 +19,8 @@
 
 <script setup lang="ts">
 import { LineChart, Notice, TodoList, Welcome } from './components';
+
+const needLoginTag = import.meta.env.VITE_NEED_LOGIN === 'true';
 </script>
 
 <style lang="scss" scoped>

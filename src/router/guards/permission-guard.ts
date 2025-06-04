@@ -1,5 +1,5 @@
 import { useAuthStore, usePermissionStore, useUserStore } from '@/store';
-import { getMenus, getUserInfo } from '@/store/helper';
+import { getMenus, getUserInfo, getOnlineMenus } from '@/store/helper';
 
 // ---------------判断是否需要登录---------------
 const needLoginTag = import.meta.env.VITE_NEED_LOGIN === 'true';
@@ -8,6 +8,7 @@ const localRouteMode = import.meta.env.VITE_ROUTER_MODE;
 
 const WHITE_LIST = ['/login', '/404', '/403'];
 export function createPermissionGuard(router: any) {
+  let routes: any[] = [];
   router.beforeEach(async (to: any) => {
     try {
       const permissionStore = usePermissionStore();
@@ -19,12 +20,32 @@ export function createPermissionGuard(router: any) {
             permissionStore.setMenusLocal(localRouter?.default);
             permissionStore.setRoutesLocal(localRouter?.default);
             await router.addRoute(permissionStore.accessRoutes);
-
             return { ...to };
           }
-        }
+        } else {
+          if (permissionStore.menus.length === 0) {
+            const menus = await getOnlineMenus();
+            // 路由初始化失败
+            if (!menus) {
+              window.$message.error('路由初始化失败，请刷新页面重试！');
+              return;
+            }
 
-        return true;
+            // 设置权限
+            permissionStore.setPermissions(menus);
+            // 设置菜单
+            permissionStore.setMenus(menus);
+            // 设置路由
+            permissionStore.setRoutes(menus);
+            await router.addRoute(permissionStore.accessRoutes);
+            routes = router.getRoutes();
+            return { ...to, replace: true };
+          }
+          if (routes.find((route: any) => route.name === to.name)) return true;
+          console.warn('没有权限，跳转到404页面');
+          return { name: '404', query: { path: to.fullPath } };
+          // 判断是无权限还是404
+        }
       }
       if (needLoginTag) {
         const authStore = useAuthStore();
@@ -67,10 +88,10 @@ export function createPermissionGuard(router: any) {
           // 设置路由
           permissionStore.setRoutes(menus);
           await router.addRoute(permissionStore.accessRoutes);
+          routes = router.getRoutes();
           return { ...to, replace: true };
         }
 
-        const routes = router.getRoutes();
         if (routes.find((route: any) => route.name === to.name)) return true;
         console.warn('没有权限，跳转到404页面');
         return { name: '404', query: { path: to.fullPath } };
