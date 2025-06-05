@@ -196,12 +196,22 @@ const calcPercent = (todos: any) => {
 // 切换编辑状态
 const handleEdit = (todo: any, flag: boolean, isParent: boolean = false) => {
   if (isParent) {
+    // 如果是取消编辑且是新创建的项目，则删除
+    if (!flag && todo.tag === 'create') {
+      handleCancelCreate(todo, isParent);
+      return;
+    }
     // 恢复原始数据
     if (flag) {
       inputParentValue.value[todo.id] = todo.title;
     }
     editParentFlagMap.value[todo.id] = flag;
   } else {
+    // 如果是取消编辑且是新创建的项目，则删除
+    if (!flag && todo.tag === 'create') {
+      handleCancelCreate(todo, isParent);
+      return;
+    }
     // 恢复原始数据
     if (flag) {
       inputValue.value[todo.id] = todo.title;
@@ -251,24 +261,33 @@ const handleAddTodoList = async () => {
 // 更新待办事项
 const handleSubmit = async (todo: any, isParent: boolean = false) => {
   try {
+    const title = isParent ? inputParentValue.value[todo.id] : inputValue.value[todo.id];
+
+    // 验证标题不能为空
+    if (!title || title.trim() === '') {
+      window.$message?.warning('标题不能为空');
+      return;
+    }
+
     submitLoading.value[isParent ? todo.id : todo.pid] = true;
     if (todo.tag && todo.tag === 'create') {
       await TodoApi.createTodo({
-        title: isParent ? inputParentValue.value[todo.id] : inputValue.value[todo.id],
+        title: title.trim(),
         sortOrder: todo.sortOrder || 0,
         ...(isParent ? {} : { pid: todo.pid }),
       });
-      editFlagMap.value[todo.id] = false;
-      todo.title = inputValue.value[todo.id];
+      isParent ? (editParentFlagMap.value[todo.id] = false) : (editFlagMap.value[todo.id] = false);
+      todo.title = title.trim();
+      todo.tag = undefined; // 移除创建标记
       window.$message?.success($t('common.createSuccess'));
     } else {
       await TodoApi.updateTodo({
         id: todo.id,
-        title: isParent ? inputParentValue.value[todo.id] : inputValue.value[todo.id],
+        title: title.trim(),
       });
       isParent ? (editParentFlagMap.value[todo.id] = false) : (editFlagMap.value[todo.id] = false);
       // 将本地todo同步
-      todo.title = isParent ? inputParentValue.value[todo.id] : inputValue.value[todo.id];
+      todo.title = title.trim();
       window.$message?.success($t('common.updateSuccess'));
     }
 
@@ -346,6 +365,33 @@ const handleUpdateSortParent = async () => {
     window.$message.error(error.errMsg || error.message || error);
   }
 };
+// 取消创建新项目（删除未保存的项目）
+const handleCancelCreate = (todo: any, isParent: boolean = false) => {
+  if (isParent) {
+    // 删除父级项目
+    const index = todoList.value.findIndex((item) => item.id === todo.id);
+    if (index > -1) {
+      todoList.value.splice(index, 1);
+    }
+    // 清理相关状态
+    delete editParentFlagMap.value[todo.id];
+    delete inputParentValue.value[todo.id];
+    delete submitLoading.value[todo.id];
+  } else {
+    // 删除子项目
+    const parent = todoList.value.find((item) => item.id === todo.pid);
+    if (parent && parent.children) {
+      const index = parent.children.findIndex((item: { id: any }) => item.id === todo.id);
+      if (index > -1) {
+        parent.children.splice(index, 1);
+      }
+    }
+    // 清理相关状态
+    delete editFlagMap.value[todo.id];
+    delete inputValue.value[todo.id];
+  }
+};
+
 // 跨表拖拽
 const handleAdd = async (event: any) => {
   try {

@@ -8,6 +8,7 @@
     :collapsed="appStore.collapsed"
     :options="permissionStore.menus"
     :value="activeKey"
+    :accordion="true"
     @update:value="handleMenuSelect"
   />
 </template>

@@ -159,6 +159,10 @@ export const useUserInfoSchema = (methods: any, data: any) => {
           component: 'NDatePicker',
           componentProps: {
             placeholder: '请选择生日',
+            isDateDisabled: (date: Date) => {
+              const now = new Date();
+              return date > now;
+            },
           },
         },
       },
