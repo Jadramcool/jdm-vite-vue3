@@ -76,3 +76,18 @@ export const roleTypeOptions = computed(() => [
   { label: $t('user.roleType.user'), value: 'user' },
 ]);
 // -----------------------自定义配置--------------------------
+/** @description: 资源类型选项配置 */
+export const resourceU3C3TypeOptions = computed(() => [
+  { label: $t('modules.resource.u3c3.typeMap.book'), value: 'Book' },
+  { label: $t('modules.resource.u3c3.typeMap.video'), value: 'Video' },
+  { label: $t('modules.resource.u3c3.typeMap.photo'), value: 'Photo' },
+  { label: $t('modules.resource.u3c3.typeMap.game'), value: 'Game' },
+]);
+/** @description: 菜单类型主题 */
+export const resourceU3C3TypeColorType: Record<string, 'success' | 'warning' | 'info' | 'primary'> =
+  {
+    Video: 'success',
+    Photo: 'warning',
+    Game: 'info',
+    Book: 'primary',
+  };

@@ -216,6 +216,20 @@
       "todoList": {
       }
     },
+    "resource": {
+      "u3c3": {
+        "schema": {
+          "pleaseInputTitle": "请输入标题",
+          "title": "标题"
+        },
+        "typeMap": {
+          "book": "书籍",
+          "game": "游戏",
+          "photo": "照片",
+          "video": "视频"
+        }
+      }
+    },
     "system": {
       "menu": {
         "schema": {

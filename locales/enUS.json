@@ -213,6 +213,19 @@
         }
       }
     },
+    "resource": {
+      "u3c3": {
+        "schema": {
+          "pleaseInputTitle": "Please input Title",
+          "title": "Title"
+        },
+        "typeMap": {
+          "game": "Game",
+          "photo": "Photo",
+          "video": "Video"
+        }
+      }
+    },
     "system": {
       "menu": {
         "schema": {
