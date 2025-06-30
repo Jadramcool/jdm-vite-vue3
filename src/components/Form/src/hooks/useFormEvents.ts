@@ -1,8 +1,8 @@
 /*
  * @Author: jdm
  * @Date: 2024-10-28 14:22:19
- * @LastEditors: jdm
- * @LastEditTime: 2024-10-31 14:38:51
+ * @LastEditors: jdm 1051780106@qq.com
+ * @LastEditTime: 2025-06-30 14:18:02
  * @FilePath: \vite-vue3-jdm\src\components\Form\src\hooks\useFormEvents.ts
  * @Description: 表格事件
  *
@@ -94,7 +94,7 @@ export const useFormEvents = ({
 
   // 重置表单
   const resetFields = async () => {
-    const { resetFunc, submitOnReset } = unref(getProps);
+    const { resetFunc, submitOnReset, resetPageOnReset, tableRef } = unref(getProps);
     resetFunc && isFunction(resetFunc) && (await resetFunc());
 
     const formEl = unref(formElRef);
@@ -106,6 +106,19 @@ export const useFormEvents = ({
     });
 
     clearValidate();
+
+    // 重置页码到第一页（如果启用了此功能且提供了tableRef）
+    if (resetPageOnReset && tableRef && unref(tableRef)) {
+      const tableInstance = unref(tableRef);
+      if (tableInstance && isFunction(tableInstance.setPagination)) {
+        tableInstance.setPagination({ page: 1 });
+        // 如果有reload方法，也调用它来刷新数据
+        if (isFunction(tableInstance.reload)) {
+          tableInstance.reload();
+        }
+      }
+    }
+
     // const fromValues = handleFormValues(toRaw(unref(formModel)));
     // emit('reset', fromValues);
     submitOnReset && (await handleSubmit());
