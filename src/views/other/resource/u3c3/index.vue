@@ -38,7 +38,7 @@ import { NButton, NText } from 'naive-ui';
 import { $t } from '@/locales';
 import { useResourceSchema } from './schema';
 
-defineOptions({ name: 'Notice' });
+defineOptions({ name: 'U3C3' });
 onMounted(() => {
   // 获取表格数据
 });
@@ -101,6 +101,7 @@ const [register, { getFieldsValue }] = useForm({
   gridProps: { cols: '1 s:1 m:2 l:3 xl:4 2xl:4' },
   schemas: formSchemas,
   submitOnReset: true,
+  tableRef,
 });
 
 // 表格数据请求

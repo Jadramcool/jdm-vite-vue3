@@ -162,6 +162,7 @@ const handleBatchDelete = () => {
 // 暴露方法
 defineExpose({
   reload,
+  setPagination,
 });
 </script>
 

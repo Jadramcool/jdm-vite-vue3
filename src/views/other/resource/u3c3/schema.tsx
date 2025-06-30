@@ -168,9 +168,9 @@ export const useResourceSchema = (
                   ? $t('modules.resource.u3c3.schema.showDecrypted') || '显示明文'
                   : $t('modules.resource.u3c3.schema.showEncrypted') || '显示加密'}
               </NButton>
-              <NButton type="primary" ghost size="small" onClick={() => methods.handleEdit(row)}>
+              {/* <NButton type="primary" ghost size="small" onClick={() => methods.handleEdit(row)}>
                 {$t('common.edit')}
-              </NButton>
+              </NButton> */}
               <NPopconfirm
                 onPositiveClick={() => methods.handleDelete(row)}
                 v-slots={{
