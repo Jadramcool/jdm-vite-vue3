@@ -37,12 +37,14 @@
     "copySuccess": "复制成功",
     "createSuccess": "创建成功",
     "createdTime": "创建时间",
+    "date": "日期",
     "delete": "删除",
     "deleteSuccess": "删除成功",
     "detail": "详情",
     "edit": "编辑",
     "id": "ID",
     "input": "输入",
+    "link": "链接",
     "more": "更多",
     "no": "否",
     "open": "打开",
@@ -58,6 +60,8 @@
     "reset": "重置",
     "save": "保存",
     "search": "查询",
+    "size": "大小",
+    "sort": "排序",
     "status": "状态",
     "submit": "提交",
     "submitSuccess": "更新成功",
@@ -220,12 +224,16 @@
       "u3c3": {
         "schema": {
           "pleaseInputTitle": "请输入标题",
+          "showDecrypted": "解密",
+          "showEncrypted": "加密",
           "title": "标题"
         },
         "typeMap": {
           "book": "书籍",
           "game": "游戏",
+          "other": "其他",
           "photo": "照片",
+          "u3c3": "U3C3",
           "video": "视频"
         }
       }

@@ -20,31 +20,6 @@ export const list = (params?: any) => {
 };
 
 /**
- * @description: 获取角色
- */
-export const getAllRoleList = () => {
-  return request.get<List<System.Role>>({
-    url: API.list,
-    params: {
-      pagination: {
-        page: 1,
-        pageSize: 999,
-      },
-    },
-  });
-};
-
-/**
- * @description: 创建角色
- */
-export const addRole = (data: any) => {
-  return request.post<System.Role>({
-    url: API.create,
-    data,
-  });
-};
-
-/**
  * @description: 更新角色
  */
 export const updateRole = (data: any) => {
@@ -55,9 +30,9 @@ export const updateRole = (data: any) => {
 };
 
 /**
- * @description: 删除角色
+ * @description: 删除数据
  */
-export const deleteRole = (id: number) => {
+export const deleteData = (id: number) => {
   return request.delete<BasicModel[]>({
     url: `${API.delete}/${id}`,
   });

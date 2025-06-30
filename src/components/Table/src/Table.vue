@@ -1,8 +1,8 @@
 <!--
  * @Author: Jay
  * @Date: 2024-05-30 13:50:03
- * @LastEditors: jdm
- * @LastEditTime: 2024-10-31 17:43:42
+ * @LastEditors: jdm 1051780106@qq.com
+ * @LastEditTime: 2025-06-30 13:51:33
  * @FilePath: \vite-vue3-jdm\src\components\Table\src\Table.vue
  * @Description: 自定义表格封装
  * @TODO: 1. 表格列ifShow控制

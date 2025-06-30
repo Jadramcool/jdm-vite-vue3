@@ -82,12 +82,18 @@ export const resourceU3C3TypeOptions = computed(() => [
   { label: $t('modules.resource.u3c3.typeMap.video'), value: 'Video' },
   { label: $t('modules.resource.u3c3.typeMap.photo'), value: 'Photo' },
   { label: $t('modules.resource.u3c3.typeMap.game'), value: 'Game' },
+  { label: $t('modules.resource.u3c3.typeMap.other'), value: 'Other' },
+  { label: $t('modules.resource.u3c3.typeMap.u3c3'), value: 'u3c3' },
 ]);
 /** @description: 菜单类型主题 */
-export const resourceU3C3TypeColorType: Record<string, 'success' | 'warning' | 'info' | 'primary'> =
-  {
-    Video: 'success',
-    Photo: 'warning',
-    Game: 'info',
-    Book: 'primary',
-  };
+export const resourceU3C3TypeColorType: Record<
+  string,
+  'success' | 'warning' | 'info' | 'primary' | 'error'
+> = {
+  Video: 'success',
+  Photo: 'warning',
+  Game: 'info',
+  Book: 'error',
+  Other: 'primary',
+  u3c3: 'primary',
+};

@@ -37,12 +37,14 @@
     "copySuccess": "Copy",
     "createSuccess": "Create Success",
     "createdTime": "CreatedTime",
+    "date": "Date",
     "delete": "Delete",
     "deleteSuccess": "Delete Success",
     "detail": "Detail",
     "edit": "Edit",
     "id": "ID",
     "input": "Input",
+    "link": "Link",
     "more": "more",
     "no": "No",
     "open": "Open",
@@ -58,6 +60,8 @@
     "reset": "Reset",
     "save": "Save",
     "search": "Search",
+    "size": "Size",
+    "sort": "Sort",
     "status": "Status",
     "submit": "Submit",
     "submitSuccess": "Update Success",
@@ -217,11 +221,15 @@
       "u3c3": {
         "schema": {
           "pleaseInputTitle": "Please input Title",
+          "showDecrypted": "Decrypted",
+          "showEncrypted": "Encrypted",
           "title": "Title"
         },
         "typeMap": {
           "game": "Game",
+          "other": "Other",
           "photo": "Photo",
+          "u3c3": "U3C3",
           "video": "Video"
         }
       }

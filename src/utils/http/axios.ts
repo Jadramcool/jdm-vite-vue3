@@ -21,7 +21,7 @@ class HttpRequest {
     const baseURL = import.meta.env.VITE_MOCK === 'true' ? '' : import.meta.env.VITE_APP_BASE_URL;
     this.service = axios.create({
       baseURL,
-      timeout: 10 * 1000,
+      timeout: 20 * 1000,
     });
 
     // 请求拦截器
@@ -108,7 +108,9 @@ class HttpRequest {
         }
         const lang: string = lStorage.getItem('lang') || 'zhCN';
         const errMsg =
-          (error.errMsg as { [key: string]: any })[lang] ||
+          (error.errMsg &&
+            typeof error.errMsg === 'object' &&
+            (error.errMsg as { [key: string]: any })[lang]) ||
           (isString(error.errMsg) && error.errMsg) ||
           error.message ||
           '接口请求失败，请稍后再试';
