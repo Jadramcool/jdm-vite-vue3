@@ -13,6 +13,8 @@ dist-ssr
 *.local
 .history
 
+.history
+
 .eslintrc-auto-import.json
 typings/auto-imports.d.ts
 typings/components.d.ts

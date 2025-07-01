@@ -44,6 +44,8 @@ export interface NewFormProps extends FormProps {
   showResetButton?: boolean; // 是否显示重置按钮
   resetButtonText?: string; // 重置按钮文字
   submitOnReset?: boolean; // 重置时是否提交表单
+  resetPageOnReset?: boolean; // 重置时是否重置页码到第一页
+  tableRef?: Ref<any>; // 关联的Table组件引用，用于重置页码
   submitFunc?: () => Promise<void>;
   resetFunc?: () => Promise<void>;
 }

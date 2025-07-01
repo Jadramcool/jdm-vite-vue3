@@ -7,8 +7,8 @@
         class="z-1 flex-x-center justify-between"
         content-style="transition: border-color 0.3s ease;"
       >
-        <div class="flex-x-center h-60px">
-          <div class="flex-x-center h-full"></div>
+        <div class="flex-x-center p-x-xl">
+          <SideLogo v-if="appStore.showLogo" />
         </div>
         <div class="info flex-x-center gap-1 h-full p-x-xl">
           <HeaderTools />
@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { Footer, HeaderTools } from '@/layout/components';
+import { Footer, HeaderTools, SideLogo } from '@/layout/components';
 import { useAppStore } from '@/store';
 
 const appStore = useAppStore();

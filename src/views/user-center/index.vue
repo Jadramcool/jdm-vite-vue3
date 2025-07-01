@@ -24,12 +24,6 @@
             </n-table>
           </div>
         </AppCard>
-        <AppCard bordered class="my-12px p-24px">
-          <div>1111</div>
-          <div>1111</div>
-          <div>1111</div>
-          <div>1111</div>
-        </AppCard>
       </n-gi>
       <n-gi span="1 m:8">
         <AppCard bordered class="p-24px min-h-full">

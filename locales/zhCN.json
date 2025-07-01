@@ -13,6 +13,7 @@
     "setting": "设置",
     "system": "跟随系统",
     "themeColor": "主题色",
+    "themeDisplay": "功能配置",
     "themeSetting": "主题设置",
     "toggleFullScreen": "全屏切换",
     "topProgress": "顶部进度",
@@ -99,6 +100,7 @@
     "roleUserSelect": "角色用户"
   },
   "layout": {
+    "blog": "博客",
     "fullContent": "主内容",
     "normal": "普通"
   },
@@ -211,7 +213,8 @@
           "notice": "通知"
         }
       },
-      "todoList": {}
+      "todoList": {
+      }
     },
     "system": {
       "menu": {

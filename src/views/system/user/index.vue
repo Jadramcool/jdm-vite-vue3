@@ -1,8 +1,8 @@
 <!--
  * @Author: Jay
  * @Date: 2024-05-30 10:29:46
- * @LastEditors: jdm
- * @LastEditTime: 2024-10-31 17:04:41
+ * @LastEditors: jdm 1051780106@qq.com
+ * @LastEditTime: 2025-06-30 14:33:02
  * @FilePath: \vite-vue3-jdm\src\views\system\user\index.vue
  * @Description: 
  * 
@@ -86,6 +86,7 @@ const [register, { getFieldsValue }] = useForm({
   gridProps: { cols: '1 s:1 m:2 l:3 xl:4 2xl:4' },
   schemas: formSchemas,
   submitOnReset: true,
+  tableRef,
 });
 
 const [registerDrawer, { openDrawer }] = useDrawer();

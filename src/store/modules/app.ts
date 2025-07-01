@@ -6,7 +6,7 @@ import {
   lightThemeOverrides,
   naiveThemeOverrides,
 } from '@/settings';
-import { getRgb, lStorage, setLocale } from '@/utils';
+import { getRgb, isValidColor, lStorage, setLocale } from '@/utils';
 import { useCssVar } from '@vueuse/core';
 import chroma from 'chroma-js'; // 极小且零依赖的 JavaScript 颜色库
 import _ from 'lodash';
@@ -88,12 +88,14 @@ export const useAppStore = defineStore('app', {
       const common: any = this.theme?.common || {};
       Object.keys(common).forEach((key) => {
         const value: string = common[key];
-        const rgb = getRgb(value);
-        // 全局css变量-十六进制
-        useCssVar(`--${_.kebabCase(key)}`, document.documentElement).value = value || '';
-        // 全局css变量-rgb, xx xx xx 形式, 如: 255 255 255,给uno使用
-        useCssVar(`--${_.kebabCase(key)}-rgb`, document.documentElement).value =
-          rgb.join(' ') || '';
+        if (isValidColor(value)) {
+          const rgb = getRgb(value);
+          // 全局css变量-十六进制
+          useCssVar(`--${_.kebabCase(key)}`, document.documentElement).value = value || '';
+          // 全局css变量-rgb, xx xx xx 形式, 如: 255 255 255,给uno使用
+          useCssVar(`--${_.kebabCase(key)}-rgb`, document.documentElement).value =
+            rgb.join(' ') || '';
+        }
 
         // 特别处理 primaryColor，将其存入本地存储
         if (key === 'primaryColor') {
@@ -111,7 +113,7 @@ export const useAppStore = defineStore('app', {
       if (color) {
         const brightenColor = chroma(color).brighten(1).hex();
         const darkenColor = chroma(color).darken(1).hex();
-        // this.primaryColor = color;
+        this.primaryColor = color;
         _.set(this.theme, 'common.primaryColor', color);
         _.set(this.theme, 'common.primaryColorHover', brightenColor);
         _.set(this.theme, 'common.primaryColorPressed', darkenColor);

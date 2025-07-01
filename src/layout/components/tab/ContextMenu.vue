@@ -89,7 +89,7 @@ const actionMap = new Map([
   [
     'close',
     () => {
-      tabStore.removeTab(props.currentPath);
+      tabStore.removeRight(props.currentPath);
     },
   ],
   [

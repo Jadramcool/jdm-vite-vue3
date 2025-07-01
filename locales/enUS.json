@@ -13,6 +13,7 @@
     "setting": "Setting",
     "system": "Follow System",
     "themeColor": "Theme Color",
+    "themeDisplay": "Functional Configuration",
     "themeSetting": "Theme Setting",
     "toggleFullScreen": "Toggle Full Screen",
     "topProgress": "Top Progress",
@@ -306,8 +307,6 @@
     "role": "Role",
     "roleType": {
       "admin": "Admin",
-      "doctor": "Doctor",
-      "patient": "Patient",
       "user": "User"
     },
     "roleTypeName": "RoleType",

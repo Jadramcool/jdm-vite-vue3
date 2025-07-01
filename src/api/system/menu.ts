@@ -7,6 +7,7 @@ enum API {
   update = '/system/menu/update',
   delete = '/system/menu/delete',
   batchDelete = '/system/menu/batchDelete',
+  onlineMenu = '/system/menu/onlineMenus', // 非登陆模式下获取在线菜单
 }
 
 /**
@@ -57,5 +58,14 @@ export const batchDeleteMenu = (ids: Array<number | string>) => {
     data: {
       ids,
     },
+  });
+};
+
+/**
+ * @description: 获取在线菜单
+ */
+export const onlineMenu = () => {
+  return request.get<System.Menu[]>({
+    url: API.onlineMenu,
   });
 };

@@ -1,5 +1,5 @@
 <template>
-  <BasicModal v-bind="attrs" @register="register" @ok="handleOk" :headTitle="getTitle">
+  <BasicModal v-bind="attrs" @register="register" @ok="handleOk" :title="getTitle">
     <BasicForm @register="registerForm"></BasicForm>
     <BasicForm @register="registerExtraForm"></BasicForm>
   </BasicModal>
@@ -25,7 +25,6 @@ const getTitle = computed(() => {
     (unref(isUpdate) ? $t('common.edit') : $t('common.add')) + $t('common.system.menu.schema.menu')
   );
 });
-
 const { editFormSchemas, extraDataFromSchemas } = useMenuSchema();
 
 const [registerForm, { setFieldsValue, resetFields, submit }] = useForm({

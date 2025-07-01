@@ -87,7 +87,11 @@ export const basicProps = {
     type: String,
     // default: $t('common.reset'),
   },
-  //
+  // 重置时是否重置分页器
+  resetPageOnReset: {
+    type: Boolean,
+    default: true,
+  },
   // grid 配置
   gridProps: {
     type: Object as PropType<GridProps>,

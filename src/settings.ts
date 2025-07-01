@@ -2,6 +2,8 @@ export const defaultLayout = 'normal';
 // 全局主题变量
 export const naiveThemeOverrides = {
   common: {
+    // 字体
+    fontFamily: 'Smiley Sans',
     primaryColor: '#18a058',
     primaryColorHover: '#36ad6a',
     primaryColorPressed: '#0c7a43',

@@ -9,6 +9,7 @@ import {
   transformerVariantGroup,
 } from 'unocss';
 import { themeVars } from './src/utils/theme/vars';
+
 // import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders';
 
 export default defineConfig({
@@ -42,7 +43,7 @@ export default defineConfig({
     'card-border': 'border border-solid border-light_border dark:border-dark_border',
     borderd: 'border border-solid border-light_border dark:border-dark_border',
     'auto-bg': 'bg-white dark:bg-#18181C',
-    'divider-style': 'font-bold text-lg',
+    'divider-style': 'font-bold',
     'card-header': 'font-bold text-base',
     'box-shadow': 'shadow-[0_2px_8px_rgba(0,0,0,0.2)]',
     'cursor-hover': 'rounded-sm px-10px py-4px cursor-pointer hover:bg-#F3F3F5',
