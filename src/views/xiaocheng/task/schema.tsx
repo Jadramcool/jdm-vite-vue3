@@ -10,12 +10,6 @@ export const useTaskSchema = (data: any = {}) => {
   const schema = computed(() => ({
     properties: [
       {
-        table: {
-          type: 'selection',
-          options: ['all', 'none'],
-        },
-      },
-      {
         key: 'id',
         label: $t('common.id'),
         defaultValue: undefined,
@@ -40,9 +34,10 @@ export const useTaskSchema = (data: any = {}) => {
         },
         table: {
           width: 200,
+          align: 'left',
           render: (row: RowData) => {
             return (
-              <NEllipsis style={{ maxWidth: '200px' }} class={'font-bold'}>
+              <NEllipsis style={{ maxWidth: '400px' }} class={'font-bold'}>
                 {row.name}
               </NEllipsis>
             );
@@ -59,6 +54,25 @@ export const useTaskSchema = (data: any = {}) => {
                 {row.type_name}
               </NTag>
             );
+          },
+        },
+        form: {
+          component: 'NSelect',
+          componentProps: {
+            options: [
+              {
+                label: 'BUG',
+                value: 'BUG',
+              },
+              {
+                label: '需求',
+                value: 'REQ',
+              },
+              {
+                label: '优化',
+                value: 'OPT',
+              },
+            ],
           },
         },
       },
@@ -80,6 +94,20 @@ export const useTaskSchema = (data: any = {}) => {
             );
           },
         },
+        form: {
+          component: 'NSelect',
+          componentProps: {
+            options: (() => {
+              const allValues = Array.from(
+                new Set(Object.values(data.allLanes).map((value) => value)),
+              );
+              return allValues.map((value) => ({
+                label: value,
+                value,
+              }));
+            })(),
+          },
+        },
       },
       {
         key: 'status',
@@ -94,6 +122,25 @@ export const useTaskSchema = (data: any = {}) => {
                 {row.status}
               </NTag>
             );
+          },
+        },
+        form: {
+          component: 'NSelect',
+          componentProps: {
+            options: [
+              {
+                label: '未开始',
+                value: '未开始',
+              },
+              {
+                label: '进行中',
+                value: '进行中',
+              },
+              {
+                label: '已完成',
+                value: '已完成',
+              },
+            ],
           },
         },
       },
@@ -133,13 +180,16 @@ export const useTaskSchema = (data: any = {}) => {
           width: 220,
           render: (row: RowData) => (
             <NSpace justify="center">
-              <NButton type={row.status === 1 ? 'error' : 'primary'} ghost size="small">
-                {row.status === 0
-                  ? $t('modules.system.user.schema.enable')
-                  : $t('modules.system.user.schema.disable')}
+              <NButton ghost size="small" onClick={() => data.schemaMethods.handleCopy(row)}>
+                复制
               </NButton>
-              <NButton type="primary" ghost size="small">
-                {$t('common.edit')}
+              <NButton
+                type="primary"
+                ghost
+                size="small"
+                onClick={() => data.schemaMethods.handleReview(row)}
+              >
+                评审
               </NButton>
             </NSpace>
           ),
@@ -152,7 +202,7 @@ export const useTaskSchema = (data: any = {}) => {
 
   // 表格和表单字段
   const tableFields = ['id', 'name', 'type_name', 'lane', 'status', 'project', 'users', 'operate'];
-  const formFields = ['id'];
+  const formFields = ['name', 'type_name', 'lane', 'status'];
 
   // 表格列配置
   const columns = computed(() => columnsUtil(schema.value, tableFields));

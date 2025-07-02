@@ -80,7 +80,6 @@ const getProps = computed((): NewModalProps => {
 });
 
 const getBindValue = computed(() => {
-  console.log('[ getProps.value ] >', getProps.value);
   return { ...unref(getProps) } as Recordable;
 });
 
