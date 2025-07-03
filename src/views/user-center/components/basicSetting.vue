@@ -46,7 +46,7 @@ defineOptions({ name: 'BasicSetting' });
 const userStore = useUserStore();
 const constantsStore = useConstantsStore();
 
-const uploadUrl = `${import.meta.env.VITE_APP_BASE_URL}/upload/avatar`;
+const uploadUrl = `${import.meta.env.VITE_APP_BASE_URL}/upload/avatar/oss`;
 const headers = {
   authorization: `Bearer ${getToken()}`,
 };

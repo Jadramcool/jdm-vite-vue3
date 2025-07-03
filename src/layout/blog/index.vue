@@ -3,15 +3,19 @@
   <n-layout class="wh-full flex" has-sider>
     <n-layout class="layout h-full" content-style="display: flex;flex-direction: column" embedded>
       <n-layout-header
-        bordered
-        class="z-1 flex-x-center justify-between"
+        class="z-1 flex-x-center justify-between fixed bg-[#ffffff10] hover:bg-[#ffffff80]"
         content-style="transition: border-color 0.3s ease;"
       >
         <div class="flex-x-center p-x-xl">
           <SideLogo v-if="appStore.showLogo" />
         </div>
         <div class="info flex-x-center gap-1 h-full p-x-xl">
-          <HeaderTools />
+          <HeaderTools
+            :showSetting="false"
+            :showFullScreen="false"
+            :showDarkMode="false"
+            :showLanguage="false"
+          />
         </div>
       </n-layout-header>
       <n-layout-content embedded class="h-full flex-1 overflow-hidden" :native-scrollbar="true">
@@ -37,4 +41,8 @@ import { useAppStore } from '@/store';
 const appStore = useAppStore();
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.n-layout {
+  background-color: rgb(255, 255, 255);
+}
+</style>
