@@ -1,5 +1,5 @@
 import { useAuthStore, usePermissionStore, useUserStore } from '@/store';
-import { getMenus, getUserInfo, getOnlineMenus } from '@/store/helper';
+import { getMenus, getOnlineMenus, getUserInfo } from '@/store/helper';
 
 // ---------------判断是否需要登录---------------
 const needLoginTag = import.meta.env.VITE_NEED_LOGIN === 'true';
@@ -12,8 +12,14 @@ export function createPermissionGuard(router: any) {
   router.beforeEach(async (to: any) => {
     try {
       const permissionStore = usePermissionStore();
-      if (!needLoginTag) {
-        // TODO 先做不登陆+本地路由
+      const authStore = useAuthStore();
+      const { token } = authStore;
+
+      // 混合模式：根据token存在与否决定走哪种流程
+      const shouldUseLoginFlow = needLoginTag || !!token;
+
+      if (!shouldUseLoginFlow) {
+        // 不登录流程
         if (localRouteMode === 'local') {
           if (permissionStore.menus.length === 0) {
             const localRouter: any = await import(`../local-router/router-config.ts`);
@@ -44,12 +50,10 @@ export function createPermissionGuard(router: any) {
           if (routes.find((route: any) => route.name === to.name)) return true;
           console.warn('没有权限，跳转到404页面');
           return { name: '404', query: { path: to.fullPath } };
-          // 判断是无权限还是404
         }
       }
-      if (needLoginTag) {
-        const authStore = useAuthStore();
-        const { token } = authStore;
+      if (shouldUseLoginFlow) {
+        // 登录流程
         // 无token的情况
         if (!token) {
           console.warn('没有token，跳转到登录页');
@@ -65,7 +69,6 @@ export function createPermissionGuard(router: any) {
         const userStore = useUserStore();
         // 刷新页面时，pinia中的数据会丢失，所以需要重新获取用户信息和权限
         if (!userStore.userInfo || !userStore.userInfo.id) {
-          // const [user, permissions] = await Promise.all([getUserInfo(), getMenus()]);
           const user: any = await getUserInfo();
 
           if (!user || (user && Object.keys(user).length === 0)) {
@@ -95,12 +98,6 @@ export function createPermissionGuard(router: any) {
         if (routes.find((route: any) => route.name === to.name)) return true;
         console.warn('没有权限，跳转到404页面');
         return { name: '404', query: { path: to.fullPath } };
-
-        // 判断是无权限还是404
-        // const { data: hasMenu } = await api.validateMenuPath(to.path);
-        // return hasMenu
-        //   ? { name: '403', query: { path: to.fullPath }, state: { from: 'permission-guard' } }
-        //   : { name: '404', query: { path: to.fullPath } };
       }
     } catch (error) {
       console.error(error);
