@@ -154,6 +154,14 @@ export const useCategorySchema = (methods: any = {}) => {
         },
       },
       {
+        key: 'icon',
+        label: $t('modules.blog.category.schema.icon'),
+        defaultValue: undefined,
+        form: {
+          component: 'IconPicker',
+        },
+      },
+      {
         key: 'createdTime',
         label: $t('common.createdTime'),
         defaultValue: undefined,
@@ -215,7 +223,7 @@ export const useCategorySchema = (methods: any = {}) => {
     'operate',
   ];
   const formFields = ['id', 'name', 'slug', 'description'];
-  const editFormFields = ['name', 'slug', 'description', 'color', 'sortOrder'];
+  const editFormFields = ['name', 'slug', 'description', 'color', 'icon', 'sortOrder'];
 
   // 表格列配置
   const columns = computed(() => columnsUtil(schema.value, tableFields));

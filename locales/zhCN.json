@@ -191,6 +191,7 @@
           "color": "颜色",
           "description": "分类描述",
           "hasChildren": "包含子分类",
+          "icon": "图标",
           "name": "分类名称",
           "noParent": "无父级分类",
           "parent": "父级分类",
@@ -240,6 +241,7 @@
         "schema": {
           "color": "标签颜色",
           "description": "标签描述",
+          "icon": "图标",
           "name": "标签名称",
           "pleaseInputDescription": "请输入标签描述",
           "pleaseInputName": "请输入标签名称",
@@ -251,7 +253,8 @@
         },
         "table": {
           "title": "标签列表"
-        }
+        },
+        "tag": "标签"
       }
     },
     "home": {

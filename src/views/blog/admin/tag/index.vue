@@ -12,6 +12,7 @@
       :request="loadTagList"
       :rowKey="(row: NaiveUI.RowData) => row.id"
       scroll-x="1200"
+      @add="handleAdd"
     >
       <template #toolbar>
         <!-- 更新所有标签文章数量 -->
@@ -25,13 +26,15 @@
         </n-button>
       </template>
     </BasicTable>
+    <TagModal @register="registerModal" @success="handleSuccess" />
   </div>
 </template>
 
 <script lang="tsx" setup>
 import { BlogApi } from '@/api';
-import { BasicForm, BasicTable, useForm } from '@/components';
+import { BasicForm, BasicTable, useForm, useModal } from '@/components';
 import { $t } from '@/locales';
+import { TagModal } from './components';
 import { useTagSchema } from './schema';
 
 defineOptions({ name: 'BlogTagList' });
@@ -50,9 +53,8 @@ const loadingStates = ref<Record<number, boolean>>({});
 const updateAllLoading = ref(false);
 
 const schemaMethods = {
-  handleEdit: (row: Blog.Tag) => {
-    console.log('编辑标签:', row);
-    // TODO: 实现编辑功能
+  handleEdit: (record: Blog.Category) => {
+    openModal({ record, isUpdate: true });
   },
   handleDelete: async (row: Blog.Tag) => {
     try {
@@ -66,6 +68,18 @@ const schemaMethods = {
       loadingStates.value[row.id] = false;
     }
   },
+};
+
+const [registerModal, { openModal }] = useModal();
+
+const handleAdd = () => {
+  openModal({
+    isUpdate: false,
+  });
+};
+
+const handleSuccess = () => {
+  tableRef.value.reload();
 };
 
 const updateAllTagPostCount = async () => {

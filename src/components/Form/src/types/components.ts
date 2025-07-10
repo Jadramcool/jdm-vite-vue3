@@ -32,4 +32,5 @@ export type ComponentType =
   | 'ApiTreeSelect'
   | 'ApiTree'
   | 'MutiDatePicker'
-  | 'NColorPicker';
+  | 'NColorPicker'
+  | 'IconPicker';

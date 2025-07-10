@@ -150,6 +150,14 @@ export const useTagSchema = (methods: any = {}) => {
         },
       },
       {
+        key: 'icon',
+        label: $t('modules.blog.tag.schema.icon'),
+        defaultValue: undefined,
+        form: {
+          component: 'IconPicker',
+        },
+      },
+      {
         key: 'createdTime',
         label: $t('common.createdTime'),
         defaultValue: undefined,
@@ -212,7 +220,7 @@ export const useTagSchema = (methods: any = {}) => {
     'operate',
   ];
   const formFields = ['name', 'slug', 'description'];
-  const editFormFields = ['id', 'name', 'slug', 'description', 'color'];
+  const editFormFields = ['name', 'slug', 'description', 'color', 'icon'];
 
   // 表格列配置
   const columns = computed(() => columnsUtil(schema.value, tableFields));

@@ -191,6 +191,7 @@
           "color": "Color",
           "description": "Description",
           "hasChildren": "Has Children",
+          "icon": "Icon",
           "name": "Category Name",
           "noParent": "No Parent",
           "parent": "Parent Category",
@@ -240,6 +241,7 @@
         "schema": {
           "color": "Tag Color",
           "description": "Description",
+          "icon": "Icon",
           "name": "Tag Name",
           "pleaseInputDescription": "Please input description",
           "pleaseInputName": "Please input tag name",
@@ -251,7 +253,8 @@
         },
         "table": {
           "title": "Tag List"
-        }
+        },
+        "tag": "Tag"
       }
     },
     "home": {

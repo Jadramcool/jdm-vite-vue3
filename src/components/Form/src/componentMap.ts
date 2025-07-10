@@ -19,6 +19,7 @@ import {
   NTimePicker,
 } from 'naive-ui';
 import type { Component } from 'vue';
+import { IconPicker } from './components';
 import { ComponentType } from './types';
 
 const componentMap = new Map<ComponentType | undefined, Component>();
@@ -32,5 +33,6 @@ componentMap.set('NDatePicker', NDatePicker);
 componentMap.set('NTimePicker', NTimePicker);
 componentMap.set('NColorPicker', NColorPicker);
 componentMap.set('NCascader', NCascader);
+componentMap.set('IconPicker', IconPicker);
 
 export { componentMap };
