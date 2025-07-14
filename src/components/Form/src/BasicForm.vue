@@ -120,6 +120,17 @@
               >
               </MutiDatePicker>
             </template>
+            <template v-else-if="schema.component === 'IconPicker'">
+              <IconPicker
+                v-bind="getComponentProps(schema)"
+                v-model:value="formModel[schema.field]"
+                :ref="
+                  (el: any) => {
+                    setComponentRef(schema.field, el);
+                  }
+                "
+              />
+            </template>
             <!--判断插槽-->
             <template v-else>
               <component
@@ -180,7 +191,7 @@ import { isArray, isBoolean, isFunction } from '@/utils';
 import _ from 'lodash';
 import { NCheckboxGroup, NRadio, type GridProps } from 'naive-ui';
 import { componentMap } from './componentMap';
-import { ApiSelect, ApiTree, ApiTreeSelect, DatePicker } from './components';
+import { ApiSelect, ApiTree, ApiTreeSelect, DatePicker, IconPicker } from './components';
 import { createPlaceholderMessage } from './helper';
 import { useFormEvents, useFormValues } from './hooks';
 import { basicProps } from './props';
@@ -217,6 +228,7 @@ const getProps = computed((): NewFormProps => {
     rules: {},
   };
   const schemas: FormSchema[] = formProps.schemas || [];
+  console.log('🚀 ~ getProps ~ schemas:', schemas);
   schemas.forEach((item) => {
     if (item.rules && isArray(item.rules)) {
       // 给rules添加key属性,用来单个校验
