@@ -11,7 +11,7 @@
       :filters="queryParams"
       :request="loadNoticeList"
       :rowKey="(row: NaiveUI.RowData) => row.id"
-      scroll-x="1400"
+      scroll-x="1200"
       @add="handleAdd"
     />
   </div>
@@ -60,6 +60,16 @@ const schemaMethods = {
       loadingStates.value[row.id] = false;
     }
   },
+
+  handleSearchCategory: async (row: Blog.Post) => {
+    await setFieldsValue({ categoryId: row.id });
+    await tableRef.value.reload();
+  },
+
+  handleSearchTag: async (row: Blog.Post) => {
+    await setFieldsValue({ tagIds: [row.id] });
+    await tableRef.value.reload();
+  },
 };
 
 const handleAdd = () => {
@@ -70,7 +80,7 @@ const handleAdd = () => {
 
 const { columns, formSchemas } = useBlogSchema(schemaMethods, loadingStates);
 
-const [register, { getFieldsValue }] = useForm({
+const [register, { getFieldsValue, setFieldsValue }] = useForm({
   gridProps: { cols: '1 s:1 m:2 l:3 xl:4 2xl:4' },
   schemas: formSchemas,
   submitOnReset: true,

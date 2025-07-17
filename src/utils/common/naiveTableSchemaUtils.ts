@@ -76,7 +76,7 @@ export const formSchemaUtil = (schema: any, formFields: string[]) => {
   const result = properties
     .filter(({ key, form }: any) => formFields.includes(key) && form?.visible !== false)
     .map(({ key, label, defaultValue, form, ifShow }: any) => ({
-      field: key,
+      field: form.key || key,
       label,
       ...(ifShow !== undefined ? { ifShow } : {}),
       defaultValue: form?.defaultValue ?? defaultValue, // 使用 nullish 合并运算符
@@ -110,7 +110,7 @@ export const editFormSchemaUtil = (schema: any, editFormFields: string[]) => {
     .filter(({ key, editForm }: any) => editFormFields.includes(key) && editForm?.visible !== false)
     .map(({ key, label, defaultValue, form, editForm, ifShow }: any) => {
       const fieldConfig = {
-        field: key,
+        field: editForm.key || form.key || key,
         label,
         ...(ifShow !== undefined ? { ifShow } : {}),
         defaultValue: editForm?.defaultValue ?? defaultValue,

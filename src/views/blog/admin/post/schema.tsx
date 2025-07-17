@@ -1,3 +1,4 @@
+import { BlogApi } from '@/api';
 import { JayIcon } from '@/components';
 import { postStatusColorOptions, postStatusOptions } from '@/constants';
 import { $t } from '@/locales/i18n';
@@ -127,8 +128,33 @@ export const useBlogSchema = (
         label: $t('modules.blog.post.schema.category'),
         defaultValue: undefined,
         table: {
+          align: 'center',
           render: (row: Blog.Post) => {
-            return row.category?.name || '-';
+            const { category } = row;
+            return (
+              <NSpace vertical inline>
+                <div
+                  onClick={() => methods.handleSearchCategory(row)}
+                  class="flex-x-center p-6px text-sm text-secondary rounded-md bg-[#EEEEEE] hover:bg-[#E0E0E0] transition-all duration-300 cursor-pointer"
+                >
+                  <JayIcon icon={category?.icon} />
+                  <span class="ml-5px" style={{ color: category?.color }}>
+                    {category?.name}
+                  </span>
+                </div>
+              </NSpace>
+            );
+          },
+        },
+        form: {
+          key: 'categoryId',
+          component: 'ApiSelect',
+          componentProps: {
+            api: BlogApi.getCategoryTree,
+            multiple: false,
+            placeholder: `${$t('common.pleaseSelect')} ${$t('modules.blog.post.schema.category')}`,
+            labelField: 'name',
+            valueField: 'id',
           },
         },
       },
@@ -141,13 +167,29 @@ export const useBlogSchema = (
             return (
               <NSpace vertical inline>
                 {row.tags?.map((tag) => (
-                  <div class="flex-x-center px-6px py-2px text-sm text-secondary rounded-md bg-[#EEEEEE] hover:bg-[#E0E0E0] transition-all duration-300 cursor-pointer">
+                  <div
+                    onClick={() => methods.handleSearchTag(tag)}
+                    class="flex-x-center px-6px py-4px text-sm text-secondary rounded-md bg-[#EEEEEE] hover:bg-[#E0E0E0] transition-all duration-300 cursor-pointer"
+                  >
                     <JayIcon icon={tag?.icon} />
-                    <span class="ml-5px">{tag?.name}</span>
+                    <span class="ml-5px" style={{ color: tag?.color }}>
+                      {tag?.name}
+                    </span>
                   </div>
                 ))}
               </NSpace>
             );
+          },
+        },
+        form: {
+          key: 'tagIds',
+          component: 'ApiSelect',
+          componentProps: {
+            api: BlogApi.getAllTags,
+            multiple: true,
+            placeholder: `${$t('common.pleaseSelect')} ${$t('modules.blog.post.schema.tag')}`,
+            labelField: 'name',
+            valueField: 'id',
           },
         },
       },
@@ -270,7 +312,7 @@ export const useBlogSchema = (
     // 'updatedTime',
     'operate',
   ];
-  const formFields = ['id', 'type', 'title', 'status', 'content'];
+  const formFields = ['id', 'type', 'title', 'status', 'content', 'category', 'tag'];
   const editFormFields = ['id', 'title', 'type', 'content'];
 
   // 表格列配置
