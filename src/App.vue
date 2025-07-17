@@ -30,7 +30,7 @@
           </KeepAlive>
         </component>
       </router-view>
-      <Watermark :show-watermark="appStore.showWatermark" :text="userStore.userInfo.username" />
+      <WaterMark :show-watermark="appStore.showWatermark" :text="userStore.userInfo.username" />
     </Application>
   </n-config-provider>
 </template>

@@ -66,9 +66,9 @@ export const getPostBySlug = (slug: string, incrementView?: boolean) => {
 /**
  * @description: 更新博客文章
  */
-export const updatePost = (id: number, data: Blog.UpdatePostRequest) => {
+export const updatePost = (data: Blog.UpdatePostRequest) => {
   return request.put<Blog.Post>({
-    url: API.postById.replace(':id', id.toString()),
+    url: API.postById.replace(':id', data.id.toString()),
     data,
   });
 };

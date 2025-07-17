@@ -12,6 +12,7 @@
       :request="loadNoticeList"
       :rowKey="(row: NaiveUI.RowData) => row.id"
       scroll-x="1400"
+      @add="handleAdd"
     />
   </div>
 </template>
@@ -20,12 +21,12 @@
 import { BlogApi } from '@/api';
 import { BasicForm, BasicTable, useForm } from '@/components';
 import { $t } from '@/locales';
+import { useRouter } from 'vue-router';
 import { useBlogSchema } from './schema';
 
 defineOptions({ name: 'BlogPostList' });
-onMounted(() => {
-  // 获取表格数据
-});
+
+const router = useRouter();
 
 const tableRef = ref<any>(null);
 const formRef = ref<any>(null);
@@ -37,6 +38,14 @@ const queryParams = ref<Query.GetParams>({});
 const loadingStates = ref<Record<number, boolean>>({});
 
 const schemaMethods = {
+  handleEdit: (row: Blog.Post) => {
+    router.push({
+      path: `/blog/admin/post/edit`,
+      query: {
+        id: row.id,
+      },
+    });
+  },
   handlePublish: async (row: Blog.Post) => {
     try {
       loadingStates.value[row.id] = true;
@@ -51,6 +60,12 @@ const schemaMethods = {
       loadingStates.value[row.id] = false;
     }
   },
+};
+
+const handleAdd = () => {
+  router.push({
+    path: `/blog/admin/post/edit`,
+  });
 };
 
 const { columns, formSchemas } = useBlogSchema(schemaMethods, loadingStates);

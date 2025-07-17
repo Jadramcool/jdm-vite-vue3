@@ -1,0 +1,609 @@
+// 编辑器主题配置文件
+// 定义不同的主题样式变量和类
+
+// 默认主题（粉色渐变）
+.theme-default {
+  --editor-bg-gradient: linear-gradient(
+    0deg,
+    #fdcbf1 0%,
+    #fdcbf1 1%,
+    #e6dee9 100%
+  ); // 编辑器主背景渐变，应用于.editor-layout根容器
+  --editor-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); // 编辑器卡片阴影，应用于编辑器主容器的box-shadow
+  --toolbar-bg-gradient: linear-gradient(
+    135deg,
+    #f8fafc 0%,
+    #f1f5f9 100%
+  ); // 工具栏背景渐变，应用于.vditor-toolbar
+  --toolbar-border: #e2e8f0; // 工具栏边框颜色，应用于工具栏的border属性
+  --toolbar-decoration: linear-gradient(
+    0deg,
+    #fbc2eb 0%,
+    #a6c1ee 100%
+  ); // 工具栏装饰渐变，应用于工具栏顶部装饰条
+  --sidebar-bg: rgba(255, 255, 255, 0.95); // 侧边栏背景色，应用于大纲、目录等侧边栏组件
+  --sidebar-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); // 侧边栏阴影，应用于侧边栏容器的box-shadow
+  --outline-marker-1: #3b82f6; // 大纲标记颜色1，应用于h1级别的大纲标记
+  --outline-marker-2: #10b981; // 大纲标记颜色2，应用于h2级别的大纲标记
+  --outline-marker-3: #f59e0b; // 大纲标记颜色3，应用于h3级别的大纲标记
+  --outline-marker-4: #ef4444; // 大纲标记颜色4，应用于h4级别的大纲标记
+  --outline-marker-5: #8b5cf6; // 大纲标记颜色5，应用于h5级别的大纲标记
+  --outline-marker-6: #06b6d4; // 大纲标记颜色6，应用于h6级别的大纲标记
+  --scrollbar-track-bg: rgba(
+    253,
+    203,
+    241,
+    0.2
+  ); // 滚动条轨道背景色，应用于::-webkit-scrollbar-track
+  --scrollbar-thumb-bg: rgba(
+    253,
+    203,
+    241,
+    0.5
+  ); // 滚动条滑块背景色，应用于::-webkit-scrollbar-thumb
+  --scrollbar-thumb-hover-bg: rgba(
+    253,
+    203,
+    241,
+    0.7
+  ); // 滚动条滑块悬停背景色，应用于::-webkit-scrollbar-thumb:hover
+  --scrollbar-thumb-active-bg: rgba(
+    253,
+    203,
+    241,
+    0.9
+  ); // 滚动条滑块激活背景色，应用于::-webkit-scrollbar-thumb:active
+  --scrollbar-thumb-border: rgba(
+    253,
+    203,
+    241,
+    0.3
+  ); // 滚动条滑块边框颜色，应用于滚动条滑块的border
+
+  // 工具栏主题变量
+  --toolbar-btn-hover-bg: linear-gradient(
+    135deg,
+    #fbc2eb 0%,
+    #a6c1ee 50%,
+    #fbc2eb 100%
+  ); // 工具栏按钮悬停背景渐变，应用于.vditor-toolbar button:hover
+  --toolbar-btn-hover-color: white; // 工具栏按钮悬停文字颜色，应用于.vditor-toolbar button:hover的color
+  --toolbar-btn-hover-shadow: 0 6px 20px rgba(251, 194, 235, 0.4),
+    0 2px 8px rgba(251, 194, 235, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2); // 工具栏按钮悬停阴影效果，应用于button:hover的box-shadow
+  --toolbar-btn-hover-border: rgba(
+    255,
+    255,
+    255,
+    0.3
+  ); // 工具栏按钮悬停边框颜色，应用于button:hover的border
+
+  --toolbar-current-bg: linear-gradient(
+    135deg,
+    #fbc2eb 0%,
+    #a6c1ee 50%,
+    #fbc2eb 100%
+  ); // 工具栏当前激活按钮背景，应用于.vditor-toolbar .vditor-toolbar--current
+  --toolbar-current-color: white; // 工具栏当前激活按钮文字颜色，应用于激活按钮的color
+  --toolbar-current-shadow: 0 4px 16px rgba(251, 194, 235, 0.5), 0 2px 8px rgba(251, 194, 235, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3); // 工具栏当前激活按钮阴影，应用于激活按钮的box-shadow
+  --toolbar-current-border: rgba(
+    255,
+    255,
+    255,
+    0.2
+  ); // 工具栏当前激活按钮边框，应用于激活按钮的border
+
+  --toolbar-divider-bg: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(251, 194, 235, 0.3) 20%,
+    rgba(166, 193, 238, 0.4) 50%,
+    rgba(251, 194, 235, 0.3) 80%,
+    transparent 100%
+  ); // 工具栏分隔线背景渐变，应用于.vditor-toolbar .vditor-toolbar__divider
+  --toolbar-divider-opacity: 0.8; // 工具栏分隔线透明度，应用于分隔线元素的opacity
+  --toolbar-divider-glow: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(251, 194, 235, 0.1),
+    transparent
+  ); // 工具栏分隔线发光效果，应用于分隔线的::after伪元素
+
+  --toolbar-pulse-shadow-normal: 0 4px 16px rgba(251, 194, 235, 0.5),
+    0 2px 8px rgba(251, 194, 235, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3); // 工具栏脉冲动画普通状态阴影，应用于动画按钮的默认状态
+  --toolbar-pulse-shadow-active: 0 6px 24px rgba(251, 194, 235, 0.7),
+    0 3px 12px rgba(251, 194, 235, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4); // 工具栏脉冲动画激活状态阴影，应用于动画按钮的激活状态
+
+  --toolbar-icon-glow-normal: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))
+    drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)); // 工具栏图标普通发光效果，应用于.vditor-toolbar svg的filter
+  --toolbar-icon-glow-active: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4))
+    drop-shadow(0 0 12px rgba(255, 255, 255, 0.6)); // 工具栏图标激活发光效果，应用于激活状态svg的filter
+}
+
+// 蓝色科技主题 - 变量含义与默认主题相同，仅颜色值为蓝色系
+.theme-blue {
+  --editor-bg-gradient: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%); // 蓝色渐变背景
+  --editor-card-shadow: 0 8px 32px rgba(102, 126, 234, 0.3); // 蓝色阴影
+  --toolbar-bg-gradient: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); // 浅蓝灰色工具栏背景
+  --toolbar-border: #cbd5e1; // 蓝灰色边框
+  --toolbar-decoration: linear-gradient(90deg, #3b82f6, #1d4ed8, #1e40af, #1e3a8a); // 蓝色装饰渐变
+  --sidebar-bg: rgba(241, 245, 249, 0.95); // 浅蓝色侧边栏背景
+  --sidebar-shadow: 0 4px 20px rgba(59, 130, 246, 0.2); // 蓝色侧边栏阴影
+  --outline-marker-1: #3b82f6; // 蓝色系大纲标记
+  --outline-marker-2: #1d4ed8;
+  --outline-marker-3: #1e40af;
+  --outline-marker-4: #1e3a8a;
+  --outline-marker-5: #312e81;
+  --outline-marker-6: #1e1b4b;
+  --scrollbar-track-bg: rgba(59, 130, 246, 0.1); // 蓝色滚动条轨道
+  --scrollbar-thumb-bg: rgba(59, 130, 246, 0.4); // 蓝色滚动条滑块
+  --scrollbar-thumb-hover-bg: rgba(59, 130, 246, 0.6);
+  --scrollbar-thumb-active-bg: rgba(59, 130, 246, 0.8);
+  --scrollbar-thumb-border: rgba(59, 130, 246, 0.2);
+
+  // 工具栏主题变量
+  --toolbar-btn-hover-bg: linear-gradient(135deg, #3b82f6 0%, #1e40af 50%, #3b82f6 100%);
+  --toolbar-btn-hover-color: #f0f9ff;
+  --toolbar-btn-hover-shadow: 0 6px 20px rgba(59, 130, 246, 0.5), 0 2px 8px rgba(59, 130, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  --toolbar-btn-hover-border: rgba(255, 255, 255, 0.3);
+
+  --toolbar-current-bg: linear-gradient(135deg, #3b82f6 0%, #1e40af 50%, #3b82f6 100%);
+  --toolbar-current-color: #f0f9ff;
+  --toolbar-current-shadow: 0 4px 16px rgba(59, 130, 246, 0.6), 0 2px 8px rgba(59, 130, 246, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  --toolbar-current-border: rgba(255, 255, 255, 0.2);
+
+  --toolbar-divider-bg: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(59, 130, 246, 0.3) 20%,
+    rgba(30, 64, 175, 0.4) 50%,
+    rgba(59, 130, 246, 0.3) 80%,
+    transparent 100%
+  );
+  --toolbar-divider-opacity: 0.8;
+  --toolbar-divider-glow: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(59, 130, 246, 0.1),
+    transparent
+  );
+
+  --toolbar-pulse-shadow-normal: 0 4px 16px rgba(59, 130, 246, 0.6),
+    0 2px 8px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  --toolbar-pulse-shadow-active: 0 6px 24px rgba(59, 130, 246, 0.8),
+    0 3px 12px rgba(59, 130, 246, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+
+  --toolbar-icon-glow-normal: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))
+    drop-shadow(0 0 8px rgba(240, 249, 255, 0.4));
+  --toolbar-icon-glow-active: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4))
+    drop-shadow(0 0 12px rgba(240, 249, 255, 0.6));
+}
+
+// 绿色自然主题 - 变量含义与默认主题相同，仅颜色值为绿色系
+.theme-green {
+  --editor-bg-gradient: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); // 绿色渐变背景
+  --editor-card-shadow: 0 8px 32px rgba(52, 211, 153, 0.3); // 绿色阴影
+  --toolbar-bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); // 浅绿色工具栏背景
+  --toolbar-border: #bbf7d0; // 绿色边框
+  --toolbar-decoration: linear-gradient(90deg, #10b981, #059669, #047857, #065f46); // 绿色装饰渐变
+  --sidebar-bg: rgba(240, 253, 244, 0.95); // 浅绿色侧边栏背景
+  --sidebar-shadow: 0 4px 20px rgba(16, 185, 129, 0.2); // 绿色侧边栏阴影
+  --outline-marker-1: #10b981; // 绿色系大纲标记
+  --outline-marker-2: #059669;
+  --outline-marker-3: #047857;
+  --outline-marker-4: #065f46;
+  --outline-marker-5: #064e3b;
+  --outline-marker-6: #022c22;
+  --scrollbar-track-bg: rgba(16, 185, 129, 0.1); // 绿色滚动条轨道
+  --scrollbar-thumb-bg: rgba(16, 185, 129, 0.4); // 绿色滚动条滑块
+  --scrollbar-thumb-hover-bg: rgba(16, 185, 129, 0.6);
+  --scrollbar-thumb-active-bg: rgba(16, 185, 129, 0.8);
+  --scrollbar-thumb-border: rgba(16, 185, 129, 0.2);
+
+  // 工具栏主题变量
+  --toolbar-btn-hover-bg: linear-gradient(135deg, #10b981 0%, #047857 50%, #10b981 100%);
+  --toolbar-btn-hover-color: #f0fdf4;
+  --toolbar-btn-hover-shadow: 0 6px 20px rgba(16, 185, 129, 0.5), 0 2px 8px rgba(16, 185, 129, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  --toolbar-btn-hover-border: rgba(255, 255, 255, 0.3);
+
+  --toolbar-current-bg: linear-gradient(135deg, #10b981 0%, #047857 50%, #10b981 100%);
+  --toolbar-current-color: #f0fdf4;
+  --toolbar-current-shadow: 0 4px 16px rgba(16, 185, 129, 0.6), 0 2px 8px rgba(16, 185, 129, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  --toolbar-current-border: rgba(255, 255, 255, 0.2);
+
+  --toolbar-divider-bg: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(16, 185, 129, 0.3) 20%,
+    rgba(4, 120, 87, 0.4) 50%,
+    rgba(16, 185, 129, 0.3) 80%,
+    transparent 100%
+  );
+  --toolbar-divider-opacity: 0.8;
+  --toolbar-divider-glow: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(16, 185, 129, 0.1),
+    transparent
+  );
+
+  --toolbar-pulse-shadow-normal: 0 4px 16px rgba(16, 185, 129, 0.6),
+    0 2px 8px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  --toolbar-pulse-shadow-active: 0 6px 24px rgba(16, 185, 129, 0.8),
+    0 3px 12px rgba(16, 185, 129, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+
+  --toolbar-icon-glow-normal: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))
+    drop-shadow(0 0 8px rgba(240, 253, 244, 0.4));
+  --toolbar-icon-glow-active: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4))
+    drop-shadow(0 0 12px rgba(240, 253, 244, 0.6));
+}
+
+// 紫色梦幻主题 - 变量含义与默认主题相同，仅颜色值为紫色系
+.theme-purple {
+  --editor-bg-gradient: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%); // 紫色渐变背景
+  --editor-card-shadow: 0 8px 32px rgba(168, 85, 247, 0.3); // 紫色阴影
+  --toolbar-bg-gradient: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); // 浅紫色工具栏背景
+  --toolbar-border: #d8b4fe; // 紫色边框
+  --toolbar-decoration: linear-gradient(90deg, #8b5cf6, #7c3aed, #6d28d9, #5b21b6); // 紫色装饰渐变
+  --sidebar-bg: rgba(250, 245, 255, 0.95); // 浅紫色侧边栏背景
+  --sidebar-shadow: 0 4px 20px rgba(139, 92, 246, 0.2); // 紫色侧边栏阴影
+  --outline-marker-1: #8b5cf6; // 紫色系大纲标记
+  --outline-marker-2: #7c3aed;
+  --outline-marker-3: #6d28d9;
+  --outline-marker-4: #5b21b6;
+  --outline-marker-5: #4c1d95;
+  --outline-marker-6: #312e81;
+  --scrollbar-track-bg: rgba(139, 92, 246, 0.1); // 紫色滚动条轨道
+  --scrollbar-thumb-bg: rgba(139, 92, 246, 0.4); // 紫色滚动条滑块
+  --scrollbar-thumb-hover-bg: rgba(139, 92, 246, 0.6);
+  --scrollbar-thumb-active-bg: rgba(139, 92, 246, 0.8);
+  --scrollbar-thumb-border: rgba(139, 92, 246, 0.2);
+
+  // 工具栏主题变量
+  --toolbar-btn-hover-bg: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 50%, #8b5cf6 100%);
+  --toolbar-btn-hover-color: #faf5ff;
+  --toolbar-btn-hover-shadow: 0 6px 20px rgba(139, 92, 246, 0.5), 0 2px 8px rgba(139, 92, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  --toolbar-btn-hover-border: rgba(255, 255, 255, 0.3);
+
+  --toolbar-current-bg: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 50%, #8b5cf6 100%);
+  --toolbar-current-color: #faf5ff;
+  --toolbar-current-shadow: 0 4px 16px rgba(139, 92, 246, 0.6), 0 2px 8px rgba(139, 92, 246, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  --toolbar-current-border: rgba(255, 255, 255, 0.2);
+
+  --toolbar-divider-bg: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(139, 92, 246, 0.3) 20%,
+    rgba(109, 40, 217, 0.4) 50%,
+    rgba(139, 92, 246, 0.3) 80%,
+    transparent 100%
+  );
+  --toolbar-divider-opacity: 0.8;
+  --toolbar-divider-glow: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(139, 92, 246, 0.1),
+    transparent
+  );
+
+  --toolbar-pulse-shadow-normal: 0 4px 16px rgba(139, 92, 246, 0.6),
+    0 2px 8px rgba(139, 92, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  --toolbar-pulse-shadow-active: 0 6px 24px rgba(139, 92, 246, 0.8),
+    0 3px 12px rgba(139, 92, 246, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+
+  --toolbar-icon-glow-normal: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))
+    drop-shadow(0 0 8px rgba(250, 245, 255, 0.4));
+  --toolbar-icon-glow-active: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4))
+    drop-shadow(0 0 12px rgba(250, 245, 255, 0.6));
+}
+
+// 橙色温暖主题 - 变量含义与默认主题相同，仅颜色值为橙色系
+.theme-orange {
+  --editor-bg-gradient: linear-gradient(120deg, #f6d365 0%, #fda085 100%); // 橙色渐变背景
+  --editor-card-shadow: 0 8px 32px rgba(251, 146, 60, 0.3); // 橙色阴影
+  --toolbar-bg-gradient: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); // 浅橙色工具栏背景
+  --toolbar-border: #fed7aa; // 橙色边框
+  --toolbar-decoration: linear-gradient(
+    90deg,
+    #f97316,
+    #ea580c,
+    #dc2626,
+    #b91c1c
+  ); // 橙红色装饰渐变
+  --sidebar-bg: rgba(255, 251, 235, 0.95); // 浅橙色侧边栏背景
+  --sidebar-shadow: 0 4px 20px rgba(249, 115, 22, 0.2); // 橙色侧边栏阴影
+  --outline-marker-1: #f97316; // 橙红色系大纲标记
+  --outline-marker-2: #ea580c;
+  --outline-marker-3: #dc2626;
+  --outline-marker-4: #b91c1c;
+  --outline-marker-5: #991b1b;
+  --outline-marker-6: #7f1d1d;
+  --scrollbar-track-bg: rgba(249, 115, 22, 0.1); // 橙色滚动条轨道
+  --scrollbar-thumb-bg: rgba(249, 115, 22, 0.4); // 橙色滚动条滑块
+  --scrollbar-thumb-hover-bg: rgba(249, 115, 22, 0.6);
+  --scrollbar-thumb-active-bg: rgba(249, 115, 22, 0.8);
+  --scrollbar-thumb-border: rgba(249, 115, 22, 0.2);
+
+  // 工具栏主题变量
+  --toolbar-btn-hover-bg: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #f97316 100%);
+  --toolbar-btn-hover-color: #fffbeb;
+  --toolbar-btn-hover-shadow: 0 6px 20px rgba(249, 115, 22, 0.5), 0 2px 8px rgba(249, 115, 22, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  --toolbar-btn-hover-border: rgba(255, 255, 255, 0.3);
+
+  --toolbar-current-bg: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #f97316 100%);
+  --toolbar-current-color: #fffbeb;
+  --toolbar-current-shadow: 0 4px 16px rgba(249, 115, 22, 0.6), 0 2px 8px rgba(249, 115, 22, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  --toolbar-current-border: rgba(255, 255, 255, 0.2);
+
+  --toolbar-divider-bg: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(249, 115, 22, 0.3) 20%,
+    rgba(234, 88, 12, 0.4) 50%,
+    rgba(249, 115, 22, 0.3) 80%,
+    transparent 100%
+  );
+  --toolbar-divider-opacity: 0.8;
+  --toolbar-divider-glow: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(249, 115, 22, 0.1),
+    transparent
+  );
+
+  --toolbar-pulse-shadow-normal: 0 4px 16px rgba(249, 115, 22, 0.6),
+    0 2px 8px rgba(249, 115, 22, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  --toolbar-pulse-shadow-active: 0 6px 24px rgba(249, 115, 22, 0.8),
+    0 3px 12px rgba(249, 115, 22, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+
+  --toolbar-icon-glow-normal: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))
+    drop-shadow(0 0 8px rgba(255, 251, 235, 0.4));
+  --toolbar-icon-glow-active: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4))
+    drop-shadow(0 0 12px rgba(255, 251, 235, 0.6));
+}
+
+// 深色主题 - 适用于暗色环境，使用灰色调和彩色点缀
+.theme-dark {
+  --editor-bg-gradient: linear-gradient(135deg, #374151 0%, #1f2937 100%); // 深灰色渐变背景
+  --editor-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); // 深色阴影
+  --toolbar-bg-gradient: linear-gradient(135deg, #4b5563 0%, #374151 100%); // 深灰色工具栏背景
+  --toolbar-border: #6b7280; // 灰色边框
+  --toolbar-decoration: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899, #f59e0b); // 彩色装饰渐变
+  --sidebar-bg: rgba(75, 85, 99, 0.95); // 深灰色侧边栏背景
+  --sidebar-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); // 黑色侧边栏阴影
+  --outline-marker-1: #6366f1; // 彩色大纲标记（蓝、紫、粉、橙、绿、青）
+  --outline-marker-2: #8b5cf6;
+  --outline-marker-3: #ec4899;
+  --outline-marker-4: #f59e0b;
+  --outline-marker-5: #10b981;
+  --outline-marker-6: #06b6d4;
+  --scrollbar-track-bg: rgba(107, 114, 128, 0.2); // 灰色滚动条轨道
+  --scrollbar-thumb-bg: rgba(107, 114, 128, 0.5); // 灰色滚动条滑块
+  --scrollbar-thumb-hover-bg: rgba(107, 114, 128, 0.7);
+  --scrollbar-thumb-active-bg: rgba(107, 114, 128, 0.9);
+  --scrollbar-thumb-border: rgba(107, 114, 128, 0.3);
+
+  // 工具栏主题变量
+  --toolbar-btn-hover-bg: linear-gradient(135deg, #6366f1 0%, #4338ca 50%, #6366f1 100%);
+  --toolbar-btn-hover-color: #e2e8f0;
+  --toolbar-btn-hover-shadow: 0 6px 20px rgba(99, 102, 241, 0.6), 0 2px 8px rgba(99, 102, 241, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --toolbar-btn-hover-border: rgba(255, 255, 255, 0.2);
+
+  --toolbar-current-bg: linear-gradient(135deg, #6366f1 0%, #4338ca 50%, #6366f1 100%);
+  --toolbar-current-color: #f1f5f9;
+  --toolbar-current-shadow: 0 4px 16px rgba(99, 102, 241, 0.7), 0 2px 8px rgba(99, 102, 241, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  --toolbar-current-border: rgba(255, 255, 255, 0.15);
+
+  --toolbar-divider-bg: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(99, 102, 241, 0.4) 20%,
+    rgba(67, 56, 202, 0.5) 50%,
+    rgba(99, 102, 241, 0.4) 80%,
+    transparent 100%
+  );
+  --toolbar-divider-opacity: 0.9;
+  --toolbar-divider-glow: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(99, 102, 241, 0.2),
+    transparent
+  );
+
+  --toolbar-pulse-shadow-normal: 0 4px 16px rgba(99, 102, 241, 0.7),
+    0 2px 8px rgba(99, 102, 241, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  --toolbar-pulse-shadow-active: 0 6px 24px rgba(99, 102, 241, 0.9),
+    0 3px 12px rgba(99, 102, 241, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+
+  --toolbar-icon-glow-normal: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5))
+    drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+  --toolbar-icon-glow-active: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.6))
+    drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+}
+
+// 主题切换动画 - 为主题变化提供平滑过渡效果
+.theme-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); // 缓动函数实现自然过渡
+}
+
+// 主题选择器样式 - 用于显示和选择不同主题的UI组件
+.theme-selector {
+  display: flex; // 水平排列主题选项
+  gap: 8px; // 选项间距
+  padding: 12px; // 内边距
+  background: rgba(255, 255, 255, 0.9); // 半透明白色背景
+  border-radius: 8px; // 圆角
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); // 阴影效果
+  backdrop-filter: blur(10px); // 背景模糊效果
+
+  .theme-option {
+    // 单个主题选项按钮
+    width: 24px; // 固定宽度
+    height: 24px; // 固定高度
+    border-radius: 50%; // 圆形按钮
+    cursor: pointer; // 鼠标指针
+    border: 2px solid transparent; // 透明边框（用于激活状态）
+    transition: all 0.2s ease; // 过渡动画
+    position: relative; // 相对定位
+
+    &:hover {
+      // 悬停效果
+      transform: scale(1.1); // 放大
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); // 阴影
+    }
+
+    &.active {
+      // 激活状态（当前选中主题）
+      border-color: #fff; // 白色边框
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); // 蓝色外发光
+    }
+
+    &.default {
+      // 默认主题按钮颜色
+      background: linear-gradient(135deg, #fdcbf1, #e6dee9);
+    }
+
+    &.blue {
+      // 蓝色主题按钮颜色
+      background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+
+    &.green {
+      // 绿色主题按钮颜色
+      background: linear-gradient(135deg, #34d399, #059669);
+    }
+
+    &.purple {
+      // 紫色主题按钮颜色
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+    }
+
+    &.orange {
+      // 橙色主题按钮颜色
+      background: linear-gradient(135deg, #fb923c, #ea580c);
+    }
+
+    &.dark {
+      // 深色主题按钮颜色
+      background: linear-gradient(135deg, #374151, #1f2937);
+    }
+  }
+}
+
+// 滚动条主题化样式 - 全局滚动条样式，使用主题变量
+::-webkit-scrollbar {
+  // 滚动条整体
+  width: 10px; // 垂直滚动条宽度
+  height: 10px; // 水平滚动条高度
+}
+
+::-webkit-scrollbar-track {
+  // 滚动条轨道
+  background: var(--scrollbar-track-bg); // 使用主题轨道背景色
+  border-radius: 6px; // 圆角
+  margin: 2px; // 外边距
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.1); // 内阴影
+}
+
+::-webkit-scrollbar-thumb {
+  // 滚动条滑块
+  background: var(--scrollbar-thumb-bg); // 使用主题滑块背景色
+  border-radius: 6px; // 圆角
+  border: 1px solid var(--scrollbar-thumb-border, transparent); // 边框
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); // 阴影
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); // 过渡动画
+
+  &:hover {
+    // 悬停状态
+    background: var(--scrollbar-thumb-hover-bg); // 悬停背景色
+    transform: scaleY(1.1); // 垂直放大
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); // 增强阴影
+  }
+
+  &:active {
+    // 激活状态（拖拽时）
+    background: var(--scrollbar-thumb-active-bg); // 激活背景色
+    transform: scaleY(1.2); // 进一步放大
+  }
+}
+
+::-webkit-scrollbar-corner {
+  // 滚动条交汇处
+  background: var(--scrollbar-track-bg); // 使用轨道背景色
+  border-radius: 6px; // 圆角
+}
+
+// 针对编辑器区域的特殊滚动条样式 - 更大更美观的滚动条
+.vditor-container {
+  ::-webkit-scrollbar {
+    // 编辑器滚动条尺寸
+    width: 12px; // 更宽的垂直滚动条
+    height: 12px; // 更高的水平滚动条
+  }
+
+  ::-webkit-scrollbar-track {
+    // 编辑器滚动条轨道
+    background: var(--scrollbar-track-bg); // 主题轨道色
+    border-radius: 8px; // 更大的圆角
+    margin: 4px; // 更大的外边距
+  }
+
+  ::-webkit-scrollbar-thumb {
+    // 编辑器滚动条滑块
+    background: linear-gradient(
+      // 渐变背景
+      180deg,
+      var(--scrollbar-thumb-bg) 0%,
+      var(--scrollbar-thumb-hover-bg) 100%
+    );
+    border-radius: 8px; // 更大的圆角
+    border: 2px solid var(--scrollbar-track-bg); // 边框与轨道同色
+    background-clip: content-box; // 背景裁剪到内容区
+
+    &:hover {
+      // 悬停时的渐变效果
+      background: linear-gradient(
+        180deg,
+        var(--scrollbar-thumb-hover-bg) 0%,
+        var(--scrollbar-thumb-active-bg) 100%
+      );
+    }
+  }
+}
+
+// 侧边栏滚动条样式 - 更细更低调的滚动条
+.editor-sidebar {
+  ::-webkit-scrollbar {
+    // 侧边栏滚动条尺寸
+    width: 6px; // 细滚动条
+  }
+
+  ::-webkit-scrollbar-track {
+    // 侧边栏滚动条轨道
+    background: transparent; // 透明轨道
+    border-radius: 3px; // 小圆角
+  }
+
+  ::-webkit-scrollbar-thumb {
+    // 侧边栏滚动条滑块
+    background: var(--scrollbar-thumb-bg); // 主题滑块色
+    border-radius: 3px; // 小圆角
+    opacity: 0.6; // 半透明效果
+
+    &:hover {
+      // 悬停时显示完全不透明
+      opacity: 1; // 完全不透明
+      background: var(--scrollbar-thumb-hover-bg); // 悬停色
+    }
+  }
+}

@@ -3,6 +3,7 @@ import request from '@/utils/http/axios';
 enum API {
   // 标签基础操作 - 使用RESTful设计
   tags = '/blog/tag', // GET: 获取标签列表, POST: 创建标签
+  allTags = '/blog/tag/all',
   popularTags = '/blog/tag/popular', // GET: 获取热门标签
   tagStats = '/blog/tag/stats', // GET: 获取标签统计
   tagById = '/blog/tag/:id', // GET: 获取标签, PUT: 更新标签, DELETE: 删除标签
@@ -18,6 +19,15 @@ export const createTag = (data: Blog.CreateTagRequest) => {
   return request.post<Blog.Tag>({
     url: API.tags,
     data,
+  });
+};
+
+/**
+ * @description: 获取所有博客标签
+ */
+export const getAllTags = () => {
+  return request.get<Blog.Tag[]>({
+    url: API.allTags,
   });
 };
 

@@ -2,11 +2,19 @@
   <div>
     <n-flex class="content">
       <div
-        class="post-card w-[300px] rounded-2xl overflow-auto card-hover-float shadow-lg hover:shadow-strong"
+        class="post-card w-[300px] rounded-2xl overflow-auto card-hover-float shadow-lg hover:shadow-strong relative"
         v-for="post in blogPosts"
         :key="post.id"
         @click="handlePostDetail(post)"
       >
+        <!-- 置顶标签 -->
+        <div
+          v-if="post.isTop"
+          class="absolute top-10px left-10px z-10 bg-red-500 text-white px-8px py-4px rounded-md text-xs font-bold flex-x-center shadow-md"
+        >
+          <JayIcon icon="material-symbols:push-pin" class="mr-4px" :size="14" />
+          置顶
+        </div>
         <div class="post-cover overflow-hidden">
           <img
             class="hover:(scale-130) transition-all duration-300 cursor-pointer"
@@ -68,8 +76,9 @@ const blogPosts = ref<Blog.Post[]>([]);
 
 const init = async () => {
   const posts = await BlogApi.getPostList({
-    pageNum: 1,
-    pageSize: 10,
+    filters: {
+      status: 'PUBLISHED',
+    },
   });
   blogPosts.value = posts.data;
 };

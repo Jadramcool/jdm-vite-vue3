@@ -17,7 +17,6 @@ export function createPermissionGuard(router: any) {
 
       // 混合模式：根据token存在与否决定走哪种流程
       const shouldUseLoginFlow = needLoginTag || !!token;
-
       if (!shouldUseLoginFlow) {
         // 不登录流程
         if (localRouteMode === 'local') {

@@ -7,18 +7,10 @@ declare namespace Blog {
   // ==================== 枚举类型 ====================
 
   /** 博客文章状态枚举 */
-  enum PostStatus {
-    DRAFT = 'DRAFT', // 草稿
-    PUBLISHED = 'PUBLISHED', // 已发布
-    ARCHIVED = 'ARCHIVED', // 已归档
-  }
+  type PostStatus = 'PUBLISHED' | 'DRAFT' | 'ARCHIVED';
 
   /** 评论状态枚举 */
-  enum CommentStatus {
-    PENDING = 'PENDING', // 待审核
-    APPROVED = 'APPROVED', // 已通过
-    REJECTED = 'REJECTED', // 已拒绝
-  }
+  type CommentStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 
   // ==================== 基础类型 ====================
 
@@ -228,7 +220,7 @@ declare namespace Blog {
   /** 创建文章请求 */
   interface CreatePostRequest {
     title: string;
-    slug: string;
+    slug?: string;
     summary?: string;
     content: string;
     coverImage?: string;
@@ -238,10 +230,12 @@ declare namespace Blog {
     categoryId?: number;
     tagIds?: number[];
     publishedAt?: Date;
+    addTags?: string[];
   }
 
   /** 更新文章请求 */
   interface UpdatePostRequest {
+    id: number;
     title?: string;
     slug?: string;
     summary?: string;
@@ -253,6 +247,7 @@ declare namespace Blog {
     categoryId?: number;
     tagIds?: number[];
     publishedAt?: Date;
+    addTags?: string[];
   }
 
   /** 创建评论请求 */

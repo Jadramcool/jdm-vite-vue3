@@ -1,0 +1,608 @@
+// Markdown 主题样式文件
+// 适配不同主题的 Markdown 内容样式
+
+// 默认主题 Markdown 样式变量
+.theme-default {
+  // Markdown 内容样式变量
+  --md-text-color: #374151; // Markdown正文文本颜色，应用于段落p、列表li等基础文本
+  --md-heading-color: #1f2937; // 标题文本颜色，应用于h1-h6标题元素
+  --md-link-color: #3b82f6; // 链接默认颜色，应用于a标签
+  --md-link-hover-color: #1d4ed8; // 链接悬停颜色，应用于a:hover状态
+  --md-code-bg: rgba(248, 250, 252, 0.95); // 代码块背景色，应用于pre元素
+  --md-code-border: #e2e8f0; // 代码块边框颜色，应用于pre元素边框
+  --md-code-text: #374151; // 代码块文本颜色，应用于pre code内的文本
+  --md-inline-code-bg: rgba(251, 194, 235, 0.2); // 行内代码背景色，应用于code:not(pre code)元素
+  --md-inline-code-text: #be185d; // 行内代码文本颜色，应用于code:not(pre code)元素
+  --md-blockquote-bg: rgba(59, 130, 246, 0.05); // 引用块背景色，应用于blockquote元素
+  --md-blockquote-border: #3b82f6; // 引用块左边框颜色，应用于blockquote的border-left
+  --md-blockquote-text: #4b5563; // 引用块文本颜色，应用于blockquote内的文本
+  --md-table-header-bg: linear-gradient(
+    135deg,
+    #e2e8f0 0%,
+    #cbd5e1 100%
+  ); // 表格头部背景渐变，应用于th元素
+  --md-table-header-text: #374151; // 表格头部文本颜色，应用于th元素文本
+  --md-table-row-even-bg: #f9fafb; // 表格偶数行背景色，应用于tr:nth-child(even)
+  --md-table-row-hover-bg: rgba(102, 126, 234, 0.05); // 表格行悬停背景色，应用于tr:hover
+  --md-table-border: #e5e7eb; // 表格边框颜色，应用于td的border-bottom
+  --md-hr-bg: linear-gradient(
+    90deg,
+    transparent,
+    #667eea,
+    transparent
+  ); // 分割线背景渐变，应用于hr元素
+
+  // 语法高亮变量 - 应用于代码块内的语法高亮
+  --md-token-comment: #6b7280; // 注释颜色，应用于.token.comment等注释类token
+  --md-token-punctuation: #374151; // 标点符号颜色，应用于.token.punctuation
+  --md-token-property: #dc2626; // 属性名颜色，应用于.token.property、.token.tag等
+  --md-token-string: #059669; // 字符串颜色，应用于.token.string、.token.char等
+  --md-token-operator: #2563eb; // 操作符颜色，应用于.token.operator、.token.entity等
+  --md-token-keyword: #7c3aed; // 关键字颜色，应用于.token.keyword、.token.atrule等
+  --md-token-function: #d97706; // 函数名颜色，应用于.token.function、.token.class-name
+  --md-token-regex: #be185d; // 正则表达式颜色，应用于.token.regex、.token.important等
+}
+
+// 蓝色科技主题
+.theme-blue {
+  --md-text-color: #1e293b;
+  --md-heading-color: #0f172a;
+  --md-link-color: #3b82f6;
+  --md-link-hover-color: #1d4ed8;
+  --md-code-bg: rgba(241, 245, 249, 0.95);
+  --md-code-border: #cbd5e1;
+  --md-code-text: #1e293b;
+  --md-inline-code-bg: rgba(59, 130, 246, 0.15);
+  --md-inline-code-text: #1e40af;
+  --md-blockquote-bg: rgba(59, 130, 246, 0.08);
+  --md-blockquote-border: #3b82f6;
+  --md-blockquote-text: #475569;
+  --md-table-header-bg: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  --md-table-header-text: #1e293b;
+  --md-table-row-even-bg: #f8fafc;
+  --md-table-row-hover-bg: rgba(59, 130, 246, 0.08);
+  --md-table-border: #cbd5e1;
+  --md-hr-bg: linear-gradient(90deg, transparent, #3b82f6, transparent);
+
+  --md-token-comment: #64748b;
+  --md-token-punctuation: #1e293b;
+  --md-token-property: #dc2626;
+  --md-token-string: #059669;
+  --md-token-operator: #3b82f6;
+  --md-token-keyword: #1e40af;
+  --md-token-function: #d97706;
+  --md-token-regex: #be185d;
+}
+
+// 绿色自然主题
+.theme-green {
+  --md-text-color: #1f2937;
+  --md-heading-color: #111827;
+  --md-link-color: #10b981;
+  --md-link-hover-color: #059669;
+  --md-code-bg: rgba(240, 253, 244, 0.95);
+  --md-code-border: #bbf7d0;
+  --md-code-text: #1f2937;
+  --md-inline-code-bg: rgba(16, 185, 129, 0.15);
+  --md-inline-code-text: #047857;
+  --md-blockquote-bg: rgba(16, 185, 129, 0.08);
+  --md-blockquote-border: #10b981;
+  --md-blockquote-text: #374151;
+  --md-table-header-bg: linear-gradient(135deg, #d1fae5 0%, #bbf7d0 100%);
+  --md-table-header-text: #1f2937;
+  --md-table-row-even-bg: #f0fdf4;
+  --md-table-row-hover-bg: rgba(16, 185, 129, 0.08);
+  --md-table-border: #bbf7d0;
+  --md-hr-bg: linear-gradient(90deg, transparent, #10b981, transparent);
+
+  --md-token-comment: #6b7280;
+  --md-token-punctuation: #1f2937;
+  --md-token-property: #dc2626;
+  --md-token-string: #10b981;
+  --md-token-operator: #2563eb;
+  --md-token-keyword: #047857;
+  --md-token-function: #d97706;
+  --md-token-regex: #be185d;
+}
+
+// 紫色梦幻主题
+.theme-purple {
+  --md-text-color: #374151;
+  --md-heading-color: #1f2937;
+  --md-link-color: #8b5cf6;
+  --md-link-hover-color: #7c3aed;
+  --md-code-bg: rgba(250, 245, 255, 0.95);
+  --md-code-border: #d8b4fe;
+  --md-code-text: #374151;
+  --md-inline-code-bg: rgba(139, 92, 246, 0.15);
+  --md-inline-code-text: #6d28d9;
+  --md-blockquote-bg: rgba(139, 92, 246, 0.08);
+  --md-blockquote-border: #8b5cf6;
+  --md-blockquote-text: #4b5563;
+  --md-table-header-bg: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+  --md-table-header-text: #374151;
+  --md-table-row-even-bg: #faf5ff;
+  --md-table-row-hover-bg: rgba(139, 92, 246, 0.08);
+  --md-table-border: #d8b4fe;
+  --md-hr-bg: linear-gradient(90deg, transparent, #8b5cf6, transparent);
+
+  --md-token-comment: #6b7280;
+  --md-token-punctuation: #374151;
+  --md-token-property: #dc2626;
+  --md-token-string: #059669;
+  --md-token-operator: #2563eb;
+  --md-token-keyword: #8b5cf6;
+  --md-token-function: #d97706;
+  --md-token-regex: #be185d;
+}
+
+// 橙色温暖主题
+.theme-orange {
+  --md-text-color: #1f2937;
+  --md-heading-color: #111827;
+  --md-link-color: #f97316;
+  --md-link-hover-color: #ea580c;
+  --md-code-bg: rgba(255, 251, 235, 0.95);
+  --md-code-border: #fed7aa;
+  --md-code-text: #1f2937;
+  --md-inline-code-bg: rgba(249, 115, 22, 0.15);
+  --md-inline-code-text: #c2410c;
+  --md-blockquote-bg: rgba(249, 115, 22, 0.08);
+  --md-blockquote-border: #f97316;
+  --md-blockquote-text: #374151;
+  --md-table-header-bg: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+  --md-table-header-text: #1f2937;
+  --md-table-row-even-bg: #fffbeb;
+  --md-table-row-hover-bg: rgba(249, 115, 22, 0.08);
+  --md-table-border: #fed7aa;
+  --md-hr-bg: linear-gradient(90deg, transparent, #f97316, transparent);
+
+  --md-token-comment: #6b7280;
+  --md-token-punctuation: #1f2937;
+  --md-token-property: #dc2626;
+  --md-token-string: #059669;
+  --md-token-operator: #2563eb;
+  --md-token-keyword: #f97316;
+  --md-token-function: #d97706;
+  --md-token-regex: #be185d;
+}
+
+// 深色主题
+.theme-dark {
+  --md-text-color: #e5e7eb;
+  --md-heading-color: #f9fafb;
+  --md-link-color: #60a5fa;
+  --md-link-hover-color: #3b82f6;
+  --md-code-bg: rgba(55, 65, 81, 0.95);
+  --md-code-border: #6b7280;
+  --md-code-text: #e5e7eb;
+  --md-inline-code-bg: rgba(99, 102, 241, 0.2);
+  --md-inline-code-text: #a5b4fc;
+  --md-blockquote-bg: rgba(99, 102, 241, 0.1);
+  --md-blockquote-border: #6366f1;
+  --md-blockquote-text: #d1d5db;
+  --md-table-header-bg: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+  --md-table-header-text: #f9fafb;
+  --md-table-row-even-bg: rgba(55, 65, 81, 0.5);
+  --md-table-row-hover-bg: rgba(99, 102, 241, 0.1);
+  --md-table-border: #6b7280;
+  --md-hr-bg: linear-gradient(90deg, transparent, #6366f1, transparent);
+
+  --md-token-comment: #9ca3af;
+  --md-token-punctuation: #e5e7eb;
+  --md-token-property: #fca5a5;
+  --md-token-string: #6ee7b7;
+  --md-token-operator: #93c5fd;
+  --md-token-keyword: #c4b5fd;
+  --md-token-function: #fbbf24;
+  --md-token-regex: #f9a8d4;
+}
+
+// Markdown 内容样式定义
+// 使用主题变量的 Markdown 渲染样式
+
+// 代码块样式
+:deep(.vditor-content) {
+  color: var(--md-text-color);
+  line-height: 1.7;
+  font-size: 16px;
+
+  // 代码块样式
+  pre {
+    padding: 20px;
+    background: var(--md-code-bg);
+    border: 1px solid var(--md-code-border);
+    font-size: 0.9em;
+    line-height: 1.6;
+    color: var(--md-code-text);
+    overflow-x: auto;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+    }
+
+    // 代码内容区域
+    code {
+      background: none;
+      color: inherit;
+      padding: 0;
+      border: none;
+      border-radius: 0;
+      font-size: inherit;
+      font-weight: 400;
+      display: block;
+
+      &:hover {
+        background: none;
+        transform: none;
+        box-shadow: none;
+      }
+    }
+
+    // 语法高亮配色方案
+    .token.comment,
+    .token.prolog,
+    .token.doctype,
+    .token.cdata {
+      color: var(--md-token-comment);
+      font-style: italic;
+      opacity: 0.9;
+    }
+
+    .token.punctuation {
+      color: var(--md-token-punctuation);
+      font-weight: 400;
+    }
+
+    .token.property,
+    .token.tag,
+    .token.boolean,
+    .token.number,
+    .token.constant,
+    .token.symbol,
+    .token.deleted {
+      color: var(--md-token-property);
+      font-weight: 500;
+    }
+
+    .token.selector,
+    .token.attr-name,
+    .token.string,
+    .token.char,
+    .token.builtin,
+    .token.inserted {
+      color: var(--md-token-string);
+      font-weight: 500;
+    }
+
+    .token.operator,
+    .token.entity,
+    .token.url,
+    .language-css .token.string,
+    .style .token.string {
+      color: var(--md-token-operator);
+      font-weight: 500;
+    }
+
+    .token.atrule,
+    .token.attr-value,
+    .token.keyword {
+      color: var(--md-token-keyword);
+      font-weight: 600;
+    }
+
+    .token.function,
+    .token.class-name {
+      color: var(--md-token-function);
+      font-weight: 600;
+    }
+
+    .token.regex,
+    .token.important,
+    .token.variable {
+      color: var(--md-token-regex);
+      font-weight: 500;
+    }
+
+    // 特殊语法元素
+    .token.namespace {
+      opacity: 0.8;
+      color: var(--md-token-comment);
+    }
+
+    .token.important,
+    .token.bold {
+      font-weight: bold;
+    }
+
+    .token.italic {
+      font-style: italic;
+    }
+
+    // 行号样式（如果启用）
+    .line-numbers .line-numbers-rows {
+      border-right: 1px solid var(--md-code-border);
+
+      > span:before {
+        color: var(--md-token-comment);
+        font-size: 0.85em;
+      }
+    }
+  }
+
+  // 行内代码样式
+  code:not(pre code) {
+    background: var(--md-inline-code-bg);
+    color: var(--md-inline-code-text);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: 500;
+    border: 1px solid var(--md-code-border);
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--md-code-bg);
+      transform: scale(1.05);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  // 引用样式
+  blockquote {
+    margin: 1.5em 0;
+    padding: 16px 20px;
+    background: var(--md-blockquote-bg);
+    border-left: 4px solid var(--md-blockquote-border);
+    border-radius: 0 8px 8px 0;
+    position: relative;
+    font-style: italic;
+    color: var(--md-blockquote-text);
+
+    &::before {
+      content: '"';
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      font-size: 3em;
+      color: var(--md-blockquote-border);
+      opacity: 0.3;
+      font-family: serif;
+    }
+
+    p {
+      margin: 0;
+      font-size: 1.05em;
+    }
+  }
+
+  // 列表样式
+  ul {
+    padding-left: 1.5em;
+
+    li {
+      margin: 0.5em 0;
+      position: relative;
+      transition: all 0.3s ease;
+
+      &::marker {
+        content: '▸';
+        color: var(--md-link-color);
+        font-weight: bold;
+      }
+
+      &:hover {
+        transform: translateX(4px);
+        color: var(--md-heading-color);
+      }
+    }
+  }
+
+  ol {
+    padding-left: 1.5em;
+
+    li {
+      margin: 0.5em 0;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateX(4px);
+        color: var(--md-heading-color);
+      }
+    }
+  }
+
+  // 表格样式
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    th {
+      background: var(--md-table-header-bg);
+      color: var(--md-table-header-text);
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      border: none;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--md-table-border);
+      transition: background-color 0.3s ease;
+    }
+
+    tr {
+      &:nth-child(even) {
+        background: var(--md-table-row-even-bg);
+      }
+
+      &:hover {
+        background: var(--md-table-row-hover-bg);
+        transform: scale(1.01);
+      }
+    }
+  }
+
+  // 分割线样式
+  hr {
+    border: none;
+    height: 3px;
+    background: var(--md-hr-bg);
+    margin: 2em 0;
+    border-radius: 2px;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  // 图片样式
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  // 删除线样式
+  del {
+    text-decoration: line-through;
+    color: var(--md-token-comment);
+    opacity: 0.7;
+  }
+
+  // 强调文本样式
+  strong {
+    font-weight: 700;
+    color: var(--md-heading-color);
+  }
+
+  em {
+    font-style: italic;
+    color: var(--md-text-color);
+  }
+
+  // 标题样式
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 1.5em 0 0.8em 0;
+    color: var(--md-heading-color);
+    position: relative;
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: var(--md-link-color);
+      transform: translateX(4px);
+    }
+  }
+
+  h1 {
+    font-size: 2.2em;
+    border-bottom: 3px solid var(--md-table-border);
+    padding-bottom: 0.5em;
+  }
+
+  h2 {
+    font-size: 1.8em;
+    border-bottom: 2px solid var(--md-table-border);
+    padding-bottom: 0.3em;
+  }
+
+  h3 {
+    font-size: 1.5em;
+  }
+
+  h4 {
+    font-size: 1.3em;
+  }
+
+  h5,
+  h6 {
+    font-size: 1.1em;
+    font-weight: 600;
+  }
+
+  // 段落样式
+  p {
+    margin: 1em 0;
+    line-height: 1.7;
+    color: var(--md-text-color);
+  }
+
+  // 链接样式
+  a {
+    color: var(--md-link-color);
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    &:hover {
+      text-decoration: underline;
+      color: var(--md-link-hover-color);
+    }
+  }
+}
+
+// 响应式适配
+@media (max-width: 768px) {
+  :deep(.vditor-content) {
+    pre {
+      padding: 12px;
+      font-size: 0.85em;
+      margin: 1em 0;
+    }
+
+    table {
+      font-size: 0.9em;
+
+      th,
+      td {
+        padding: 8px 12px;
+      }
+    }
+
+    blockquote {
+      padding: 12px 16px;
+      margin: 1em 0;
+
+      &::before {
+        font-size: 2em;
+        top: -5px;
+      }
+    }
+
+    h1 {
+      font-size: 1.8em;
+    }
+
+    h2 {
+      font-size: 1.5em;
+    }
+
+    h3 {
+      font-size: 1.3em;
+    }
+  }
+}
