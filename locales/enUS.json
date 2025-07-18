@@ -222,7 +222,9 @@
           "status": "Status",
           "tag": "Tags",
           "title": "Post Title",
-          "unpublish": "Unpublish"
+          "top": "Top",
+          "unpublish": "Unpublish",
+          "untop": "Cancel Top"
         },
         "statusMap": {
           "archived": "Archived",

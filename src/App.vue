@@ -61,6 +61,8 @@ const onVNodeMounted = (vnode: { type: any }) => {
 onMounted(() => {
   // 初始化主题
   appStore.setPrimaryColor();
+  // 初始化字体
+  appStore.setFont(appStore.currentFont);
 });
 // 获取layout
 const getLayout = (name: string): void => {

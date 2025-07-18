@@ -3,13 +3,21 @@
     <FullScreen v-if="props.showFullScreen"></FullScreen>
     <DarkModeSwitch v-if="props.showDarkMode"></DarkModeSwitch>
     <LanguageSwitch v-if="props.showLanguage"></LanguageSwitch>
+    <FontSelector v-if="props.showFontSelector"></FontSelector>
     <Setting v-if="props.showSetting"></Setting>
     <UserCenter v-if="props.showUserCenter"></UserCenter>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { DarkModeSwitch, FullScreen, LanguageSwitch, Setting, UserCenter } from './components';
+import {
+  DarkModeSwitch,
+  FontSelector,
+  FullScreen,
+  LanguageSwitch,
+  Setting,
+  UserCenter,
+} from './components';
 
 const props = defineProps({
   showFullScreen: {
@@ -21,6 +29,10 @@ const props = defineProps({
     default: true,
   },
   showLanguage: {
+    type: Boolean,
+    default: true,
+  },
+  showFontSelector: {
     type: Boolean,
     default: true,
   },

@@ -11,7 +11,7 @@
       :filters="queryParams"
       :request="loadNoticeList"
       :rowKey="(row: NaiveUI.RowData) => row.id"
-      scroll-x="1200"
+      :scroll-x="'max-content'"
       @add="handleAdd"
     />
   </div>
@@ -53,6 +53,21 @@ const schemaMethods = {
       const targetStatus = row.status === 'PUBLISHED' ? 'DRAFT' : 'PUBLISHED';
       row.status = targetStatus as Blog.PostStatus;
       const resquestMessage = row.status === 'PUBLISHED' ? '发布成功' : '取消发布成功';
+      window.$message.success(resquestMessage);
+    } catch (error: any) {
+      window.$message.error(error.message);
+    } finally {
+      loadingStates.value[row.id] = false;
+    }
+  },
+
+  handleToggleTop: async (row: Blog.Post) => {
+    try {
+      loadingStates.value[row.id] = true;
+      await BlogApi.togglePostTop(row.id);
+      const resquestMessage = row.isTop ? '取消置顶成功' : '置顶成功';
+      row.isTop = !row.isTop;
+      tableRef.value.reload();
       window.$message.success(resquestMessage);
     } catch (error: any) {
       window.$message.error(error.message);

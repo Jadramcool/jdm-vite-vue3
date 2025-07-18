@@ -2,7 +2,9 @@ import { defineStore } from 'pinia';
 // import { useDark } from '@vueuse/core';
 import {
   darkThemeOverrides,
+  defaultFont,
   defaultLayout,
+  fontOptions,
   lightThemeOverrides,
   naiveThemeOverrides,
 } from '@/settings';
@@ -33,6 +35,7 @@ export const useAppStore = defineStore('app', {
     // naiveThemeOverrides, // naive-ui 主题配置
     lang: lStorage.getItem('lang') || 'zhCN', // 语言
     primaryColor: naiveThemeOverrides.common.primaryColor, // 主题色
+    currentFont: lStorage.getItem('currentFont') || defaultFont, // 当前字体
     weakColor: false, // 弱色
     grayMode: false, // 黑白模式
     transitionAnimation: 'fade-slide' as App.TransitionAnimation,
@@ -103,6 +106,30 @@ export const useAppStore = defineStore('app', {
         }
       });
     },
+
+    /**
+     * 设置字体
+     * @param fontKey - 字体键值
+     */
+    setFont(fontKey: string) {
+      if (fontOptions[fontKey]) {
+        this.currentFont = fontKey;
+        const fontValue = fontOptions[fontKey].value;
+
+        // 更新主题中的字体
+        _.set(this.theme, 'common.fontFamily', fontValue);
+
+        // 更新全局CSS变量
+        useCssVar('--font-family', document.documentElement).value = fontValue;
+
+        // 保存到本地存储
+        lStorage.setItem('currentFont', fontKey);
+
+        // 重新设置CSS变量
+        this.setupCssVar();
+      }
+    },
+
     // 设置主题色
     setPrimaryColor(color: string = '') {
       if (this.colorMode === 'dark') {

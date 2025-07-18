@@ -30,7 +30,6 @@
         </div>
       </div>
     </div>
-    <n-button type="primary" @click="post && handleEdit(post)">编辑文章</n-button>
     <div class="content flex-y-center">
       <div ref="markdownRef" />
     </div>
@@ -43,7 +42,7 @@ import homeBgUrl from '@/assets/images/blog/home_bg.png';
 import dayjs from 'dayjs';
 import Vditor from 'vditor';
 import 'vditor/dist/index.css';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 defineOptions({ name: 'PostDetail' });
 
@@ -54,12 +53,11 @@ const backgroundStyle = computed(() => {
   style.backgroundImage = `url(${homeBgUrl})`;
 
   // 优先使用背景图片
-  //   if (post.value?.coverImage) {
-  //     style.backgroundImage = `url('${post.value.coverImage}')`;
-  //   } else {
-  //     style.backgroundImage = `url(${homeBgUrl})`;
-  //   }
-  style.backgroundImage = `url(${homeBgUrl})`;
+  if (post.value?.coverImage) {
+    style.backgroundImage = `url('${post.value.coverImage}')`;
+  } else {
+    style.backgroundImage = `url(${homeBgUrl})`;
+  }
 
   style.backgroundSize = 'cover';
   style.backgroundPosition = 'center';
@@ -69,7 +67,6 @@ const backgroundStyle = computed(() => {
 });
 
 const route = useRoute();
-const router = useRouter();
 const postId = Number(route.params.id);
 
 const post = ref<Blog.Post>();
@@ -106,19 +103,10 @@ const initVditor = () => {
     },
   });
 };
-
-const handleEdit = (post: Blog.Post) => {
-  router.push({
-    path: '/blog/post/edit',
-    query: {
-      id: post.id,
-    },
-  });
-};
 </script>
 
 <style lang="scss" scoped>
 :deep(.vditor-reset) {
-  font-family: 'HarmonySans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-family: var(--font-family, 'Smiley Sans'), 'PingFang SC', 'Microsoft YaHei', sans-serif;
 }
 </style>

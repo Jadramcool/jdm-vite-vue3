@@ -222,7 +222,9 @@
           "status": "状态",
           "tag": "文章标签",
           "title": "文章标题",
-          "unpublish": "取消发布"
+          "top": "置顶",
+          "unpublish": "取消发布",
+          "untop": "取消置顶"
         },
         "statusMap": {
           "archived": "已归档",

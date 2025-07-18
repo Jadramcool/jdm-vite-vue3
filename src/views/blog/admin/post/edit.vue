@@ -492,6 +492,7 @@ const initVditor = () => {
     height: '100%',
     width: '100%',
     mode: 'ir',
+    cdn: 'https://ld246.com/js/lib/vditor',
     value: post.value?.content || '',
     toolbar: [
       'emoji',
@@ -917,6 +918,11 @@ const handleSave = async () => {
 
   if (!formData.value.title.trim()) {
     message.error('文章标题不能为空');
+    return;
+  }
+
+  if (!formData.value.categoryId) {
+    message.error('请选择分类！');
     return;
   }
 

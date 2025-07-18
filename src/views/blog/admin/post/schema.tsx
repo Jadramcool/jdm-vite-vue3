@@ -5,7 +5,7 @@ import { $t } from '@/locales/i18n';
 import { columnsUtil, editFormSchemaUtil, formSchemaUtil } from '@/utils';
 import dayjs from 'dayjs';
 import { toLower } from 'lodash';
-import { NButton, NFlex, NImage, NPopconfirm, NSpace, NTag } from 'naive-ui';
+import { NButton, NDropdown, NFlex, NImage, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import { computed, ref, Ref } from 'vue';
 
 const locales = (field: string) => $t(`modules.blog.post.${field}`);
@@ -258,38 +258,83 @@ export const useBlogSchema = (
         table: {
           width: 200,
           fixed: 'right',
-          render: (row: Blog.Post) => (
-            <NSpace justify="center">
-              <NButton
-                type="primary"
-                loading={loadingStates.value[row.id] || false}
-                ghost
-                size="small"
-                onClick={() => methods.handlePublish(row)}
-              >
-                {row.status === 'PUBLISHED'
-                  ? $t('modules.blog.post.schema.unpublish')
-                  : row.status === 'DRAFT'
-                    ? $t('modules.blog.post.schema.publish')
-                    : ''}
-              </NButton>
-              <NButton type="info" ghost size="small" onClick={() => methods.handleEdit(row)}>
-                {$t('common.edit')}
-              </NButton>
-              <NPopconfirm
-                onPositiveClick={() => methods.handleDelete(row)}
-                v-slots={{
-                  trigger: () => (
-                    <NButton type="error" ghost size="small">
-                      {$t('common.delete')}
-                    </NButton>
-                  ),
-                }}
-              >
-                {$t('common.phrase.confirmDelete')}?
-              </NPopconfirm>
-            </NSpace>
-          ),
+          render: (row: Blog.Post) => {
+            // 更多操作菜单选项
+            const moreOptions = [
+              {
+                label:
+                  row.status === 'PUBLISHED'
+                    ? $t('modules.blog.post.schema.unpublish')
+                    : $t('modules.blog.post.schema.publish'),
+                key: 'publish',
+                icon: () => (
+                  <JayIcon
+                    icon={
+                      row.status === 'PUBLISHED'
+                        ? 'material-symbols:unpublished-outline'
+                        : 'material-symbols:publish'
+                    }
+                  />
+                ),
+                disabled: loadingStates.value[row.id] || false,
+              },
+              {
+                label: row.isTop
+                  ? $t('modules.blog.post.schema.untop')
+                  : $t('modules.blog.post.schema.top'),
+                key: 'top',
+                icon: () => (
+                  <JayIcon
+                    icon={
+                      row.isTop ? 'material-symbols:push-pin' : 'material-symbols:push-pin-outline'
+                    }
+                  />
+                ),
+                disabled: loadingStates.value[row.id] || false,
+              },
+            ];
+
+            const handleMoreSelect = (key: string) => {
+              switch (key) {
+                case 'publish':
+                  methods.handlePublish(row);
+                  break;
+                case 'top':
+                  methods.handleToggleTop(row);
+                  break;
+                default:
+                  console.warn('未知的操作类型:', key);
+                  break;
+              }
+            };
+
+            return (
+              <NSpace size={8}>
+                <NButton type="info" ghost size="small" onClick={() => methods.handleEdit(row)}>
+                  {$t('common.edit')}
+                </NButton>
+
+                <NPopconfirm
+                  onPositiveClick={() => methods.handleDelete(row)}
+                  v-slots={{
+                    trigger: () => (
+                      <NButton type="error" ghost size="small">
+                        {$t('common.delete')}
+                      </NButton>
+                    ),
+                  }}
+                >
+                  {$t('common.phrase.confirmDelete')}?
+                </NPopconfirm>
+
+                <NDropdown options={moreOptions} onSelect={handleMoreSelect} trigger="click">
+                  <NButton type="default" ghost size="small">
+                    更多
+                  </NButton>
+                </NDropdown>
+              </NSpace>
+            );
+          },
         },
       },
     ],
