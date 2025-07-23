@@ -12,7 +12,7 @@ import { lStorage } from '@/utils';
 import { isString } from 'lodash';
 import { getToken } from '../token/index';
 import { CodeConfig as HttpCodeConfig } from './codeConfig.ts';
-import { ResponseModel, UploadFileItemModel, UploadRequestConfig } from './types/index.ts';
+import { ResponseModel } from './types/index.ts';
 
 class HttpRequest {
   service: AxiosInstance;
@@ -141,30 +141,6 @@ class HttpRequest {
   // 发起 delete 请求
   public async delete<T = any>({ ...config }: AxiosRequestConfig): Promise<T> {
     return this.executeRequest({ method: 'DELETE', ...config });
-  }
-
-  // 上传文件
-  public async upload<T = string>(
-    fileItem: UploadFileItemModel,
-    config?: UploadRequestConfig,
-  ): Promise<T | null> {
-    if (!import.meta.env.VITE_UPLOAD_URL) return null;
-
-    const fd = new FormData();
-    fd.append(fileItem.name, fileItem.value);
-
-    const configCopy: UploadRequestConfig = {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      ...config,
-    };
-
-    return this.executeRequest({
-      url: import.meta.env.VITE_UPLOAD_URL,
-      data: fd,
-      ...configCopy,
-    });
   }
 }
 

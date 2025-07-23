@@ -1,249 +1,429 @@
 <template>
-  <div class="editor-layout h-100%" :class="[`theme-${currentTheme}`, 'theme-transition']">
-    <!-- 主编辑区域 -->
-    <div class="editor-main">
-      <div ref="markdownRef" class="vditor-container" />
-    </div>
-
-    <!-- 独立侧边栏 -->
-    <div class="editor-sidebar">
-      <!-- Tab 切换 -->
-      <div class="sidebar-tabs">
-        <button
-          class="tab-button"
-          :class="{ active: activeTab === 'outline' }"
-          @click="activeTab = 'outline'"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-10v2h2V7h-2zm0 6h2v-2h-2v2z"
-            />
-          </svg>
-          大纲
-        </button>
-        <button
-          class="tab-button"
-          :class="{ active: activeTab === 'settings' }"
-          @click="activeTab = 'settings'"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.82,11.69,4.82,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"
-            />
-          </svg>
-          设置
-        </button>
-      </div>
-
-      <!-- Tab 内容 -->
-      <div class="sidebar-content">
-        <!-- 大纲面板 -->
-        <Transition name="tab-slide" mode="out-in">
-          <div v-if="activeTab === 'outline'" key="outline" class="outline-panel">
-            <div v-if="outlineItems.length === 0" class="outline-empty">
-              <svg
-                width="48"
-                height="48"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                class="empty-icon"
-              >
-                <path
-                  d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-10v2h2V7h-2zm0 6h2v-2h-2v2z"
-                />
-              </svg>
-              <p class="empty-text">暂无大纲内容</p>
-              <p class="empty-hint">在编辑器中添加标题后，大纲将自动生成</p>
-            </div>
-            <div v-else class="outline-list">
-              <TransitionGroup name="outline-item" tag="div">
-                <div
-                  v-for="(item, index) in outlineItems"
-                  :key="`${item.id}-${index}`"
-                  class="outline-item"
-                  :class="`level-${item.level}`"
-                  :style="{
-                    paddingLeft: `${(item.level - 1) * 20 + 12}px`,
-                    transitionDelay: `${index * 50}ms`,
-                  }"
-                  @click="scrollToHeading(item.id)"
-                >
-                  <div class="outline-marker" :class="`marker-level-${item.level}`"></div>
-                  <span class="outline-text">{{ item.text }}</span>
-                </div>
-              </TransitionGroup>
-            </div>
-          </div>
-
-          <!-- 设置面板 -->
-          <div v-else-if="activeTab === 'settings'" key="settings" class="settings-panel">
-            <div class="setting-group">
-              <h4 class="setting-title">文章设置</h4>
-              <div class="setting-item">
-                <label class="setting-label">文章标题</label>
-                <n-input v-model:value="formData.title" placeholder="请输入文章标题" size="small" />
+  <div>
+    <div class="editor-layout h-100%" :class="[`theme-${currentTheme}`, 'theme-transition']">
+      <!-- 主编辑区域 -->
+      <div class="editor-main">
+        <!-- 编辑器加载动画 -->
+        <Transition name="loading-fade">
+          <div v-if="isEditorLoading && isEdit" class="editor-loading-overlay">
+            <div class="loading-container">
+              <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
               </div>
-              <div class="setting-item">
-                <label class="setting-label">文章分类</label>
-                <n-select
-                  v-model:value="formData.categoryId"
-                  :options="categoryOptions"
-                  placeholder="请选择分类"
-                  size="small"
-                />
+              <div class="loading-text">
+                <h3>正在加载编辑器...</h3>
+                <p>请稍候，正在初始化Markdown编辑器</p>
               </div>
-              <div class="setting-item">
-                <label class="setting-label">文章摘要</label>
-                <n-input
-                  v-model:value="formData.summary"
-                  type="textarea"
-                  :rows="2"
-                  placeholder="请输入文章摘要"
-                  size="small"
-                >
-                  <template #password-visible-icon></template>
-                </n-input>
-              </div>
-              <div class="setting-item">
-                <label class="setting-label">文章标签</label>
-                <div class="tag-selector">
-                  <!-- 已选择的标签 -->
-                  <div v-if="formData.tags.length > 0" class="selected-tags">
-                    <div
-                      v-for="(tag, index) in formData.tags"
-                      :key="`selected-${tag.id}-${index}`"
-                      class="selected-tag"
-                    >
-                      <span class="tag-text">{{ tag.name }}</span>
-                      <button
-                        class="tag-remove"
-                        @click="removeTag(index)"
-                        :title="`移除标签: ${tag.name}`"
-                      >
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                          <path
-                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- 可选择的标签云 -->
-                  <div v-if="availableTags.length > 0" class="available-tags">
-                    <div class="tags-header">
-                      <span class="tags-title">可选标签</span>
-                      <span class="tags-count">({{ availableTags.length }})</span>
-                    </div>
-                    <div class="tags-cloud">
-                      <button
-                        v-for="tag in availableTags"
-                        :key="`available-${tag.id}`"
-                        class="tag-option"
-                        :class="{ selected: formData.tags.some((t) => t.id === tag.id) }"
-                        :style="{ '--tag-color': tag.color || '#666' }"
-                        @click="toggleTag(tag)"
-                        :title="`${tag.description || tag.name} (使用次数: ${tag.useCount})`"
-                      >
-                        <span class="tag-name">{{ tag.name }}</span>
-                        <span class="tag-use-count">{{ tag.useCount }}</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- 自定义标签输入 -->
-                  <div class="custom-tag-input">
-                    <div class="input-wrapper">
-                      <n-input
-                        v-model:value="newTagInput"
-                        placeholder="输入自定义标签，按回车添加"
-                        size="small"
-                        @keyup.enter="addCustomTag"
-                        @blur="addCustomTag"
-                        clearable
-                      >
-                        <template #prefix>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-                          </svg>
-                        </template>
-                      </n-input>
-                      <button
-                        class="add-tag-btn"
-                        @click="addCustomTag"
-                        :disabled="!newTagInput.trim()"
-                        title="添加自定义标签"
-                      >
-                        添加
-                      </button>
-                    </div>
-                    <div class="input-hint">支持中文、英文、数字，建议2-10个字符</div>
-                  </div>
-                </div>
-              </div>
-              <div class="setting-item">
-                <label class="setting-label">发布状态</label>
-                <n-radio-group v-model:value="formData.status" size="small">
-                  <n-radio value="PUBLISHED">发布</n-radio>
-                  <n-radio value="DRAFT">草稿</n-radio>
-                </n-radio-group>
-              </div>
-            </div>
-
-            <div class="setting-group">
-              <h4 class="setting-title">主题设置</h4>
-              <div class="theme-selector">
-                <div
-                  v-for="theme in themes"
-                  :key="theme.key"
-                  class="theme-option"
-                  :class="[theme.key, { active: currentTheme === theme.key }]"
-                  :title="theme.name"
-                  @click="switchTheme(theme.key)"
-                ></div>
-              </div>
-            </div>
-
-            <div class="setting-group">
-              <h4 class="setting-title">编辑器设置</h4>
-              <div class="setting-item switch-item">
-                <label class="setting-label">显示字数</label>
-                <n-switch v-model:value="editorSettings.showLineNumbers" size="small" />
-              </div>
-              <div class="setting-item switch-item">
-                <label class="setting-label">自动保存</label>
-                <n-switch v-model:value="editorSettings.autoSave" size="small" />
-              </div>
-            </div>
-
-            <!-- 固定在底部的操作按钮 -->
-            <div class="fixed-actions">
-              <button class="action-btn primary" @click="handleSave">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path
-                    d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"
-                  />
-                </svg>
-                保存文章
-              </button>
-              <button class="action-btn secondary" @click="handlePreview">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path
-                    d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
-                  />
-                </svg>
-                预览文章
-              </button>
             </div>
           </div>
         </Transition>
+        <div ref="markdownRef" class="vditor-container" />
+      </div>
+
+      <!-- 独立侧边栏 -->
+      <div class="editor-sidebar">
+        <!-- Tab 切换 -->
+        <div class="sidebar-tabs">
+          <button
+            class="tab-button"
+            :class="{ active: activeTab === 'outline' }"
+            @click="activeTab = 'outline'"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-10v2h2V7h-2zm0 6h2v-2h-2v2z"
+              />
+            </svg>
+            大纲
+          </button>
+          <button
+            class="tab-button"
+            :class="{ active: activeTab === 'settings' }"
+            @click="activeTab = 'settings'"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.82,11.69,4.82,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"
+              />
+            </svg>
+            设置
+          </button>
+        </div>
+
+        <!-- Tab 内容 -->
+        <div class="sidebar-content">
+          <!-- 大纲面板 -->
+          <Transition name="tab-slide" mode="out-in">
+            <div :key="activeTab" class="tab-content">
+              <!-- 大纲面板 -->
+              <div v-if="activeTab === 'outline'" class="outline-panel">
+                <!-- 统一的内容区域 -->
+                <Transition name="loading-fade" mode="out-in">
+                  <!-- 大纲加载状态 -->
+                  <div
+                    v-if="isOutlineLoading && isEdit"
+                    key="loading"
+                    class="outline-loading-overlay"
+                  >
+                    <div class="loading-container small">
+                      <div class="loading-spinner small">
+                        <div class="spinner-ring"></div>
+                        <div class="spinner-ring"></div>
+                        <div class="spinner-ring"></div>
+                      </div>
+                      <div class="loading-text">
+                        <h4>正在生成大纲...</h4>
+                        <p>正在解析文档结构</p>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 大纲空状态 -->
+                  <div
+                    v-else-if="!isOutlineLoading && outlineItems.length === 0"
+                    key="empty"
+                    class="outline-content"
+                  >
+                    <div class="outline-empty">
+                      <svg
+                        width="48"
+                        height="48"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="empty-icon"
+                      >
+                        <path
+                          d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-10v2h2V7h-2zm0 6h2v-2h-2v2z"
+                        />
+                      </svg>
+                      <p class="empty-text">暂无大纲内容</p>
+                      <p class="empty-hint">在编辑器中添加标题后，大纲将自动生成</p>
+                    </div>
+                  </div>
+                  <!-- 大纲列表状态 -->
+                  <div v-else-if="!isOutlineLoading" key="list" class="outline-content">
+                    <div class="outline-list">
+                      <TransitionGroup name="outline-item" tag="div">
+                        <div
+                          v-for="(item, index) in outlineItems"
+                          :key="`${item.id}-${index}`"
+                          class="outline-item"
+                          :class="`level-${item.level}`"
+                          :style="{
+                            paddingLeft: `${(item.level - 1) * 20 + 12}px`,
+                            transitionDelay: `${index * 50}ms`,
+                          }"
+                          @click="scrollToHeading(item.id)"
+                        >
+                          <div class="outline-marker" :class="`marker-level-${item.level}`"></div>
+                          <span class="outline-text">{{ item.text }}</span>
+                        </div>
+                      </TransitionGroup>
+                    </div>
+                  </div>
+                </Transition>
+              </div>
+
+              <!-- 设置面板 -->
+              <div v-else-if="activeTab === 'settings'" class="settings-panel">
+                <div class="setting-group">
+                  <h4 class="setting-title">文章设置</h4>
+                  <div class="setting-item">
+                    <label class="setting-label">文章标题</label>
+                    <n-input
+                      v-model:value="formData.title"
+                      placeholder="请输入文章标题"
+                      size="small"
+                    />
+                  </div>
+                  <div class="setting-item">
+                    <label class="setting-label">文章分类</label>
+                    <n-select
+                      v-model:value="formData.categoryId"
+                      :options="categoryOptions"
+                      placeholder="请选择分类"
+                      size="small"
+                    />
+                  </div>
+                  <div class="setting-item">
+                    <label class="setting-label">文章摘要</label>
+                    <n-input
+                      v-model:value="formData.summary"
+                      type="textarea"
+                      :rows="2"
+                      placeholder="请输入文章摘要"
+                      size="small"
+                    >
+                      <template #password-visible-icon></template>
+                    </n-input>
+                  </div>
+                  <div class="setting-item">
+                    <label class="setting-label">文章标签</label>
+                    <div class="tag-selector">
+                      <!-- 已选择的标签 -->
+                      <div v-if="formData.tags.length > 0" class="selected-tags">
+                        <div
+                          v-for="(tag, index) in formData.tags"
+                          :key="`selected-${tag.id}-${index}`"
+                          class="selected-tag"
+                        >
+                          <span class="tag-text">{{ tag.name }}</span>
+                          <button
+                            class="tag-remove"
+                            @click="removeTag(index)"
+                            :title="`移除标签: ${tag.name}`"
+                          >
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                              <path
+                                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- 可选择的标签云 -->
+                      <div v-if="availableTags.length > 0" class="available-tags">
+                        <div class="tags-header">
+                          <span class="tags-title">可选标签</span>
+                          <span class="tags-count">({{ availableTags.length }})</span>
+                        </div>
+                        <div class="tags-cloud">
+                          <button
+                            v-for="tag in availableTags"
+                            :key="`available-${tag.id}`"
+                            class="tag-option"
+                            :class="{ selected: formData.tags.some((t) => t.id === tag.id) }"
+                            :style="{ '--tag-color': tag.color || '#666' }"
+                            @click="toggleTag(tag)"
+                            :title="`${tag.description || tag.name} (使用次数: ${tag.useCount})`"
+                          >
+                            <span class="tag-name">{{ tag.name }}</span>
+                            <span class="tag-use-count">{{ tag.useCount }}</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- 自定义标签输入 -->
+                      <div class="custom-tag-input">
+                        <div class="input-wrapper">
+                          <n-input
+                            v-model:value="newTagInput"
+                            placeholder="输入自定义标签，按回车添加"
+                            size="small"
+                            @keyup.enter="addCustomTag"
+                            @blur="addCustomTag"
+                            clearable
+                          >
+                            <template #prefix>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                              </svg>
+                            </template>
+                          </n-input>
+                          <button
+                            class="add-tag-btn"
+                            @click="addCustomTag"
+                            :disabled="!newTagInput.trim()"
+                            title="添加自定义标签"
+                          >
+                            添加
+                          </button>
+                        </div>
+                        <div class="input-hint">支持中文、英文、数字，建议2-10个字符</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="setting-item">
+                    <label class="setting-label">封面图片</label>
+                    <div class="cover-image-upload">
+                      <!-- 封面图片预览 -->
+                      <div v-if="formData.coverImage" class="cover-preview">
+                        <img
+                          :src="formData.coverImage"
+                          alt="封面图片"
+                          class="cover-image"
+                          @click="showCoverPreview"
+                          title="点击预览大图"
+                        />
+                        <div class="cover-actions">
+                          <button
+                            class="cover-action-btn"
+                            @click="showCoverPreview"
+                            title="预览大图"
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                              <path
+                                d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                              />
+                            </svg>
+                          </button>
+                          <button
+                            class="cover-action-btn"
+                            @click="handleCoverImageUpload"
+                            title="更换封面"
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                              <path
+                                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                              />
+                            </svg>
+                          </button>
+                          <button
+                            class="cover-action-btn delete"
+                            @click="removeCoverImage"
+                            title="删除封面"
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                              <path
+                                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                      <!-- 上传按钮 -->
+                      <div v-else class="cover-upload-area" @click="handleCoverImageUpload">
+                        <div class="upload-placeholder">
+                          <svg
+                            width="32"
+                            height="32"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            class="upload-icon"
+                          >
+                            <path
+                              d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
+                            />
+                          </svg>
+                          <p class="upload-text">点击上传封面图片</p>
+                          <p class="upload-hint">支持 JPG、PNG、WebP 格式，建议尺寸 16:9</p>
+                        </div>
+                      </div>
+                      <!-- 隐藏的文件输入 -->
+                      <input
+                        ref="coverImageInput"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        style="display: none"
+                        @change="handleCoverImageChange"
+                      />
+                      <!-- 上传进度 -->
+                      <div v-if="coverImageUploading" class="upload-progress">
+                        <div class="progress-bar">
+                          <div
+                            class="progress-fill"
+                            :style="{ width: coverUploadProgress + '%' }"
+                          ></div>
+                        </div>
+                        <p class="progress-text">上传中... {{ coverUploadProgress }}%</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="setting-item">
+                    <label class="setting-label">发布状态</label>
+                    <n-radio-group v-model:value="formData.status" size="small">
+                      <n-radio value="PUBLISHED">发布</n-radio>
+                      <n-radio value="DRAFT">草稿</n-radio>
+                    </n-radio-group>
+                  </div>
+                </div>
+
+                <div class="setting-group">
+                  <h4 class="setting-title">主题设置</h4>
+                  <div class="theme-selector">
+                    <div
+                      v-for="theme in themes"
+                      :key="theme.key"
+                      class="theme-option"
+                      :class="[theme.key, { active: currentTheme === theme.key }]"
+                      :title="theme.name"
+                      @click="switchTheme(theme.key)"
+                    ></div>
+                  </div>
+                </div>
+
+                <div class="setting-group">
+                  <h4 class="setting-title">编辑器设置</h4>
+                  <div class="setting-item switch-item">
+                    <label class="setting-label">显示字数</label>
+                    <n-switch v-model:value="editorSettings.showLineNumbers" size="small" />
+                  </div>
+                  <div class="setting-item switch-item">
+                    <label class="setting-label">自动保存</label>
+                    <n-switch v-model:value="editorSettings.autoSave" size="small" />
+                  </div>
+                </div>
+
+                <!-- 固定在底部的操作按钮 -->
+                <div class="fixed-actions">
+                  <button class="action-btn primary" @click="handleSave">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                      <path
+                        d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"
+                      />
+                    </svg>
+                    保存文章
+                  </button>
+                  <button class="action-btn secondary" @click="handlePreview">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                      <path
+                        d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                      />
+                    </svg>
+                    预览文章
+                  </button>
+                </div>
+              </div>
+            </div>
+          </Transition>
+        </div>
+      </div>
+    </div>
+
+    <!-- 封面图片预览模态框 -->
+    <div v-if="showPreviewModal" class="preview-modal" @click="hidePreviewModal">
+      <div class="preview-modal-content" @click.stop>
+        <div class="preview-modal-header">
+          <h3 class="preview-modal-title">封面图片预览</h3>
+          <button class="preview-modal-close" @click="hidePreviewModal">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="preview-modal-body">
+          <img :src="formData.coverImage" alt="封面图片预览" class="preview-image" />
+        </div>
+        <div class="preview-modal-footer">
+          <button class="preview-action-btn secondary" @click="handleCoverImageUploadFromPreview">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+              />
+            </svg>
+            更换封面
+          </button>
+          <button class="preview-action-btn danger" @click="removeCoverImage">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+            删除封面
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { BlogApi } from '@/api';
+import { BlogApi, UploadApi } from '@/api';
+import { getToken } from '@/utils/token';
 import { NInput, NRadio, NRadioGroup, NSwitch, useMessage } from 'naive-ui';
 import Vditor from 'vditor';
 import 'vditor/dist/index.css';
@@ -260,6 +440,10 @@ const isEdit = computed(() => {
 });
 const postId = isEdit.value ? Number(route.query.id) : 0;
 const post = ref<Blog.Post>();
+
+// 加载状态管理
+const isEditorLoading = ref(false); // 编辑器加载状态
+const isOutlineLoading = ref(false); // 大纲加载状态
 
 const vditor = ref();
 const markdownRef = ref<HTMLDivElement | null>(null);
@@ -292,6 +476,7 @@ const formData = ref({
   tags: [] as Blog.Tag[], // 修改为标签对象数组
   categoryId: null as number | null,
   status: 'DRAFT' as Blog.PostStatus, // PUBLISH: 发布, DRAFT: 草稿
+  coverImage: '', // 封面图片URL
 });
 
 // 分类选项
@@ -301,13 +486,35 @@ const categoryOptions: Ref<{ label: string; value: number }[]> = ref([]);
 const availableTags = ref<Blog.Tag[]>([]);
 const newTagInput = ref('');
 
+// 封面图片上传相关状态
+const coverImageInput = ref<HTMLInputElement>();
+const coverImageUploading = ref(false);
+const coverUploadProgress = ref(0);
+
+// 封面图片预览模态框状态
+const showPreviewModal = ref(false);
+
 onMounted(async () => {
   loadThemeFromStorage();
   await init();
   setTimeout(() => {
     initVditor();
   }, 1000);
+
+  // 添加键盘事件监听
+  document.addEventListener('keydown', handleKeyDown);
 });
+
+/**
+ * 处理键盘事件
+ * @param event 键盘事件
+ */
+const handleKeyDown = (event: KeyboardEvent) => {
+  // ESC键关闭预览模态框
+  if (event.key === 'Escape' && showPreviewModal.value) {
+    hidePreviewModal();
+  }
+};
 
 onUnmounted(() => {
   const editorInstance = vditor.value;
@@ -315,8 +522,11 @@ onUnmounted(() => {
   try {
     editorInstance?.destroy?.();
   } catch (error) {
-    console.log(error);
+    // 编辑器销毁失败，忽略错误
   }
+
+  // 移除键盘事件监听器
+  document.removeEventListener('keydown', handleKeyDown);
 });
 
 // 监听编辑器设置变化并实时应用
@@ -325,7 +535,7 @@ watch(
   (newSettings) => {
     if (!vditor.value) return;
 
-    console.log('编辑器设置已更改:', newSettings);
+    // 编辑器设置已更改
 
     // 更新字符计数显示
     const counterElement = vditor.value.vditor?.element?.querySelector('.vditor-counter');
@@ -361,29 +571,49 @@ watch(
   },
 );
 
+/**
+ * 初始化页面数据
+ */
 const init = async () => {
-  await getPostCategories();
-  await getAllTags();
-  if (isEdit.value) {
-    const res = await BlogApi.getPostById(postId);
-    post.value = res;
-    // 填充表单数据
-    if (res) {
-      formData.value = {
-        title: res.title || '',
-        summary: res.summary || '',
-        tags: res.tags || [], // 直接使用标签对象数组
-        categoryId: res.categoryId || null,
-        status: res.status || 'DRAFT',
-      };
-
-      // 编辑模式下，如果Markdown内容中有一级标题但表单标题为空，则同步
-      setTimeout(() => {
-        if (vditor.value && !formData.value.title) {
-          syncMarkdownTitleToForm();
-        }
-      }, 1500); // 等待编辑器完全初始化
+  try {
+    // 如果是编辑模式，显示编辑器加载动画
+    if (isEdit.value) {
+      isEditorLoading.value = true;
+      isOutlineLoading.value = true;
     }
+
+    await getPostCategories();
+    await getAllTags();
+
+    if (isEdit.value) {
+      const res = await BlogApi.getPostById(postId);
+      post.value = res;
+      // 填充表单数据
+      if (res) {
+        formData.value = {
+          title: res.title || '',
+          summary: res.summary || '',
+          tags: res.tags || [], // 直接使用标签对象数组
+          categoryId: res.categoryId || null,
+          status: res.status || 'DRAFT',
+          coverImage: res.coverImage || '', // 封面图片URL
+        };
+
+        // 编辑模式下，如果Markdown内容中有一级标题但表单标题为空，则同步
+        setTimeout(() => {
+          if (vditor.value && !formData.value.title) {
+            syncMarkdownTitleToForm();
+          }
+        }, 1500); // 等待编辑器完全初始化
+      }
+    }
+  } catch (error) {
+    // 初始化失败
+    message.error('加载博客数据失败，请重试');
+  } finally {
+    // 数据加载完成，但编辑器和大纲可能还在初始化
+    // 编辑器加载状态将在initVditor中管理
+    // 大纲加载状态将在updateOutlineData中管理
   }
 };
 
@@ -404,7 +634,7 @@ const getAllTags = async () => {
     const res = await BlogApi.getAllTags();
     availableTags.value = res || [];
   } catch (error) {
-    console.error('获取标签失败:', error);
+    // 获取标签失败
     message.error('获取标签失败');
   }
 };
@@ -485,6 +715,125 @@ const addCustomTag = () => {
 };
 
 /**
+ * 触发封面图片上传
+ */
+const handleCoverImageUpload = () => {
+  if (coverImageInput.value) {
+    coverImageInput.value.click();
+  }
+};
+
+/**
+ * 处理封面图片文件选择
+ * @param event 文件选择事件
+ */
+const handleCoverImageChange = async (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+
+  if (!file) return;
+
+  try {
+    // 验证文件类型
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      message.error('不支持的图片格式，请选择 JPG、PNG 或 WebP 格式的图片');
+      return;
+    }
+
+    // 验证文件大小（3MB限制）
+    const maxSize = 3 * 1024 * 1024;
+    if (file.size > maxSize) {
+      message.error('图片文件过大，请选择小于3MB的图片');
+      return;
+    }
+
+    // 开始上传
+    coverImageUploading.value = true;
+    coverUploadProgress.value = 0;
+
+    const result = await UploadApi.uploadFile(
+      {
+        file,
+        fileType: 'image',
+        target: 'oss',
+        folder: 'blog/covers',
+        maxSize,
+        allowedMimeTypes: allowedTypes,
+        allowedExtensions: ['.jpg', '.jpeg', '.png', '.webp'],
+      },
+      (progress) => {
+        coverUploadProgress.value = progress;
+      },
+    );
+    // 获取上传结果URL（适配新的返回数据结构）
+    let imageUrl = '';
+    if (result.target === 'oss') {
+      // 移除fileUrl中可能存在的多余空格和引号
+      imageUrl = result?.oss?.fileUrl.trim().replace(/^["'`]|["'`]$/g, '') || '';
+    } else if (result.target === 'local') {
+      imageUrl = result?.local?.fileUrl.trim().replace(/^["'`]|["'`]$/g, '') || '';
+    }
+
+    if (imageUrl) {
+      formData.value.coverImage = imageUrl;
+      message.success('封面图片上传成功');
+      console.log('封面图片上传成功:', {
+        fileUrl: imageUrl,
+        fileName: result?.oss?.fileName || result?.local?.fileName,
+        fileSize: result?.oss?.fileSize || result?.local?.fileSize,
+        originalName: result?.oss?.originalName || result?.local?.originalName,
+      });
+    } else {
+      throw new Error('上传成功但未获取到文件URL');
+    }
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : '封面图片上传失败';
+    message.error(errorMessage);
+  } finally {
+    coverImageUploading.value = false;
+    coverUploadProgress.value = 0;
+    // 清空文件输入，允许重新选择同一文件
+    if (target) {
+      target.value = '';
+    }
+  }
+};
+
+/**
+ * 删除封面图片
+ */
+const removeCoverImage = () => {
+  formData.value.coverImage = '';
+  showPreviewModal.value = false; // 关闭预览模态框
+  message.success('已删除封面图片');
+};
+
+/**
+ * 显示封面图片预览模态框
+ */
+const showCoverPreview = () => {
+  if (formData.value.coverImage) {
+    showPreviewModal.value = true;
+  }
+};
+
+/**
+ * 隐藏封面图片预览模态框
+ */
+const hidePreviewModal = () => {
+  showPreviewModal.value = false;
+};
+
+/**
+ * 从预览模态框中触发封面图片上传
+ */
+const handleCoverImageUploadFromPreview = () => {
+  hidePreviewModal();
+  handleCoverImageUpload();
+};
+
+/**
  * 初始化Vditor编辑器
  */
 const initVditor = () => {
@@ -510,6 +859,7 @@ const initVditor = () => {
       'inline-code',
       'insert-before',
       'insert-after',
+      'upload',
       'table',
       'undo',
       'redo',
@@ -521,6 +871,112 @@ const initVditor = () => {
       'info',
       'help',
     ],
+    upload: {
+      accept: 'image/*',
+      multiple: false,
+      fieldName: 'file',
+      url: `${import.meta.env.VITE_APP_BASE_URL}/upload`,
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+      filename: (name: string) => {
+        // 生成唯一文件名，避免重名冲突
+        const timestamp = Date.now();
+        const randomStr = Math.random().toString(36).substring(2, 8);
+        const ext = name.substring(name.lastIndexOf('.'));
+        return `blog_${timestamp}_${randomStr}${ext}`;
+      },
+      // 添加额外的上传参数
+      extraData: {
+        fileType: 'image',
+        target: 'local',
+        folder: 'blog/images',
+        maxSize: (5 * 1024 * 1024).toString(), // 5MB
+        allowedMimeTypes: JSON.stringify([
+          'image/jpeg',
+          'image/png',
+          'image/gif',
+          'image/webp',
+          'image/svg+xml',
+        ]),
+        allowedExtensions: JSON.stringify(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg']),
+      },
+      /**
+       * 图片上传格式化函数
+       * @param files 上传的文件列表
+       * @param responseText 服务器返回的响应文本
+       * @returns 格式化后的响应文本，符合Vditor内置数据结构
+       */
+      format: (files: File[], responseText: string): string => {
+        try {
+          // 解析服务器返回的JSON数据
+          const response = JSON.parse(responseText);
+          // 检查返回格式是否符合预期（适配后端 UnifiedUploadResult 格式）
+          if (response.code === 200 && response.data) {
+            // 获取文件URL，优先使用OSS，其次使用本地
+            let fileUrl = '';
+            let fileName = files[0]?.name || 'image';
+
+            if (response.data?.oss?.fileUrl) {
+              fileUrl = response.data?.oss.fileUrl;
+              fileName = response.data?.oss.originalName || fileName;
+            } else if (response.data?.local?.fileUrl) {
+              fileUrl = response.data?.local.fileUrl;
+              fileName = response.data?.local.originalName || fileName;
+            }
+            if (fileUrl) {
+              message.success('图片上传成功');
+              // 返回Vditor期望的JSON格式
+              return JSON.stringify({
+                msg: '上传成功',
+                code: 0,
+                data: {
+                  errFiles: [],
+                  succMap: {
+                    [fileName]: fileUrl,
+                  },
+                },
+              });
+            }
+            message.error('上传成功但未获取到文件URL');
+            return JSON.stringify({
+              msg: '上传成功但未获取到文件URL',
+              code: 1,
+              data: {
+                errFiles: [fileName],
+                succMap: {},
+              },
+            });
+          }
+          const errorMsg = response.message || '图片上传失败';
+          message.error(errorMsg);
+          return JSON.stringify({
+            msg: errorMsg,
+            code: 1,
+            data: {
+              errFiles: files.map((f) => f.name),
+              succMap: {},
+            },
+          });
+        } catch (error) {
+          console.error('解析上传响应失败:', error);
+          const errorMsg = '图片上传响应格式错误';
+          message.error(errorMsg);
+          return JSON.stringify({
+            msg: errorMsg,
+            code: 1,
+            data: {
+              errFiles: files.map((f) => f.name),
+              succMap: {},
+            },
+          });
+        }
+      },
+      error: (msg: string) => {
+        console.error('图片上传失败:', msg);
+        message.error('图片上传失败，请重试');
+      },
+    },
     outline: {
       enable: false,
       position: 'right',
@@ -541,6 +997,9 @@ const initVditor = () => {
     after: () => {
       // console.log('Vditor 初始化完成');
       // console.log('编辑器设置已应用:', editorSettings.value);
+
+      // 编辑器初始化完成，隐藏编辑器加载动画
+      isEditorLoading.value = false;
 
       // 初始化大纲数据
       updateOutlineData();
@@ -592,9 +1051,12 @@ const updateOutlineData = () => {
     });
 
     outlineItems.value = headings;
+    // 大纲数据更新完成，隐藏大纲加载动画
+    isOutlineLoading.value = false;
     // console.log('大纲数据已更新:', headings);
   } catch (error) {
-    console.error('更新大纲数据失败:', error);
+    // 更新大纲数据失败，即使出错也要隐藏加载动画
+    isOutlineLoading.value = false;
   }
 };
 
@@ -664,7 +1126,7 @@ const extractH1FromMarkdown = (): string => {
       }
     }
   } catch (error) {
-    console.error('提取一级标题失败:', error);
+    // 提取一级标题失败
   }
 
   return '';
@@ -711,7 +1173,7 @@ const updateMarkdownH1 = (newTitle: string) => {
     const newContent = lines.join('\n');
     vditor.value.setValue(newContent);
   } catch (error) {
-    console.error('更新Markdown标题失败:', error);
+    // 更新Markdown标题失败
   }
 };
 
@@ -749,7 +1211,7 @@ const scrollToHeading = (headingId: string) => {
   }
 
   const { currentMode } = vditorInstance;
-  console.log('跳转到标题:', headingId, '编辑模式:', currentMode);
+  // 跳转到标题
 
   // 策略1: 直接查找DOM中的标题元素（适用于所有模式）
   const findHeadingElement = (): HTMLElement | null => {
@@ -858,7 +1320,7 @@ const scrollToHeading = (headingId: string) => {
     // 所有方法都失败
     message.warning(`未找到标题: ${headingId}`);
   } catch (error) {
-    console.error('跳转失败:', error);
+    // 跳转失败
     message.error('跳转过程中发生错误，请重试');
   }
 };
@@ -949,7 +1411,7 @@ const handleSave = async () => {
     }
   } catch (error) {
     message.error('保存失败，请重试');
-    console.error('Save error:', error);
+    // 保存失败
   }
 };
 </script>
@@ -1416,6 +1878,11 @@ const handleSave = async () => {
     }
 
     .outline-panel {
+      .outline-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
       .outline-empty {
         display: flex;
         flex-direction: column;
@@ -2601,6 +3068,883 @@ const handleSave = async () => {
     padding: 10px 16px;
     font-size: 12px;
     min-width: 80px;
+  }
+}
+
+/* 加载动画样式 - 融入主题设计 */
+.editor-loading-overlay,
+.outline-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--sidebar-bg, rgba(255, 255, 255, 0.95));
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.outline-loading-overlay {
+  background: var(--sidebar-bg, rgba(255, 255, 255, 0.9));
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--toolbar-border, rgba(226, 232, 240, 0.8));
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 40px;
+  background: var(--sidebar-bg, rgba(255, 255, 255, 0.9));
+  border-radius: 20px;
+  box-shadow: var(--editor-card-shadow, 0 8px 32px rgba(0, 0, 0, 0.1));
+  border: 1px solid var(--toolbar-border, rgba(226, 232, 240, 0.8));
+  backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--toolbar-decoration, linear-gradient(90deg, #fbc2eb 0%, #a6c1ee 100%));
+  border-radius: 20px 20px 0 0;
+}
+
+.loading-container.small {
+  gap: 16px;
+  padding: 24px;
+  border-radius: 16px;
+}
+
+.loading-container.small::before {
+  height: 2px;
+  border-radius: 16px 16px 0 0;
+}
+
+.loading-spinner {
+  position: relative;
+  width: 60px;
+  height: 60px;
+}
+
+.loading-spinner.small {
+  width: 40px;
+  height: 40px;
+}
+
+.spinner-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
+  filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.1));
+}
+
+.spinner-ring:nth-child(1) {
+  border-top-color: var(--outline-marker-1, #667eea);
+  border-right-color: var(--outline-marker-1, #667eea);
+  animation-delay: 0s;
+  opacity: 1;
+}
+
+.spinner-ring:nth-child(2) {
+  border-top-color: var(--outline-marker-2, #10b981);
+  border-right-color: var(--outline-marker-2, #10b981);
+  animation-delay: -0.4s;
+  transform: scale(0.8);
+  opacity: 0.8;
+}
+
+.spinner-ring:nth-child(3) {
+  border-top-color: var(--outline-marker-3, #f59e0b);
+  border-right-color: var(--outline-marker-3, #f59e0b);
+  animation-delay: -0.8s;
+  transform: scale(0.6);
+  opacity: 0.6;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  text-align: center;
+  color: var(--text-color, #374151);
+  position: relative;
+}
+
+.loading-text h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-color, #1f2937);
+  background: var(--toolbar-decoration, linear-gradient(90deg, #667eea, #764ba2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.5px;
+}
+
+.loading-text h4 {
+  margin: 0 0 6px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-color, #1f2937);
+  background: var(--toolbar-decoration, linear-gradient(90deg, #667eea, #764ba2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.3px;
+}
+
+.loading-text p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-color-secondary, #6b7280);
+  opacity: 0.8;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* 加载动画过渡效果 */
+.loading-fade-enter-active,
+.loading-fade-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.loading-fade-enter-from {
+  opacity: 0;
+  transform: scale(0.8) translateY(20px);
+  filter: blur(4px);
+}
+
+.loading-fade-leave-to {
+  opacity: 0;
+  transform: scale(1.1) translateY(-10px);
+  filter: blur(2px);
+}
+
+/* 加载容器呼吸动画 */
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: var(--editor-card-shadow, 0 8px 32px rgba(0, 0, 0, 0.1));
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: var(--editor-card-shadow, 0 12px 40px rgba(0, 0, 0, 0.15));
+  }
+}
+
+.loading-container {
+  animation: breathe 3s ease-in-out infinite;
+}
+
+/* 文本闪烁动画 */
+@keyframes textGlow {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.loading-text p {
+  animation: textGlow 2s ease-in-out infinite;
+}
+
+/* 装饰条流光动画 */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.loading-container::before {
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* 深色主题适配 */
+.theme-dark .editor-loading-overlay,
+.theme-dark .outline-loading-overlay {
+  background: var(--sidebar-bg, rgba(17, 24, 39, 0.95));
+}
+
+.theme-dark .outline-loading-overlay {
+  background: var(--sidebar-bg, rgba(17, 24, 39, 0.9));
+  border-color: var(--toolbar-border, rgba(75, 85, 99, 0.8));
+}
+
+.theme-dark .loading-container {
+  background: var(--sidebar-bg, rgba(31, 41, 55, 0.9));
+  border-color: var(--toolbar-border, rgba(75, 85, 99, 0.8));
+}
+
+.theme-dark .loading-text h3,
+.theme-dark .loading-text h4 {
+  background: var(--toolbar-decoration, linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899, #f59e0b));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.theme-dark .loading-text p {
+  color: #d1d5db;
+}
+
+.theme-dark .spinner-ring {
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.1));
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .editor-loading-overlay,
+  .outline-loading-overlay {
+    border-radius: 8px;
+  }
+
+  .loading-container {
+    padding: 28px 20px;
+    margin: 16px;
+    border-radius: 16px;
+    gap: 20px;
+  }
+
+  .loading-container::before {
+    border-radius: 16px 16px 0 0;
+  }
+
+  .loading-spinner {
+    width: 48px;
+    height: 48px;
+  }
+
+  .loading-text h3 {
+    font-size: 16px;
+    letter-spacing: 0.3px;
+  }
+
+  .loading-text h4 {
+    font-size: 14px;
+    letter-spacing: 0.2px;
+  }
+
+  .loading-text p {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .spinner-ring {
+    border-width: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .loading-container {
+    padding: 24px 16px;
+    margin: 12px;
+    gap: 16px;
+  }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+  }
+
+  .loading-text h3 {
+    font-size: 15px;
+  }
+
+  .loading-text h4 {
+    font-size: 13px;
+  }
+
+  .loading-text p {
+    font-size: 12px;
+  }
+}
+
+/* 封面图片上传组件样式 */
+.cover-image-upload {
+  margin-top: 8px;
+}
+
+.cover-preview {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--sidebar-bg, #f9fafb);
+  border: 2px solid var(--toolbar-border, #e5e7eb);
+  transition: all 0.3s ease;
+}
+
+.cover-preview:hover {
+  border-color: var(--primary-color, #667eea);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.cover-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.cover-preview:hover .cover-image {
+  transform: scale(1.02);
+}
+
+.cover-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cover-preview:hover .cover-actions {
+  opacity: 1;
+}
+
+.cover-action-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-color, #374151);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cover-action-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cover-action-btn.delete {
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+}
+
+.cover-action-btn.delete:hover {
+  background: rgba(239, 68, 68, 1);
+}
+
+.cover-upload-area {
+  border: 2px dashed var(--toolbar-border, #d1d5db);
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: var(--sidebar-bg, #f9fafb);
+  position: relative;
+  overflow: hidden;
+}
+
+.cover-upload-area::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.cover-upload-area:hover {
+  border-color: var(--primary-color, #667eea);
+  background: var(--primary-bg, rgba(102, 126, 234, 0.05));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+}
+
+.cover-upload-area:hover::before {
+  left: 100%;
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.upload-icon {
+  color: var(--text-color-secondary, #9ca3af);
+  transition: all 0.3s ease;
+}
+
+.cover-upload-area:hover .upload-icon {
+  color: var(--primary-color, #667eea);
+  transform: scale(1.1);
+}
+
+.upload-text {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color, #374151);
+  transition: color 0.3s ease;
+}
+
+.cover-upload-area:hover .upload-text {
+  color: var(--primary-color, #667eea);
+}
+
+.upload-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-color-secondary, #9ca3af);
+  line-height: 1.4;
+}
+
+.upload-progress {
+  margin-top: 12px;
+  padding: 16px;
+  background: var(--sidebar-bg, #f9fafb);
+  border: 1px solid var(--toolbar-border, #e5e7eb);
+  border-radius: 8px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--toolbar-border, #e5e7eb);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--primary-color, #667eea),
+    var(--secondary-color, #764ba2)
+  );
+  border-radius: 3px;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: progressShimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes progressShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.progress-text {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-color-secondary, #6b7280);
+  text-align: center;
+  font-weight: 500;
+}
+
+/* 深色主题适配 */
+.theme-dark .cover-preview {
+  background: var(--sidebar-bg, #1f2937);
+  border-color: var(--toolbar-border, #374151);
+}
+
+.theme-dark .cover-upload-area {
+  background: var(--sidebar-bg, #1f2937);
+  border-color: var(--toolbar-border, #374151);
+}
+
+.theme-dark .cover-upload-area:hover {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: var(--primary-color, #667eea);
+}
+
+.theme-dark .upload-progress {
+  background: var(--sidebar-bg, #1f2937);
+  border-color: var(--toolbar-border, #374151);
+}
+
+.theme-dark .progress-bar {
+  background: var(--toolbar-border, #374151);
+}
+
+.theme-dark .upload-text {
+  color: var(--text-color, #f3f4f6);
+}
+
+.theme-dark .upload-hint {
+  color: var(--text-color-secondary, #9ca3af);
+}
+
+.theme-dark .progress-text {
+  color: var(--text-color-secondary, #9ca3af);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .cover-upload-area {
+    padding: 20px;
+  }
+
+  .cover-image {
+    height: 100px;
+  }
+
+  .cover-action-btn {
+    width: 24px;
+    height: 24px;
+  }
+
+  .upload-text {
+    font-size: 13px;
+  }
+
+  .upload-hint {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cover-upload-area {
+    padding: 16px;
+  }
+
+  .cover-image {
+    height: 80px;
+  }
+
+  .upload-placeholder {
+    gap: 6px;
+  }
+
+  .upload-text {
+    font-size: 12px;
+  }
+
+  .upload-hint {
+    font-size: 10px;
+  }
+}
+
+/* 封面图片预览模态框样式 */
+.preview-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+  animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.preview-modal-content {
+  background: var(--sidebar-bg, #ffffff);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: modalSlideIn 0.3s ease;
+  border: 1px solid var(--toolbar-border, #e5e7eb);
+}
+
+@keyframes modalSlideIn {
+  from {
+    transform: scale(0.9) translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.preview-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--toolbar-border, #e5e7eb);
+  background: var(--sidebar-bg, #ffffff);
+}
+
+.preview-modal-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-color, #374151);
+}
+
+.preview-modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--text-color-secondary, #9ca3af);
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.preview-modal-close:hover {
+  background: var(--hover-bg, #f3f4f6);
+  color: var(--text-color, #374151);
+  transform: scale(1.05);
+}
+
+.preview-modal-body {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--preview-bg, #f8fafc);
+  min-height: 300px;
+  max-height: 70vh;
+  overflow: hidden;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 0;
+}
+
+.preview-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--toolbar-border, #e5e7eb);
+  background: var(--sidebar-bg, #ffffff);
+}
+
+.preview-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid var(--toolbar-border, #e5e7eb);
+  border-radius: 6px;
+  background: var(--sidebar-bg, #ffffff);
+  color: var(--text-color, #374151);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.preview-action-btn:hover {
+  background: var(--hover-bg, #f3f4f6);
+  border-color: var(--primary-color, #667eea);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.preview-action-btn.secondary {
+  background: var(--primary-color, #667eea);
+  color: white;
+  border-color: var(--primary-color, #667eea);
+}
+
+.preview-action-btn.secondary:hover {
+  background: var(--primary-hover, #5a67d8);
+  border-color: var(--primary-hover, #5a67d8);
+}
+
+.preview-action-btn.danger {
+  background: #ef4444;
+  color: white;
+  border-color: #ef4444;
+}
+
+.preview-action-btn.danger:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+/* 深色主题适配 */
+.theme-dark .preview-modal-content {
+  background: var(--sidebar-bg, #1f2937);
+  border-color: var(--toolbar-border, #374151);
+}
+
+.theme-dark .preview-modal-header {
+  background: var(--sidebar-bg, #1f2937);
+  border-color: var(--toolbar-border, #374151);
+}
+
+.theme-dark .preview-modal-title {
+  color: var(--text-color, #f3f4f6);
+}
+
+.theme-dark .preview-modal-close {
+  color: var(--text-color-secondary, #9ca3af);
+}
+
+.theme-dark .preview-modal-close:hover {
+  background: var(--hover-bg, #374151);
+  color: var(--text-color, #f3f4f6);
+}
+
+.theme-dark .preview-modal-body {
+  background: var(--preview-bg, #111827);
+}
+
+.theme-dark .preview-modal-footer {
+  background: var(--sidebar-bg, #1f2937);
+  border-color: var(--toolbar-border, #374151);
+}
+
+.theme-dark .preview-action-btn {
+  background: var(--sidebar-bg, #1f2937);
+  color: var(--text-color, #f3f4f6);
+  border-color: var(--toolbar-border, #374151);
+}
+
+.theme-dark .preview-action-btn:hover {
+  background: var(--hover-bg, #374151);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .preview-modal-content {
+    max-width: 95vw;
+    max-height: 95vh;
+    margin: 20px;
+  }
+
+  .preview-modal-header {
+    padding: 12px 16px;
+  }
+
+  .preview-modal-title {
+    font-size: 14px;
+  }
+
+  .preview-modal-close {
+    width: 28px;
+    height: 28px;
+  }
+
+  .preview-modal-body {
+    min-height: 200px;
+    max-height: 60vh;
+  }
+
+  .preview-modal-footer {
+    padding: 12px 16px;
+    gap: 8px;
+  }
+
+  .preview-action-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .preview-modal-content {
+    max-width: 98vw;
+    max-height: 98vh;
+    margin: 10px;
+  }
+
+  .preview-modal-header {
+    padding: 10px 12px;
+  }
+
+  .preview-modal-title {
+    font-size: 13px;
+  }
+
+  .preview-modal-body {
+    min-height: 150px;
+    max-height: 50vh;
+  }
+
+  .preview-modal-footer {
+    padding: 10px 12px;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .preview-action-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 8px 12px;
+    font-size: 12px;
   }
 }
 </style>

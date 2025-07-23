@@ -54,8 +54,8 @@ const schemaMethods = {
       row.status = targetStatus as Blog.PostStatus;
       const resquestMessage = row.status === 'PUBLISHED' ? '发布成功' : '取消发布成功';
       window.$message.success(resquestMessage);
-    } catch (error: any) {
-      window.$message.error(error.message);
+    } catch (error: unknown) {
+      window.$message.error((error as Error).message);
     } finally {
       loadingStates.value[row.id] = false;
     }
