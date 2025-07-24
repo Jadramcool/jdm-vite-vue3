@@ -766,24 +766,17 @@ const handleCoverImageChange = async (event: Event) => {
         coverUploadProgress.value = progress;
       },
     );
-    // 获取上传结果URL（适配新的返回数据结构）
+    // 获取上传结果URL
     let imageUrl = '';
-    if (result.target === 'oss') {
-      // 移除fileUrl中可能存在的多余空格和引号
-      imageUrl = result?.oss?.fileUrl.trim().replace(/^["'`]|["'`]$/g, '') || '';
-    } else if (result.target === 'local') {
-      imageUrl = result?.local?.fileUrl.trim().replace(/^["'`]|["'`]$/g, '') || '';
+    if (result.oss?.fileUrl) {
+      imageUrl = result.oss.fileUrl;
+    } else if (result.local?.fileUrl) {
+      imageUrl = result.local.fileUrl;
     }
 
     if (imageUrl) {
       formData.value.coverImage = imageUrl;
       message.success('封面图片上传成功');
-      console.log('封面图片上传成功:', {
-        fileUrl: imageUrl,
-        fileName: result?.oss?.fileName || result?.local?.fileName,
-        fileSize: result?.oss?.fileSize || result?.local?.fileSize,
-        originalName: result?.oss?.originalName || result?.local?.originalName,
-      });
     } else {
       throw new Error('上传成功但未获取到文件URL');
     }
@@ -991,6 +984,10 @@ const initVditor = () => {
     },
     preview: {
       mode: 'editor',
+      hljs: {
+        style: 'github',
+        lineNumber: true,
+      },
     },
     typewriterMode: true, // 开启打字机模式
     tab: '\t',
@@ -1555,7 +1552,7 @@ const handleSave = async () => {
         &:hover {
           background: var(--toolbar-btn-hover-bg);
           color: var(--toolbar-btn-hover-color);
-          transform: translateY(-3px) scale(1.05);
+          transform: translateY(-2px) scale(1.02); // 减少悬浮高度和缩放
           box-shadow: var(--toolbar-btn-hover-shadow);
           border-color: var(--toolbar-btn-hover-border);
 
@@ -1564,14 +1561,14 @@ const handleSave = async () => {
           }
 
           &::after {
-            width: 120px;
-            height: 120px;
-            opacity: 1;
+            width: 80px; // 减少光晕大小
+            height: 80px;
+            opacity: 0.6; // 降低透明度
           }
         }
 
         &:active {
-          transform: translateY(-1px) scale(1.02);
+          transform: translateY(-1px) scale(1.01);
           transition-duration: 0.1s;
         }
       }
@@ -1584,15 +1581,25 @@ const handleSave = async () => {
       }
 
       :deep(.vditor-toolbar .vditor-tooltipped:hover svg) {
-        filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.2))
-          drop-shadow(0 1px 3px rgba(255, 255, 255, 0.3));
-        transform: scale(1.1) rotate(5deg);
-        animation: toolbarIconFloat 2s ease-in-out infinite;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15))
+          drop-shadow(0 1px 2px rgba(255, 255, 255, 0.2));
+        transform: scale(1.05) rotate(2deg);
       }
 
       :deep(.vditor-toolbar .vditor-tooltipped:active svg) {
         transform: scale(0.95) rotate(-2deg);
         filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3)) brightness(1.2);
+      }
+
+      // 优化代码块内的代码文本
+      :deep(.vditor-ir pre code),
+      :deep(.vditor-wysiwyg pre code) {
+        background: transparent !important;
+        padding: 0 !important;
+        border: none !important;
+        font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+        line-height: 1.6;
+        color: #374151;
       }
       :deep(.vditor-counter) {
         height: 36px;
@@ -2410,8 +2417,8 @@ const handleSave = async () => {
     }
   }
 
-  // 代码样式
-  code {
+  // 代码样式 - 仅应用于非代码块内的行内代码
+  code:not(pre code) {
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     color: #7c3aed;
     padding: 3px 6px;
@@ -3946,5 +3953,83 @@ const handleSave = async () => {
     padding: 8px 12px;
     font-size: 12px;
   }
+}
+
+/* 修复 Vditor 工具栏上传按钮样式，使其与其他按钮保持一致 */
+:deep(.vditor-toolbar .vditor-tooltipped[data-type='upload']) {
+  /* 确保上传按钮容器样式一致 */
+  position: relative;
+  overflow: hidden;
+
+  /* 隐藏默认的文件输入样式，但保持功能 */
+  input[type='file'] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 3;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+  }
+
+  /* 确保 SVG 图标在文件输入之下但可见，并正确居中 */
+  svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    pointer-events: none;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* 确保上传按钮的悬浮效果与其他按钮一致 */
+:deep(.vditor-toolbar .vditor-tooltipped[data-type='upload']:hover) {
+  background: var(--toolbar-btn-hover-bg) !important;
+  color: var(--toolbar-btn-hover-color) !important;
+  transform: translateY(-2px) scale(1.02) !important;
+  box-shadow: var(--toolbar-btn-hover-shadow) !important;
+  border-color: var(--toolbar-btn-hover-border) !important;
+}
+
+/* 确保悬浮时图标位置保持居中 */
+:deep(.vditor-toolbar .vditor-tooltipped[data-type='upload']:hover svg) {
+  transform: translate(-50%, -50%) !important;
+}
+
+/* 确保上传按钮的激活状态与其他按钮一致 */
+:deep(.vditor-toolbar .vditor-tooltipped[data-type='upload']:active) {
+  transform: translateY(-1px) scale(1.01) !important;
+  transition-duration: 0.1s !important;
+}
+
+/* 确保上传按钮的光晕效果与其他按钮一致 */
+:deep(.vditor-toolbar .vditor-tooltipped[data-type='upload']::after) {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+:deep(.vditor-toolbar .vditor-tooltipped[data-type='upload']:hover::after) {
+  width: 80px;
+  height: 80px;
+  opacity: 0.6;
 }
 </style>

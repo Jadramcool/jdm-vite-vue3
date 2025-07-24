@@ -167,27 +167,21 @@ export const uploadFile = async (
   formData.append('file', finalParams.file);
 
   // 添加其他参数
-  // 添加文件类型参数
   if (finalParams.fileType) {
     formData.append('fileType', finalParams.fileType);
   }
-  // 添加存储目标参数（如：oss、local等）
   if (finalParams.target) {
     formData.append('target', finalParams.target);
   }
-  // 添加文件夹路径参数
   if (finalParams.folder) {
     formData.append('folder', finalParams.folder);
   }
-  // 添加文件大小限制参数（字节为单位）
   if (finalParams.maxSize) {
     formData.append('maxSize', finalParams.maxSize.toString());
   }
-  // 添加允许的MIME类型列表（JSON格式）
   if (finalParams.allowedMimeTypes && finalParams.allowedMimeTypes.length > 0) {
     formData.append('allowedMimeTypes', JSON.stringify(finalParams.allowedMimeTypes));
   }
-  // 添加允许的文件扩展名列表（JSON格式）
   if (finalParams.allowedExtensions && finalParams.allowedExtensions.length > 0) {
     formData.append('allowedExtensions', JSON.stringify(finalParams.allowedExtensions));
   }

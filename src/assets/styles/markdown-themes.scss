@@ -208,7 +208,7 @@
   font-size: 16px;
 
   // 代码块样式
-  pre {
+  pre:not(.vditor-ir__marker--pre.vditor-ir__marker) {
     padding: 20px;
     background: var(--md-code-bg);
     border: 1px solid var(--md-code-border);
