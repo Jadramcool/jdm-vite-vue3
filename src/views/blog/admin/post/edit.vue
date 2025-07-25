@@ -59,6 +59,40 @@
             <div :key="activeTab" class="tab-content">
               <!-- 大纲面板 -->
               <div v-if="activeTab === 'outline'" class="outline-panel">
+                <!-- 大纲头部信息 -->
+                <div class="outline-header">
+                  <div class="outline-stats">
+                    <div class="stat-item">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="stat-icon"
+                      >
+                        <path
+                          d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-10v2h2V7h-2zm0 6h2v-2h-2v2z"
+                        />
+                      </svg>
+                      <span class="stat-label">{{ outlineStats.totalCount }} 个标题</span>
+                    </div>
+                    <div class="stat-item">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="stat-icon"
+                      >
+                        <path
+                          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                        />
+                      </svg>
+                      <span class="stat-label">{{ outlineStats.maxDepth }} 级深度</span>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- 统一的内容区域 -->
                 <Transition name="loading-fade" mode="out-in">
                   <!-- 大纲加载状态 -->
@@ -86,19 +120,54 @@
                     class="outline-content"
                   >
                     <div class="outline-empty">
-                      <svg
-                        width="48"
-                        height="48"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        class="empty-icon"
-                      >
-                        <path
-                          d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-10v2h2V7h-2zm0 6h2v-2h-2v2z"
-                        />
-                      </svg>
-                      <p class="empty-text">暂无大纲内容</p>
-                      <p class="empty-hint">在编辑器中添加标题后，大纲将自动生成</p>
+                      <div class="empty-illustration">
+                        <svg
+                          width="64"
+                          height="64"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          class="empty-icon"
+                        >
+                          <path
+                            d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-10v2h2V7h-2zm0 6h2v-2h-2v2z"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                          <circle
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            stroke-width="1"
+                            opacity="0.2"
+                          />
+                        </svg>
+                        <div class="empty-sparkles">
+                          <div class="sparkle sparkle-1"></div>
+                          <div class="sparkle sparkle-2"></div>
+                          <div class="sparkle sparkle-3"></div>
+                        </div>
+                      </div>
+                      <div class="empty-content">
+                        <p class="empty-text">暂无大纲内容</p>
+                        <p class="empty-hint">在编辑器中添加标题后，大纲将自动生成</p>
+                        <div class="empty-tips">
+                          <div class="tip-item">
+                            <span class="tip-key"># </span>
+                            <span class="tip-desc">一级标题</span>
+                          </div>
+                          <div class="tip-item">
+                            <span class="tip-key">## </span>
+                            <span class="tip-desc">二级标题</span>
+                          </div>
+                          <div class="tip-item">
+                            <span class="tip-key">### </span>
+                            <span class="tip-desc">三级标题</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <!-- 大纲列表状态 -->
@@ -107,17 +176,32 @@
                       <TransitionGroup name="outline-item" tag="div">
                         <div
                           v-for="(item, index) in outlineItems"
-                          :key="`${item.id}-${index}`"
+                          :key="item.id"
                           class="outline-item"
-                          :class="`level-${item.level}`"
+                          :class="[
+                            `level-${item.level}`,
+                            { 'is-active': activeOutlineId === item.id },
+                          ]"
                           :style="{
-                            paddingLeft: `${(item.level - 1) * 20 + 12}px`,
-                            transitionDelay: `${index * 50}ms`,
+                            paddingLeft: `${(item.level - 1) * 16 + 16}px`,
+                            transitionDelay: `${index * 30}ms`,
                           }"
                           @click="scrollToHeading(item.id)"
                         >
-                          <div class="outline-marker" :class="`marker-level-${item.level}`"></div>
-                          <span class="outline-text">{{ item.text }}</span>
+                          <div class="outline-item-content">
+                            <div class="outline-marker" :class="`marker-level-${item.level}`">
+                              <div class="marker-dot"></div>
+                              <div class="marker-pulse"></div>
+                            </div>
+                            <div class="outline-text-wrapper">
+                              <span class="outline-text">{{ item.text }}</span>
+                              <div class="outline-level-indicator">H{{ item.level }}</div>
+                            </div>
+                          </div>
+                          <div
+                            class="outline-connector"
+                            v-if="index < outlineItems.length - 1"
+                          ></div>
                         </div>
                       </TransitionGroup>
                     </div>
@@ -450,7 +534,16 @@ const markdownRef = ref<HTMLDivElement | null>(null);
 
 // 侧边栏状态管理
 const activeTab = ref<'outline' | 'settings'>('outline');
-const outlineItems = ref<Array<{ id: string; text: string; level: number }>>([]);
+const outlineItems = ref<Array<{ id: string; text: string; level: number; lineIndex: number }>>([]);
+const activeOutlineId = ref<string>(''); // 当前激活的大纲项ID
+
+// 大纲统计信息
+const outlineStats = computed(() => {
+  const items = outlineItems.value;
+  const totalCount = items.length;
+  const maxDepth = items.length > 0 ? Math.max(...items.map((item) => item.level)) : 0;
+  return { totalCount, maxDepth };
+});
 
 // 编辑器设置
 const editorSettings = ref({
@@ -1022,11 +1115,11 @@ const updateOutlineData = () => {
   try {
     // 获取编辑器内容
     const content = vditor.value.getValue();
-    const headings: Array<{ id: string; text: string; level: number }> = [];
+    const headings: Array<{ id: string; text: string; level: number; lineIndex: number }> = [];
 
     // 解析标题
     const lines = content.split('\n');
-    lines.forEach((line: string) => {
+    lines.forEach((line: string, lineIndex: number) => {
       const match = line.match(/^(#{1,6})\s+(.+)$/);
       if (match) {
         const level = match[1].length;
@@ -1040,10 +1133,10 @@ const updateOutlineData = () => {
           .replace(/~~([^~]+)~~/g, '$1') // 移除删除线 ~~text~~
           .trim();
 
-        // 使用清理后的文本作为ID，这样更容易匹配
-        const id = cleanText;
+        // 使用行号和级别组合作为稳定ID，同时保存文本用于匹配
+        const id = `heading-${lineIndex}-level-${level}`;
 
-        headings.push({ id, text: cleanText, level });
+        headings.push({ id, text: cleanText, level, lineIndex });
       }
     });
 
@@ -1066,6 +1159,7 @@ const setupContentWatcher = () => {
   // 监听编辑器内容变化
   let updateTimer: NodeJS.Timeout;
   let syncTimer: NodeJS.Timeout;
+  let scrollTimer: NodeJS.Timeout;
 
   const handleContentChange = () => {
     // 防抖处理，避免频繁更新
@@ -1081,11 +1175,20 @@ const setupContentWatcher = () => {
     }, 800);
   };
 
+  const handleScroll = () => {
+    // 防抖处理滚动事件
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => {
+      updateActiveOutlineFromScroll();
+    }, 100);
+  };
+
   // 监听输入事件
   const editorElement = vditor.value.vditor?.element;
   if (editorElement) {
     editorElement.addEventListener('input', handleContentChange);
     editorElement.addEventListener('keyup', handleContentChange);
+    editorElement.addEventListener('scroll', handleScroll);
   }
 };
 
@@ -1175,6 +1278,66 @@ const updateMarkdownH1 = (newTitle: string) => {
 };
 
 /**
+ * 根据滚动位置更新激活的大纲项
+ */
+const updateActiveOutlineFromScroll = () => {
+  if (!vditor.value || outlineItems.value.length === 0) return;
+
+  const vditorInstance = vditor.value.vditor;
+  if (!vditorInstance) return;
+
+  const { currentMode } = vditorInstance;
+  let container: HTMLElement | null = null;
+
+  // 根据模式获取容器
+  switch (currentMode) {
+    case 'wysiwyg':
+      container = vditorInstance.wysiwyg?.element || null;
+      break;
+    case 'ir':
+      container = vditorInstance.ir?.element || null;
+      break;
+    case 'sv':
+      container = vditorInstance.preview?.element || null;
+      break;
+    default:
+      break;
+  }
+
+  if (!container) return;
+
+  // 获取容器的滚动信息
+  const containerRect = container.getBoundingClientRect();
+  const viewportCenter = containerRect.top + containerRect.height / 2;
+
+  // 查找所有标题元素及其位置
+  const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
+  let closestHeading: { id: string; distance: number } | null = null;
+
+  for (const heading of headings) {
+    const headingText = cleanHeadingText(heading.textContent || '');
+    const headingRect = heading.getBoundingClientRect();
+    const headingCenter = headingRect.top + headingRect.height / 2;
+    const distance = Math.abs(headingCenter - viewportCenter);
+
+    // 只考虑在视口中或视口上方的标题
+    if (headingRect.top <= viewportCenter) {
+      if (!closestHeading || distance < closestHeading.distance) {
+        closestHeading = { id: headingText, distance };
+      }
+    }
+  }
+
+  // 更新激活状态 - 通过文本内容找到对应的大纲项ID
+  if (closestHeading) {
+    const matchingOutlineItem = outlineItems.value.find((item) => item.text === closestHeading.id);
+    if (matchingOutlineItem && matchingOutlineItem.id !== activeOutlineId.value) {
+      activeOutlineId.value = matchingOutlineItem.id;
+    }
+  }
+};
+
+/**
  * 添加元素高亮效果
  * @param element 目标元素
  */
@@ -1193,7 +1356,7 @@ const addHighlightEffect = (element: HTMLElement): void => {
 
 /**
  * 跳转到指定标题 - 全新实现
- * @param headingId 标题文本
+ * @param headingId 大纲项ID
  */
 const scrollToHeading = (headingId: string) => {
   if (!vditor.value) {
@@ -1208,7 +1371,15 @@ const scrollToHeading = (headingId: string) => {
   }
 
   const { currentMode } = vditorInstance;
-  // 跳转到标题
+
+  // 首先通过ID找到对应的大纲项
+  const targetOutlineItem = outlineItems.value.find((item) => item.id === headingId);
+  if (!targetOutlineItem) {
+    message.warning('未找到对应的标题');
+    return;
+  }
+
+  const headingText = targetOutlineItem.text;
 
   // 策略1: 直接查找DOM中的标题元素（适用于所有模式）
   const findHeadingElement = (): HTMLElement | null => {
@@ -1236,8 +1407,8 @@ const scrollToHeading = (headingId: string) => {
     const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
 
     for (const heading of headings) {
-      const headingText = cleanHeadingText(heading.textContent || '');
-      if (headingText === headingId) {
+      const currentHeadingText = cleanHeadingText(heading.textContent || '');
+      if (currentHeadingText === headingText) {
         return heading as HTMLElement;
       }
     }
@@ -1264,7 +1435,7 @@ const scrollToHeading = (headingId: string) => {
       const line = lines[i].trim();
       if (line.startsWith('#')) {
         const cleanLine = cleanHeadingText(line);
-        if (cleanLine === headingId) {
+        if (cleanLine === headingText) {
           targetLineIndex = i;
           break;
         }
@@ -1304,18 +1475,22 @@ const scrollToHeading = (headingId: string) => {
       });
 
       addHighlightEffect(targetElement);
-      // message.success(`已跳转到: ${headingId}`);
+      // 设置激活状态
+      activeOutlineId.value = headingId;
+      // message.success(`已跳转到: ${headingText}`);
       return;
     }
 
     // 如果是SV模式且没找到DOM元素，尝试textarea定位
     if (scrollInTextarea()) {
-      message.success(`已跳转到: ${headingId}`);
+      // 设置激活状态
+      activeOutlineId.value = headingId;
+      message.success(`已跳转到: ${headingText}`);
       return;
     }
 
     // 所有方法都失败
-    message.warning(`未找到标题: ${headingId}`);
+    message.warning(`未找到标题: ${headingText}`);
   } catch (error) {
     // 跳转失败
     message.error('跳转过程中发生错误，请重试');
@@ -1427,9 +1602,11 @@ const handleSave = async () => {
   background-image: var(--editor-bg-gradient);
   padding: 16px;
   gap: 16px;
-  overflow: visible;
+  overflow: hidden;
   box-sizing: border-box;
   border-radius: 12px;
+  min-width: 0;
+  min-height: 0;
   .editor-main {
     flex: 1;
     height: 100%;
@@ -1440,12 +1617,16 @@ const handleSave = async () => {
     position: relative;
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    min-height: 0;
     .vditor-container {
       height: 100%;
       border-radius: 12px;
-      overflow: visible;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
+      min-width: 0;
+      min-height: 0;
 
       :deep(.vditor) {
         border: none;
@@ -1519,34 +1700,34 @@ const handleSave = async () => {
         // width: 32px;
         padding: 2px 3px;
         box-sizing: content-box;
-        overflow: hidden;
+        // overflow: hidden;
 
         &::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
+          // content: '';
+          // position: absolute;
+          // top: 0;
+          // left: -100%;
+          // width: 100%;
+          // height: 100%;
           background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
           transition: left 0.6s ease;
-          z-index: 1;
+          // z-index: 1;
         }
 
         // 添加背景光晕
         &::after {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 0;
-          height: 0;
-          background: radial-gradient(circle, rgba(102, 126, 234, 0.2) 0%, transparent 70%);
-          border-radius: 50%;
-          transform: translate(-50%, -50%);
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-          opacity: 0;
-          z-index: 0;
+          // content: '';
+          // position: absolute;
+          // top: 50%;
+          // left: 50%;
+          // width: 0;
+          // height: 0;
+          // background: radial-gradient(circle, rgba(102, 126, 234, 0.2) 0%, transparent 70%);
+          // border-radius: 50%;
+          // transform: translate(-50%, -50%);
+          // transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          // opacity: 0;
+          // z-index: 0;
         }
 
         &:hover {
@@ -1556,15 +1737,15 @@ const handleSave = async () => {
           box-shadow: var(--toolbar-btn-hover-shadow);
           border-color: var(--toolbar-btn-hover-border);
 
-          &::before {
-            left: 100%;
-          }
+          // &::before {
+          //   left: 100%;
+          // }
 
-          &::after {
-            width: 80px; // 减少光晕大小
-            height: 80px;
-            opacity: 0.6; // 降低透明度
-          }
+          // &::after {
+          //   width: 80px; // 减少光晕大小
+          //   height: 80px;
+          //   opacity: 0.6; // 降低透明度
+          // }
         }
 
         &:active {
@@ -1573,23 +1754,23 @@ const handleSave = async () => {
         }
       }
 
-      :deep(.vditor-toolbar .vditor-tooltipped svg) {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        transform-origin: center;
-        position: relative;
-        z-index: 2;
-      }
+      // :deep(.vditor-toolbar .vditor-tooltipped svg) {
+      //   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      //   transform-origin: center;
+      //   position: relative;
+      //   z-index: 2;
+      // }
 
-      :deep(.vditor-toolbar .vditor-tooltipped:hover svg) {
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15))
-          drop-shadow(0 1px 2px rgba(255, 255, 255, 0.2));
-        transform: scale(1.05) rotate(2deg);
-      }
+      // :deep(.vditor-toolbar .vditor-tooltipped:hover svg) {
+      //   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15))
+      //     drop-shadow(0 1px 2px rgba(255, 255, 255, 0.2));
+      //   transform: scale(1.05) rotate(2deg);
+      // }
 
-      :deep(.vditor-toolbar .vditor-tooltipped:active svg) {
-        transform: scale(0.95) rotate(-2deg);
-        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3)) brightness(1.2);
-      }
+      // :deep(.vditor-toolbar .vditor-tooltipped:active svg) {
+      //   transform: scale(0.95) rotate(-2deg);
+      //   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3)) brightness(1.2);
+      // }
 
       // 优化代码块内的代码文本
       :deep(.vditor-ir pre code),
@@ -1657,6 +1838,8 @@ const handleSave = async () => {
 
   .editor-sidebar {
     width: 360px;
+    min-width: 360px;
+    max-width: 360px;
     height: 100%;
     background: var(--sidebar-bg);
     backdrop-filter: blur(10px);
@@ -1665,6 +1848,7 @@ const handleSave = async () => {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    flex-shrink: 0;
   }
   .sidebar-tabs {
     display: flex;
@@ -1737,9 +1921,7 @@ const handleSave = async () => {
         svg {
           transform: scale(1.1) rotate(5deg);
           filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-          animation:
-            iconPulse 2s ease-in-out infinite,
-            toolbarIconSlideActive 1s ease-in-out;
+          animation: iconPulse 2s ease-in-out infinite;
         }
 
         // 文字闪烁效果
@@ -1768,7 +1950,6 @@ const handleSave = async () => {
         color: #475569;
         transform: translateY(-2px) translateX(2px) scale(1.02);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        animation: toolbarTabHoverSlide 0.6s ease-in-out;
 
         &::before {
           width: 100px;
@@ -1861,152 +2042,395 @@ const handleSave = async () => {
       transform: translateX(0) scale(1);
     }
 
-    // 大纲项目动画
-    .outline-item-enter-active {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .outline-item-leave-active {
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .outline-item-enter-from {
-      opacity: 0;
-      transform: translateY(-10px) scale(0.9);
-    }
-
-    .outline-item-leave-to {
-      opacity: 0;
-      transform: translateY(10px) scale(0.9);
-    }
-
-    .outline-item-move {
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
     .outline-panel {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+
+      .outline-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+
+        .outline-stats {
+          display: flex;
+          gap: 16px;
+
+          .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+
+            &:hover {
+              background: rgba(255, 255, 255, 0.95);
+              transform: translateY(-1px);
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            .stat-icon {
+              color: #6366f1;
+              opacity: 0.8;
+            }
+
+            .stat-label {
+              font-size: 12px;
+              font-weight: 500;
+              color: #64748b;
+            }
+          }
+        }
+      }
+
       .outline-content {
         flex: 1;
         display: flex;
         flex-direction: column;
+        overflow: hidden;
       }
+
       .outline-empty {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 200px;
-        color: #94a3b8;
+        height: 100%;
+        padding: 40px 20px;
         text-align: center;
 
-        .empty-icon {
-          opacity: 0.6;
-          margin-bottom: 16px;
-          color: #cbd5e1;
+        .empty-illustration {
+          position: relative;
+          margin-bottom: 24px;
+
+          .empty-icon {
+            color: #cbd5e1;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+          }
+
+          .empty-sparkles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+
+            .sparkle {
+              position: absolute;
+              width: 4px;
+              height: 4px;
+              background: linear-gradient(45deg, #fbbf24, #f59e0b);
+              border-radius: 50%;
+              animation: sparkle 2s infinite;
+
+              &.sparkle-1 {
+                top: 10%;
+                left: 20%;
+                animation-delay: 0s;
+              }
+
+              &.sparkle-2 {
+                top: 30%;
+                right: 15%;
+                animation-delay: 0.7s;
+              }
+
+              &.sparkle-3 {
+                bottom: 20%;
+                left: 30%;
+                animation-delay: 1.4s;
+              }
+            }
+          }
         }
 
-        .empty-text {
-          font-size: 16px;
-          font-weight: 600;
-          margin-bottom: 8px;
-          color: #64748b;
-        }
+        .empty-content {
+          .empty-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #64748b;
+          }
 
-        .empty-hint {
-          font-size: 14px;
-          opacity: 0.8;
-          line-height: 1.5;
+          .empty-hint {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 24px;
+            line-height: 1.5;
+          }
+
+          .empty-tips {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+
+            .tip-item {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 8px;
+              padding: 8px 16px;
+              background: rgba(99, 102, 241, 0.05);
+              border: 1px solid rgba(99, 102, 241, 0.1);
+              border-radius: 8px;
+              transition: all 0.3s ease;
+
+              &:hover {
+                background: rgba(99, 102, 241, 0.1);
+                transform: translateY(-1px);
+              }
+
+              .tip-key {
+                font-family: 'JetBrains Mono', 'Fira Code', monospace;
+                font-weight: 600;
+                color: #6366f1;
+                background: rgba(99, 102, 241, 0.1);
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-size: 12px;
+              }
+
+              .tip-desc {
+                font-size: 12px;
+                color: #64748b;
+                font-weight: 500;
+              }
+            }
+          }
         }
       }
 
       .outline-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px 0;
+
         .outline-item {
-          padding: 10px 0;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          border-radius: 8px;
-          margin-bottom: 4px;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           position: relative;
-          opacity: 0;
-          animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+          cursor: pointer;
+          margin-bottom: 2px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
           &:hover {
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-            transform: translateX(6px) scale(1.02);
-            padding-left: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            .outline-item-content {
+              background: linear-gradient(
+                135deg,
+                rgba(99, 102, 241, 0.08) 0%,
+                rgba(139, 92, 246, 0.05) 100%
+              );
+              transform: translateX(4px);
+              box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+
+              .outline-marker {
+                .marker-pulse {
+                  opacity: 1;
+                  transform: scale(1.5);
+                }
+              }
+
+              .outline-level-indicator {
+                opacity: 1;
+                transform: translateX(0);
+              }
+            }
           }
 
-          &:active {
-            transform: translateX(6px) scale(0.98);
+          &.is-active {
+            .outline-item-content {
+              background: linear-gradient(
+                135deg,
+                rgba(99, 102, 241, 0.15) 0%,
+                rgba(139, 92, 246, 0.1) 100%
+              );
+              border-left: 3px solid #6366f1;
+
+              .outline-marker {
+                .marker-dot {
+                  transform: scale(1.2);
+                }
+
+                .marker-pulse {
+                  opacity: 1;
+                  animation: pulse 2s infinite;
+                }
+              }
+
+              .outline-text {
+                color: #6366f1;
+                font-weight: 600;
+              }
+            }
           }
 
-          .outline-marker {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
+          .outline-item-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 0 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
 
-            &::after {
-              content: '';
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              width: 4px;
-              height: 4px;
-              border-radius: 50%;
-              background: white;
+            .outline-marker {
+              position: relative;
+              width: 12px;
+              height: 12px;
+              flex-shrink: 0;
+
+              .marker-dot {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                transition: all 0.3s ease;
+                position: relative;
+                z-index: 2;
+              }
+
+              .marker-pulse {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                opacity: 0;
+                transition: all 0.3s ease;
+                z-index: 1;
+              }
+
+              &.marker-level-1 {
+                .marker-dot {
+                  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+                  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+                }
+                .marker-pulse {
+                  background: rgba(59, 130, 246, 0.3);
+                }
+              }
+
+              &.marker-level-2 {
+                .marker-dot {
+                  background: linear-gradient(135deg, #10b981, #059669);
+                  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+                }
+                .marker-pulse {
+                  background: rgba(16, 185, 129, 0.3);
+                }
+              }
+
+              &.marker-level-3 {
+                .marker-dot {
+                  background: linear-gradient(135deg, #f59e0b, #d97706);
+                  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+                }
+                .marker-pulse {
+                  background: rgba(245, 158, 11, 0.3);
+                }
+              }
+
+              &.marker-level-4 {
+                .marker-dot {
+                  background: linear-gradient(135deg, #ef4444, #dc2626);
+                  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+                }
+                .marker-pulse {
+                  background: rgba(239, 68, 68, 0.3);
+                }
+              }
+
+              &.marker-level-5 {
+                .marker-dot {
+                  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+                  box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3);
+                }
+                .marker-pulse {
+                  background: rgba(139, 92, 246, 0.3);
+                }
+              }
+
+              &.marker-level-6 {
+                .marker-dot {
+                  background: linear-gradient(135deg, #ec4899, #db2777);
+                  box-shadow: 0 2px 4px rgba(236, 72, 153, 0.3);
+                }
+                .marker-pulse {
+                  background: rgba(236, 72, 153, 0.3);
+                }
+              }
             }
 
-            &.marker-level-1 {
-              background: var(--outline-marker-1);
-            }
-            &.marker-level-2 {
-              background: var(--outline-marker-2);
-            }
-            &.marker-level-3 {
-              background: var(--outline-marker-3);
-            }
-            &.marker-level-4 {
-              background: var(--outline-marker-4);
-            }
-            &.marker-level-5 {
-              background: var(--outline-marker-5);
-            }
-            &.marker-level-6 {
-              background: var(--outline-marker-6);
+            .outline-text-wrapper {
+              flex: 1;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+
+              .outline-text {
+                font-size: 14px;
+                color: #374151;
+                font-weight: 500;
+                line-height: 1.4;
+                transition: all 0.3s ease;
+                word-wrap: break-word;
+                word-break: break-word;
+                white-space: normal;
+              }
+
+              .outline-level-indicator {
+                font-size: 10px;
+                font-weight: 600;
+                color: #94a3b8;
+                background: rgba(148, 163, 184, 0.1);
+                padding: 2px 6px;
+                border-radius: 10px;
+                opacity: 0;
+                transform: translateX(8px);
+                transition: all 0.3s ease;
+                font-family: 'JetBrains Mono', 'Fira Code', monospace;
+              }
             }
           }
 
-          .outline-text {
-            font-size: 14px;
-            color: #374151;
-            font-weight: 500;
-            line-height: 1.4;
-            flex: 1;
+          .outline-connector {
+            position: absolute;
+            left: 22px;
+            top: 100%;
+            width: 1px;
+            height: 8px;
+            background: linear-gradient(to bottom, rgba(203, 213, 225, 0.5), transparent);
+            z-index: 0;
           }
 
-          &.level-1 .outline-text {
-            font-weight: 600;
-            font-size: 15px;
+          &.level-1 {
+            .outline-text {
+              font-weight: 600;
+              font-size: 15px;
+              color: #1f2937;
+            }
           }
 
-          &.level-2 .outline-text {
-            font-weight: 500;
+          &.level-2 {
+            .outline-text {
+              font-weight: 500;
+              font-size: 14px;
+            }
           }
 
-          &.level-3 .outline-text,
-          &.level-4 .outline-text,
-          &.level-5 .outline-text,
-          &.level-6 .outline-text {
-            font-weight: 400;
-            font-size: 13px;
-            color: #6b7280;
+          &.level-3,
+          &.level-4,
+          &.level-5,
+          &.level-6 {
+            .outline-text {
+              font-weight: 400;
+              font-size: 13px;
+              color: #6b7280;
+            }
           }
         }
       }
@@ -2021,6 +2445,106 @@ const handleSave = async () => {
       to {
         opacity: 1;
         transform: translateY(0);
+      }
+    }
+
+    // 闪烁动画
+    @keyframes sparkle {
+      0%,
+      100% {
+        opacity: 0;
+        transform: scale(0);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    // 脉冲动画
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.7;
+      }
+      50% {
+        transform: scale(1.3);
+        opacity: 0.3;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0.7;
+      }
+    }
+
+    // 大纲标记从右滑入动画
+    @keyframes markerSlideIn {
+      0% {
+        opacity: 0;
+        transform: translateX(40px) scale(0.5);
+        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+      }
+      30% {
+        opacity: 0.6;
+        transform: translateX(10px) scale(0.8);
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+      }
+      70% {
+        opacity: 0.9;
+        transform: translateX(-2px) scale(1.1);
+        box-shadow: 0 0 0 8px rgba(99, 102, 241, 0.1);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+      }
+    }
+
+    // 文本流水式进入动画
+    @keyframes textFlowIn {
+      0% {
+        opacity: 0;
+        transform: translateX(60px) scale(0.95);
+        filter: blur(2px);
+        letter-spacing: 2px;
+      }
+      40% {
+        opacity: 0.7;
+        transform: translateX(8px) scale(1.02);
+        filter: blur(0.5px);
+        letter-spacing: 0.5px;
+      }
+      80% {
+        opacity: 0.95;
+        transform: translateX(-1px) scale(1.01);
+        filter: blur(0px);
+        letter-spacing: 0.1px;
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        filter: blur(0px);
+        letter-spacing: 0px;
+      }
+    }
+
+    // 级别指示器淡入动画
+    @keyframes indicatorFadeIn {
+      0% {
+        opacity: 0;
+        transform: translateX(20px) scale(0.8);
+        background: rgba(99, 102, 241, 0);
+      }
+      50% {
+        opacity: 0.5;
+        transform: translateX(5px) scale(0.95);
+        background: rgba(99, 102, 241, 0.05);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        background: rgba(99, 102, 241, 0.1);
       }
     }
 
@@ -2166,32 +2690,6 @@ const handleSave = async () => {
         }
       }
     }
-  }
-}
-
-// 响应式设计
-@media (max-width: 1200px) {
-  .editor-sidebar {
-    width: 280px;
-  }
-}
-
-@media (max-width: 768px) {
-  .editor-layout {
-    flex-direction: column;
-    padding: 8px;
-    gap: 8px;
-  }
-
-  .editor-sidebar {
-    width: 100%;
-    height: 300px;
-    order: -1;
-    flex-shrink: 0;
-  }
-
-  .sidebar-content {
-    padding: 16px;
   }
 }
 
@@ -2677,27 +3175,6 @@ const handleSave = async () => {
   animation: slideIn 0.5s ease-out;
 }
 
-.outline-item {
-  animation: slideIn 0.3s ease-out;
-  animation-fill-mode: both;
-}
-
-.outline-item:nth-child(1) {
-  animation-delay: 0.1s;
-}
-.outline-item:nth-child(2) {
-  animation-delay: 0.2s;
-}
-.outline-item:nth-child(3) {
-  animation-delay: 0.3s;
-}
-.outline-item:nth-child(4) {
-  animation-delay: 0.4s;
-}
-.outline-item:nth-child(5) {
-  animation-delay: 0.5s;
-}
-
 /* 标签选择器样式 */
 .tag-selector {
   display: flex;
@@ -3058,26 +3535,6 @@ const handleSave = async () => {
   transform: scale(1.1) rotate(2deg);
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .fixed-actions {
-    bottom: 16px;
-    left: 16px;
-    right: 16px;
-    width: auto;
-    max-width: none;
-    transform: none;
-    padding: 6px;
-    gap: 3px;
-  }
-
-  .action-btn {
-    padding: 10px 16px;
-    font-size: 12px;
-    min-width: 80px;
-  }
-}
-
 /* 加载动画样式 - 融入主题设计 */
 .editor-loading-overlay,
 .outline-loading-overlay {
@@ -3330,74 +3787,6 @@ const handleSave = async () => {
   filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.1));
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .editor-loading-overlay,
-  .outline-loading-overlay {
-    border-radius: 8px;
-  }
-
-  .loading-container {
-    padding: 28px 20px;
-    margin: 16px;
-    border-radius: 16px;
-    gap: 20px;
-  }
-
-  .loading-container::before {
-    border-radius: 16px 16px 0 0;
-  }
-
-  .loading-spinner {
-    width: 48px;
-    height: 48px;
-  }
-
-  .loading-text h3 {
-    font-size: 16px;
-    letter-spacing: 0.3px;
-  }
-
-  .loading-text h4 {
-    font-size: 14px;
-    letter-spacing: 0.2px;
-  }
-
-  .loading-text p {
-    font-size: 13px;
-    line-height: 1.4;
-  }
-
-  .spinner-ring {
-    border-width: 2px;
-  }
-}
-
-@media (max-width: 480px) {
-  .loading-container {
-    padding: 24px 16px;
-    margin: 12px;
-    gap: 16px;
-  }
-
-  .loading-spinner {
-    width: 40px;
-    height: 40px;
-  }
-
-  .loading-text h3 {
-    font-size: 15px;
-  }
-
-  .loading-text h4 {
-    font-size: 13px;
-  }
-
-  .loading-text p {
-    font-size: 12px;
-  }
-}
-
 /* 封面图片上传组件样式 */
 .cover-image-upload {
   margin-top: 8px;
@@ -3639,52 +4028,6 @@ const handleSave = async () => {
   color: var(--text-color-secondary, #9ca3af);
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .cover-upload-area {
-    padding: 20px;
-  }
-
-  .cover-image {
-    height: 100px;
-  }
-
-  .cover-action-btn {
-    width: 24px;
-    height: 24px;
-  }
-
-  .upload-text {
-    font-size: 13px;
-  }
-
-  .upload-hint {
-    font-size: 11px;
-  }
-}
-
-@media (max-width: 480px) {
-  .cover-upload-area {
-    padding: 16px;
-  }
-
-  .cover-image {
-    height: 80px;
-  }
-
-  .upload-placeholder {
-    gap: 6px;
-  }
-
-  .upload-text {
-    font-size: 12px;
-  }
-
-  .upload-hint {
-    font-size: 10px;
-  }
-}
-
 /* 封面图片预览模态框样式 */
 .preview-modal {
   position: fixed;
@@ -3921,45 +4264,11 @@ const handleSave = async () => {
   }
 }
 
-@media (max-width: 480px) {
-  .preview-modal-content {
-    max-width: 98vw;
-    max-height: 98vh;
-    margin: 10px;
-  }
-
-  .preview-modal-header {
-    padding: 10px 12px;
-  }
-
-  .preview-modal-title {
-    font-size: 13px;
-  }
-
-  .preview-modal-body {
-    min-height: 150px;
-    max-height: 50vh;
-  }
-
-  .preview-modal-footer {
-    padding: 10px 12px;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .preview-action-btn {
-    width: 100%;
-    justify-content: center;
-    padding: 8px 12px;
-    font-size: 12px;
-  }
-}
-
 /* 修复 Vditor 工具栏上传按钮样式，使其与其他按钮保持一致 */
 :deep(.vditor-toolbar .vditor-tooltipped[data-type='upload']) {
   /* 确保上传按钮容器样式一致 */
   position: relative;
-  overflow: hidden;
+  // overflow: hidden;
 
   /* 隐藏默认的文件输入样式，但保持功能 */
   input[type='file'] {
@@ -4010,26 +4319,42 @@ const handleSave = async () => {
   transition-duration: 0.1s !important;
 }
 
-/* 确保上传按钮的光晕效果与其他按钮一致 */
-:deep(.vditor-toolbar .vditor-tooltipped[data-type='upload']::after) {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: radial-gradient(circle, rgba(102, 126, 234, 0.2) 0%, transparent 70%);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: 0;
-  z-index: 0;
-  pointer-events: none;
+/* 大纲项目从右往左流水式动画效果 */
+.outline-item-enter-active {
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-:deep(.vditor-toolbar .vditor-tooltipped[data-type='upload']:hover::after) {
-  width: 80px;
-  height: 80px;
-  opacity: 0.6;
+.outline-item-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53);
+}
+
+.outline-item-enter-from {
+  opacity: 0;
+  transform: translateX(100px) scale(0.9);
+  filter: blur(3px);
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.08), transparent);
+}
+
+.outline-item-leave-to {
+  opacity: 0;
+  transform: translateX(-80px) scale(0.95);
+  filter: blur(2px);
+}
+
+.outline-item-move {
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* 大纲项目进入时的分层动画效果 */
+.outline-item-enter-active .outline-marker {
+  animation: markerSlideIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+}
+
+.outline-item-enter-active .outline-text {
+  animation: textFlowIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s both;
+}
+
+.outline-item-enter-active .outline-level-indicator {
+  animation: indicatorFadeIn 0.6s ease-out 0.4s both;
 }
 </style>
