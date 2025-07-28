@@ -7,6 +7,8 @@
  * @Description: main.ts
  *
  */
+import '@/assets/styles/style.scss';
+import '@/assets/styles/transition.scss';
 import { i18n } from '@/locales';
 import store from '@/store';
 import dayjs from 'dayjs';
@@ -20,8 +22,6 @@ import App from './App.vue';
 import setDirectives from './directives';
 import { setupRouter } from './router';
 import './style.css';
-import '@/assets/styles/style.scss';
-import '@/assets/styles/transition.scss';
 
 const start = async () => {
   const app = createApp(App);

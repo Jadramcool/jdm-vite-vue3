@@ -54,6 +54,16 @@ export default [
           keepAlive: true,
         },
       },
+      {
+        name: 'ThemeDemo',
+        path: '/base/theme-demo',
+        component: '/src/views/base/ThemeDemo.vue',
+        meta: {
+          title: '主题演示',
+          icon: 'icon-park-outline:theme',
+          keepAlive: true,
+        },
+      },
     ],
   },
   {
