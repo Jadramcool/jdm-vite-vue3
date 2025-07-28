@@ -10,7 +10,7 @@
           <SideLogo v-if="appStore.showLogo" />
         </div>
         <div class="info flex-x-center gap-1 h-full p-x-xl">
-          <HeaderTools :showDarkMode="false" :showLanguage="false" :showUserCenter="false" />
+          <HeaderTools :showDarkMode="true" :showLanguage="false" :showUserCenter="false" />
         </div>
       </n-layout-header>
       <n-layout-content embedded class="h-full flex-1 overflow-hidden" :native-scrollbar="true">

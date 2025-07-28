@@ -383,6 +383,7 @@
   // 列表样式
   ul {
     padding-left: 1.5em;
+    list-style: revert; // 重新启用默认列表样式
 
     li {
       margin: 0.5em 0;
@@ -404,10 +405,17 @@
 
   ol {
     padding-left: 1.5em;
+    list-style: decimal; // 明确设置为数字列表
 
     li {
       margin: 0.5em 0;
       transition: all 0.3s ease;
+
+      &::marker {
+        color: var(--md-link-color);
+        font-weight: 700;
+        font-size: 0.95em;
+      }
 
       &:hover {
         transform: translateX(4px);

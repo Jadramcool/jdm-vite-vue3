@@ -121,6 +121,16 @@ export default [
         },
       },
       {
+        name: 'BlogPostDetail',
+        path: '/blog/post/detail/:id',
+        component: '/src/views/blog/post/detail.vue',
+        meta: {
+          title: '文章详情',
+          layout: 'blog',
+          icon: 'solar:document-text-broken',
+        },
+      },
+      {
         name: 'BlogCategory',
         path: '/blog/category',
         component: '/src/views/blog/admin/category/index.vue',

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="editor-layout h-100%" :class="[`theme-${currentTheme}`, 'theme-transition']">
+    <div class="editor-layout h-100%" :class="[getThemeClass(), 'theme-transition']">
       <!-- 主编辑区域 -->
       <div class="editor-main">
         <!-- 编辑器加载动画 -->
@@ -507,6 +507,7 @@
 
 <script setup lang="ts">
 import { BlogApi, UploadApi } from '@/api';
+import { useTheme } from '@/composables/useTheme';
 import { getToken } from '@/utils/token';
 import { NInput, NRadio, NRadioGroup, NSwitch, useMessage } from 'naive-ui';
 import Vditor from 'vditor';
@@ -551,16 +552,8 @@ const editorSettings = ref({
   autoSave: false,
 });
 
-// 主题设置
-const currentTheme = ref('default');
-const themes = ref([
-  { key: 'default', name: '默认粉色' },
-  { key: 'blue', name: '蓝色科技' },
-  { key: 'green', name: '绿色自然' },
-  { key: 'purple', name: '紫色梦幻' },
-  { key: 'orange', name: '橙色温暖' },
-  { key: 'dark', name: '深色模式' },
-]);
+// 主题设置 - 使用组合式函数
+const { currentTheme, themes, switchTheme, loadThemeFromStorage, getThemeClass } = useTheme();
 
 // 表单数据
 const formData = ref({
@@ -1516,27 +1509,6 @@ const handlePreview = () => {
   message.info('预览功能待实现');
 };
 
-/**
- * 切换主题
- * @param themeKey 主题键名
- */
-const switchTheme = (themeKey: string) => {
-  currentTheme.value = themeKey;
-  // 保存主题设置到本地存储
-  localStorage.setItem('editor-theme', themeKey);
-  message.success(`已切换到${themes.value.find((t) => t.key === themeKey)?.name}主题`);
-};
-
-/**
- * 从本地存储加载主题设置
- */
-const loadThemeFromStorage = () => {
-  const savedTheme = localStorage.getItem('editor-theme');
-  if (savedTheme && themes.value.some((t) => t.key === savedTheme)) {
-    currentTheme.value = savedTheme;
-  }
-};
-
 // 保存文章
 const handleSave = async () => {
   if (!vditor.value) {
@@ -1589,8 +1561,8 @@ const handleSave = async () => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/styles/editor-themes.scss';
-@import '@/assets/styles/markdown-themes.scss';
+// 导入通用主题文件
+@import '@/assets/styles/common-themes.scss';
 
 .editor-layout {
   position: absolute;
@@ -2590,32 +2562,7 @@ const handleSave = async () => {
           }
         }
 
-        .theme-selector {
-          display: flex;
-          gap: 12px;
-          flex-wrap: wrap;
-          width: 90%;
-
-          .theme-option {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 3px solid transparent;
-            position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-            &:hover {
-              transform: scale(1.1) rotate(5deg);
-              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            }
-
-            &.active {
-              transform: scale(1.15);
-              box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-            }
-          }
-        }
+        // 主题选择器样式已移至通用主题文件
       }
 
       .setting-item {
