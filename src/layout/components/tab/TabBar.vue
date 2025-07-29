@@ -145,22 +145,25 @@ function handleDragEnd(event: DragEvent) {
 </script>
 
 <style lang="scss" scoped>
+/**
+ * 标签栏容器样式美化
+ */
 .tabbars {
-  height: 42px;
-  padding: 2px;
-  padding: 0 16px;
-  border-bottom: 1px solid var(--border-color);
-  transition: border-color 0.3s ease;
+  height: 48px;
+  padding: 6px 16px;
+  border-bottom: 1px solid var(--n-border-color);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
 }
 
 :deep(.n-tabs) {
   .n-tabs-tab {
     padding-left: 16px;
     height: 36px;
-    background: transparent !important;
-    border-radius: 4px !important;
-    margin-right: 4px;
-    transition: all 0.2s ease;
+    border-radius: 8px !important;
+    margin-right: 6px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
     &:hover {
       border: 1px solid var(--primary-color) !important;
     }
@@ -171,7 +174,6 @@ function handleDragEnd(event: DragEvent) {
       user-select: none;
 
       &:hover {
-        transform: translateY(-1px);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       }
 
@@ -184,7 +186,6 @@ function handleDragEnd(event: DragEvent) {
   }
   .n-tabs-tab--active {
     border: 1px solid var(--primary-color) !important;
-    background-color: var(--tab-selected-bg) !important;
   }
   .n-tabs-pad,
   .n-tabs-tab-pad,
@@ -196,11 +197,13 @@ function handleDragEnd(event: DragEvent) {
   }
 }
 
-// 拖拽时的视觉反馈
+/**
+ * 拖拽时的视觉反馈美化
+ */
 .draggable-tab {
   &[data-dragging='true'] {
-    opacity: 0.5;
-    transform: rotate(5deg);
+    opacity: 0.6;
+    transform: rotate(3deg) scale(0.95);
   }
 
   &[data-drag-over='true'] {
