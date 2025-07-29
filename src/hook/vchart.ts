@@ -3,7 +3,8 @@ import type { ISpec, ITheme } from '@visactor/vchart';
 import VChart from '@visactor/vchart';
 import dark from '@visactor/vchart-theme/public/dark.json';
 import light from '@visactor/vchart-theme/public/light.json';
-import { useElementSize } from '@vueuse/core';
+import { tryOnUnmounted, useElementSize } from '@vueuse/core';
+import { computed, effectScope, nextTick, ref, watch } from 'vue';
 
 // register the theme
 VChart.ThemeManager.registerTheme('light', light as ITheme);
@@ -25,12 +26,10 @@ export function useVChart<T extends ISpec>(specFactory: () => T, hooks: ChartHoo
     return appStore.colorMode;
   });
 
-  // dom ref
+  // DOM 引用
   const domRef = ref<HTMLElement | null>(null);
-  // 初始化size
-  const initialSize = { width: 0, height: 0 };
-  // 获取 HTML 元素的响应式大小。
-  const { width, height } = useElementSize(domRef, initialSize);
+  // 获取 HTML 元素的响应式大小
+  const { width, height } = useElementSize(domRef, { width: 0, height: 0 });
 
   // 定义图表实例
   let chart: VChart | null = null;
@@ -43,35 +42,55 @@ export function useVChart<T extends ISpec>(specFactory: () => T, hooks: ChartHoo
 
   /**
    * 更新图表的数据配置
-   * @param callback callback function
+   * @param callback 回调函数，用于生成新的图表配置
    */
   async function updateSpec(callback: (opts: T, optsFactory: () => T) => ISpec = () => spec) {
-    if (!isRendered()) return;
-
-    const updatedOpts = callback(spec, specFactory);
-
-    Object.assign(spec, updatedOpts);
-
-    if (isRendered()) {
-      // 销毁图表
-      chart?.release();
+    if (!isRendered()) {
+      console.warn('图表尚未渲染，无法更新配置');
+      return;
     }
 
-    chart?.updateSpec({ ...updatedOpts }, true);
+    try {
+      const updatedOpts = callback(spec, specFactory);
 
-    await onUpdated?.(chart!);
+      // 更新本地配置
+      Object.assign(spec, updatedOpts);
+
+      // 直接更新图表配置，无需销毁重建
+      chart?.updateSpec({ ...updatedOpts }, true);
+
+      await onUpdated?.(chart!);
+    } catch (error) {
+      console.error('更新图表配置失败:', error);
+      throw error;
+    }
   }
 
+  /**
+   * 设置图表配置
+   * @param newSpec 新的图表配置
+   */
   function setSpec(newSpec: T) {
-    chart?.updateSpec(newSpec);
+    try {
+      if (chart && isRendered()) {
+        // 图表已渲染，直接更新
+        chart.updateSpec(newSpec, true);
+      } else {
+        // 图表尚未初始化，存储配置供后续渲染使用
+        Object.assign(spec, newSpec);
+      }
+    } catch (error) {
+      console.error('设置图表配置失败:', error);
+      throw error;
+    }
   }
 
   /**
    * 判断是否可以渲染
-   * @returns boolean
+   * @returns 是否满足渲染条件
    */
   function canRender() {
-    return domRef.value && initialSize.width > 0 && initialSize.height > 0;
+    return domRef.value && width.value > 0 && height.value > 0;
   }
 
   /**
@@ -83,80 +102,174 @@ export function useVChart<T extends ISpec>(specFactory: () => T, hooks: ChartHoo
   }
 
   /** 重新设置图表大小 */
-  /**
-   * **异步方法**，图表尺寸更新方法。
-   * @param width 宽度
-   * @param height 高度
-   * @returns VChart 当前实例
-   */
   function resize() {
-    // chart?.resize();
-  }
-
-  async function render() {
-    if (!isRendered()) {
-      // 设置主题
-      if (darkMode.value) {
-        VChart.ThemeManager.setCurrentTheme(darkMode.value);
-      }
-
-      chart = new VChart(spec, { dom: domRef.value as HTMLElement });
-      chart.renderSync();
-
-      await onRender?.(chart);
+    if (chart && isRendered()) {
+      chart.resize(width.value, height.value);
     }
   }
 
-  /** 销毁charts */
+  /**
+   * 渲染图表
+   */
+  async function render() {
+    try {
+      if (!isRendered() && canRender()) {
+        // 设置主题
+        VChart.ThemeManager.setCurrentTheme(darkMode.value);
+
+        // 创建图表实例
+        chart = new VChart(spec, {
+          dom: domRef.value as HTMLElement,
+        });
+
+        // 同步渲染
+        chart.renderSync();
+
+        // 执行渲染回调
+        await onRender?.(chart);
+      } else if (isRendered()) {
+        // 如果已经渲染，调整大小
+        resize();
+      }
+    } catch (error) {
+      console.error('渲染图表失败:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 销毁图表实例
+   */
   async function destroy() {
     if (!chart) return;
 
-    // 如果有自定义的销毁方法，则执行之
-    await onDestroy?.(chart);
-    // 执行默认销毁逻辑
-    chart?.release();
-    // 重置 chart
-    chart = null;
+    try {
+      // 执行自定义销毁回调
+      await onDestroy?.(chart);
+
+      // 释放图表资源
+      chart.release();
+
+      // 重置图表实例
+      chart = null;
+    } catch (error) {
+      console.error('销毁图表失败:', error);
+      // 即使出错也要重置chart实例
+      chart = null;
+      throw error;
+    }
   }
 
+  /**
+   * 根据尺寸变化渲染或销毁图表
+   * @param w 宽度
+   * @param h 高度
+   */
   async function renderChartBySize(w: number, h: number) {
-    initialSize.width = w;
-    initialSize.height = h;
+    try {
+      // 尺寸异常时销毁图表
+      if (w <= 0 || h <= 0 || !domRef.value) {
+        await destroy();
+        return;
+      }
 
-    // size is abnormal, destroy chart
-    if (!canRender()) {
+      // 渲染或调整图表
+      await render();
+    } catch (error) {
+      console.error('根据尺寸渲染图表失败:', error);
+    }
+  }
+
+  /**
+   * 切换图表主题
+   */
+  async function changeTheme() {
+    if (!chart || !isRendered()) return;
+
+    try {
+      // 设置新主题
+      VChart.ThemeManager.setCurrentTheme(darkMode.value);
+
+      // 重新创建图表以应用新主题
       await destroy();
 
-      return;
-    }
+      // 等待下一个tick确保DOM更新
+      await nextTick();
 
-    // TODO 改变图表尺寸
-    if (isRendered()) {
-      resize();
-    }
+      // 重新渲染图表
+      await render();
 
-    // render chart
-    await render();
+      // 执行更新回调
+      await onUpdated?.(chart!);
+    } catch (error) {
+      console.error('切换图表主题失败:', error);
+    }
   }
 
-  async function changeTheme() {
-    await destroy();
-    await render();
-    await onUpdated?.(chart!);
-  }
-
+  // 在effect作用域中设置监听器
   scope.run(() => {
-    watch([width, height], ([newWidth, newHeight]) => {
-      renderChartBySize(newWidth, newHeight);
-    });
+    // 监听尺寸变化，添加防抖处理
+    watch(
+      [width, height],
+      ([newWidth, newHeight]) => {
+        renderChartBySize(newWidth, newHeight);
+      },
+      { flush: 'post' }, // 在DOM更新后执行
+    );
 
-    watch(darkMode, () => {
-      changeTheme();
-    });
+    // 监听主题变化
+    watch(
+      darkMode,
+      () => {
+        changeTheme();
+      },
+      { flush: 'post' },
+    );
   });
+
+  // 在组件卸载时自动清理资源
+  tryOnUnmounted(async () => {
+    try {
+      // 销毁图表实例
+      await destroy();
+    } catch (error) {
+      console.error('组件卸载时销毁图表失败:', error);
+    } finally {
+      // 停止effect作用域
+      scope.stop();
+    }
+  });
+
+  /**
+   * 获取图表实例
+   * @returns 图表实例或null
+   */
+  function getChart() {
+    return chart;
+  }
+
+  /**
+   * 获取当前图表配置
+   * @returns 当前图表配置
+   */
+  function getSpec() {
+    return spec;
+  }
+
   return {
+    // DOM引用
     domRef,
+    // 图表操作方法
     updateSpec,
     setSpec,
+    render,
+    destroy,
+    resize,
+    // 获取方法
+    getChart,
+    getSpec,
+    // 状态检查方法
+    canRender,
+    isRendered,
   };
 }
