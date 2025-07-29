@@ -90,7 +90,8 @@
     "updatedTime": "UpdatedTime",
     "uploading": "Uploading",
     "username": "Username",
-    "yes": "Yes"
+    "yes": "Yes",
+    "goTo": "Go to"
   },
   "component": {
     "message": {
@@ -178,6 +179,26 @@
         "phone": "Secured mobile phone",
         "phoneInfo": "Mobile phone has been bound:",
         "realNameAuth": "Real-name authentication"
+      }
+    },
+    "base": {
+      "features": {
+        "title": "Feature Showcase",
+        "table": "Table",
+        "tableDesc": "Showcase table components in the system, including basic tables, editable tables, tree tables, etc.",
+        "form": "Form",
+        "formDesc": "Showcase form components in the system, including basic forms, dynamic forms, validated forms, etc.",
+        "chart": "Chart",
+        "chartDesc": "Showcase chart components in the system, including line charts, bar charts, pie charts, etc.",
+        "notification": "Notification",
+        "notificationDesc": "Showcase notification components in the system, including message notifications, reminders, etc.",
+        "components": "Basic Components",
+        "button": "Button",
+        "buttonDesc": "Showcase button components in the system, including buttons with different styles, sizes, and states.",
+        "input": "Input",
+        "inputDesc": "Showcase input components in the system, including text boxes, password boxes, text areas, etc.",
+        "modal": "Modal",
+        "modalDesc": "Showcase modal components in the system, including modals with different styles and sizes."
       }
     },
     "blog": {
