@@ -76,3 +76,16 @@ export const roleTypeOptions = computed(() => [
   { label: $t('user.roleType.user'), value: 'user' },
 ]);
 // -----------------------自定义配置--------------------------
+/** @description 博客文章状态样式 */
+export const postStatusColorOptions: Record<string, 'success' | 'error' | 'warning'> = {
+  published: 'success',
+  draft: 'warning',
+  archived: 'error',
+};
+
+/** @description 博客文章状态选项配置 */
+export const postStatusOptions = computed(() => [
+  { label: $t('modules.blog.post.statusMap.published'), value: 'PUBLISHED' },
+  { label: $t('modules.blog.post.statusMap.draft'), value: 'DRAFT' },
+  { label: $t('modules.blog.post.statusMap.archived'), value: 'ARCHIVED' },
+]);

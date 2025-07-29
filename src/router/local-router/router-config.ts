@@ -54,6 +54,16 @@ export default [
           keepAlive: true,
         },
       },
+      {
+        name: 'ThemeDemo',
+        path: '/base/theme-demo',
+        component: '/src/views/base/ThemeDemo.vue',
+        meta: {
+          title: '主题演示',
+          icon: 'icon-park-outline:theme',
+          keepAlive: true,
+        },
+      },
     ],
   },
   {
@@ -96,6 +106,57 @@ export default [
           icon: 'solar:user-speak-outline',
           title: '角色管理',
           layout: 'normal',
+          keepAlive: true,
+        },
+      },
+    ],
+  },
+  {
+    name: 'Blog',
+    path: '/blog',
+    redirect: '/blog/post',
+    meta: {
+      title: 'route.blog.title',
+      icon: 'solar:document-text-line-duotone',
+    },
+    children: [
+      {
+        name: 'BlogPost',
+        path: '/blog/post',
+        component: '/src/views/blog/admin/post/index.vue',
+        meta: {
+          title: 'route.blog.post',
+          icon: 'solar:document-text-broken',
+          keepAlive: true,
+        },
+      },
+      {
+        name: 'BlogPostDetail',
+        path: '/blog/post/detail/:id',
+        component: '/src/views/blog/post/detail.vue',
+        meta: {
+          title: '文章详情',
+          layout: 'blog',
+          icon: 'solar:document-text-broken',
+        },
+      },
+      {
+        name: 'BlogCategory',
+        path: '/blog/category',
+        component: '/src/views/blog/admin/category/index.vue',
+        meta: {
+          title: 'route.blog.category',
+          icon: 'solar:folder-broken',
+          keepAlive: true,
+        },
+      },
+      {
+        name: 'BlogTag',
+        path: '/blog/tag',
+        component: '/src/views/blog/admin/tag/index.vue',
+        meta: {
+          title: 'route.blog.tag',
+          icon: 'solar:tag-broken',
           keepAlive: true,
         },
       },

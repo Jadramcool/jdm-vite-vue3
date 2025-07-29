@@ -228,7 +228,6 @@ const getProps = computed((): NewFormProps => {
     rules: {},
   };
   const schemas: FormSchema[] = formProps.schemas || [];
-  console.log('🚀 ~ getProps ~ schemas:', schemas);
   schemas.forEach((item) => {
     if (item.rules && isArray(item.rules)) {
       // 给rules添加key属性,用来单个校验
