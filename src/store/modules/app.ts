@@ -8,12 +8,15 @@ import {
   lightThemeOverrides,
   naiveThemeOverrides,
 } from '@/settings';
-import { getRgb, isValidColor, lStorage, setLocale } from '@/utils';
+import { getLStorage } from '@/utils/storage';
+import { getRgb, isValidColor, setLocale } from '@/utils';
 import { useCssVar } from '@vueuse/core';
 import chroma from 'chroma-js'; // 极小且零依赖的 JavaScript 颜色库
 import _ from 'lodash';
 import { type GlobalThemeOverrides } from 'naive-ui';
 import { nextTick } from 'vue';
+
+const lStorage = getLStorage();
 
 // 移除防抖相关代码，改为同步更新主题
 

@@ -49,9 +49,8 @@ export class TransitionController {
       properties = ['background-color', 'color', 'border-color', 'box-shadow'],
     } = options;
 
-    const transitionId = `transition-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
-    // 创建过渡样式
+    // 使用更现代的方式生成唯一ID
+    const transitionId = `transition-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
     const style = document.createElement('style');
     style.id = transitionId;
 
@@ -71,12 +70,7 @@ export class TransitionController {
     this.activeTransitions.add(transitionId);
 
     // 自动清理
-    setTimeout(
-      () => {
-        this.removeTransition(transitionId);
-      },
-      duration + delay + 100,
-    );
+    setTimeout(() => this.removeTransition(transitionId), duration + delay + 100);
   }
 
   /**
@@ -96,11 +90,9 @@ export class TransitionController {
    * 清除所有过渡效果
    */
   clearAllTransitions(): void {
-    this.transitionStyles.forEach((style) => {
-      if (style.parentNode) {
-        style.parentNode.removeChild(style);
-      }
-    });
+    // 使用Array.from创建数组副本，避免在迭代时修改Map
+    const styles = Array.from(this.transitionStyles.values());
+    styles.forEach((style) => style.parentNode?.removeChild(style));
     this.transitionStyles.clear();
     this.activeTransitions.clear();
   }
@@ -113,171 +105,144 @@ export class TransitionController {
    * @param duration 动画持续时间（毫秒）
    * @param beforeThemeChange 主题切换前的回调函数
    */
-  static createCircularTransition(
+  static async createCircularTransition(
     clickX: number,
     clickY: number,
-    duration: number = 600,
+    duration = 600,
     beforeThemeChange?: () => Promise<void>,
   ): Promise<void> {
-    return new Promise((resolve) => {
-      // 计算最大半径（确保能覆盖整个屏幕）
-      const maxRadius = Math.sqrt(
-        Math.max(clickX, window.innerWidth - clickX) ** 2 +
-          Math.max(clickY, window.innerHeight - clickY) ** 2,
-      );
+    // 计算最大半径（确保能覆盖整个屏幕）
+    const maxRadius = Math.sqrt(
+      Math.max(clickX, window.innerWidth - clickX) ** 2 +
+        Math.max(clickY, window.innerHeight - clickY) ** 2,
+    );
 
-      // 添加全局样式，禁用过渡效果但保持圆形动画可见
-      const globalTransitionDisable = document.createElement('style');
-      globalTransitionDisable.id = 'circular-transition-disable';
-      globalTransitionDisable.textContent = `
-        /* 禁用页面内容的过渡和动画效果 */
-        body *:not(#circular-theme-overlay):not(#circular-theme-overlay *), 
-        body *:not(#circular-theme-overlay):not(#circular-theme-overlay *)::before, 
-        body *:not(#circular-theme-overlay):not(#circular-theme-overlay *)::after {
-          transition: none !important;
-          animation: none !important;
-        }
-        
-        /* 允许遮罩层的圆形过渡动画 */
-        #circular-theme-overlay {
-          transition: clip-path ${duration}ms cubic-bezier(0.4, 0, 0.2, 1) !important;
-        }
-        
-        /* 禁用遮罩层内容的过渡，但不影响遮罩层本身 */
-        #circular-theme-overlay * {
-          transition: none !important;
-          animation: none !important;
-        }
-      `;
-      document.head.appendChild(globalTransitionDisable);
-
-      /**
-       * 冻结克隆体样式状态的辅助函数
-       * 通过计算并固化样式来避免UnoCSS dark类动态变化的影响
-       */
-      const freezeClonedStyles = (clonedElement: HTMLElement) => {
-        // 由于UnoCSS的dark类在html元素上，而我们克隆的是body元素
-        // 当html元素的dark类发生变化时，会影响到克隆体中元素的样式
-        // 因此需要在主题切换前固化克隆体中所有元素的计算样式
-
-        // 递归遍历所有元素，将计算样式固化为内联样式
-        const freezeElementStyles = (element: Element) => {
-          if (element instanceof HTMLElement) {
-            const computedStyle = window.getComputedStyle(element);
-
-            // 固化所有可能受dark类影响的样式属性
-            const criticalStyles = [
-              'background-color',
-              'color',
-              'border-color',
-              'border-top-color',
-              'border-right-color',
-              'border-bottom-color',
-              'border-left-color',
-              'box-shadow',
-              'text-shadow',
-              'fill',
-              'stroke',
-              'outline-color',
-            ];
-
-            criticalStyles.forEach((property) => {
-              const value = computedStyle.getPropertyValue(property);
-              if (value && value !== 'initial' && value !== 'inherit' && value !== 'transparent') {
-                element.style.setProperty(property, value, 'important');
-              }
-            });
-          }
-
-          // 递归处理子元素
-          Array.from(element.children).forEach(freezeElementStyles);
-        };
-
-        freezeElementStyles(clonedElement);
-
-        // 强制重新计算样式
-        if (clonedElement.offsetHeight) {
-          // 触发重排
-        }
-      };
-
-      // 先克隆当前页面内容（旧主题）
-      const bodyClone = document.body.cloneNode(true) as HTMLElement;
-      bodyClone.style.cssText = `
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-      `;
-      // 冻结克隆体的样式状态，避免UnoCSS dark类的动态影响
-      freezeClonedStyles(bodyClone);
-
-      // 移除克隆体中可能存在的遮罩层（避免递归）
-      const existingOverlay = bodyClone.querySelector('#circular-theme-overlay');
-      if (existingOverlay) {
-        existingOverlay.remove();
+    // 添加全局样式，禁用过渡效果但保持圆形动画可见
+    const globalTransitionDisable = document.createElement('style');
+    globalTransitionDisable.id = 'circular-transition-disable';
+    globalTransitionDisable.textContent = `
+      /* 禁用页面内容的过渡和动画效果 */
+      body *:not(#circular-theme-overlay):not(#circular-theme-overlay *), 
+      body *:not(#circular-theme-overlay):not(#circular-theme-overlay *)::before, 
+      body *:not(#circular-theme-overlay):not(#circular-theme-overlay *)::after {
+        transition: none !important;
+        animation: none !important;
       }
-
-      // 移除克隆体中的过渡禁用样式（避免重复）
-      const existingDisableStyle = bodyClone.querySelector('#circular-transition-disable');
-      if (existingDisableStyle) {
-        existingDisableStyle.remove();
+      
+      /* 允许遮罩层的圆形过渡动画 */
+      #circular-theme-overlay {
+        transition: clip-path ${duration}ms cubic-bezier(0.4, 0, 0.2, 1) !important;
       }
+      
+      /* 禁用遮罩层内容的过渡，但不影响遮罩层本身 */
+      #circular-theme-overlay * {
+        transition: none !important;
+        animation: none !important;
+      }
+    `;
+    document.head.appendChild(globalTransitionDisable);
 
-      // 创建遮罩层，显示旧主题内容
-      const overlay = document.createElement('div');
-      overlay.id = 'circular-theme-overlay';
-      overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        pointer-events: none;
-        z-index: 9999;
-        clip-path: circle(${maxRadius}px at ${clickX}px ${clickY}px);
-        transition: clip-path ${duration}ms cubic-bezier(0.4, 0, 0.2, 1);
-      `;
+    // 定义主题切换的异步处理函数
+    const executeThemeChange = async () => {
+      if (beforeThemeChange) {
+        await beforeThemeChange();
+      }
+    };
 
-      overlay.appendChild(bodyClone);
-      document.body.appendChild(overlay);
+    // 始终先克隆当前主题的body，不执行主题切换
+    const bodyClone = document.body.cloneNode(true) as HTMLElement;
+    bodyClone.style.cssText = `
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    `;
 
-      // 确保遮罩层完全渲染并覆盖页面后再执行主题切换
+    // 冻结克隆体的样式状态
+    TransitionController.freezeClonedStyles(bodyClone);
+
+    // 移除克隆体中可能存在的遮罩层和过渡禁用样式（避免递归）
+    bodyClone.querySelector('#circular-theme-overlay')?.remove();
+    bodyClone.querySelector('#circular-transition-disable')?.remove();
+
+    // 创建遮罩层，显示旧主题内容
+    const overlay = document.createElement('div');
+    overlay.id = 'circular-theme-overlay';
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+      clip-path: circle(${maxRadius}px at ${clickX}px ${clickY}px);
+      transition: clip-path ${duration}ms cubic-bezier(0.4, 0, 0.2, 1);
+    `;
+
+    overlay.appendChild(bodyClone);
+    document.body.appendChild(overlay);
+
+    // 确保遮罩层完全渲染后开始动画
+    await new Promise<void>((resolve) => {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          // 使用更长的延迟确保遮罩层完全生效
-          setTimeout(async () => {
-            // 执行主题切换
-            if (beforeThemeChange) {
-              await beforeThemeChange();
-            }
-
-            // 再次确保主题切换完成后才开始动画
-            requestAnimationFrame(() => {
-              requestAnimationFrame(() => {
-                overlay.style.clipPath = `circle(0px at ${clickX}px ${clickY}px)`;
-              });
-            });
-          }, 16); // 约一帧的时间
+          // 在动画开始前执行主题切换
+          executeThemeChange().then(() => {
+            // 主题切换完成后开始动画
+            overlay.style.clipPath = `circle(0px at ${clickX}px ${clickY}px)`;
+            resolve();
+          });
         });
       });
+    });
 
-      // 动画完成后清理
+    // 等待动画完成
+    await new Promise<void>((resolve) => {
       setTimeout(() => {
-        // 移除遮罩层
-        if (overlay.parentNode) {
-          overlay.parentNode.removeChild(overlay);
-        }
-
-        // 移除过渡禁用样式
-        if (globalTransitionDisable.parentNode) {
-          globalTransitionDisable.parentNode.removeChild(globalTransitionDisable);
-        }
-
+        // 移除遮罩层和过渡禁用样式
+        overlay.parentNode?.removeChild(overlay);
+        globalTransitionDisable.parentNode?.removeChild(globalTransitionDisable);
         resolve();
       }, duration);
     });
+  }
+
+  /**
+   * 冻结克隆体样式状态的辅助方法
+   * 通过计算并固化样式来确保过渡效果正常
+   */
+  private static freezeClonedStyles(clonedElement: HTMLElement) {
+    const freezeElement = (element: Element) => {
+      if (element instanceof HTMLElement) {
+        const computed = window.getComputedStyle(element);
+        // 固化所有关键样式属性
+        const criticalStyles = [
+          'background-color',
+          'color',
+          'border-color',
+          'border-top-color',
+          'border-right-color',
+          'border-bottom-color',
+          'border-left-color',
+          'box-shadow',
+          'text-shadow',
+        ];
+
+        criticalStyles.forEach((prop) => {
+          const value = computed.getPropertyValue(prop);
+          if (value && value !== 'initial' && value !== 'inherit') {
+            element.style.setProperty(prop, value, 'important');
+          }
+        });
+      }
+      // 递归处理子元素
+      Array.from(element.children).forEach(freezeElement);
+    };
+    freezeElement(clonedElement);
+    // 强制重排，确保样式生效
+    clonedElement.offsetHeight;
   }
 
   /**
@@ -293,11 +258,8 @@ export class TransitionController {
   async waitForAllTransitions(): Promise<void> {
     return new Promise((resolve) => {
       const checkTransitions = () => {
-        if (this.activeTransitions.size === 0) {
-          resolve();
-        } else {
-          setTimeout(checkTransitions, 50);
-        }
+        if (this.activeTransitions.size === 0) resolve();
+        else setTimeout(checkTransitions, 50);
       };
       checkTransitions();
     });
@@ -335,17 +297,17 @@ export const createSmoothTransition = (
         return TransitionController.createCircularTransition(
           options.clickX,
           options.clickY,
-          options.duration || 600,
+          options.duration ?? 600,
           options.beforeThemeChange,
         );
       }
-      break;
+      return Promise.resolve();
     case 'none':
       // 不添加任何过渡效果
-      break;
+      return Promise.resolve();
     case 'uniform':
     default: {
-      const duration = options.duration || 150;
+      const duration = options.duration ?? 150;
 
       // 简单的全局过渡
       transitionController.addTransition('*', {
@@ -354,7 +316,7 @@ export const createSmoothTransition = (
         properties: ['background-color', 'color'],
         useGPU: false,
       });
-      break;
+      return Promise.resolve();
     }
   }
 };

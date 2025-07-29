@@ -24,6 +24,7 @@ export interface ThemeOptions {
   clickX?: number;
   /** 点击位置Y坐标（用于circular过渡） */
   clickY?: number;
+
   /** 切换开始回调 */
   onStart?: () => void;
   /** 切换完成回调 */
@@ -98,17 +99,17 @@ export class ThemeManager {
         // 使用新的过渡控制器
         const transitionOptions: any = {
           duration: transitionDuration,
+          clickX,
+          clickY,
+          // 仅在circular过渡类型且提供了点击坐标时设置beforeThemeChange回调
+          beforeThemeChange:
+            transitionType === 'circular' && clickX !== undefined && clickY !== undefined
+              ? async () => {
+                  // 这里的逻辑会在圆形动画开始后执行（被遮罩层遮挡）
+                  await appStore.setColorMode(mode); // 此方法会更新 dark 类
+                }
+              : undefined,
         };
-
-        // 如果是circular类型，添加点击位置参数和主题切换回调
-        if (transitionType === 'circular' && clickX !== undefined && clickY !== undefined) {
-          transitionOptions.clickX = clickX;
-          transitionOptions.clickY = clickY;
-          // 将主题切换作为回调传递给圆形过渡
-          transitionOptions.beforeThemeChange = async () => {
-            await appStore.setColorMode(mode);
-          };
-        }
         const transitionPromise = createSmoothTransition(transitionType, transitionOptions);
 
         // 对于circular类型，主题切换已经在过渡动画中处理
@@ -150,8 +151,10 @@ export class ThemeManager {
   async cycleTheme(options?: ThemeOptions): Promise<void> {
     const appStore = ThemeManager.getAppStore();
     const currentMode = appStore.storeColorMode;
+    // 定义主题切换顺序
     const modeOrder: ThemeMode[] = ['light', 'dark', 'auto'];
     const currentIndex = modeOrder.indexOf(currentMode);
+    // 计算下一个主题模式
     const nextMode = modeOrder[(currentIndex + 1) % modeOrder.length];
 
     await this.switchTheme(nextMode, options);

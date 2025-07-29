@@ -8,11 +8,13 @@ import axios, {
 
 import { router } from '@/router';
 import { useAuthStore } from '@/store';
-import { lStorage } from '@/utils';
+import { getLStorage } from '@/utils/storage';
 import { isString } from 'lodash';
 import { getToken } from '../token/index';
 import { CodeConfig as HttpCodeConfig } from './codeConfig.ts';
 import { ResponseModel } from './types/index.ts';
+
+const lStorage = getLStorage();
 
 class HttpRequest {
   service: AxiosInstance;
