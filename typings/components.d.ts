@@ -29,8 +29,8 @@ declare module 'vue' {
     NCard: typeof import('naive-ui')['NCard']
     NColorPicker: typeof import('naive-ui')['NColorPicker']
     NConfigProvider: typeof import('naive-ui')['NConfigProvider']
-    NDescriptions: typeof import('naive-ui')['NDescriptions']
-    NDescriptionsItem: typeof import('naive-ui')['NDescriptionsItem']
+    NDescriptions: (typeof import('naive-ui'))['NDescriptions']
+    NDescriptionsItem: (typeof import('naive-ui'))['NDescriptionsItem']
     NDialogProvider: typeof import('naive-ui')['NDialogProvider']
     NDivider: typeof import('naive-ui')['NDivider']
     NDrawer: typeof import('naive-ui')['NDrawer']
@@ -68,7 +68,7 @@ declare module 'vue' {
     NTimeline: typeof import('naive-ui')['NTimeline']
     NTimelineItem: typeof import('naive-ui')['NTimelineItem']
     NTooltip: typeof import('naive-ui')['NTooltip']
-    NWatermark: typeof import('naive-ui')['NWatermark']
+    NWatermark: (typeof import('naive-ui'))['NWatermark']
     RoleUserSelect: typeof import('./../src/components/modules/RoleUserSelect/RoleUserSelect.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
@@ -76,6 +76,7 @@ declare module 'vue' {
     Table: typeof import('./../src/components/Table/src/Table.vue')['default']
     TheLogo: typeof import('./../src/components/common/TheLogo.vue')['default']
     Toolbar: typeof import('./../src/components/Table/src/components/Toolbar.vue')['default']
-    WaterMark: typeof import('./../src/components/common/WaterMark.vue')['default']
+    Watermark: typeof import('./../src/components/common/Watermark.vue')['default']
+    WaterMark: (typeof import('./../src/components/common/WaterMark.vue'))['default']
   }
 }
