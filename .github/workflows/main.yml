@@ -12,30 +12,28 @@ jobs:
         with:
           persist-credentials: false
 
-      # 1. 先安装 pnpm（调整顺序，确保在依赖安装前完成）
+      # 1. 安装 pnpm
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
           version: latest
-          run_install: false  # 暂时不自动安装依赖
+          run_install: false
 
-      # 2. 再设置 Node.js（此时 pnpm 已在 PATH 中）
+      # 2. 设置 Node.js
       - name: Set up Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'  # 缓存 pnpm 依赖
+          cache: 'pnpm'
 
-      # 3. 构建项目（明确指定 pnpm 路径，确保可执行）
+      # 3. 构建项目
       - name: Build
         run: |
-          # 手动确认 pnpm 版本，验证是否安装成功
           pnpm --version
-          # 安装依赖并构建
           pnpm install
           pnpm run build
 
-      # 部署步骤（保持不变）
+      # 部署步骤（修改为在 script 中使用 scp 命令）
       - name: Deploy via SSH 🚀
         uses: appleboy/ssh-action@master
         with:
@@ -43,7 +41,9 @@ jobs:
           username: ${{ secrets.DR_USER }}
           password: ${{ secrets.DR_PASS }}
           script: |
+            # 服务器端操作：创建目录并清理旧文件
             mkdir -p /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index/dist
-            rm -rf /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index/dist
-          scp: |
-            ./jdm-vite-vue3/dist/* ${{ secrets.DR_USER }}@${{ secrets.DR_HOST }}:/opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index/dist
+            rm -rf /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index/dist/*
+            
+            # 从 GitHub Runner 传输文件到服务器
+            scp -r /home/runner/work/jdm-vite-vue3/jdm-vite-vue3/jdm-vite-vue3/dist/* ${{ secrets.DR_USER }}@${{ secrets.DR_HOST }}:/opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index/dist/
