@@ -19,7 +19,7 @@ import {
   NTimePicker,
 } from 'naive-ui';
 import type { Component } from 'vue';
-import { IconPicker } from './components';
+import IconPicker from './components/IconPicker.vue';
 import { ComponentType } from './types';
 
 const componentMap = new Map<ComponentType | undefined, Component>();
