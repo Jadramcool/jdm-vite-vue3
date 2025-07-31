@@ -2,59 +2,45 @@ name: build
 on: 
   push: 
     branches: 
-      - master # 推送到master分支时触发流程
+      - master
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      # 克隆仓库源码到工作流环境
       - name: Checkout 🛎️
         uses: actions/checkout@v4
         with:
           persist-credentials: false
 
-      # 设置Node.js 20环境
       - name: Set up Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm' # 缓存pnpm依赖以加快构建速度
+          cache: 'pnpm'
 
-      # 安装pnpm
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: latest # 使用最新版本的pnpm
+          version: latest
 
-      # 构建项目
       - name: Build
         run: |
-          cd jdm-vite-vue3 # 进入项目目录
-          pnpm install  # 安装依赖
-          pnpm run build  # 执行打包
-  
-      # 确保服务器目标目录存在
-      - name: Create directory on server
+          cd jdm-vite-vue3
+          pnpm install
+          pnpm run build
+
+      # 确保服务器目标目录存在，并通过 SCP 上传文件
+      - name: Deploy via SSH 🚀
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.DR_HOST }}
           username: ${{ secrets.DR_USER }}
           password: ${{ secrets.DR_PASS }}
-          script: mkdir -p /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index
-
-      # 部署到服务器
-      - name: Deploy 🚀
-        uses: cross-the-world/scp-pipeline@master
-        env:
-          WELCOME: "ssh scp ssh pipelines"
-          LASTSSH: "Doing something after copying"
-        with:
-          host: ${{ secrets.DR_HOST }}
-          user: ${{ secrets.DR_USER }}
-          pass: ${{ secrets.DR_PASS }}
-          connect_timeout: 10s
-          # 指向构建后的dist目录
-          local: './jdm-vite-vue3/dist/*' 
-          # 服务器目标路径
-          remote: /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index
-    
+          script: |
+            # 1. 创建目标目录（如果不存在）
+            mkdir -p /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index
+            # 2. 清理目标目录旧文件（可选，避免残留）
+            rm -rf /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index/*
+          # 3. 上传本地 dist 目录到服务器目标路径
+          scp: |
+            ./jdm-vite-vue3/dist/* ${{ secrets.DR_USER }}@${{ secrets.DR_HOST }}:/opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index/
