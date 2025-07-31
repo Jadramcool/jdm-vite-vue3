@@ -200,15 +200,17 @@ const handleLogin = async (e: MouseEvent) => {
 };
 
 const handleExperience = async () => {
-  // window.$notification.info({
-  //   title: '一键体验',
-  //   meta: '一键体验功能暂未开放',
-  //   duration: 3000,
-  //   keepAliveOnHover: true,
-  // });
-  mockLogin('patient');
-  // mockLogin('doctor');
-  // mockLogin('admin');
+  const mock = false;
+  if (!mock) {
+    window.$notification.info({
+      title: '一键体验',
+      meta: '一键体验功能暂未开放',
+      duration: 3000,
+      keepAliveOnHover: true,
+    });
+  } else {
+    mockLogin('admin');
+  }
 };
 
 const mockLogin = async (roleType: string) => {
