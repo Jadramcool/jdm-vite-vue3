@@ -46,4 +46,4 @@ jobs:
             mkdir -p /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index/dist
             rm -rf /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index/dist
           scp: |
-            ./jdm-vite-vue3/dist/* ${{ secrets.DR_USER }}@${{ secrets.DR_HOST }}:/opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index/
+            ./jdm-vite-vue3/dist/* ${{ secrets.DR_USER }}@${{ secrets.DR_HOST }}:/opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index/dist
