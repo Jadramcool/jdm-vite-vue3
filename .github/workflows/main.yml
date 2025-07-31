@@ -5,7 +5,7 @@ on:
       - master # 推送到master分支时触发流程
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       # 克隆仓库源码到工作流环境
       - name: Checkout 🛎️
