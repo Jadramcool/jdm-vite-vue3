@@ -1,0 +1,37 @@
+name: build
+on: 
+  push: 
+    branches: 
+      - master # 推送到master分支时触发流程
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      # 克隆仓库源码到工作流环境
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      # 构建项目
+      - name: Build
+        run: |
+          cd jdm-vite-vue3 # 进入项目目录
+          pnpm install  # 安装依赖
+          pnpm run build  # 执行打包
+  
+      # 部署到服务器
+      - name: Deploy 🚀
+        uses: cross-the-world/scp-pipeline@master
+        env:
+          WELCOME: "ssh scp ssh pipelines"
+          LASTSSH: "Doing something after copying"
+        with:
+         host: ${{ secrets.DR_HOST }}
+         user: ${{ secrets.DR_USER }}
+         pass: ${{ secrets.DR_PASS }}
+         connect_timeout: 10s
+         # 指向构建后的dist目录（根据实际项目结构调整）
+         local: './jdm-vite-vue3/dist/*' 
+         # 服务器目标路径，已修改为你指定的目录
+         remote: /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index
