@@ -9,9 +9,22 @@ jobs:
     steps:
       # 克隆仓库源码到工作流环境
       - name: Checkout 🛎️
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
+
+      # 设置Node.js 20环境
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm' # 缓存pnpm依赖以加快构建速度
+
+      # 安装pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: latest # 使用最新版本的pnpm
 
       # 构建项目
       - name: Build
@@ -20,6 +33,15 @@ jobs:
           pnpm install  # 安装依赖
           pnpm run build  # 执行打包
   
+      # 确保服务器目标目录存在
+      - name: Create directory on server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DR_HOST }}
+          username: ${{ secrets.DR_USER }}
+          password: ${{ secrets.DR_PASS }}
+          script: mkdir -p /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index
+
       # 部署到服务器
       - name: Deploy 🚀
         uses: cross-the-world/scp-pipeline@master
@@ -27,11 +49,12 @@ jobs:
           WELCOME: "ssh scp ssh pipelines"
           LASTSSH: "Doing something after copying"
         with:
-         host: ${{ secrets.DR_HOST }}
-         user: ${{ secrets.DR_USER }}
-         pass: ${{ secrets.DR_PASS }}
-         connect_timeout: 10s
-         # 指向构建后的dist目录（根据实际项目结构调整）
-         local: './jdm-vite-vue3/dist/*' 
-         # 服务器目标路径，已修改为你指定的目录
-         remote: /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index
+          host: ${{ secrets.DR_HOST }}
+          user: ${{ secrets.DR_USER }}
+          pass: ${{ secrets.DR_PASS }}
+          connect_timeout: 10s
+          # 指向构建后的dist目录
+          local: './jdm-vite-vue3/dist/*' 
+          # 服务器目标路径
+          remote: /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index
+    
