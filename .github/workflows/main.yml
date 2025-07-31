@@ -43,7 +43,7 @@ jobs:
           username: ${{ secrets.DR_USER }}
           password: ${{ secrets.DR_PASS }}
           script: |
-            mkdir -p /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index
-            rm -rf /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index/*
+            mkdir -p /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index/dist
+            rm -rf /opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index/dist
           scp: |
             ./jdm-vite-vue3/dist/* ${{ secrets.DR_USER }}@${{ secrets.DR_HOST }}:/opt/1panel/apps/openresty/openresty/www/sites/xn--ldry53fxxejua/index/
