@@ -191,7 +191,11 @@ import { isArray, isBoolean, isFunction } from '@/utils';
 import _ from 'lodash';
 import { NCheckboxGroup, NRadio, type GridProps } from 'naive-ui';
 import { componentMap } from './componentMap';
-import { ApiSelect, ApiTree, ApiTreeSelect, DatePicker, IconPicker } from './components';
+import ApiSelect from './components/ApiSelect.vue';
+import ApiTree from './components/ApiTree.vue';
+import ApiTreeSelect from './components/ApiTreeSelect.vue';
+import DatePicker from './components/DatePicker.vue';
+import IconPicker from './components/IconPicker.vue';
 import { createPlaceholderMessage } from './helper';
 import { useFormEvents, useFormValues } from './hooks';
 import { basicProps } from './props';
@@ -228,7 +232,6 @@ const getProps = computed((): NewFormProps => {
     rules: {},
   };
   const schemas: FormSchema[] = formProps.schemas || [];
-  console.log('🚀 ~ getProps ~ schemas:', schemas);
   schemas.forEach((item) => {
     if (item.rules && isArray(item.rules)) {
       // 给rules添加key属性,用来单个校验

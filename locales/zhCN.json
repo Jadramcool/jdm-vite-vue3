@@ -47,6 +47,7 @@
     "link": "链接",
     "more": "更多",
     "no": "否",
+    "goTo": "前往",
     "open": "打开",
     "operate": "操作",
     "people": "位",
@@ -92,6 +93,7 @@
     "totalSelect": "共选择",
     "updateSuccess": "更新成功",
     "updatedTime": "更新时间",
+    "uploading": "上传中",
     "username": "用户名",
     "yes": "是"
   },
@@ -181,6 +183,106 @@
         "phone": "密保手机",
         "phoneInfo": "已绑定手机：",
         "realNameAuth": "实名认证"
+      }
+    },
+    "base": {
+      "features": {
+        "title": "功能展示",
+        "table": "表格",
+        "tableDesc": "展示系统中的表格组件，包括基本表格、可编辑表格、树形表格等。",
+        "form": "表单",
+        "formDesc": "展示系统中的表单组件，包括基本表单、动态表单、校验表单等。",
+        "chart": "图表",
+        "chartDesc": "展示系统中的图表组件，包括折线图、柱状图、饼图等。",
+        "notification": "通知",
+        "notificationDesc": "展示系统中的通知组件，包括消息通知、提醒等。",
+        "components": "基础组件",
+        "button": "按钮",
+        "buttonDesc": "展示系统中的按钮组件，包括不同样式、尺寸、状态的按钮。",
+        "input": "输入框",
+        "inputDesc": "展示系统中的输入框组件，包括文本框、密码框、文本域等。",
+        "modal": "模态框",
+        "modalDesc": "展示系统中的模态框组件，包括不同样式、尺寸的模态框。"
+      }
+    },
+    "blog": {
+      "category": {
+        "category": "分类",
+        "message": {
+          "deleteConfirm": "确定要删除此分类吗？",
+          "deleteWithChildrenConfirm": "此分类包含子分类，确定要删除吗？",
+          "updatePostCountSuccess": "文章数量更新成功"
+        },
+        "schema": {
+          "color": "颜色",
+          "description": "分类描述",
+          "hasChildren": "包含子分类",
+          "icon": "图标",
+          "name": "分类名称",
+          "noParent": "无父级分类",
+          "parent": "父级分类",
+          "pleaseInputDescription": "请输入分类描述",
+          "pleaseInputName": "请输入分类名称",
+          "pleaseInputSlug": "请输入分类别名",
+          "pleaseSelectParent": "请选择父级分类",
+          "postCount": "文章数量",
+          "slug": "分类别名",
+          "sortOrder": "排序",
+          "subCategory": "子分类",
+          "updatePostCount": "更新文章数量"
+        },
+        "table": {
+          "title": "分类列表"
+        }
+      },
+      "post": {
+        "schema": {
+          "analysis": "数据分析",
+          "author": "作者",
+          "category": "文章分类",
+          "coverImage": "文章封面",
+          "isTop": "置顶",
+          "pleaseInputTitle": "请输入文章标题",
+          "publish": "发布",
+          "publishedAt": "发布时间",
+          "status": "状态",
+          "tag": "文章标签",
+          "title": "文章标题",
+          "top": "置顶",
+          "unpublish": "取消发布",
+          "untop": "取消置顶"
+        },
+        "statusMap": {
+          "archived": "已归档",
+          "draft": "草稿",
+          "published": "已发布"
+        },
+        "table": {
+          "title": "文章列表"
+        }
+      },
+      "tag": {
+        "message": {
+          "deleteConfirm": "确定要删除此标签吗？",
+          "updateUseCountSuccess": "使用次数更新成功"
+        },
+        "schema": {
+          "color": "标签颜色",
+          "description": "标签描述",
+          "icon": "图标",
+          "name": "标签名称",
+          "pleaseInputDescription": "请输入标签描述",
+          "pleaseInputName": "请输入标签名称",
+          "pleaseInputSlug": "请输入标签别名",
+          "pleaseSelectColor": "请选择标签颜色",
+          "slug": "标签别名",
+          "updateUseCount": "更新使用次数",
+          "useCount": "使用次数"
+        },
+        "table": {
+          "title": "标签列表"
+        },
+        "tag": "标签"
       }
     },
     "home": {
@@ -304,7 +406,13 @@
     }
   },
   "route": {
-    "Home": "首页"
+    "Home": "首页",
+    "blog": {
+      "category": "分类管理",
+      "post": "文章管理",
+      "tag": "标签管理",
+      "title": "博客管理"
+    }
   },
   "table": {
     "check": "勾选",

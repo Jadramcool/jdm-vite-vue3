@@ -54,6 +54,7 @@ export async function getOnlineMenus() {
   try {
     let res: any = [];
     res = await MenuApi.onlineMenu();
+    console.log('🚀 ~ getOnlineMenus ~ res:', res);
     asyncMenus = res?.data || res || [];
   } catch (error) {
     console.error(error);

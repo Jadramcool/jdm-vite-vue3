@@ -1,4 +1,6 @@
-import { lStorage } from '../storage';
+import { getLStorage } from '../storage';
+
+const lStorage = getLStorage();
 
 export const tokenKey = import.meta.env.VITE_APP_TOKEN_KEY;
 
