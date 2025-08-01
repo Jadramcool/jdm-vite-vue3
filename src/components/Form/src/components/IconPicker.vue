@@ -113,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { JayIcon } from '@/components';
+import JayIcon from '@/components/common/JayIcon.vue';
 import {
   NButton,
   NDivider,

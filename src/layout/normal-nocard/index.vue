@@ -5,7 +5,7 @@
       collapse-mode="width"
       :collapsed-width="64"
       :width="240"
-      content-style="display: flex;flex-direction: column;min-height:100%;border-right: 1px solid var(--border-color); transition: border-color 0.3s ease;"
+      content-style="display: flex;flex-direction: column;min-height:100%;border-right: 1px solid var(--n-border-color); transition: border-color 0.3s ease;"
     >
       <SideLogo v-if="appStore.showLogo" />
       <n-scrollbar class="flex-1">
@@ -15,8 +15,7 @@
     <n-layout class="layout h-full" content-style="display: flex;flex-direction: column" embedded>
       <n-layout-header
         bordered
-        class="z-1 flex-x-center justify-between"
-        content-style="transition: border-color 0.3s ease;"
+        class="layout-header z-1 flex-x-center justify-between backdrop-blur-sm"
       >
         <div class="flex-x-center h-60px">
           <div class="flex-x-center h-full">
@@ -28,7 +27,7 @@
           <HeaderTools />
         </div>
       </n-layout-header>
-      <n-layout-header embedded>
+      <n-layout-header embedded class="tab-header backdrop-blur-sm">
         <TabBar v-if="appStore.showTabs"></TabBar>
       </n-layout-header>
       <n-layout-content embedded class="h-full flex-1 overflow-hidden" :native-scrollbar="true">
@@ -40,7 +39,10 @@
         <!-- <slot name="default"></slot> -->
       </n-layout-content>
       <n-layout-footer bordered class="h-40px" v-if="appStore.showFooter">
-        <AppCard class="flex-1 h-full flex-center">
+        <AppCard
+          class="flex-1 h-full flex-center"
+          style="box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05)"
+        >
           <Footer />
         </AppCard>
       </n-layout-footer>
@@ -63,4 +65,22 @@ import { useAppStore } from '@/store';
 const appStore = useAppStore();
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+/**
+ * 布局头部样式美化
+ * 添加渐变背景和阴影效果
+ */
+.layout-header {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+/**
+ * 标签栏头部样式
+ */
+.tab-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+</style>
