@@ -15,11 +15,11 @@
           <JayIcon icon="material-symbols:push-pin" class="mr-4px" :size="14" />
           置顶
         </div>
-        <div class="post-cover overflow-hidden">
+        <div class="post-cover overflow-hidden h-200px">
           <img
-            class="hover:(scale-130) transition-all duration-300 cursor-pointer"
+            class="w-full h-full object-cover hover:(scale-130) transition-all duration-300 cursor-pointer"
             :src="
-              post.coverImage ? post.coverImage + '?x-oss-process=image/resize,w_300' : homeBgUrl
+              post.coverImage ? post.coverImage + '?x-oss-process=image/resize,h_300' : homeBgUrl
             "
             alt="post-cover"
           />
