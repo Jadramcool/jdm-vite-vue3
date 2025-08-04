@@ -68,7 +68,74 @@ declare namespace System {
     address?: Nullable<string>;
     addressDetail?: Nullable<string>;
     roles?: UserRole[]; // 需要定义 UserRole 类型
-    // doctor?: Hospital.Doctor;
-    // patient?: Hospital.Patient;
   };
+
+  // Config 类型声明
+  interface SysConfig {
+    /** 配置ID */
+    id: number;
+    /** 配置名称 */
+    name: string;
+    /** 配置键名 */
+    key: string;
+    /** 配置值(JSON字符串) */
+    value: string | null;
+    /** 配置类型 */
+    type: ConfigType;
+    /** 配置分类 */
+    category: string | null;
+    /** 配置描述 */
+    description: string | null;
+    /** 是否为系统配置 */
+    isSystem: boolean;
+    /** 是否为公开配置 */
+    isPublic: boolean;
+    /** 排序 */
+    sortOrder: number | null;
+    /** 创建时间 */
+    createdTime: Date;
+    /** 更新时间 */
+    updatedTime: Date;
+  }
+
+  enum ConfigType {
+    STRING = 'STRING', // 字符串
+    NUMBER = 'NUMBER', // 数字
+    BOOLEAN = 'BOOLEAN', // 布尔值
+    JSON = 'JSON', // JSON对象
+    ARRAY = 'ARRAY', // 数组
+    FILE = 'FILE', // 文件路径
+    EMAIL = 'EMAIL', // 邮箱
+    URL = 'URL', // 网址
+    PASSWORD = 'PASSWORD', // 密码(加密存储)
+  }
+  /**
+   * 创建系统配置时的输入类型（可选字段）
+   */
+  interface CreateSysConfigInput {
+    key: string;
+    name?: string;
+    value?: string | null;
+    type?: ConfigType;
+    category?: string | null;
+    description?: string | null;
+    isSystem?: boolean;
+    isPublic?: boolean;
+    sortOrder?: number | null;
+  }
+
+  /**
+   * 更新系统配置时的输入类型（所有字段可选）
+   */
+  interface UpdateSysConfigInput {
+    key?: string;
+    name?: string;
+    value?: string | null;
+    type?: ConfigType;
+    category?: string | null;
+    description?: string | null;
+    isSystem?: boolean;
+    isPublic?: boolean;
+    sortOrder?: number | null;
+  }
 }
