@@ -137,11 +137,33 @@ jobs:
           username: ${{ secrets.DR_USER }}
           password: ${{ secrets.DR_PASS }}
           source: "dist/*"
-          target: ${{ env.DEPLOY_PATH }}/
-          strip_components: 1
+          target: ${{ env.DEPLOY_PATH }}/dist/
           overwrite: true
+          debug: true
 
-      # 5. 验证部署结果
+      # 5. 立即检查文件传输结果
+      - name: Check File Transfer 📋
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.DR_HOST }}
+          username: ${{ secrets.DR_USER }}
+          password: ${{ secrets.DR_PASS }}
+          script: |
+            echo "📋 Checking file transfer immediately after scp..."
+            echo "📍 Target path: ${{ env.DEPLOY_PATH }}/dist/"
+            
+            if [ -d "${{ env.DEPLOY_PATH }}/dist" ]; then
+              echo "✅ Target directory exists"
+              echo "📋 Directory contents:"
+              ls -la ${{ env.DEPLOY_PATH }}/dist/
+              echo "📊 File count: $(find ${{ env.DEPLOY_PATH }}/dist -type f | wc -l)"
+            else
+              echo "❌ Target directory does not exist"
+              echo "📋 Parent directory contents:"
+              ls -la ${{ env.DEPLOY_PATH }}/
+            fi
+
+      # 6. 验证部署结果
       - name: Verify Deployment 🔍
         uses: appleboy/ssh-action@v0.1.7
         with:
@@ -150,16 +172,34 @@ jobs:
           password: ${{ secrets.DR_PASS }}
           script: |
             echo "🔍 Verifying deployment..."
+            echo "📍 Deploy path: ${{ env.DEPLOY_PATH }}"
+            echo "📍 Target directory: ${{ env.DEPLOY_PATH }}/dist"
+            
+            # 检查部署路径是否存在
+            if [ ! -d "${{ env.DEPLOY_PATH }}" ]; then
+              echo "❌ Deploy path does not exist: ${{ env.DEPLOY_PATH }}"
+              exit 1
+            fi
+            
+            # 检查目标目录是否存在
+            if [ ! -d "${{ env.DEPLOY_PATH }}/dist" ]; then
+              echo "❌ Target directory does not exist: ${{ env.DEPLOY_PATH }}/dist"
+              echo "📋 Contents of deploy path:"
+              ls -la ${{ env.DEPLOY_PATH }}/
+              exit 1
+            fi
             
             # 检查文件是否存在
-            if [ -d "${{ env.DEPLOY_PATH }}/dist" ] && [ "$(ls -A ${{ env.DEPLOY_PATH }}/dist)" ]; then
+            if [ "$(ls -A ${{ env.DEPLOY_PATH }}/dist)" ]; then
               echo "✅ Files deployed successfully"
               echo "📋 Deployed files:"
               ls -la ${{ env.DEPLOY_PATH }}/dist/
               echo "📊 Total size:"
               du -sh ${{ env.DEPLOY_PATH }}/dist/
             else
-              echo "❌ Deployment verification failed"
+              echo "❌ Target directory is empty: ${{ env.DEPLOY_PATH }}/dist"
+              echo "📋 Directory permissions:"
+              ls -ld ${{ env.DEPLOY_PATH }}/dist/
               exit 1
             fi
             
@@ -169,7 +209,7 @@ jobs:
             find ${{ env.DEPLOY_PATH }}/dist -type d -exec chmod 755 {} \;
             echo "✅ Permissions set successfully"
 
-      # 6. 部署完成通知
+      # 7. 部署完成通知
       - name: Deployment Success Notification 🎉
         if: success()
         run: |
@@ -177,7 +217,7 @@ jobs:
           echo "📅 Deployment time: $(date)"
           echo "🔗 Site should be available at your configured domain"
 
-      # 7. 部署失败回滚
+      # 8. 部署失败回滚
       - name: Rollback on Failure 🔄
         if: failure()
         uses: appleboy/ssh-action@v0.1.7
