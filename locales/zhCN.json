@@ -42,12 +42,12 @@
     "deleteSuccess": "删除成功",
     "detail": "详情",
     "edit": "编辑",
+    "goTo": "前往",
     "id": "ID",
     "input": "输入",
     "link": "链接",
     "more": "更多",
     "no": "否",
-    "goTo": "前往",
     "open": "打开",
     "operate": "操作",
     "people": "位",
@@ -187,22 +187,22 @@
     },
     "base": {
       "features": {
-        "title": "功能展示",
-        "table": "表格",
-        "tableDesc": "展示系统中的表格组件，包括基本表格、可编辑表格、树形表格等。",
-        "form": "表单",
-        "formDesc": "展示系统中的表单组件，包括基本表单、动态表单、校验表单等。",
-        "chart": "图表",
-        "chartDesc": "展示系统中的图表组件，包括折线图、柱状图、饼图等。",
-        "notification": "通知",
-        "notificationDesc": "展示系统中的通知组件，包括消息通知、提醒等。",
-        "components": "基础组件",
         "button": "按钮",
         "buttonDesc": "展示系统中的按钮组件，包括不同样式、尺寸、状态的按钮。",
+        "chart": "图表",
+        "chartDesc": "展示系统中的图表组件，包括折线图、柱状图、饼图等。",
+        "components": "基础组件",
+        "form": "表单",
+        "formDesc": "展示系统中的表单组件，包括基本表单、动态表单、校验表单等。",
         "input": "输入框",
         "inputDesc": "展示系统中的输入框组件，包括文本框、密码框、文本域等。",
         "modal": "模态框",
-        "modalDesc": "展示系统中的模态框组件，包括不同样式、尺寸的模态框。"
+        "modalDesc": "展示系统中的模态框组件，包括不同样式、尺寸的模态框。",
+        "notification": "通知",
+        "notificationDesc": "展示系统中的通知组件，包括消息通知、提醒等。",
+        "table": "表格",
+        "tableDesc": "展示系统中的表格组件，包括基本表格、可编辑表格、树形表格等。",
+        "title": "功能展示"
       }
     },
     "blog": {
@@ -341,6 +341,11 @@
       }
     },
     "system": {
+      "config": {
+        "table": {
+          "title": "系统配置列表"
+        }
+      },
       "menu": {
         "schema": {
           "code": "权限代码",

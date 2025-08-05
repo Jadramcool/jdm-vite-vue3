@@ -7,7 +7,7 @@
  * @Description:
  *
  */
-import { MenuApi, UserApi } from '@/api';
+import { ConfigApi, MenuApi, UserApi } from '@/api';
 import { baseMenus } from '@/settings';
 
 export async function getUserInfo() {
@@ -54,7 +54,6 @@ export async function getOnlineMenus() {
   try {
     let res: any = [];
     res = await MenuApi.onlineMenu();
-    console.log('🚀 ~ getOnlineMenus ~ res:', res);
     asyncMenus = res?.data || res || [];
   } catch (error) {
     console.error(error);
@@ -76,4 +75,14 @@ export async function getOnlineMenus() {
   const res = Array.from(mergedMenus.values());
 
   return res;
+}
+
+export async function getConfig() {
+  try {
+    const res = await ConfigApi.publicConfig();
+    console.log('🚀 ~ getConfig ~ res:', res);
+    return res || res || {};
+  } catch (error) {
+    return {};
+  }
 }

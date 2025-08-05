@@ -46,3 +46,87 @@ export const flattenObject = (
   }
   return result;
 };
+
+/**
+ * 布尔值转换工具函数
+ * 用于处理后端传来的布尔值与前端表单组件值的转换
+ */
+export const booleanConverter = {
+  /**
+   * 将布尔值转换为数字（true -> 1, false -> 0）
+   * @param value 布尔值
+   * @returns 数字值
+   */
+  toNumber: (value: boolean | undefined | null): number => {
+    if (value === true) return 1;
+    if (value === false) return 0;
+    return 0; // 默认值
+  },
+
+  /**
+   * 将布尔值转换为字符串（true -> '1', false -> '0'）
+   * @param value 布尔值
+   * @returns 字符串值
+   */
+  toString: (value: boolean | undefined | null): string => {
+    if (value === true) return '1';
+    if (value === false) return '0';
+    return '0'; // 默认值
+  },
+
+  /**
+   * 将数字转换为布尔值（1 -> true, 0 -> false）
+   * @param value 数字值
+   * @returns 布尔值
+   */
+  fromNumber: (value: number | undefined | null): boolean => {
+    return value === 1;
+  },
+
+  /**
+   * 将字符串转换为布尔值（'1' -> true, '0' -> false）
+   * @param value 字符串值
+   * @returns 布尔值
+   */
+  fromString: (value: string | undefined | null): boolean => {
+    return value === '1';
+  },
+
+  /**
+   * 批量转换对象中的布尔字段为数字
+   * @param obj 源对象
+   * @param fields 需要转换的字段数组
+   * @returns 转换后的对象
+   */
+  convertBooleanFieldsToNumber: (
+    obj: Record<string, any>,
+    fields: string[],
+  ): Record<string, any> => {
+    const result = { ...obj };
+    fields.forEach((field) => {
+      if (field in result && typeof result[field] === 'boolean') {
+        result[field] = booleanConverter.toNumber(result[field]);
+      }
+    });
+    return result;
+  },
+
+  /**
+   * 批量转换对象中的数字字段为布尔值
+   * @param obj 源对象
+   * @param fields 需要转换的字段数组
+   * @returns 转换后的对象
+   */
+  convertNumberFieldsToBoolean: (
+    obj: Record<string, any>,
+    fields: string[],
+  ): Record<string, any> => {
+    const result = { ...obj };
+    fields.forEach((field) => {
+      if (field in result && typeof result[field] === 'number') {
+        result[field] = booleanConverter.fromNumber(result[field]);
+      }
+    });
+    return result;
+  },
+};

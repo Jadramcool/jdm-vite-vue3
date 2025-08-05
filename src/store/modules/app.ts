@@ -8,8 +8,8 @@ import {
   lightThemeOverrides,
   naiveThemeOverrides,
 } from '@/settings';
-import { getLStorage } from '@/utils/storage';
 import { getRgb, isValidColor, setLocale } from '@/utils';
+import { getLStorage } from '@/utils/storage';
 import { useCssVar } from '@vueuse/core';
 import chroma from 'chroma-js'; // 极小且零依赖的 JavaScript 颜色库
 import _ from 'lodash';
@@ -74,8 +74,6 @@ export const useAppStore = defineStore('app', {
     },
   },
   actions: {
-    // 移除防抖方法，改为直接同步调用 setupCssVar
-
     // 切换侧边栏折叠状态
     switchCollapsed() {
       this.collapsed = !this.collapsed;
