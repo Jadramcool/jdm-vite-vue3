@@ -1,4 +1,4 @@
-import { useAuthStore, usePermissionStore, useUserStore } from '@/store';
+import { useAuthStore, useConfigStore, usePermissionStore, useUserStore } from '@/store';
 import { getMenus, getOnlineMenus, getUserInfo } from '@/store/helper';
 
 // ---------------判断是否需要登录---------------
@@ -13,7 +13,15 @@ export function createPermissionGuard(router: any) {
     try {
       const permissionStore = usePermissionStore();
       const authStore = useAuthStore();
+      const configStore = useConfigStore();
       const { token } = authStore;
+
+      // 初始化全局配置
+      try {
+        await configStore.initConfig();
+      } catch (error) {
+        console.warn('全局配置初始化失败，但不影响正常使用:', error);
+      }
 
       // 混合模式：根据token存在与否决定走哪种流程
       const shouldUseLoginFlow = needLoginTag || !!token;
@@ -66,6 +74,7 @@ export function createPermissionGuard(router: any) {
 
         if (WHITE_LIST.includes(to.path)) return true;
         const userStore = useUserStore();
+        const configStore = useConfigStore();
         // 刷新页面时，pinia中的数据会丢失，所以需要重新获取用户信息和权限
         if (!userStore.userInfo || !userStore.userInfo.id) {
           const user: any = await getUserInfo();
@@ -76,6 +85,13 @@ export function createPermissionGuard(router: any) {
             return { path: 'login', query: { ...to.query, redirect: to.path } };
           }
           userStore.setUser(user);
+
+          // 初始化全局配置
+          try {
+            await configStore.initConfig();
+          } catch (error) {
+            console.warn('全局配置初始化失败，但不影响正常使用:', error);
+          }
 
           const menus = await getMenus();
           // 路由初始化失败
