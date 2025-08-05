@@ -31,6 +31,9 @@ export const useConfigSchema = (methods: any = {}) => {
         key: 'id',
         label: $t('common.id'),
         defaultValue: undefined,
+        table: {
+          width: 80,
+        },
       },
       {
         key: 'key',
@@ -126,22 +129,20 @@ export const useConfigSchema = (methods: any = {}) => {
           component: 'NInput',
           componentProps: {
             placeholder: '请输入配置值',
-            type: 'textarea',
-            autosize: { minRows: 2, maxRows: 4 },
+            type: 'text',
           },
         },
         editForm: {
           rules: [
             {
               type: 'string',
-              required: false,
+              required: true,
               trigger: ['blur', 'input'],
             },
           ],
           componentProps: {
-            placeholder: '请输入配置值（支持JSON格式）',
             type: 'textarea',
-            autosize: { minRows: 3, maxRows: 6 },
+            autosize: { minRows: 2, maxRows: 4 },
           },
         },
         table: {
@@ -236,9 +237,79 @@ export const useConfigSchema = (methods: any = {}) => {
               message: '请选择配置类型',
             },
           ],
-          componentProps: {
-            options: unref(configTypeOptions),
-            clearable: true,
+
+          componentProps({ formActionType }: Record<string, any>) {
+            const { updateSchema, setFieldsValue } = formActionType;
+            return {
+              placeholder: '请选择配置类型',
+              options: unref(configTypeOptions),
+              clearable: true,
+              /**
+               * 监听编辑表单中配置类型选择变化
+               * @param value 选中的配置类型值
+               */
+              onUpdateValue: async (value: string) => {
+                console.log('编辑表单配置类型变化:', value);
+                await setFieldsValue({
+                  value: undefined,
+                });
+                // 根据配置类型动态更新value字段的组件配置
+                if (value === 'JSON') {
+                  await updateSchema({
+                    field: 'value',
+                    component: 'NInput',
+                    defaultValue: undefined,
+                    componentProps: {
+                      type: 'textarea',
+                      autosize: { minRows: 3, maxRows: 6 },
+                      placeholder: '请输入JSON格式的配置值',
+                    },
+                  });
+                } else if (value === 'BOOLEAN') {
+                  await updateSchema({
+                    field: 'value',
+                    component: 'NRadioGroup',
+                    defaultValue: undefined,
+                    componentProps: {
+                      options: [
+                        { label: '是', value: 'true' },
+                        { label: '否', value: 'false' },
+                      ],
+                    },
+                  });
+                } else if (value === 'NUMBER') {
+                  await updateSchema({
+                    field: 'value',
+                    component: 'NInputNumber',
+                    defaultValue: undefined,
+                    componentProps: {
+                      placeholder: '请输入数字',
+                    },
+                  });
+                } else if (value === 'ARRAY') {
+                  await updateSchema({
+                    field: 'value',
+                    component: 'NInput',
+                    defaultValue: undefined,
+                    componentProps: {
+                      type: 'textarea',
+                      autosize: { minRows: 2, maxRows: 4 },
+                      placeholder: '请输入数组格式的配置值，如：["item1", "item2"]',
+                    },
+                  });
+                } else {
+                  // STRING 类型
+                  await updateSchema({
+                    field: 'value',
+                    component: 'NInput',
+                    defaultValue: undefined,
+                    componentProps: {
+                      placeholder: '请输入配置值',
+                    },
+                  });
+                }
+              },
+            };
           },
         },
         table: {

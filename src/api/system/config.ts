@@ -18,6 +18,10 @@ enum API {
   delete = '/system/config/delete',
   batchDelete = '/system/config/batchDelete',
   enable = '/system/config/status',
+  public = '/system/config/public',
+  detail = '/system/config/detail',
+  key = '/system/config/key',
+  validatePassword = '/system/config/validate-password',
 }
 
 /**
@@ -27,6 +31,24 @@ export const configList = (params: any) => {
   return request.get<List<System.SysConfig>>({
     url: API.list,
     params,
+  });
+};
+
+/**
+ * @description: 获取配置详情
+ */
+export const configDetail = (id: number) => {
+  return request.get<System.SysConfig>({
+    url: `${API.detail}/${id}`,
+  });
+};
+
+/**
+ * @description: 获取配置键值
+ */
+export const configKey = (key: string) => {
+  return request.get<System.SysConfig>({
+    url: `${API.key}/${key}`,
   });
 };
 
@@ -80,5 +102,24 @@ export const enableConfig = (id: number, status: number) => {
     data: {
       status,
     },
+  });
+};
+
+/**
+ * @description: 查询配置
+ */
+export const publicConfig = () => {
+  return request.get<System.SysConfig>({
+    url: `${API.public}`,
+  });
+};
+
+/**
+ * @description: 校验密码
+ */
+export const validatePassword = (data: any) => {
+  return request.post<System.SysConfig>({
+    url: API.validatePassword,
+    data,
   });
 };

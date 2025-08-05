@@ -35,7 +35,7 @@ const { editFormSchemas } = useConfigSchema();
 /**
  * 注册表单实例
  */
-const [registerForm, { setFieldsValue, resetFields, submit }] = useForm({
+const [registerForm, { setFieldsValue, resetFields, submit, updateSchema }] = useForm({
   labelWidth: 120,
   gridProps: { cols: 1 },
   schemas: editFormSchemas,
@@ -53,6 +53,23 @@ const [register, { closeModal, setModalProps }] = useModalInner(async (data) => 
 
   // 编辑时设置表单值
   if (isUpdate.value) {
+    if (data.record.type === 'JSON' || data.record.type === 'ARRAY') {
+      await updateSchema({
+        field: 'value',
+        component: 'NInput',
+      });
+    } else if (data.record.type === 'BOOLEAN') {
+      await updateSchema({
+        field: 'value',
+        component: 'NRadioGroup',
+        componentProps: {
+          options: [
+            { label: '是', value: 'true' },
+            { label: '否', value: 'false' },
+          ],
+        },
+      });
+    }
     // 将后端传来的布尔值转换为前端表单需要的数字格式
     const convertedRecord = {
       ...data.record,

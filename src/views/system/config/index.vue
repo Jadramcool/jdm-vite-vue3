@@ -12,9 +12,8 @@
       :request="loadConfigList"
       :rowKey="(row: NaiveUI.RowData) => row.id"
       :pagination="{ pageSize: 10 }"
+      scroll-x="1200"
       :showAddBtn="true"
-      :checked-row-keys="checkedRows"
-      :scroll-x="1500"
       @add="handleAdd"
     >
     </BasicTable>
@@ -34,8 +33,6 @@ defineOptions({ name: 'UserManager' });
 // 表格/表单配置  采用computed（适配i18n）
 const tableRef = ref<any>(null);
 const formRef = ref<any>(null);
-
-const checkedRows = ref<Array<number | string>>([]);
 
 // 请求参数
 const queryParams = ref<Query.GetParams>({});
