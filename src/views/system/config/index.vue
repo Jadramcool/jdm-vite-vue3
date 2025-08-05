@@ -12,7 +12,7 @@
       :request="loadConfigList"
       :rowKey="(row: NaiveUI.RowData) => row.id"
       :pagination="{ pageSize: 10 }"
-      scroll-x="1200"
+      scroll-x="1800"
       :showAddBtn="true"
       @add="handleAdd"
     >
@@ -37,6 +37,9 @@ const formRef = ref<any>(null);
 // 请求参数
 const queryParams = ref<Query.GetParams>({});
 
+// 加载状态管理
+const loadingStates = ref<Record<string, { system: boolean; public: boolean }>>({});
+
 // 表格/表单方法
 const schemaMethods = {
   handleEdit(record: NaiveUI.RowData) {
@@ -55,6 +58,60 @@ const schemaMethods = {
   handleEnable(record: NaiveUI.RowData) {
     console.log('🚀 ~ record:', record);
   },
+  /**
+   * 切换系统配置状态
+   * @param record 配置记录
+   * @param value 新的状态值
+   */
+  handleToggleSystem(record: NaiveUI.RowData, value: boolean) {
+    const recordId = record.id;
+    // 初始化加载状态
+    if (!loadingStates.value[recordId]) {
+      loadingStates.value[recordId] = { system: false, public: false };
+    }
+    // 设置加载状态
+    loadingStates.value[recordId].system = true;
+
+    ConfigApi.updateConfig({ id: recordId, isSystem: value ? 1 : 0 })
+      .then(() => {
+        window.$message.success('系统配置状态更新成功');
+        tableRef.value.reload();
+      })
+      .catch((error: any) => {
+        window.$message.error(error);
+      })
+      .finally(() => {
+        // 清除加载状态
+        loadingStates.value[recordId].system = false;
+      });
+  },
+  /**
+   * 切换公开配置状态
+   * @param record 配置记录
+   * @param value 新的状态值
+   */
+  handleTogglePublic(record: NaiveUI.RowData, value: boolean) {
+    const recordId = record.id;
+    // 初始化加载状态
+    if (!loadingStates.value[recordId]) {
+      loadingStates.value[recordId] = { system: false, public: false };
+    }
+    // 设置加载状态
+    loadingStates.value[recordId].public = true;
+
+    ConfigApi.updateConfig({ id: recordId, isPublic: value ? 1 : 0 })
+      .then(() => {
+        window.$message.success('公开配置状态更新成功');
+        tableRef.value.reload();
+      })
+      .catch((error: any) => {
+        window.$message.error(error);
+      })
+      .finally(() => {
+        // 清除加载状态
+        loadingStates.value[recordId].public = false;
+      });
+  },
 };
 
 const handleAdd = () => {
@@ -65,7 +122,7 @@ const handleAdd = () => {
 const [registerModal, { openModal }] = useModal();
 
 // 表格/表单配置  采用computed（适配i18n）
-const { columns, formSchemas } = useConfigSchema(schemaMethods);
+const { columns, formSchemas } = useConfigSchema({ ...schemaMethods, loadingStates });
 
 const [register, { getFieldsValue }] = useForm({
   gridProps: { cols: '1 s:1 m:2 l:3 xl:4 2xl:4' },

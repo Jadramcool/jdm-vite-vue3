@@ -1,7 +1,7 @@
 import { $t } from '@/locales/i18n';
 import { columnsUtil, editFormSchemaUtil, formSchemaUtil } from '@/utils';
 import dayjs from 'dayjs';
-import { FormItemRule, NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
+import { FormItemRule, NButton, NPopconfirm, NSpace, NSwitch, NTag } from 'naive-ui';
 import { RowData } from 'naive-ui/es/data-table/src/interface';
 import { computed, unref } from 'vue';
 
@@ -77,6 +77,7 @@ export const useConfigSchema = (methods: any = {}) => {
           },
         },
         table: {
+          fixed: 'left',
           render: (row: any) => (
             <NTag bordered={false} type="info" size="small">
               {row.key}
@@ -135,9 +136,14 @@ export const useConfigSchema = (methods: any = {}) => {
         editForm: {
           rules: [
             {
-              type: 'string',
               required: true,
               trigger: ['blur', 'input'],
+              validator: (_rule: FormItemRule, value: string) => {
+                if (!value) {
+                  return new Error('请输入配置值');
+                }
+                return true;
+              },
             },
           ],
           componentProps: {
@@ -398,6 +404,9 @@ export const useConfigSchema = (methods: any = {}) => {
           },
         },
         table: {
+          ellipsis: {
+            tooltip: true,
+          },
           render: (row: any) => row.description || '-',
         },
       },
@@ -427,9 +436,11 @@ export const useConfigSchema = (methods: any = {}) => {
         },
         table: {
           render: (row: any) => (
-            <NTag bordered={false} type={row.isSystem ? 'success' : 'default'} size="small">
-              {row.isSystem ? '是' : '否'}
-            </NTag>
+            <NSwitch
+              value={!!row.isSystem}
+              loading={methods.loadingStates?.value?.[row.id]?.system || false}
+              onUpdateValue={(value: boolean) => methods.handleToggleSystem(row, value)}
+            />
           ),
         },
       },
@@ -459,9 +470,11 @@ export const useConfigSchema = (methods: any = {}) => {
         },
         table: {
           render: (row: any) => (
-            <NTag bordered={false} type={row.isPublic ? 'success' : 'default'} size="small">
-              {row.isPublic ? '是' : '否'}
-            </NTag>
+            <NSwitch
+              value={!!row.isPublic}
+              loading={methods.loadingStates?.value?.[row.id]?.public || false}
+              onUpdateValue={(value: boolean) => methods.handleTogglePublic(row, value)}
+            />
           ),
         },
       },
@@ -559,8 +572,8 @@ export const useConfigSchema = (methods: any = {}) => {
 
   // 表格和表单字段
   const tableFields = [
-    'id',
     'key',
+    'id',
     'name',
     'value',
     'type',

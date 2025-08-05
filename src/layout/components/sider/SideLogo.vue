@@ -14,11 +14,11 @@
 </template>
 
 <script lang="ts" setup>
-import { useAppStore } from '@/store';
+import { useAppStore, useConfigStore } from '@/store';
 
 const appStore = useAppStore();
-
-const title = import.meta.env.VITE_TITLE;
+const configStore = useConfigStore();
+const title = configStore.getConfigValue('system.siteName') || import.meta.env.VITE_TITLE;
 </script>
 <style lang="scss" scoped>
 /**
