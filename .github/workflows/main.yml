@@ -125,8 +125,8 @@ jobs:
               echo "🧹 Old backups cleaned up"
             fi
             
-            # 创建新的部署目录
-            mkdir -p ${{ env.DEPLOY_PATH }}/dist
+            # 确保部署根目录存在
+            mkdir -p ${{ env.DEPLOY_PATH }}
             echo "✅ Directory prepared successfully"
 
       # 4. 部署文件到服务器
@@ -136,8 +136,8 @@ jobs:
           host: ${{ secrets.DR_HOST }}
           username: ${{ secrets.DR_USER }}
           password: ${{ secrets.DR_PASS }}
-          source: "dist/*"
-          target: ${{ env.DEPLOY_PATH }}/dist/
+          source: "dist"
+          target: ${{ env.DEPLOY_PATH }}/
           overwrite: true
           debug: true
 
