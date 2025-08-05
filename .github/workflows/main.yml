@@ -129,17 +129,62 @@ jobs:
             mkdir -p ${{ env.DEPLOY_PATH }}
             echo "✅ Directory prepared successfully"
 
-      # 4. 部署文件到服务器
-      - name: Deploy Files to Server 🚀
-        uses: appleboy/scp-action@v0.1.7
+      # 4. 部署文件到服务器（使用SSH传输）
+      - name: Deploy Files to Server via SSH 🚀
+        uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.DR_HOST }}
           username: ${{ secrets.DR_USER }}
           password: ${{ secrets.DR_PASS }}
-          source: "dist"
-          target: ${{ env.DEPLOY_PATH }}/
-          overwrite: true
-          debug: true
+          script: |
+            echo "📤 Starting file transfer via SSH..."
+            
+            # 创建临时目录
+            TEMP_DIR="/tmp/deploy_$(date +%s)"
+            mkdir -p "$TEMP_DIR"
+            
+            # 在 GitHub Actions runner 上创建压缩包并传输
+            echo "📦 Creating archive..."
+            
+      - name: Create and Transfer Archive 📦
+        run: |
+          # 创建压缩包
+          echo "📦 Creating dist.tar.gz..."
+          tar -czf dist.tar.gz dist/
+          
+          # 使用 sshpass 传输文件
+          echo "📤 Transferring archive to server..."
+          sudo apt-get update && sudo apt-get install -y sshpass
+          
+          export SSHPASS="${{ secrets.DR_PASS }}"
+          sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+            dist.tar.gz ${{ secrets.DR_USER }}@${{ secrets.DR_HOST }}:/tmp/
+          
+          echo "✅ Archive transferred successfully"
+          
+      - name: Extract Files on Server 📂
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.DR_HOST }}
+          username: ${{ secrets.DR_USER }}
+          password: ${{ secrets.DR_PASS }}
+          script: |
+            echo "📂 Extracting files on server..."
+            
+            # 检查压缩包是否存在
+            if [ ! -f "/tmp/dist.tar.gz" ]; then
+              echo "❌ Archive file not found at /tmp/dist.tar.gz"
+              exit 1
+            fi
+            
+            # 切换到部署目录并解压
+            cd "${{ env.DEPLOY_PATH }}"
+            tar -xzf /tmp/dist.tar.gz
+            
+            # 清理临时文件
+            rm -f /tmp/dist.tar.gz
+            
+            echo "✅ Files extracted successfully"
 
       # 5. 立即检查文件传输结果
       - name: Check File Transfer 📋
