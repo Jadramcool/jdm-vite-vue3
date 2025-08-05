@@ -42,6 +42,7 @@
     "deleteSuccess": "Delete Success",
     "detail": "Detail",
     "edit": "Edit",
+    "goTo": "Go to",
     "id": "ID",
     "input": "Input",
     "link": "Link",
@@ -92,6 +93,7 @@
     "totalSelect": "Total selected",
     "updateSuccess": "Update Success",
     "updatedTime": "UpdatedTime",
+    "uploading": "Uploading",
     "username": "Username",
     "yes": "Yes"
   },
@@ -104,6 +106,7 @@
     "roleUserSelect": "Role User"
   },
   "layout": {
+    "blog": "Blog",
     "fullContent": "Full Content",
     "normal": "Normal"
   },
@@ -182,6 +185,106 @@
         "realNameAuth": "Real-name authentication"
       }
     },
+    "base": {
+      "features": {
+        "button": "Button",
+        "buttonDesc": "Showcase button components in the system, including buttons with different styles, sizes, and states.",
+        "chart": "Chart",
+        "chartDesc": "Showcase chart components in the system, including line charts, bar charts, pie charts, etc.",
+        "components": "Basic Components",
+        "form": "Form",
+        "formDesc": "Showcase form components in the system, including basic forms, dynamic forms, validated forms, etc.",
+        "input": "Input",
+        "inputDesc": "Showcase input components in the system, including text boxes, password boxes, text areas, etc.",
+        "modal": "Modal",
+        "modalDesc": "Showcase modal components in the system, including modals with different styles and sizes.",
+        "notification": "Notification",
+        "notificationDesc": "Showcase notification components in the system, including message notifications, reminders, etc.",
+        "table": "Table",
+        "tableDesc": "Showcase table components in the system, including basic tables, editable tables, tree tables, etc.",
+        "title": "Feature Showcase"
+      }
+    },
+    "blog": {
+      "category": {
+        "category": "Category",
+        "message": {
+          "deleteConfirm": "Are you sure you want to delete this category?",
+          "deleteWithChildrenConfirm": "This category has children, are you sure you want to delete it?",
+          "updatePostCountSuccess": "Post count updated successfully"
+        },
+        "schema": {
+          "color": "Color",
+          "description": "Description",
+          "hasChildren": "Has Children",
+          "icon": "Icon",
+          "name": "Category Name",
+          "noParent": "No Parent",
+          "parent": "Parent Category",
+          "pleaseInputDescription": "Please input description",
+          "pleaseInputName": "Please input category name",
+          "pleaseInputSlug": "Please input category slug",
+          "pleaseSelectParent": "Please select parent category",
+          "postCount": "Post Count",
+          "slug": "Category Slug",
+          "sortOrder": "Sort Order",
+          "subCategory": "Sub Category",
+          "updatePostCount": "Update Post Count"
+        },
+        "table": {
+          "title": "Category List"
+        }
+      },
+      "post": {
+        "schema": {
+          "analysis": "Analysis",
+          "author": "Author",
+          "category": "Category",
+          "coverImage": "Cover Image",
+          "isTop": "Top",
+          "pleaseInputTitle": "Please input post title!",
+          "publish": "Publish",
+          "publishedAt": "Published Time",
+          "status": "Status",
+          "tag": "Tags",
+          "title": "Post Title",
+          "top": "Top",
+          "unpublish": "Unpublish",
+          "untop": "Cancel Top"
+        },
+        "statusMap": {
+          "archived": "Archived",
+          "draft": "Draft",
+          "published": "Published"
+        },
+        "table": {
+          "title": "Post List"
+        }
+      },
+      "tag": {
+        "message": {
+          "deleteConfirm": "Are you sure you want to delete this tag?",
+          "updateUseCountSuccess": "Use count updated successfully"
+        },
+        "schema": {
+          "color": "Tag Color",
+          "description": "Description",
+          "icon": "Icon",
+          "name": "Tag Name",
+          "pleaseInputDescription": "Please input description",
+          "pleaseInputName": "Please input tag name",
+          "pleaseInputSlug": "Please input tag slug",
+          "pleaseSelectColor": "Please select tag color",
+          "slug": "Tag Slug",
+          "updateUseCount": "Update Use Count",
+          "useCount": "Use Count"
+        },
+        "table": {
+          "title": "Tag List"
+        },
+        "tag": "Tag"
+      }
+    },
     "home": {
       "notice": "Announcement",
       "todolist": "TodoList"
@@ -235,6 +338,11 @@
       }
     },
     "system": {
+      "config": {
+        "table": {
+          "title": "System Config List"
+        }
+      },
       "menu": {
         "schema": {
           "code": "Code",
@@ -300,7 +408,13 @@
     }
   },
   "route": {
-    "Home": "Home"
+    "Home": "Home",
+    "blog": {
+      "category": "Category Management",
+      "post": "Post Management",
+      "tag": "Tag Management",
+      "title": "Blog Management"
+    }
   },
   "table": {
     "check": "Check",

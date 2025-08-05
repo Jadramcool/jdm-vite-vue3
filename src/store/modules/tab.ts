@@ -90,6 +90,27 @@ export const useTabStore = defineStore('tab', {
     resetTabs(): void {
       this.$reset();
     },
+    /**
+     * 重新排序标签页
+     * @param fromIndex 源索引
+     * @param toIndex 目标索引
+     */
+    reorderTabs(fromIndex: number, toIndex: number): void {
+      if (
+        fromIndex === toIndex ||
+        fromIndex < 0 ||
+        toIndex < 0 ||
+        fromIndex >= this.tabs.length ||
+        toIndex >= this.tabs.length
+      ) {
+        return;
+      }
+
+      const newTabs = [...this.tabs];
+      const [movedTab] = newTabs.splice(fromIndex, 1);
+      newTabs.splice(toIndex, 0, movedTab);
+      this.setTabs(newTabs);
+    },
   },
   persist: {
     paths: ['tabs'],

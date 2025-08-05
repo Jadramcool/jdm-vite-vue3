@@ -23,6 +23,14 @@
             <template #prefix> <JayIcon :icon="'solar:user-rounded-line-duotone'" /> </template>
           </n-input>
         </n-form-item>
+        <n-form-item :label="$t('user.phone')" path="phone">
+          <n-input
+            v-model:value="registerForm.phone"
+            :placeholder="$t('common.pleaseInput') + ' ' + $t('user.phone')"
+          >
+            <template #prefix> <JayIcon :icon="'solar:user-rounded-line-duotone'" /> </template>
+          </n-input>
+        </n-form-item>
         <n-form-item :label="$t('login.password')" path="password">
           <n-input
             type="password"
@@ -77,6 +85,7 @@ interface RegisterForm {
   username: string;
   password: string;
   repeatPassword: string;
+  phone: string;
 }
 const { t } = useI18n();
 
@@ -88,6 +97,7 @@ const registerForm = ref<RegisterForm>({
   username: '123',
   password: '123456',
   repeatPassword: '123456',
+  phone: '13800138000',
 });
 
 const emit = defineEmits(['update:modelValue']);
@@ -157,6 +167,7 @@ const handleRegister = async (e: MouseEvent) => {
         const data = {
           username: registerForm.value.username,
           password: registerForm.value.password,
+          phone: registerForm.value.phone,
         };
 
         await UserApi.register(data);

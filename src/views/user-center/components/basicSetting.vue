@@ -8,16 +8,17 @@
       <n-avatar :src="userInfo?.avatar" round :size="140"></n-avatar>
       <n-upload
         class="mt-10px flex-col flex-x-center"
-        :action="uploadUrl"
-        :headers="headers"
-        :data="{
-          type: 'single',
-        }"
+        :custom-request="handleCustomUpload"
         @before-upload="beforeUpload"
         :show-file-list="false"
-        :on-finish="handleUploadSuccess"
       >
-        <n-button type="primary">{{ $t('modules.appCenter.basicSetting.uploadAvatar') }}</n-button>
+        <n-button type="primary" :loading="uploading" :disabled="uploading">
+          {{
+            uploading
+              ? `${$t('common.uploading')}... ${uploadProgress}%`
+              : $t('modules.appCenter.basicSetting.uploadAvatar')
+          }}
+        </n-button>
       </n-upload>
     </div>
     <n-divider title-placement="left">
@@ -33,11 +34,10 @@
 </template>
 
 <script setup lang="ts">
-import { UserApi } from '@/api';
+import { UploadApi, UserApi } from '@/api';
 import { BasicForm, useForm } from '@/components';
 import { $t } from '@/locales';
 import { useConstantsStore, useUserStore } from '@/store';
-import { getToken } from '@/utils';
 import type { UploadFileInfo } from 'naive-ui';
 import { useUserInfoSchema } from '../schema';
 
@@ -46,10 +46,9 @@ defineOptions({ name: 'BasicSetting' });
 const userStore = useUserStore();
 const constantsStore = useConstantsStore();
 
-const uploadUrl = `${import.meta.env.VITE_APP_BASE_URL}/upload/avatar`;
-const headers = {
-  authorization: `Bearer ${getToken()}`,
-};
+// 上传状态
+const uploading = ref(false);
+const uploadProgress = ref(0);
 
 const userInfo = computed(() => ({
   ...userStore.getUser,
@@ -93,19 +92,68 @@ const [registerUserInfoForm, { setFieldsValue, validate, getFieldsValue, getComp
   });
 
 const beforeUpload = async (data: { file: UploadFileInfo; fileList: UploadFileInfo[] }) => {
-  if (!['image/png', 'image/jpeg'].includes(data.file.file?.type as string)) {
+  if (
+    !['image/png', 'image/jpeg', 'image/webp', 'image/gif'].includes(data.file.file?.type as string)
+  ) {
     window.$message.error($t('modules.appCenter.basicSetting.uploadTypeError'));
     return false;
   }
+
+  // 检查文件大小（2MB限制）
+  const maxSize = 2 * 1024 * 1024;
+  if (data.file.file && data.file.file.size > maxSize) {
+    window.$message.error('头像文件过大，请选择小于2MB的图片');
+    return false;
+  }
+
   return true;
 };
 
-const handleUploadSuccess = ({ event }: { file: UploadFileInfo; event?: ProgressEvent }) => {
-  const response = JSON.parse((event?.target as XMLHttpRequest)?.response);
-  const avatarUrl = response?.data?.fileUrl;
-  if (avatarUrl) {
-    userStore.setUser({ avatar: avatarUrl });
-    window.$message.success($t('modules.appCenter.basicSetting.uploadSuccess'));
+const handleCustomUpload = async ({ file, onProgress, onFinish, onError }: any) => {
+  if (!file.file) {
+    onError('文件不存在');
+    return;
+  }
+
+  try {
+    uploading.value = true;
+    uploadProgress.value = 0;
+
+    const result = await UploadApi.uploadFile(
+      {
+        file: file.file,
+        fileType: 'avatar',
+        target: 'oss',
+      },
+      (progress) => {
+        uploadProgress.value = progress;
+        onProgress({ percent: progress });
+      },
+      true, // 使用预设配置
+    );
+
+    // 获取上传结果URL
+    let avatarUrl = '';
+    if (result.oss?.fileUrl) {
+      avatarUrl = result.oss.fileUrl;
+    } else if (result.local?.fileUrl) {
+      avatarUrl = result.local.fileUrl;
+    }
+
+    if (avatarUrl) {
+      userStore.setUser({ avatar: avatarUrl });
+      window.$message.success($t('modules.appCenter.basicSetting.uploadSuccess'));
+      onFinish();
+    } else {
+      throw new Error('上传成功但未获取到文件URL');
+    }
+  } catch (error: any) {
+    const errorMessage = error?.message || '头像上传失败';
+    window.$message.error(errorMessage);
+    onError(errorMessage);
+  } finally {
+    uploading.value = false;
+    uploadProgress.value = 0;
   }
 };
 

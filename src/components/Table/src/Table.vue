@@ -33,6 +33,7 @@
       v-bind="getTableValue"
       :striped="isStriped"
       :bordered="isBordered"
+      :class="{ 'header-no-wrap': getProps.headerNoWrap }"
       @update:page="updatePage"
       @update:page-size="updatePageSize"
     />
@@ -169,5 +170,45 @@ defineExpose({
 <style lang="scss" scoped>
 .read-the-docs {
   color: #888;
+}
+
+/* 确保表头不换行的样式 - 只在启用headerNoWrap时生效 */
+:deep(.header-no-wrap.n-data-table .n-data-table-thead .n-data-table-th) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0; /* 确保可以正确收缩 */
+}
+
+/* 确保表头内容不换行 */
+:deep(.header-no-wrap.n-data-table .n-data-table-thead .n-data-table-th .n-data-table-th__title) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* 确保表头排序图标不影响布局 */
+:deep(
+    .header-no-wrap.n-data-table .n-data-table-thead .n-data-table-th .n-data-table-th__ellipsis
+  ) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* 确保表头文本容器不换行 */
+:deep(
+    .header-no-wrap.n-data-table
+      .n-data-table-thead
+      .n-data-table-th
+      .n-data-table-th__title-wrapper
+  ) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex-shrink: 1;
 }
 </style>
