@@ -328,7 +328,7 @@ export const useMenuSchema = (methods: any = {}) => {
           },
         },
         form: {
-          component: 'NInput',
+          component: 'IconPicker',
         },
         editForm: {
           ifShow: ({ values }: any) => {
