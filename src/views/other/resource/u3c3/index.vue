@@ -34,8 +34,8 @@
 <script lang="tsx" setup>
 import { U3C3Api } from '@/api';
 import { BasicForm, BasicTable, useForm } from '@/components';
-import { NButton, NText } from 'naive-ui';
 import { $t } from '@/locales';
+import { NButton, NText } from 'naive-ui';
 import { useResourceSchema } from './schema';
 
 defineOptions({ name: 'U3C3' });
@@ -62,6 +62,33 @@ const schemaMethods = {
       window.$message?.success($t('common.delete') + $t('common.success'));
       tableRef.value.reload();
     });
+  },
+
+  /**
+   * 复制链接到剪贴板
+   * @param record 表格行数据
+   */
+  handleCopyLink(record: NaiveUI.RowData) {
+    const linkToCopy = record.magnet_href || record.link || '';
+    if (linkToCopy) {
+      navigator.clipboard
+        .writeText(linkToCopy)
+        .then(() => {
+          window.$message?.success($t('common.copySuccess') || '复制成功');
+        })
+        .catch(() => {
+          // 降级方案：使用传统方法复制
+          const textArea = document.createElement('textarea');
+          textArea.value = linkToCopy;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+          window.$message?.success($t('common.copySuccess') || '复制成功');
+        });
+    } else {
+      window.$message?.warning($t('common.noLinkToCopy') || '没有可复制的链接');
+    }
   },
 
   // 切换单行的加密/解密显示模式

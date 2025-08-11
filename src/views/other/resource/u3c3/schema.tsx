@@ -1,11 +1,11 @@
 import JayIcon from '@/components/common/JayIcon.vue';
-import { resourceU3C3TypeOptions, resourceU3C3TypeColorType } from '@/constants';
+import { resourceU3C3TypeColorType, resourceU3C3TypeOptions } from '@/constants';
 import { $t } from '@/locales/i18n';
-import { columnsUtil, editFormSchemaUtil, formSchemaUtil, encodeBase64 } from '@/utils';
+import { columnsUtil, editFormSchemaUtil, encodeBase64, formSchemaUtil } from '@/utils';
 import dayjs from 'dayjs';
 import { toLower } from 'lodash';
 import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
-import { computed, unref, ref } from 'vue';
+import { computed, ref, unref } from 'vue';
 
 const locales = (field: string) => $t(`modules.resource.u3c3.${field}`);
 
@@ -150,7 +150,7 @@ export const useResourceSchema = (
         key: 'operate',
         label: $t('common.operate'),
         table: {
-          width: 200,
+          width: 280,
           fixed: 'right',
           render: (row: Notice.Notice) => (
             <NSpace justify="center">
@@ -167,6 +167,9 @@ export const useResourceSchema = (
                 {unref(rowEncryptionState)[row.id] ?? unref(globalEncryptionState)
                   ? $t('modules.resource.u3c3.schema.showDecrypted') || '显示明文'
                   : $t('modules.resource.u3c3.schema.showEncrypted') || '显示加密'}
+              </NButton>
+              <NButton type="info" ghost size="small" onClick={() => methods.handleCopyLink(row)}>
+                {$t('common.copyLink')}
               </NButton>
               {/* <NButton type="primary" ghost size="small" onClick={() => methods.handleEdit(row)}>
                 {$t('common.edit')}
@@ -194,6 +197,7 @@ export const useResourceSchema = (
         form: {
           component: 'NSelect',
           componentProps: {
+            clearable: true,
             options: [
               {
                 label: '大小',
