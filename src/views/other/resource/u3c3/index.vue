@@ -25,7 +25,6 @@
       :filters="queryParams"
       :request="loadNoticeList"
       :rowKey="(row: NaiveUI.RowData) => row.id"
-      @update:checked-row-keys="handleCheck"
       @add="handleAdd"
     />
   </div>
@@ -141,9 +140,5 @@ const loadNoticeList = async (data: Query.GetParams) => {
 // 表单提交
 const handleSubmit = (data: any) => {
   data && tableRef.value.reload();
-};
-
-const handleCheck = (keys: Array<string | number>, rows: object[]) => {
-  console.log(keys, rows);
 };
 </script>
