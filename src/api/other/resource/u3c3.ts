@@ -1,5 +1,5 @@
-import request from '@/utils/http/axios';
 import { BasicModel, List } from '@/api/types';
+import request from '@/utils/http/axios';
 
 enum API {
   list = '/external/u3c3/list',
@@ -7,6 +7,7 @@ enum API {
   update = '/external/u3c3/update',
   delete = '/external/u3c3/delete',
   roleMenu = '/external/u3c3/update/menu',
+  log = '/external/execution-logs',
 }
 
 /**
@@ -39,11 +40,11 @@ export const deleteData = (id: number) => {
 };
 
 /**
- * @description: 更新角色菜单
+ * @description: 查看日志
  */
-export const updateRoleMenu = (data: any) => {
-  return request.post<BasicModel[]>({
-    url: API.roleMenu,
-    data,
+export const logData = (params: any) => {
+  return request.get<BasicModel[]>({
+    url: API.log,
+    params,
   });
 };
