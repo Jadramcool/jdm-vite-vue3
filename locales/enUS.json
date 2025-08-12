@@ -149,7 +149,6 @@
       },
       "info": {
         "basicSetting": "Basic Setting",
-        "organization": "Organization",
         "passwordSetting": "Change Password",
         "role": "Role",
         "securitySetting": "Security Settings"

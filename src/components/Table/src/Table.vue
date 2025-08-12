@@ -190,8 +190,8 @@ defineExpose({
 
 /* 确保表头排序图标不影响布局 */
 :deep(
-    .header-no-wrap.n-data-table .n-data-table-thead .n-data-table-th .n-data-table-th__ellipsis
-  ) {
+  .header-no-wrap.n-data-table .n-data-table-thead .n-data-table-th .n-data-table-th__ellipsis
+) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -200,11 +200,8 @@ defineExpose({
 
 /* 确保表头文本容器不换行 */
 :deep(
-    .header-no-wrap.n-data-table
-      .n-data-table-thead
-      .n-data-table-th
-      .n-data-table-th__title-wrapper
-  ) {
+  .header-no-wrap.n-data-table .n-data-table-thead .n-data-table-th .n-data-table-th__title-wrapper
+) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

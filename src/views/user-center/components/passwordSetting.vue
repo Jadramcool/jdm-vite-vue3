@@ -1,51 +1,92 @@
 <template>
-  <n-form ref="formRef" :model="passwordModel" :rules="rules">
-    <n-form-item
-      path="originPassword"
-      :label="$t('modules.appCenter.passwordSetting.originPassword')"
-    >
-      <n-input
-        type="password"
-        v-model:value="passwordModel.originPassword"
-        show-password-on="click"
-        @keydown.enter.prevent
-      />
-    </n-form-item>
-    <n-form-item path="password" :label="$t('modules.appCenter.passwordSetting.newPassword')">
-      <n-input
-        v-model:value="passwordModel.password"
-        type="password"
-        show-password-on="click"
-        @keydown.enter.prevent
-      />
-    </n-form-item>
-    <n-form-item
-      ref="rPasswordFormItemRef"
-      first
-      path="reenteredPassword"
-      :label="$t('modules.appCenter.passwordSetting.repeatPassword')"
-    >
-      <n-input
-        v-model:value="passwordModel.reenteredPassword"
-        show-password-on="click"
-        :disabled="!passwordModel.password"
-        type="password"
-        @keydown.enter.prevent
-      />
-    </n-form-item>
-    <n-row :gutter="[0, 24]">
-      <n-col :span="24" class="flex-center">
-        <n-button
-          type="primary"
-          :disabled="passwordModel.reenteredPassword === null"
-          :loading="loading"
-          @click="handleSubmit"
+  <div class="password-setting-container">
+    <n-card class="password-card">
+      <template #header>
+        <div class="card-header">
+          <JayIcon icon="solar:lock-password-bold" class="header-icon" />
+          <span class="header-title">修改密码</span>
+        </div>
+      </template>
+      <div class="form-container">
+        <n-form
+          ref="formRef"
+          :model="passwordModel"
+          :rules="rules"
+          label-placement="left"
+          label-width="120"
+          require-mark-placement="right-hanging"
+          class="password-form"
         >
-          {{ $t('common.submit') }}
-        </n-button>
-      </n-col>
-    </n-row>
-  </n-form>
+          <n-form-item
+            path="originPassword"
+            :label="$t('modules.appCenter.passwordSetting.originPassword')"
+          >
+            <n-input
+              type="password"
+              v-model:value="passwordModel.originPassword"
+              show-password-on="click"
+              size="large"
+              class="form-input"
+              @keydown.enter.prevent
+            >
+              <template #prefix>
+                <JayIcon icon="solar:lock-bold" class="input-icon" />
+              </template>
+            </n-input>
+          </n-form-item>
+          <n-form-item path="password" :label="$t('modules.appCenter.passwordSetting.newPassword')">
+            <n-input
+              v-model:value="passwordModel.password"
+              type="password"
+              show-password-on="click"
+              size="large"
+              class="form-input"
+              @keydown.enter.prevent
+            >
+              <template #prefix>
+                <JayIcon icon="solar:key-bold" class="input-icon" />
+              </template>
+            </n-input>
+          </n-form-item>
+          <n-form-item
+            ref="rPasswordFormItemRef"
+            first
+            path="reenteredPassword"
+            :label="$t('modules.appCenter.passwordSetting.repeatPassword')"
+          >
+            <n-input
+              v-model:value="passwordModel.reenteredPassword"
+              show-password-on="click"
+              :disabled="!passwordModel.password"
+              type="password"
+              size="large"
+              class="form-input"
+              @keydown.enter.prevent
+            >
+              <template #prefix>
+                <JayIcon icon="solar:key-minimalistic-bold" class="input-icon" />
+              </template>
+            </n-input>
+          </n-form-item>
+          <div class="form-actions">
+            <n-button
+              type="primary"
+              size="large"
+              :disabled="passwordModel.reenteredPassword === null"
+              :loading="loading"
+              @click="handleSubmit"
+              class="submit-button"
+            >
+              <template #icon>
+                <JayIcon icon="solar:check-circle-bold" />
+              </template>
+              {{ $t('common.submit') }}
+            </n-button>
+          </div>
+        </n-form>
+      </div>
+    </n-card>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -170,3 +211,157 @@ const handleSubmit = async (e: MouseEvent) => {
   }
 };
 </script>
+
+<style scoped lang="scss">
+.password-setting-container {
+  .password-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+      transform: translateY(-2px);
+    }
+
+    :deep(.n-card-header) {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+    }
+
+    :deep(.n-card__content) {
+      padding: 24px;
+    }
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .header-icon {
+      width: 24px;
+      height: 24px;
+      color: #667eea;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2d3748;
+      margin: 0;
+    }
+  }
+
+  .form-container {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .password-form {
+    :deep(.n-form-item) {
+      margin-bottom: 24px;
+
+      .n-form-item-label {
+        font-weight: 600;
+        color: #4a5568;
+        padding-bottom: 8px;
+      }
+
+      .n-form-item-feedback-wrapper {
+        margin-top: 8px;
+      }
+    }
+  }
+
+  .form-input {
+    border-radius: 12px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    &:focus-within {
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+    }
+  }
+
+  .input-icon {
+    width: 18px;
+    height: 18px;
+    color: #9ca3af;
+    margin-left: 12px;
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: center;
+    padding-top: 24px;
+    border-top: 1px solid rgba(229, 231, 235, 0.8);
+    margin-top: 16px;
+  }
+
+  .submit-button {
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-weight: 600;
+    font-size: 16px;
+    box-shadow: 0 4px 16px rgba(24, 144, 255, 0.3);
+    transition: all 0.3s ease;
+    min-width: 140px;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(24, 144, 255, 0.4);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+// 密码强度提示样式
+:deep(.n-form-item-feedback) {
+  font-size: 12px;
+  color: #ef4444;
+  margin-top: 4px;
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .password-setting-container {
+    .password-card {
+      :deep(.n-card__content) {
+        padding: 16px;
+      }
+    }
+
+    .form-container {
+      max-width: 100%;
+    }
+
+    .password-form {
+      :deep(.n-form-item) {
+        margin-bottom: 20px;
+      }
+    }
+
+    .submit-button {
+      padding: 10px 24px;
+      font-size: 14px;
+      min-width: 120px;
+    }
+  }
+}
+</style>

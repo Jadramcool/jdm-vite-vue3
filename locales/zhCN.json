@@ -149,7 +149,6 @@
       },
       "info": {
         "basicSetting": "基本信息",
-        "organization": "所属组织",
         "passwordSetting": "修改密码",
         "role": "所属角色",
         "securitySetting": "安全设置"
@@ -315,8 +314,7 @@
           "notice": "通知"
         }
       },
-      "todoList": {
-      }
+      "todoList": {}
     },
     "system": {
       "config": {
