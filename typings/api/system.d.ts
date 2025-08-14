@@ -138,4 +138,15 @@ declare namespace System {
     isPublic?: boolean;
     sortOrder?: number | null;
   }
+
+  interface Department {
+    id: number;
+    name: string;
+    code: string;
+    description?: string | null;
+    createdTime: Date;
+    updatedTime: Date;
+    deletedTime?: Date | null;
+    isDeleted: boolean;
+  }
 }

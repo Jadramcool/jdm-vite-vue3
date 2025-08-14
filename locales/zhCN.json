@@ -314,12 +314,18 @@
           "notice": "通知"
         }
       },
-      "todoList": {}
+      "todoList": {
+      }
     },
     "system": {
       "config": {
         "table": {
           "title": "系统配置列表"
+        }
+      },
+      "department": {
+        "schema": {
+          "name": "部门名称"
         }
       },
       "menu": {

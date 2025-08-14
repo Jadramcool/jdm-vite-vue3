@@ -10,10 +10,12 @@
 <script setup lang="ts">
 import { get, isEqual } from 'lodash';
 import type { SelectOption } from 'naive-ui';
+import { computed, readonly, ref, unref, watch, type PropType } from 'vue';
 
 defineOptions({ name: 'ApiSelect' });
-const modelValue: any = defineModel('value');
 
+// 定义双向绑定的值
+const modelValue = defineModel<any>('value');
 // type ApiSearchOption = {
 //   // 展示搜索
 //   show?: boolean;
@@ -28,11 +30,6 @@ const modelValue: any = defineModel('value');
 // };
 
 const props = defineProps({
-  value: {
-    type: [Array, Object, String, Number] as PropType<
-      Array<string | number> | string | number | null
-    >,
-  },
   api: {
     type: Function as PropType<(arg?: any) => Promise<SelectOption[] | Recordable>>,
     default: null,
@@ -57,7 +54,7 @@ const props = defineProps({
     type: String as PropType<string>,
     default: 'value',
   },
-  // TODO   autoLoad 是否自动加载
+  // 是否自动加载数据
   autoLoad: {
     type: Boolean as PropType<boolean>,
     default: true,
@@ -91,35 +88,80 @@ const apiMethod = computed(() => {
 
 const options: any = ref([]);
 
-const fetch = async (value: Recordable) => {
+/**
+ * 获取选项数据
+ * @param value 请求参数
+ * @param force 是否强制加载，忽略autoLoad设置
+ */
+const fetch = async (value: Recordable = {}, force = false) => {
+  // 如果没有API方法，直接返回
+  if (!unref(apiMethod)) {
+    return;
+  }
+
+  // 如果不是强制加载且autoLoad为false，直接返回
+  if (!force && !unref(getProps).autoLoad) {
+    return;
+  }
+
   options.value = [];
   if (unref(apiMethod)) {
-    const res = await unref(apiMethod)(value);
+    try {
+      const res = await unref(apiMethod)(value);
+      const data = Array.isArray(res) ? res : res.data;
 
-    const data = Array.isArray(res) ? res : res.data;
+      let optionData: any = data;
+      if (unref(getProps).afterRequest) {
+        optionData = unref(getProps).afterRequest(data);
+      }
 
-    let optionData: any = data;
-    if (unref(getProps).afterRequest) {
-      optionData = unref(getProps).afterRequest(data);
+      options.value = optionData.map((item: Recordable) => ({
+        label: get(item, unref(getProps).labelField),
+        value: get(item, unref(getProps).valueField),
+      }));
+    } catch (error) {
+      console.error('ApiSelect fetch error:', error);
+      options.value = [];
     }
-
-    options.value = optionData.map((item: Recordable) => ({
-      label: get(item, unref(getProps).labelField),
-      value: get(item, unref(getProps).valueField),
-    }));
   }
 };
 
+// 监听参数变化，自动加载数据
 watch(
   () => props.params,
   (value, oldValue) => {
     if (isEqual(value, oldValue)) return;
-    fetch(value);
+    // 只有在autoLoad为true时才自动加载
+    if (unref(getProps).autoLoad) {
+      fetch(value);
+    }
   },
-  { deep: true, immediate: props.immediate },
+  { deep: true, immediate: props.immediate && props.autoLoad },
 );
 
-// TODO 这个还没做
+/**
+ * 手动加载数据
+ * @param params 可选的请求参数，如果不传则使用props.params
+ */
+const loadData = async (params?: Recordable) => {
+  await fetch(params || props.params, true); // 强制加载
+};
+
+/**
+ * 清空选项数据
+ */
+const clearOptions = () => {
+  options.value = [];
+};
+
+// 暴露方法给父组件
+defineExpose({
+  loadData,
+  clearOptions,
+  options: readonly(options),
+});
+
+// TODO: 搜索参数功能待实现
 // watch(
 //   () => unref(getProps).searchParams,
 //   (value, oldValue) => {

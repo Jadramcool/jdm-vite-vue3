@@ -30,17 +30,22 @@
 .cus-scroll,
 .cus-scroll-x,
 .cus-scroll-y {
-  &::-webkit-scrollbar-thumb {
-    background-color: transparent;
+  &::-webkit-scrollbar-track {
+    background: transparent;
     border-radius: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(191, 191, 191, 0.3);
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
   }
   &:hover {
     &::-webkit-scrollbar-thumb {
-      background: #bfbfbf;
+      background-color: #bfbfbf;
     }
-    &::-webkit-scrollbar-thumb:hover {
-      background: var(--primary-color);
-    }
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-color) !important;
   }
 }
 // 色弱模式
