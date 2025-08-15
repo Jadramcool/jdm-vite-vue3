@@ -61,6 +61,8 @@
             label-field="name"
             key-field="id"
             block-line
+            show-line
+            :indent="16"
             :data="filteredDepartmentTree"
             :default-expanded-keys="defaultExpandedKeys"
             :node-props="nodeProps"
