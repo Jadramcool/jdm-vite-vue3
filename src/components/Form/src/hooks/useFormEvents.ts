@@ -10,6 +10,7 @@
 import { isArray, isFunction, isISOString, isNullOrUnDef, isObject } from '@/utils';
 import dayjs from 'dayjs';
 import _ from 'lodash';
+import { nextTick } from 'vue';
 import type { FormActionType, FormSchema, NewFormProps } from '../types/form';
 
 declare type EmitType = (event: any, ...args: any[]) => void;
@@ -107,8 +108,14 @@ export const useFormEvents = ({
 
     clearValidate();
 
-    // 重置页码到第一页（如果启用了此功能且提供了tableRef）
-    if (resetPageOnReset && tableRef && unref(tableRef)) {
+    // 发射reset事件，让父组件可以监听并执行自定义逻辑
+    const fromValues = getFieldsValue();
+    emit('reset', fromValues);
+
+    await nextTick();
+
+    // 如果启用重置并请求功能，并且重置页码到第一页（如果启用了此功能且提供了tableRef）
+    if (resetPageOnReset && submitOnReset && tableRef && unref(tableRef)) {
       const tableInstance = unref(tableRef);
       if (tableInstance && isFunction(tableInstance.setPagination)) {
         tableInstance.setPagination({ page: 1 });
@@ -118,10 +125,6 @@ export const useFormEvents = ({
         }
       }
     }
-
-    // const fromValues = handleFormValues(toRaw(unref(formModel)));
-    // emit('reset', fromValues);
-    submitOnReset && (await handleSubmit());
   };
 
   // 获取表单值
