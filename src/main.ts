@@ -7,6 +7,7 @@
  * @Description: main.ts
  *
  */
+import '@/assets/styles/index.scss';
 import { i18n } from '@/locales';
 import store from '@/store';
 import dayjs from 'dayjs';
