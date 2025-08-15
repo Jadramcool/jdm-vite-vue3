@@ -409,7 +409,7 @@ const toggleDepartmentPanel = () => {
     }
 
     .department-content {
-      height: calc(100% - 60px);
+      height: 100%;
       padding: 12px;
       display: flex;
       flex-direction: column;
@@ -463,13 +463,8 @@ const toggleDepartmentPanel = () => {
     flex-direction: column;
     min-width: 0;
 
-    .search-section {
-      padding: 20px;
-    }
-
     .table-section {
       flex: 1;
-      padding: 20px;
       overflow: hidden;
     }
   }
