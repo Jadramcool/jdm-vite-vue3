@@ -216,7 +216,7 @@ const handleSubmitUserInfo = async () => {
 
     if (values) {
       values.birthday = new Date(values.birthday);
-      values.addressDetail = cityDetail.value + values.address;
+      values.addressDetail = (cityDetail.value || '') + (values.address || '');
       const newUserInfo = await UserApi.update(values);
       userStore.setUser(newUserInfo);
       window.$message.success($t('common.submitSuccess'));

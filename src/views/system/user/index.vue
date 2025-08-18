@@ -364,6 +364,8 @@ const toggleDepartmentPanel = () => {
     width: 280px;
     min-width: 280px;
     height: 100%;
+    display: flex;
+    flex-direction: column;
     transition: all 0.3s ease;
     overflow: hidden;
 
@@ -377,6 +379,7 @@ const toggleDepartmentPanel = () => {
       align-items: center;
       justify-content: space-between;
       padding: 16px 20px;
+      flex-shrink: 0;
 
       .department-title {
         display: flex;
@@ -409,18 +412,21 @@ const toggleDepartmentPanel = () => {
     }
 
     .department-content {
-      height: 100%;
+      flex: 1;
+      min-height: 0;
       padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
 
       .department-search {
         flex-shrink: 0;
+        margin-bottom: 12px;
       }
 
       .department-tree-scroll {
         flex: 1;
+        min-height: 0;
+        overflow: hidden;
 
         .department-loading {
           display: flex;
