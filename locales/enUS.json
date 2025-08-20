@@ -107,6 +107,8 @@
     "normal": "Normal"
   },
   "login": {
+    "captcha": "Captcha",
+    "captchaError": "Captcha Error",
     "experience": "Experience Account",
     "forgetPassword": "Forgot Password",
     "isRemember": "Remember Me",

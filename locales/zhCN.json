@@ -107,6 +107,8 @@
     "normal": "普通"
   },
   "login": {
+    "captcha": "验证码",
+    "captchaError": "验证码错误",
     "experience": "体验账号",
     "forgetPassword": "忘记密码",
     "isRemember": "记住我",

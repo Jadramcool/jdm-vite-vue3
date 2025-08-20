@@ -1,95 +1,147 @@
 <template>
-  <div class="login-content h-full md:w-45% <md:w-90% flex-col flex-x-center justify-start py-10px">
-    <div class="header flex-x-center">
-      <TheLogo></TheLogo>
-      <div class="title text-xl text-primary mx-10px">{{ $t('login.title') }}</div>
+  <div class="modern-register-form">
+    <!-- 装饰性背景元素 -->
+    <div class="decorative-bg">
+      <div class="floating-shape shape-1"></div>
+      <div class="floating-shape shape-2"></div>
+      <div class="floating-shape shape-3"></div>
     </div>
-    <div class="text-xl text-primary mt-10px">{{ $t('login.register') }}</div>
-    <div class="login-form mt-20px w-90% max-w-340px mx-auto">
+
+    <!-- 表单标题 -->
+    <div class="form-title-section mb-40px text-center">
+      <div class="logo-container mb-16px">
+        <div class="logo-icon">
+          <JayIcon :icon="'solar:user-plus-bold-duotone'" :size="40" />
+        </div>
+      </div>
+      <h2 class="form-title text-2xl font-bold mb-8px">创建账户</h2>
+      <p class="form-subtitle text-gray-500">请填写注册信息</p>
+    </div>
+
+    <!-- 注册表单 -->
+    <div class="register-form-container">
       <n-form
         ref="registerFormRef"
-        :label-width="80"
-        label-placement="left"
         :model="registerForm"
-        :show-label="appStore.loginSet.formShowLabel"
+        :show-label="false"
         :rules="registerFormRules"
-        size="large"
       >
-        <n-form-item :label="$t('login.username')" path="username">
+        <!-- 用户名输入框 -->
+        <n-form-item path="username" class="form-item">
           <n-input
             v-model:value="registerForm.username"
-            :placeholder="$t('common.pleaseInput') + ' ' + $t('login.username')"
+            :placeholder="$t('login.username')"
+            class="modern-input"
+            size="large"
           >
-            <template #prefix> <JayIcon :icon="'solar:user-rounded-line-duotone'" /> </template>
+            <template #prefix>
+              <JayIcon :icon="'solar:user-rounded-line-duotone'" />
+            </template>
           </n-input>
         </n-form-item>
-        <n-form-item :label="$t('user.phone')" path="phone">
+
+        <!-- 手机号输入框 -->
+        <n-form-item path="phone" class="form-item">
           <n-input
             v-model:value="registerForm.phone"
-            :placeholder="$t('common.pleaseInput') + ' ' + $t('user.phone')"
+            :placeholder="$t('user.phone')"
+            class="modern-input"
+            size="large"
           >
-            <template #prefix> <JayIcon :icon="'solar:user-rounded-line-duotone'" /> </template>
+            <template #prefix>
+              <JayIcon :icon="'solar:phone-line-duotone'" />
+            </template>
           </n-input>
         </n-form-item>
-        <n-form-item :label="$t('login.password')" path="password">
+
+        <!-- 密码输入框 -->
+        <n-form-item path="password" class="form-item">
           <n-input
             type="password"
             show-password-on="click"
             v-model:value="registerForm.password"
             :maxlength="common.passwordMaxLength"
-            :placeholder="$t('common.pleaseInput') + ' ' + $t('login.password')"
+            :placeholder="$t('login.password')"
+            class="modern-input"
+            size="large"
           >
             <template #prefix>
               <JayIcon :icon="'solar:lock-password-line-duotone'" />
             </template>
           </n-input>
         </n-form-item>
-        <n-form-item :label="$t('login.repeatPassword')" path="repeatPassword">
+
+        <!-- 确认密码输入框 -->
+        <n-form-item path="repeatPassword" class="form-item">
           <n-input
             type="password"
             show-password-on="click"
             v-model:value="registerForm.repeatPassword"
             :maxlength="common.passwordMaxLength"
-            :placeholder="$t('common.pleaseInput') + ' ' + $t('login.repeatPassword')"
+            :placeholder="$t('login.repeatPassword')"
+            class="modern-input"
+            size="large"
           >
             <template #prefix>
               <JayIcon :icon="'solar:lock-password-line-duotone'" />
             </template>
           </n-input>
         </n-form-item>
+
+        <!-- 验证码输入框 -->
+        <n-form-item path="captcha" class="form-item">
+          <div class="captcha-wrapper">
+            <Captcha
+              ref="captchaRef"
+              v-model="registerForm.captcha"
+              @change="handleCaptchaChange"
+              :placeholder="$t('login.captcha')"
+              class="captcha-component modern-input"
+            />
+          </div>
+        </n-form-item>
       </n-form>
 
-      <div class="flex justify-around">
-        <n-button class="min-w-100px" type="primary" @click="handleRegister">{{
-          $t('login.register')
-        }}</n-button>
+      <!-- 注册按钮 -->
+      <div class="button-group mt-32px">
+        <n-button
+          type="primary"
+          size="large"
+          class="register-button w-full h-48px"
+          @click="handleRegister"
+          :loading="registerLoading"
+        >
+          {{ $t('login.register') }}
+        </n-button>
       </div>
 
-      <n-p class="flex-x-center"
-        >{{ $t('login.loginTips')
-        }}<n-a @click="toOtherForm('login')">{{ $t('login.login') }}</n-a></n-p
-      >
+      <!-- 登录提示 -->
+      <div class="login-section text-center mt-32px">
+        <span class="text-gray-500">{{ $t('login.loginTips') }}</span>
+        <n-button text type="primary" @click="toOtherForm('login')" class="login-link ml-4px">
+          {{ $t('login.login') }}
+        </n-button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { UserApi } from '@/api/user';
-import TheLogo from '@/components/common/TheLogo.vue';
 import { common } from '@/config';
-import { useAppStore } from '@/store';
 import { FormInst, FormItemRule, FormRules } from 'naive-ui';
 import { useI18n } from 'vue-i18n';
+// 引入验证码组件
+import Captcha from '@/components/common/Captcha/index.vue';
 
 interface RegisterForm {
   username: string;
   password: string;
   repeatPassword: string;
   phone: string;
+  captcha: string;
 }
 const { t } = useI18n();
-
-const appStore = useAppStore();
 
 const registerFormRef = ref<FormInst | null>(null);
 
@@ -98,17 +150,37 @@ const registerForm = ref<RegisterForm>({
   password: '123456',
   repeatPassword: '123456',
   phone: '13800138000',
+  captcha: '',
 });
 
 const emit = defineEmits(['update:modelValue']);
 
-// 登录表单验证规则
+const captchaRef = ref<any>(null);
+const captchaValid = ref<boolean>(false);
+
+// 注册表单验证规则
 const registerFormRules: FormRules = {
   username: [
     {
       required: true,
       message: `${t('common.pleaseInput')} ${t('login.username')}`,
       trigger: 'blur',
+    },
+  ],
+  phone: [
+    {
+      required: true,
+      trigger: ['blur', 'input'],
+      validator: (_rule: FormItemRule, value: string) => {
+        if (!value) {
+          return new Error(t('common.pleaseInput') + t('user.phone'));
+        }
+        const phoneRegex = /^1[3-9]\d{9}$/;
+        if (!phoneRegex.test(value)) {
+          return new Error('请输入正确的手机号码');
+        }
+        return Promise.resolve();
+      },
     },
   ],
   password: [
@@ -148,19 +220,66 @@ const registerFormRules: FormRules = {
       },
     },
   ],
+  captcha: [
+    {
+      required: true,
+      trigger: ['blur', 'input'],
+      validator: (_rule: FormItemRule, value: string) => {
+        if (!value) {
+          return new Error(t('common.pleaseInput') + t('login.captcha'));
+        }
+        if (!captchaRef.value?.getValidationResult()) {
+          return new Error(t('login.captchaError'));
+        }
+        return Promise.resolve();
+      },
+    },
+  ],
 };
 
 const toOtherForm = (type: any) => {
   emit('update:modelValue', type);
 };
 
-const messageReactive = ref<any>(null);
+/**
+ * 处理验证码变化
+ * @param value 验证码值
+ * @param isValid 是否有效
+ */
+const handleCaptchaChange = (value: string, isValid: boolean): void => {
+  captchaValid.value = isValid;
+};
 
+const messageReactive = ref<any>(null);
+const registerLoading = ref<boolean>(false);
+
+/**
+ * 注册处理函数
+ * @param e 鼠标事件
+ */
 const handleRegister = async (e: MouseEvent) => {
   e.preventDefault();
+
+  if (registerLoading.value) return;
+
+  registerLoading.value = true;
   messageReactive.value = window.$message.loading(`${t('login.status.registering')}...`, {
     duration: 0,
   });
+
+  // 验证验证码
+  if (!captchaRef.value?.getValidationResult()) {
+    window.$notification.error({
+      title: `${t('login.status.registerFailed')}`,
+      content: t('login.captchaError'),
+      duration: 3000,
+      keepAliveOnHover: true,
+    });
+    captchaRef.value?.refreshCaptcha();
+    messageReactive.value?.destroy();
+    return;
+  }
+
   registerFormRef.value?.validate(async (errors) => {
     try {
       if (!errors) {
@@ -168,6 +287,7 @@ const handleRegister = async (e: MouseEvent) => {
           username: registerForm.value.username,
           password: registerForm.value.password,
           phone: registerForm.value.phone,
+          captcha: registerForm.value.captcha,
         };
 
         await UserApi.register(data);
@@ -186,6 +306,8 @@ const handleRegister = async (e: MouseEvent) => {
           duration: 3000,
           keepAliveOnHover: true,
         });
+        // 验证失败时刷新验证码
+        captchaRef.value?.refreshCaptcha();
       }
     } catch (error: any) {
       window.$notification.error({
@@ -195,6 +317,7 @@ const handleRegister = async (e: MouseEvent) => {
         keepAliveOnHover: true,
       });
     } finally {
+      registerLoading.value = false;
       messageReactive.value.destroy();
     }
   });
@@ -215,4 +338,45 @@ const handleRegister = async (e: MouseEvent) => {
 // }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@import '@/assets/styles/login/form-common.scss';
+
+.modern-register-form {
+  @extend .modern-form;
+
+  // 使用公共样式
+  .decorative-bg {
+    @extend .decorative-bg;
+  }
+
+  .form-title-section {
+    @extend .form-title-section;
+  }
+
+  .register-form-container {
+    .form-item {
+      .modern-input {
+        @extend .modern-input;
+      }
+    }
+
+    .captcha-wrapper {
+      .captcha-component {
+        @extend .captcha-component;
+      }
+    }
+  }
+
+  .button-group {
+    @extend .button-group;
+
+    .register-button {
+      @extend .primary-button;
+    }
+  }
+
+  .login-section {
+    @extend .login-section;
+  }
+}
+</style>
