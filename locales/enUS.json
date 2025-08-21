@@ -324,6 +324,11 @@
           "title": "System Config List"
         }
       },
+      "department": {
+        "schema": {
+          "name": "Department Name"
+        }
+      },
       "menu": {
         "schema": {
           "code": "Code",
@@ -353,6 +358,27 @@
           "button": "Button",
           "directory": "Directory",
           "menu": "Menu"
+        }
+      },
+      "opLog": {
+        "operationStatusMap": {
+          "failed": "FAILD",
+          "pending": "PENDING",
+          "success": "SUCCESS"
+        },
+        "operationTypeMap": {
+          "create": "Create",
+          "delete": "Delete",
+          "export": "Export",
+          "import": "Import",
+          "login": "Login",
+          "logout": "Logout",
+          "other": "Other",
+          "update": "Update",
+          "view": "View"
+        },
+        "table": {
+          "title": "Operation Log"
         }
       },
       "role": {

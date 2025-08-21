@@ -169,6 +169,7 @@ onMounted(() => {
 .user-center-container {
   padding: 20px;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 16px;
   min-height: 100vh;
 }
 
@@ -176,11 +177,7 @@ onMounted(() => {
 .user-profile-card {
   background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
   padding: 32px;
-  transition: all 0.3s ease;
 }
 
 .user-info {
