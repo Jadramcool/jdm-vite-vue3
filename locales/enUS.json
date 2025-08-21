@@ -179,7 +179,8 @@
         "passwordTip": "The password is 6-18 characters, supports numbers, letters and special characters other than spaces, and must contain both numbers and lowercase letters.",
         "phone": "Secured mobile phone",
         "phoneInfo": "Mobile phone has been bound:",
-        "realNameAuth": "Real-name authentication"
+        "realNameAuth": "Real-name authentication",
+        "title": "Security Setting"
       }
     },
     "base": {

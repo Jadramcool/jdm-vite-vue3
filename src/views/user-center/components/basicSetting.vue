@@ -1,13 +1,11 @@
 <template>
   <div class="basic-setting-container">
-    <!-- 头像设置卡片 -->
-    <n-card class="avatar-card">
-      <template #header>
-        <div class="card-header">
-          <JayIcon icon="solar:camera-bold" class="header-icon" />
-          <span class="header-title">头像设置</span>
-        </div>
-      </template>
+    <!-- 头像设置区域 -->
+    <div class="avatar-section">
+      <div class="section-header">
+        <JayIcon icon="solar:camera-bold" class="header-icon" />
+        <span class="header-title">头像设置</span>
+      </div>
       <div class="avatar-upload-section">
         <div class="avatar-preview">
           <n-avatar :size="120" :src="userInfo?.avatar" class="user-avatar-large" />
@@ -51,15 +49,14 @@
         :show-indicator="true"
         processing
       />
-    </n-card>
-    <!-- 基本信息卡片 -->
-    <n-card class="info-card">
-      <template #header>
-        <div class="card-header">
-          <JayIcon icon="solar:user-id-bold" class="header-icon" />
-          <span class="header-title">基本信息</span>
-        </div>
-      </template>
+    </div>
+
+    <!-- 基本信息区域 -->
+    <div class="info-section">
+      <div class="section-header">
+        <JayIcon icon="solar:user-id-bold" class="header-icon" />
+        <span class="header-title">基本信息</span>
+      </div>
       <div class="form-container">
         <BasicForm
           @register="registerUserInfoForm"
@@ -81,7 +78,7 @@
           </n-button>
         </div>
       </div>
-    </n-card>
+    </div>
   </div>
 </template>
 
@@ -236,56 +233,46 @@ const handleSubmitUserInfo = async () => {
 .basic-setting-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 4px;
+  gap: 24px;
+  padding: 8px;
+  margin: 0 auto;
 }
 
-// 卡片通用样式
-.avatar-card,
-.info-card {
-  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
+// 区域通用样式
+.avatar-section,
+.info-section {
+  background: #ffffff;
+  padding: 32px 0;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.3);
 
-  &:hover {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-    transform: translateY(-2px);
-  }
-
-  :deep(.n-card-header) {
-    padding: 16px 20px 12px;
-    border-bottom: 1px solid rgba(229, 231, 235, 0.8);
-  }
-
-  :deep(.n-card__content) {
-    padding: 20px;
+  &:last-child {
+    border-bottom: none;
   }
 }
 
-// 卡片头部样式
-.card-header {
+// 区域头部样式
+.section-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid rgba(99, 102, 241, 0.1);
 }
 
 .header-icon {
-  width: 24px;
-  height: 24px;
-  color: #667eea;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  width: 20px;
+  height: 20px;
+  color: #6366f1;
+  flex-shrink: 0;
 }
 
 .header-title {
   font-size: 16px;
-  font-weight: 700;
-  color: #2d3748;
+  font-weight: 600;
+  color: #111827;
   margin: 0;
+  letter-spacing: -0.025em;
 }
 
 // 头像上传区域样式
@@ -293,7 +280,8 @@ const handleSubmitUserInfo = async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
+  padding: 8px 0;
 }
 
 .avatar-preview {
@@ -302,27 +290,21 @@ const handleSubmitUserInfo = async () => {
 }
 
 .user-avatar-large {
-  border: 3px solid #ffffff;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
+  border: 2px solid rgba(229, 231, 235, 0.8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border-color: #6366f1;
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.15);
   }
-}
-
-.camera-icon {
-  width: 32px;
-  height: 32px;
-  color: white;
 }
 
 .upload-controls {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
 .upload-button-wrapper {
@@ -332,41 +314,46 @@ const handleSubmitUserInfo = async () => {
 
 .upload-button {
   border-radius: 8px;
-  padding: 8px 20px;
-  font-weight: 600;
-  box-shadow: 0 4px 16px rgba(24, 144, 255, 0.3);
-  transition: all 0.3s ease;
+  padding: 10px 24px;
+  font-weight: 500;
+  font-size: 14px;
+  box-shadow: none;
+  transition: all 0.2s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(24, 144, 255, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
   }
 }
 
 .upload-tips {
   display: flex;
   align-items: center;
-  gap: 6px;
-  color: #718096;
+  gap: 8px;
+  color: #6b7280;
   font-size: 13px;
-  background: rgba(113, 128, 150, 0.1);
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: 1px solid rgba(113, 128, 150, 0.2);
+  background: #f9fafb;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
 }
 
 .tip-icon {
-  width: 16px;
-  height: 16px;
-  color: #667eea;
+  width: 14px;
+  height: 14px;
+  color: #6366f1;
+  flex-shrink: 0;
 }
 
 .upload-progress {
-  margin-top: 12px;
+  margin-top: 16px;
+  width: 100%;
+  max-width: 300px;
 
   :deep(.n-progress-text) {
-    color: #667eea;
-    font-weight: 600;
+    color: #6366f1;
+    font-weight: 500;
+    font-size: 13px;
   }
 }
 
@@ -374,82 +361,86 @@ const handleSubmitUserInfo = async () => {
 .form-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .user-info-form {
   :deep(.n-form-item) {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 
     .n-form-item-label {
-      font-weight: 600;
-      color: #4a5568;
-      padding-bottom: 6px;
+      font-weight: 500;
+      color: #374151;
+      padding-bottom: 8px;
+      font-size: 14px;
     }
 
     .n-input,
     .n-select,
     .n-date-picker,
     .n-cascader {
-      border-radius: 6px;
-      transition: all 0.3s ease;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      border-color: #d1d5db;
 
       &:hover {
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-color: #9ca3af;
       }
 
       &:focus-within {
-        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
       }
     }
   }
 
   :deep(.n-form-item-feedback-wrapper) {
-    margin-top: 2px;
+    margin-top: 4px;
   }
 }
 
 .form-actions {
   display: flex;
   justify-content: center;
-  padding-top: 12px;
-  border-top: 1px solid rgba(229, 231, 235, 0.8);
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
 }
 
 .save-button {
   border-radius: 8px;
-  padding: 10px 28px;
-  font-weight: 600;
-  font-size: 15px;
-  box-shadow: 0 4px 16px rgba(24, 144, 255, 0.3);
-  transition: all 0.3s ease;
+  padding: 12px 32px;
+  font-weight: 500;
+  font-size: 14px;
+  box-shadow: none;
+  transition: all 0.2s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(24, 144, 255, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
   }
 }
 
 // 响应式设计
 @media (max-width: 768px) {
   .basic-setting-container {
-    gap: 12px;
-    padding: 2px;
+    gap: 16px;
+    padding: 4px;
+    max-width: 100%;
   }
 
-  .avatar-card,
-  .info-card {
-    :deep(.n-card-header) {
-      padding: 12px 16px 8px;
-    }
+  .avatar-section,
+  .info-section {
+    padding: 24px 0;
+  }
 
-    :deep(.n-card__content) {
-      padding: 16px;
-    }
+  .section-header {
+    margin-bottom: 20px;
+    padding-bottom: 12px;
   }
 
   .avatar-upload-section {
-    gap: 12px;
+    gap: 16px;
+    padding: 4px 0;
   }
 
   .user-avatar-large {
@@ -458,31 +449,44 @@ const handleSubmitUserInfo = async () => {
   }
 
   .upload-controls {
-    gap: 8px;
+    gap: 12px;
   }
 
   .upload-button {
-    padding: 8px 16px;
+    padding: 10px 20px;
     font-size: 14px;
   }
 
+  .upload-tips {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
   .form-container {
-    gap: 12px;
+    gap: 16px;
   }
 
   .user-info-form {
     :deep(.n-form-item) {
-      margin-bottom: 12px;
+      margin-bottom: 16px;
+
+      .n-form-item-label {
+        font-size: 13px;
+      }
     }
   }
 
   .form-actions {
-    padding-top: 8px;
+    padding-top: 16px;
   }
 
   .save-button {
-    padding: 8px 20px;
+    padding: 10px 24px;
     font-size: 14px;
+  }
+
+  .header-title {
+    font-size: 15px;
   }
 }
 </style>

@@ -1,12 +1,10 @@
 <template>
   <div class="password-setting-container">
-    <n-card class="password-card">
-      <template #header>
-        <div class="card-header">
-          <JayIcon icon="solar:lock-password-bold" class="header-icon" />
-          <span class="header-title">修改密码</span>
-        </div>
-      </template>
+    <div class="password-section">
+      <div class="section-header">
+        <JayIcon icon="solar:lock-password-bold" class="header-icon" />
+        <span class="header-title">修改密码</span>
+      </div>
       <div class="form-container">
         <n-form
           ref="formRef"
@@ -85,7 +83,7 @@
           </div>
         </n-form>
       </div>
-    </n-card>
+    </div>
   </div>
 </template>
 
@@ -214,48 +212,32 @@ const handleSubmit = async (e: MouseEvent) => {
 
 <style scoped lang="scss">
 .password-setting-container {
-  .password-card {
-    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-
-    &:hover {
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-      transform: translateY(-2px);
-    }
-
-    :deep(.n-card-header) {
-      padding: 20px 24px 16px;
-      border-bottom: 1px solid rgba(229, 231, 235, 0.8);
-    }
-
-    :deep(.n-card__content) {
-      padding: 24px;
-    }
+  .password-section {
+    background: #ffffff;
+    padding: 32px 0;
   }
 
-  .card-header {
+  .section-header {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid rgba(99, 102, 241, 0.1);
 
     .header-icon {
-      width: 24px;
-      height: 24px;
-      color: #667eea;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      width: 20px;
+      height: 20px;
+      color: #6366f1;
+      flex-shrink: 0;
     }
 
     .header-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #2d3748;
+      font-size: 16px;
+      font-weight: 600;
+      color: #111827;
       margin: 0;
+      letter-spacing: -0.025em;
     }
   }
 
@@ -317,11 +299,6 @@ const handleSubmit = async (e: MouseEvent) => {
     transition: all 0.3s ease;
     min-width: 140px;
 
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(24, 144, 255, 0.4);
-    }
-
     &:disabled {
       opacity: 0.6;
       cursor: not-allowed;
@@ -341,9 +318,16 @@ const handleSubmit = async (e: MouseEvent) => {
 // 响应式设计
 @media (max-width: 768px) {
   .password-setting-container {
-    .password-card {
-      :deep(.n-card__content) {
-        padding: 16px;
+    .password-section {
+      padding: 24px 0;
+    }
+
+    .section-header {
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+
+      .header-title {
+        font-size: 15px;
       }
     }
 

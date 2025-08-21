@@ -251,20 +251,7 @@ const handleLogin = async (e?: MouseEvent) => {
   const messageReactive = window.$message.loading(`${t('login.status.logining')}...`, {
     duration: 0,
   });
-
   try {
-    // 验证验证码
-    if (!captchaRef.value?.getValidationResult()) {
-      window.$notification.error({
-        title: `${t('login.status.loginFailed')}`,
-        content: t('login.captchaError'),
-        duration: 3000,
-        keepAliveOnHover: true,
-      });
-      captchaRef.value?.refreshCaptcha();
-      return;
-    }
-
     await loginFormRef.value?.validate(async (errors) => {
       if (!errors) {
         const data = {

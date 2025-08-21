@@ -1,12 +1,10 @@
 <template>
   <div class="security-setting-container">
-    <n-card class="security-card">
-      <template #header>
-        <div class="card-header">
-          <JayIcon icon="solar:shield-check-bold" class="header-icon" />
-          <span class="header-title">{{ $t('modules.appCenter.securitySetting.title') }}</span>
-        </div>
-      </template>
+    <div class="security-section">
+      <div class="section-header">
+        <JayIcon icon="solar:shield-check-bold" class="header-icon" />
+        <span class="header-title">{{ $t('modules.appCenter.securitySetting.title') }}</span>
+      </div>
       <div class="security-items">
         <!-- 实名认证 -->
         <div class="security-item">
@@ -109,7 +107,7 @@
           </div>
         </div>
       </div>
-    </n-card>
+    </div>
   </div>
 </template>
 
@@ -134,25 +132,32 @@ const handleEditBasic = () => {
 
 <style scoped lang="scss">
 .security-setting-container {
-  .security-card {
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  .security-section {
+    background: #ffffff;
+    padding: 32px 0;
+  }
 
-    .card-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid rgba(99, 102, 241, 0.1);
 
-      .header-icon {
-        font-size: 20px;
-        color: #1890ff;
-      }
+    .header-icon {
+      width: 20px;
+      height: 20px;
+      color: #6366f1;
+      flex-shrink: 0;
+    }
 
-      .header-title {
-        font-size: 16px;
-        font-weight: 600;
-        color: #262626;
-      }
+    .header-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #111827;
+      margin: 0;
+      letter-spacing: -0.025em;
     }
   }
 

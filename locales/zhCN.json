@@ -179,7 +179,8 @@
         "passwordTip": "密码6-18位字符，支持数字、字母和除空格外的特殊字符，且必须同时包含数字和小写字母。",
         "phone": "密保手机",
         "phoneInfo": "已绑定手机：",
-        "realNameAuth": "实名认证"
+        "realNameAuth": "实名认证",
+        "title": "安全设置"
       }
     },
     "base": {
