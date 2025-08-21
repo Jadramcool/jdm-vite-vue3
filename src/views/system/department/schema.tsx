@@ -241,6 +241,11 @@ export const useDepartmentSchema = (methods: any = {}) => {
         defaultValue: undefined,
       },
       {
+        key: 'directMemberCount',
+        label: '直属成员数量',
+        defaultValue: undefined,
+      },
+      {
         key: 'childrenCount',
         label: '子部门数量',
         defaultValue: undefined,

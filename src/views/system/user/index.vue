@@ -246,29 +246,44 @@ const getAllNodeKeys = (nodes: any[]): Array<string | number> => {
  */
 const filteredDepartmentTree = computed(() => {
   if (!departmentSearchValue.value) {
-    return departmentTree.value;
+    const addSuffix = (nodes: any[]): any[] => {
+      return nodes.map((node) => ({
+        ...node,
+        ...(node.memberCount ? { suffix: `(${node.memberCount})` } : {}),
+        ...(node.children ? { children: addSuffix(node.children) } : {}),
+      }));
+    };
+    return addSuffix(departmentTree.value);
   }
 
+  /**
+   * 递归过滤部门树节点
+   * @param nodes 部门节点数组
+   * @returns 过滤后的部门节点数组
+   */
   const filterNodes = (nodes: any[]): any[] => {
-    return nodes
-      .filter((node) => {
-        const matchesSearch = node.name
-          .toLowerCase()
-          .includes(departmentSearchValue.value.toLowerCase());
-        const hasMatchingChildren = node.children && filterNodes(node.children).length > 0;
+    const result: any[] = [];
 
-        if (matchesSearch || hasMatchingChildren) {
-          return {
-            ...node,
-            children: node.children ? filterNodes(node.children) : [],
-          };
-        }
-        return false;
-      })
-      .map((node) => ({
-        ...node,
-        children: node.children ? filterNodes(node.children) : [],
-      }));
+    for (const node of nodes) {
+      const matchesSearch = node.name
+        .toLowerCase()
+        .includes(departmentSearchValue.value.toLowerCase());
+
+      // 递归处理子节点
+      const filteredChildren = node.children ? filterNodes(node.children) : [];
+      const hasMatchingChildren = filteredChildren.length > 0;
+
+      // 如果当前节点匹配或有匹配的子节点，则包含此节点
+      if (matchesSearch || hasMatchingChildren) {
+        result.push({
+          ...node,
+          suffix: `(${node.memberCount || 0})`,
+          children: filteredChildren,
+        });
+      }
+    }
+
+    return result;
   };
 
   return filterNodes(departmentTree.value);
