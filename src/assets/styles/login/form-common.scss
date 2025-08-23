@@ -1,0 +1,362 @@
+// 公共表单样式
+// 现代化输入框样式
+.modern-input {
+  :deep(.n-input-wrapper) {
+    background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 56px;
+    line-height: 56px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.05), transparent);
+      transition: left 0.6s ease;
+      z-index: 1;
+    }
+
+    &:hover {
+      &::before {
+        left: 100%;
+      }
+    }
+  }
+}
+
+// 现代化按钮样式
+.modern-button {
+  border: none;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: 0.05em;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 56px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    transition: left 0.6s ease;
+  }
+
+  // 主要按钮样式
+  &.primary {
+    background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+    box-shadow:
+      0 12px 32px rgba(16, 185, 129, 0.35),
+      0 0 0 1px rgba(255, 255, 255, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    &:hover {
+      box-shadow:
+        0 20px 48px rgba(16, 185, 129, 0.45),
+        0 0 0 1px rgba(255, 255, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+
+      &::after {
+        opacity: 1;
+      }
+    }
+
+    :deep(.n-button__content) {
+      color: white;
+      position: relative;
+      z-index: 3;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  // 次要按钮样式
+  &.secondary {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    color: #475569;
+    box-shadow:
+      0 4px 16px rgba(0, 0, 0, 0.08),
+      0 0 0 1px rgba(148, 163, 184, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+    &:hover {
+      background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+      box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(148, 163, 184, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    :deep(.n-button__content) {
+      position: relative;
+      z-index: 3;
+    }
+  }
+}
+
+// 主要按钮样式（简化版）
+.primary-button {
+  @extend .modern-button, .primary;
+}
+
+// 次要按钮样式（简化版）
+.secondary-button {
+  @extend .modern-button, .secondary;
+}
+
+// 按钮组样式
+.button-group {
+  margin-top: 32px;
+}
+
+// 登录提示样式
+.login-section {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 15px;
+  color: #64748b;
+  font-weight: 500;
+
+  .login-link {
+    color: #10b981;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+
+    &:hover {
+      color: #059669;
+    }
+  }
+}
+
+// 现代化表单容器
+.modern-form {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 48px 36px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(24px);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 32px 64px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    box-shadow:
+      0 40px 80px rgba(0, 0, 0, 0.15),
+      0 0 0 1px rgba(255, 255, 255, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6, #ec4899, #f59e0b);
+    background-size: 300% 100%;
+    animation: gradientMove 4s ease-in-out infinite;
+    border-radius: 28px 28px 0 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 20px;
+    right: 20px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+    border-radius: 1px;
+  }
+}
+
+// 装饰性背景
+.decorative-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 28px;
+
+  .floating-shape {
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+    animation: float 6s ease-in-out infinite;
+
+    &.shape-1 {
+      width: 80px;
+      height: 80px;
+      top: -40px;
+      right: -40px;
+      animation-delay: 0s;
+    }
+
+    &.shape-2 {
+      width: 60px;
+      height: 60px;
+      bottom: -30px;
+      left: -30px;
+      animation-delay: 2s;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(245, 158, 11, 0.1));
+    }
+
+    &.shape-3 {
+      width: 40px;
+      height: 40px;
+      top: 50%;
+      right: -20px;
+      animation-delay: 4s;
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(16, 185, 129, 0.1));
+    }
+  }
+}
+
+// 表单标题区域
+.form-title-section {
+  text-align: center;
+  margin-bottom: 40px;
+  position: relative;
+  z-index: 2;
+
+  .logo-container {
+    .logo-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #10b981, #3b82f6);
+      border-radius: 20px;
+      color: white;
+      box-shadow:
+        0 8px 32px rgba(16, 185, 129, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.6s ease;
+      }
+
+      &:hover {
+        box-shadow:
+          0 12px 40px rgba(16, 185, 129, 0.4),
+          0 0 0 1px rgba(255, 255, 255, 0.3);
+
+        &::before {
+          left: 100%;
+        }
+      }
+    }
+  }
+
+  .form-title {
+    color: #1f2937;
+    font-weight: 800;
+    font-size: 32px;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #1f2937 0%, #4b5563 50%, #6b7280 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    animation: titleGlow 3s ease-in-out infinite;
+  }
+
+  .form-subtitle {
+    color: #6b7280;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+}
+
+// 动画定义
+@keyframes gradientMove {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-10px) rotate(120deg);
+  }
+  66% {
+    transform: translateY(5px) rotate(240deg);
+  }
+}
+
+@keyframes titleGlow {
+  0%,
+  100% {
+    text-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  }
+  50% {
+    text-shadow:
+      0 0 30px rgba(16, 185, 129, 0.5),
+      0 0 40px rgba(16, 185, 129, 0.3);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}

@@ -107,6 +107,8 @@
     "normal": "普通"
   },
   "login": {
+    "captcha": "验证码",
+    "captchaError": "验证码错误",
     "experience": "体验账号",
     "forgetPassword": "忘记密码",
     "isRemember": "记住我",
@@ -149,7 +151,6 @@
       },
       "info": {
         "basicSetting": "基本信息",
-        "organization": "所属组织",
         "passwordSetting": "修改密码",
         "role": "所属角色",
         "securitySetting": "安全设置"
@@ -178,7 +179,8 @@
         "passwordTip": "密码6-18位字符，支持数字、字母和除空格外的特殊字符，且必须同时包含数字和小写字母。",
         "phone": "密保手机",
         "phoneInfo": "已绑定手机：",
-        "realNameAuth": "实名认证"
+        "realNameAuth": "实名认证",
+        "title": "安全设置"
       }
     },
     "base": {
@@ -324,6 +326,11 @@
           "title": "系统配置列表"
         }
       },
+      "department": {
+        "schema": {
+          "name": "部门名称"
+        }
+      },
       "menu": {
         "schema": {
           "code": "权限代码",
@@ -353,6 +360,27 @@
           "button": "按钮",
           "directory": "目录",
           "menu": "菜单"
+        }
+      },
+      "opLog": {
+        "operationStatusMap": {
+          "failed": "失败",
+          "pending": "待处理",
+          "success": "成功"
+        },
+        "operationTypeMap": {
+          "create": "创建",
+          "delete": "删除",
+          "export": "导出",
+          "import": "导入",
+          "login": "登录",
+          "logout": "登出",
+          "other": "其他",
+          "update": "更新",
+          "view": "查看"
+        },
+        "table": {
+          "title": "操作日志"
         }
       },
       "role": {

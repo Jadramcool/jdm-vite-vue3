@@ -138,4 +138,74 @@ declare namespace System {
     isPublic?: boolean;
     sortOrder?: number | null;
   }
+
+  interface Department {
+    id: number;
+    name: string;
+    code: string;
+    description?: string | null;
+    createdTime: Date;
+    updatedTime: Date;
+    deletedTime?: Date | null;
+    isDeleted: boolean;
+  }
+
+  enum OperationType {
+    CREATE = 'CREATE',
+    UPDATE = 'UPDATE',
+    DELETE = 'DELETE',
+    VIEW = 'VIEW',
+    LOGIN = 'LOGIN',
+    LOGOUT = 'LOGOUT',
+    EXPORT = 'EXPORT',
+    IMPORT = 'IMPORT',
+    OTHER = 'OTHER',
+  }
+
+  interface OperationLog {
+    id: number;
+    userId: number;
+    username: string;
+    operationType: OperationType;
+    module: string;
+    description: string;
+    method: string;
+    requestMethod: string;
+    operatorType: string;
+    status: number;
+    errorMsg: string;
+    ipAddress: string;
+    userAgent: string;
+    duration: number;
+    createdTime: Date;
+    params: string;
+    result: string;
+    url: string;
+    requestIp: string;
+    browser: string;
+    os: string;
+    createdBy: number;
+    updatedBy: number;
+    deletedBy: number;
+    isDeleted: boolean;
+    deletedTime: Date;
+  }
+
+  // id            Int             @id @default(autoincrement())
+  // userId        Int?            @map("user_id")
+  // username      String?
+  // operationType OperationType   @map("operation_type")
+  // module        String?
+  // description   String?
+  // method        String?
+  // url           String?
+  // params        String?         @db.Text
+  // result        String?         @db.Text
+  // status        OperationStatus @default(SUCCESS)
+  // errorMessage  String?         @map("error_message") @db.Text
+  // ipAddress     String?         @map("ip_address")
+  // userAgent     String?         @map("user_agent") @db.Text
+  // duration      Int?
+  // createdTime   DateTime        @default(now()) @map("created_time")
+  // user          User?           @relation(fields: [userId], references: [id])
 }
