@@ -29,6 +29,35 @@
   }
 }
 
+// 深色模式下的输入框样式
+.login-dark .modern-input {
+  :deep(.n-input-wrapper) {
+    background: linear-gradient(135deg, #2a2a2a 0%, #333333 100%);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+
+    &::before {
+      background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.1), transparent);
+    }
+
+    .n-input__input-el {
+      color: #ffffff;
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+    }
+
+    .n-input__prefix {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .n-input__suffix {
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+}
+
 // 现代化按钮样式
 .modern-button {
   border: none;
@@ -202,6 +231,27 @@
   }
 }
 
+// 深色模式下的表单容器样式
+.login-dark .modern-form {
+  background: rgba(26, 26, 26, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 32px 64px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+  &:hover {
+    box-shadow:
+      0 40px 80px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  &::after {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  }
+}
+
 // 装饰性背景
 .decorative-bg {
   position: absolute;
@@ -312,6 +362,21 @@
     font-size: 17px;
     font-weight: 500;
     letter-spacing: 0.01em;
+  }
+}
+
+// 深色模式下的表单标题样式
+.login-dark .form-title-section {
+  .form-title {
+    color: #ffffff;
+    background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 50%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .form-subtitle {
+    color: rgba(255, 255, 255, 0.7);
   }
 }
 
