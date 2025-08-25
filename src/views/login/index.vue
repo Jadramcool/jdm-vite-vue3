@@ -252,6 +252,7 @@ const formComponets: any = {
   width: 600px;
   padding: 40px;
   background: white;
+  transition: background-color 0.3s ease;
 
   @media (max-width: 1024px) {
     width: 100%;
@@ -262,6 +263,76 @@ const formComponets: any = {
     width: 100%;
     max-width: 420px;
     margin: 0 auto;
+  }
+}
+
+// 深色模式样式
+.login-dark {
+  .login-decoration {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1f1f1f 100%);
+
+    .brand-title .text-gradient {
+      background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .brand-subtitle {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+
+        .feature-icon-wrapper {
+          background: rgba(255, 255, 255, 0.15);
+        }
+      }
+    }
+
+    .feature-icon-wrapper {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .feature-title {
+      color: #ffffff;
+    }
+
+    .feature-description {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .copyright-text {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .geometric-shapes {
+      .shape {
+        background: rgba(255, 255, 255, 0.05);
+      }
+    }
+  }
+
+  .login-form-section {
+    background: #1a1a1a;
+    color: #ffffff;
+  }
+
+  .form-header {
+    .form-title {
+      .text-gradient {
+        background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    }
   }
 }
 

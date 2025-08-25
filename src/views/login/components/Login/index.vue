@@ -413,10 +413,12 @@ async function onLoginSuccess(data: any = {}) {
       padding-top: 24px;
       border-top: 1px solid #f1f5f9;
       text-align: center;
+      transition: border-color 0.3s ease;
 
       span {
         color: #64748b;
         font-size: 15px;
+        transition: color 0.3s ease;
       }
 
       .register-link {
@@ -435,6 +437,45 @@ async function onLoginSuccess(data: any = {}) {
             color: #2563eb;
           }
           transform: translateX(2px);
+        }
+      }
+    }
+  }
+}
+
+// 深色模式下的登录表单样式
+.login-dark .modern-login-form {
+  .login-form-container {
+    .form-options {
+      .forgot-password {
+        :deep(.n-button__content) {
+          color: #60a5fa;
+        }
+
+        &:hover {
+          :deep(.n-button__content) {
+            color: #3b82f6;
+          }
+        }
+      }
+    }
+
+    .register-section {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+      span {
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .register-link {
+        :deep(.n-button__content) {
+          color: #60a5fa;
+        }
+
+        &:hover {
+          :deep(.n-button__content) {
+            color: #3b82f6;
+          }
         }
       }
     }

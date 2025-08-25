@@ -379,4 +379,29 @@ const handleRegister = async (e: MouseEvent) => {
     @extend .login-section;
   }
 }
+
+// 深色模式下的注册表单样式
+.login-dark .modern-register-form {
+  .register-form-container {
+    .login-section {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+      span {
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .login-link {
+        :deep(.n-button__content) {
+          color: #60a5fa;
+        }
+
+        &:hover {
+          :deep(.n-button__content) {
+            color: #3b82f6;
+          }
+        }
+      }
+    }
+  }
+}
 </style>
