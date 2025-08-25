@@ -1300,7 +1300,7 @@ const updateActiveOutlineFromScroll = () => {
   if (!container) return;
 
   // 获取容器的滚动信息
-  const containerRect = container.getBoundingClientRect();
+  const containerRect = (container as HTMLElement).getBoundingClientRect();
   const viewportCenter = containerRect.top + containerRect.height / 2;
 
   // 查找所有标题元素及其位置
@@ -1309,7 +1309,7 @@ const updateActiveOutlineFromScroll = () => {
 
   for (const heading of headings) {
     const headingText = cleanHeadingText(heading.textContent || '');
-    const headingRect = heading.getBoundingClientRect();
+    const headingRect = (heading as HTMLElement).getBoundingClientRect();
     const headingCenter = headingRect.top + headingRect.height / 2;
     const distance = Math.abs(headingCenter - viewportCenter);
 
@@ -1449,7 +1449,10 @@ const scrollToHeading = (headingId: string) => {
     // 滚动到目标位置
     const lineHeight = parseInt(getComputedStyle(textarea).lineHeight, 10) || 20;
     const scrollTop = targetLineIndex * lineHeight;
-    textarea.scrollTop = Math.max(0, scrollTop - textarea.clientHeight / 2);
+    (textarea as HTMLTextAreaElement).scrollTop = Math.max(
+      0,
+      scrollTop - (textarea as HTMLTextAreaElement).clientHeight / 2,
+    );
 
     return true;
   };
@@ -1461,7 +1464,7 @@ const scrollToHeading = (headingId: string) => {
 
     if (targetElement) {
       // 找到标题元素，直接滚动
-      targetElement.scrollIntoView({
+      (targetElement as HTMLElement).scrollIntoView({
         behavior: 'smooth',
         block: 'center',
         inline: 'nearest',
@@ -3158,14 +3161,10 @@ const handleSave = async () => {
   border-radius: 16px;
   font-size: 12px;
   font-weight: 500;
-  animation: tagSlideIn 0.3s ease-out;
-  transition: all 0.2s ease;
 }
 
 .selected-tag:hover {
   background: var(--primary-color-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .selected-tag .tag-text {
@@ -3183,12 +3182,10 @@ const handleSave = async () => {
   border-radius: 50%;
   color: white;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
 .selected-tag .tag-remove:hover {
   background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.1);
 }
 
 /* 可选标签区域 */
@@ -3235,7 +3232,6 @@ const handleSave = async () => {
   border-radius: 12px;
   font-size: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
 }
@@ -3248,14 +3244,11 @@ const handleSave = async () => {
   width: 3px;
   height: 100%;
   background: var(--tag-color, #666);
-  transition: width 0.2s ease;
 }
 
 .tag-option:hover {
   border-color: var(--tag-color, #666);
   background: var(--bg-color-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .tag-option:hover::before {
@@ -3319,14 +3312,11 @@ const handleSave = async () => {
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 .add-tag-btn:hover:not(:disabled) {
   background: var(--primary-color-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .add-tag-btn:disabled {
@@ -3343,31 +3333,7 @@ const handleSave = async () => {
   padding-left: 4px;
 }
 
-/* 标签动画 */
-@keyframes tagSlideIn {
-  0% {
-    opacity: 0;
-    transform: translateX(-10px) scale(0.8);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
-}
-
-@keyframes tagPulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
-.tag-option:active {
-  animation: tagPulse 0.2s ease;
-}
+/* 标签动画已简化 */
 
 /* 滚动条样式 */
 .tags-cloud::-webkit-scrollbar {

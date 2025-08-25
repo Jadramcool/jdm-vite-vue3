@@ -30,7 +30,7 @@
       <n-layout-header embedded class="tab-header backdrop-blur-sm">
         <TabBar v-if="appStore.showTabs"></TabBar>
       </n-layout-header>
-      <n-layout-content embedded class="h-full flex-1 overflow-hidden" :native-scrollbar="true">
+      <n-layout-content embedded class="h-full flex-1 overflow-hidden" :native-scrollbar="false">
         <div class="wh-full flex-col p-12px">
           <Transition :name="appStore.transitionAnimation" mode="out-in">
             <slot />

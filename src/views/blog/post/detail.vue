@@ -1,17 +1,6 @@
 <template>
-  <div class="post-detail-container" :class="getThemeClass()">
-    <n-back-top :right="0" />
-    <!-- 主题选择器 -->
-    <div class="theme-selector">
-      <div
-        v-for="theme in themes"
-        :key="theme.name"
-        class="theme-option"
-        :class="[theme.key, { active: currentTheme === theme.key }]"
-        :title="theme.label"
-        @click="switchTheme(theme.key)"
-      ></div>
-    </div>
+  <div class="post-detail-container">
+    <n-back-top :right="0" bottom="100" />
 
     <!-- 文章头部区域 -->
     <div class="post-header" :style="backgroundStyle">
@@ -210,7 +199,7 @@
 <script setup lang="ts">
 import { BlogApi } from '@/api';
 import homeBgUrl from '@/assets/images/blog/home_bg.png';
-import { useTheme } from '@/composables/useTheme';
+
 import dayjs from 'dayjs';
 import Vditor from 'vditor';
 import 'vditor/dist/index.css';
@@ -218,17 +207,6 @@ import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 defineOptions({ name: 'PostDetail' });
-
-// 使用主题管理组合式函数
-const {
-  currentTheme,
-  themes,
-  switchTheme,
-  loadThemeFromStorage,
-  isDarkTheme,
-  getThemeClass,
-  watchTheme,
-} = useTheme();
 
 const backgroundStyle = computed(() => {
   const style: Record<string, string> = {
@@ -285,7 +263,6 @@ const handleScroll = () => {
 };
 
 onMounted(async () => {
-  loadThemeFromStorage();
   await init();
   initVditor();
   setupScrollListener();
@@ -309,7 +286,7 @@ const cleanupScrollListener = () => {
  * 更新阅读进度
  */
 const updateReadingProgress = () => {
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  const scrollTop = window.pageYOffset || (document.documentElement as HTMLElement).scrollTop;
   const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
   const progress = (scrollTop / scrollHeight) * 100;
   readingProgress.value = Math.min(Math.max(progress, 0), 100);
@@ -325,7 +302,7 @@ const updateActiveHeading = () => {
   let activeId = '';
 
   headings.forEach((heading) => {
-    const rect = heading.getBoundingClientRect();
+    const rect = (heading as HTMLElement).getBoundingClientRect();
     if (rect.top <= 100) {
       activeId = heading.id;
     }
@@ -344,12 +321,12 @@ const generateToc = () => {
   const toc: TocItem[] = [];
 
   headings.forEach((heading, index) => {
-    const level = parseInt(heading.tagName.charAt(1), 10);
+    const level = parseInt((heading as HTMLElement).tagName.charAt(1), 10);
     const text = heading.textContent || '';
     const id = `heading-${index}`;
 
     // 为标题添加ID
-    heading.id = id;
+    (heading as HTMLElement).id = id;
 
     toc.push({
       id,
@@ -357,8 +334,6 @@ const generateToc = () => {
       level,
     });
   });
-  console.log('🚀 ~ headings.forEach ~ toc:', toc);
-
   tocItems.value = toc;
 };
 
@@ -368,7 +343,7 @@ const generateToc = () => {
 const scrollToHeading = (id: string) => {
   const element = document.getElementById(id);
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    (element as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
     // 在移动端点击目录项后自动关闭目录
     if (window.innerWidth <= 992) {
       closeMobileToc();
@@ -429,16 +404,6 @@ const closeMobileToc = () => {
   isMobileTocOpen.value = false;
 };
 
-// 监听主题变化，重新初始化Vditor
-watchTheme(() => {
-  if (post.value?.content && markdownRef.value) {
-    // 延迟重新初始化，确保主题切换动画完成
-    setTimeout(() => {
-      initVditor();
-    }, 100);
-  }
-});
-
 onUnmounted(() => {
   // 清理滚动监听器
   cleanupScrollListener();
@@ -461,16 +426,14 @@ const initVditor = () => {
   markdownRef.value.innerHTML = '';
   markdownRef.value.className = 'markdown-content';
 
-  const isDark = isDarkTheme();
-
   Vditor.preview(markdownRef.value as HTMLDivElement, post.value.content, {
-    mode: isDark ? 'dark' : 'light',
+    mode: 'light',
     hljs: {
-      style: isDark ? 'github-dark' : 'github',
+      style: 'github',
       lineNumber: true,
     },
     theme: {
-      current: isDark ? 'dark' : 'classic',
+      current: 'classic',
     },
     math: {
       inlineDigit: true,
@@ -478,21 +441,17 @@ const initVditor = () => {
     anchor: 1, // 启用锚点生成
   });
 
-  // 为渲染的内容添加主题类
-  markdownRef.value.classList.add(getThemeClass());
-
   // 添加平滑滚动效果
   markdownRef.value.style.scrollBehavior = 'smooth';
 
   // 处理标题链接点击事件，支持带锚点的路由跳转
   nextTick(() => {
     const headingLinks = markdownRef.value?.querySelectorAll('h1 a, h2 a, h3 a, h4 a, h5 a, h6 a');
-    console.log('🚀 ~ nextTick ~ headingLinks:', headingLinks);
     headingLinks?.forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        const href = (link as HTMLAnchorElement).getAttribute('href');
-        const targetId = href?.substring(1);
+        const { href } = link as HTMLAnchorElement;
+        const targetId = href?.substring(href.lastIndexOf('#') + 1);
         if (targetId) {
           // 更新路由，添加锚点hash
           router.replace({
@@ -503,7 +462,7 @@ const initVditor = () => {
           // 平滑滚动到目标元素
           const targetElement = document.getElementById(targetId);
           if (targetElement) {
-            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            (targetElement as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         }
       });
@@ -515,7 +474,7 @@ const initVditor = () => {
       setTimeout(() => {
         const targetElement = document.getElementById(targetId);
         if (targetElement) {
-          targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          (targetElement as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }, 500); // 延迟执行，确保DOM渲染完成
     }
@@ -525,10 +484,6 @@ const initVditor = () => {
   });
 };
 </script>
-
-<style>
-@import '@/assets/styles/common-themes.scss';
-</style>
 
 <style lang="scss" scoped>
 /**
@@ -544,8 +499,9 @@ const initVditor = () => {
    */
   .post-header {
     position: relative;
-    height: 60vh;
-    min-height: 500px;
+    height: 40vh;
+    min-height: 320px;
+    max-height: 400px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -575,7 +531,7 @@ const initVditor = () => {
       width: 90%;
       text-align: center;
       color: white;
-      padding: 2rem;
+      padding: 1.5rem;
     }
   }
 
@@ -610,10 +566,10 @@ const initVditor = () => {
  * 文章标题
  */
   .post-title {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 700;
     line-height: 1.2;
-    margin: 1.5rem 0;
+    margin: 1rem 0;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
@@ -621,9 +577,9 @@ const initVditor = () => {
  * 文章摘要
  */
   .post-summary {
-    font-size: 1.125rem;
+    font-size: 1rem;
     line-height: 1.6;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     opacity: 0.95;
     max-width: 600px;
     margin-left: auto;
@@ -637,8 +593,8 @@ const initVditor = () => {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 2rem;
-    margin-bottom: 2rem;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 
   .info-item {
@@ -696,21 +652,21 @@ const initVditor = () => {
   .post-content-wrapper {
     background: var(--content-bg, white);
     position: relative;
-    margin-top: -3rem;
-    border-radius: 2rem 2rem 0 0;
+    margin-top: -2rem;
+    border-radius: 1.5rem 1.5rem 0 0;
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
 
     .container {
       max-width: 1600px;
       margin: 0 auto;
-      padding: 4rem 2rem 2rem;
+      padding: 2.5rem 2rem 2rem;
 
       /* 内容布局 */
       .content-layout {
         gap: 2rem;
         max-width: 1200px;
         margin: 0 auto;
-        padding: 0 2rem;
+        padding: 0 1rem;
         position: relative;
         align-items: start;
 
@@ -761,13 +717,13 @@ const initVditor = () => {
         /* 目录导航 */
         .table-of-contents {
           position: sticky;
-          top: 2rem;
+          top: 1.5rem;
           height: fit-content;
-          max-height: calc(100vh - 4rem);
+          max-height: calc(100vh - 3rem);
           background: rgba(255, 255, 255, 0.95);
           backdrop-filter: blur(10px);
           border-radius: 12px;
-          padding: 1.5rem;
+          padding: 1.2rem;
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
           border: 1px solid rgba(255, 255, 255, 0.2);
           overflow-y: auto;
@@ -847,10 +803,10 @@ const initVditor = () => {
           .article-meta-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 2rem;
-            border-radius: 16px;
-            margin-bottom: 3rem;
-            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
             position: relative;
             overflow: hidden;
 
@@ -869,7 +825,7 @@ const initVditor = () => {
               display: flex;
               justify-content: space-around;
               text-align: center;
-              gap: 3rem;
+              gap: 2rem;
               position: relative;
 
               .meta-item {
@@ -877,9 +833,9 @@ const initVditor = () => {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                gap: 0.75rem;
-                padding: 1rem;
-                border-radius: 12px;
+                gap: 0.5rem;
+                padding: 0.75rem;
+                border-radius: 8px;
                 background: rgba(255, 255, 255, 0.1);
                 backdrop-filter: blur(5px);
                 transition: all 0.3s ease;
@@ -890,14 +846,14 @@ const initVditor = () => {
                 }
 
                 .meta-icon {
-                  font-size: 2rem;
+                  font-size: 1.5rem;
                   opacity: 0.9;
                 }
 
                 .meta-text {
-                  font-size: 0.95rem;
+                  font-size: 0.85rem;
                   font-weight: 500;
-                  line-height: 1.4;
+                  line-height: 1.3;
                 }
               }
             }
@@ -925,11 +881,11 @@ const initVditor = () => {
         .article-tags-section {
           background: rgba(255, 255, 255, 0.95);
           backdrop-filter: blur(10px);
-          padding: 2.5rem;
-          border-radius: 16px;
-          margin-bottom: 3rem;
+          padding: 1.5rem;
+          border-radius: 12px;
+          margin-bottom: 2rem;
           border: 1px solid rgba(255, 255, 255, 0.3);
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
           transition: all 0.3s ease;
 
           &:hover {
@@ -940,13 +896,13 @@ const initVditor = () => {
           .tags-title {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            font-size: 1.25rem;
-            font-weight: 700;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
             color: #2d3748;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
           }
           .tags-cloud {
             display: flex;
@@ -1000,7 +956,7 @@ const initVditor = () => {
       */
         .post-footer {
           border-top: 1px solid var(--border-color, #e5e7eb);
-          padding-top: 2rem;
+          padding-top: 1.5rem;
 
           /**
         * 文章操作按钮
@@ -1213,35 +1169,6 @@ const initVditor = () => {
   }
 
   /**
- * 深色主题适配
- */
-  .theme-dark .post-detail-container {
-    background: var(--bg-color, #111827);
-  }
-
-  .theme-dark .post-content-wrapper {
-    background: var(--content-bg, #1f2937);
-  }
-
-  .theme-dark .post-content {
-    background: var(--content-bg, #1f2937);
-    color: var(--text-color, #e5e7eb);
-  }
-
-  .theme-dark .markdown-content {
-    color: var(--text-color, #e5e7eb);
-  }
-
-  .theme-dark .nav-item {
-    background: var(--card-bg, #374151);
-    border-color: var(--border-color, #4b5563);
-  }
-
-  .theme-dark .nav-item:hover {
-    background: var(--hover-bg, #4b5563);
-  }
-
-  /**
  * Vditor 样式重置
  */
   .vditor-reset {
@@ -1254,48 +1181,6 @@ const initVditor = () => {
       'Helvetica Neue',
       Arial,
       sans-serif;
-  }
-
-  .theme-selector {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    gap: 8px;
-    padding: 8px;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-
-    .theme-option {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: all 0.3s ease;
-      position: relative;
-
-      &.active {
-        border-color: #667eea;
-        transform: scale(1.1);
-      }
-
-      &.light {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      }
-
-      &.dark {
-        background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
-      }
-
-      &.auto {
-        background: linear-gradient(135deg, #667eea 0%, #2d3748 50%, #764ba2 100%);
-      }
-    }
   }
 
   /* 阅读进度条 */
@@ -1348,77 +1233,191 @@ const initVditor = () => {
     }
   }
 
-  /* 深色主题适配 */
-  .theme-dark {
-    .table-of-contents {
-      background: rgba(45, 55, 72, 0.95);
-      border-color: rgba(255, 255, 255, 0.1);
+  /* 响应式设计 */
+  @media (max-width: 992px) {
+    .post-header {
+      height: 35vh;
+      min-height: 280px;
+      max-height: 320px;
 
-      @media (max-width: 992px) {
-        background: rgba(45, 55, 72, 0.98);
+      .header-content {
+        padding: 1rem;
       }
     }
 
-    .article-tags-section,
-    .copyright-notice {
-      background: rgba(45, 55, 72, 0.95);
-      border-color: rgba(255, 255, 255, 0.1);
-    }
+    .post-content-wrapper {
+      margin-top: -1.5rem;
 
-    .toc-header,
-    .tags-title {
-      color: #e2e8f0;
-      border-color: #4b5563;
-    }
+      .container {
+        padding: 2rem 1rem 1.5rem;
 
-    .toc-link {
-      color: #a0aec0;
+        .content-layout {
+          padding: 0 0.5rem;
+          display: block;
 
-      &:hover {
-        color: #667eea;
-      }
-    }
+          .mobile-toc-toggle {
+            display: flex;
+          }
 
-    .toc-item.active .toc-link {
-      color: #667eea;
-    }
+          .mobile-toc-overlay {
+            display: block;
+          }
 
-    .copyright-text {
-      color: #a0aec0;
-    }
+          .table-of-contents {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            height: 100vh;
+            max-height: 100vh;
+            background: white;
+            z-index: 1000;
+            transition: left 0.3s ease;
+            border-radius: 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
 
-    .tool-btn {
-      background: rgba(45, 55, 72, 0.95);
-      border-color: rgba(255, 255, 255, 0.1);
-      color: #e2e8f0;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            &.mobile-open {
+              left: 0;
+            }
 
-      &:hover {
-        background: #667eea;
-        color: white;
-        box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
-      }
+            .toc-close {
+              display: block;
+            }
+          }
 
-      /* 深色主题下回到顶部按钮 */
-      &.scroll-to-top-btn,
-      &:first-child {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-        color: white !important;
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
-        position: relative !important;
-        cursor: pointer !important;
-        user-select: none !important;
-
-        &:hover {
-          background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
-          box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6) !important;
-          transform: translateY(-4px) scale(1.08) !important;
-        }
-
-        &:active {
-          transform: translateY(-2px) scale(1.05) !important;
+          .main-content {
+            width: 100%;
+            max-width: none;
+          }
         }
       }
+    }
+
+    .post-title {
+      font-size: 2rem;
+      margin: 0.75rem 0;
+    }
+
+    .post-summary {
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .post-info {
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .info-item {
+      font-size: 0.75rem;
+      padding: 0.4rem 0.8rem;
+    }
+
+    .article-meta-card {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+
+      .meta-row {
+        gap: 1rem;
+
+        .meta-item {
+          min-width: 100px;
+          padding: 0.5rem 0.6rem;
+
+          .meta-icon {
+            font-size: 0.9rem;
+          }
+
+          .meta-text {
+            div:first-child {
+              font-size: 0.65rem;
+            }
+
+            div:last-child {
+              font-size: 0.75rem;
+            }
+          }
+        }
+      }
+    }
+
+    .article-tags-section {
+      margin: 1.5rem 0;
+      padding: 1rem;
+
+      .tags-title {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+      }
+    }
+
+    .post-footer {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .post-header {
+      height: 30vh;
+      min-height: 250px;
+      max-height: 280px;
+    }
+
+    .post-title {
+      font-size: 1.75rem;
+      margin: 0.5rem 0;
+    }
+
+    .post-summary {
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .post-info {
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .info-item {
+      font-size: 0.7rem;
+      padding: 0.3rem 0.6rem;
+    }
+
+    .article-meta-card {
+      padding: 0.6rem;
+      margin-bottom: 0.75rem;
+
+      .meta-row {
+        gap: 0.75rem;
+        flex-direction: column;
+
+        .meta-item {
+          min-width: auto;
+          width: 100%;
+          max-width: 180px;
+          padding: 0.4rem 0.5rem;
+        }
+      }
+    }
+
+    .post-content-wrapper {
+      margin-top: -1rem;
+
+      .container {
+        padding: 1.5rem 0.75rem 1rem;
+      }
+    }
+
+    .article-tags-section {
+      margin: 1rem 0;
+      padding: 0.75rem;
+    }
+
+    .post-footer {
+      margin-top: 1rem;
+      padding-top: 0.75rem;
     }
   }
 }
