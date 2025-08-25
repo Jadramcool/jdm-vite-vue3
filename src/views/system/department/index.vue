@@ -57,10 +57,22 @@ const schemaMethods = {
       record,
     });
   },
-  handleDelete(record: NaiveUI.RowData) {
-    DepartmentApi.deleteDepartment(record.id).then(() => {
+  async handleDelete(record: NaiveUI.RowData) {
+    try {
+      await DepartmentApi.deleteDepartment(record.id);
+      window.$message.success('删除成功');
       tableRef.value.reload();
-    });
+    } catch (error: any) {
+      window.$message.error(error || '删除失败');
+    }
+  },
+
+  async handleChangeStatus(record: NaiveUI.RowData) {
+    record.status === 1
+      ? await DepartmentApi.disableDepartment(record.id)
+      : await DepartmentApi.enableDepartment(record.id);
+
+    tableRef.value.reload();
   },
 };
 

@@ -76,6 +76,9 @@ export const useDepartmentSchema = (methods: any = {}) => {
         key: 'code',
         label: '部门编码',
         defaultValue: undefined,
+        table: {
+          width: 180,
+        },
         form: {
           component: 'NInput',
           query: 'in',
@@ -273,9 +276,17 @@ export const useDepartmentSchema = (methods: any = {}) => {
         label: $t('common.operate'),
         table: {
           fixed: 'right',
-          width: 140,
+          width: 200,
           render: (row: any) => (
             <NSpace justify="center">
+              <NButton
+                type={row.status === 1 ? 'error' : 'success'}
+                ghost
+                size="small"
+                onClick={() => methods.handleChangeStatus(row)}
+              >
+                {row.status === 1 ? '停用' : '启用'}
+              </NButton>
               <NButton type="primary" ghost size="small" onClick={() => methods.handleEdit(row)}>
                 {$t('common.edit')}
               </NButton>

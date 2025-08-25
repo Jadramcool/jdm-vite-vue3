@@ -16,6 +16,8 @@ enum API {
   removeRole = '/system/department/remove-role',
   search = '/system/department/search',
   stats = '/system/department/stats',
+  enable = '/system/department/enable',
+  disable = '/system/department/disable',
 }
 
 /**
@@ -170,5 +172,23 @@ export const searchDepartments = (params: { keyword: string; [key: string]: any 
 export const getDepartmentStats = (id?: number | string) => {
   return request.get<any>({
     url: id ? `${API.stats}/${id}` : API.stats,
+  });
+};
+
+/**
+ * @description: 启用部门
+ */
+export const enableDepartment = (id: number | string) => {
+  return request.put<BasicModel>({
+    url: `${API.enable}/${id}`,
+  });
+};
+
+/**
+ * @description: 停用部门
+ */
+export const disableDepartment = (id: number | string) => {
+  return request.put<BasicModel>({
+    url: `${API.disable}/${id}`,
   });
 };
