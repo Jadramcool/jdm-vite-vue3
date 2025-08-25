@@ -24,9 +24,6 @@ const attrs = useAttrs();
 const isUpdate = ref<boolean>(false); // 是否是更新
 const entityId = ref<number>(0); // 实体ID
 
-/**
- * 获取弹窗标题
- */
 const getTitle = computed(() => {
   return `${unref(isUpdate) ? $t('common.edit') : $t('common.add')}系统配置`;
 });
@@ -73,7 +70,10 @@ const [register, { closeModal, setModalProps }] = useModalInner(async (data) => 
     // 将后端传来的布尔值转换为前端表单需要的数字格式
     const convertedRecord = {
       ...data.record,
-      value: JSON.stringify(data.record.value),
+      value:
+        typeof data.record.value === 'string'
+          ? data.record.value
+          : JSON.stringify(data.record.value),
       isSystem:
         typeof data.record.isSystem === 'boolean'
           ? booleanConverter.toNumber(data.record.isSystem)

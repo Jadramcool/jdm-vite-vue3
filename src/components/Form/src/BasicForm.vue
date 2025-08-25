@@ -410,7 +410,7 @@ const formActionType = {
   getFieldsValue,
   setFieldsValue,
   setProps,
-  reset: resetFields,
+  resetFields,
   validate,
   validateFields,
   clearValidate,
