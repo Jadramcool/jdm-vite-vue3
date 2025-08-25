@@ -24,28 +24,31 @@
         hoverable
       >
         <template #header>
-          <div v-if="editParentFlagMap[todos.id]">
-            <n-input v-model:value="inputParentValue[todos.id]"></n-input>
-          </div>
-          <div v-if="!editParentFlagMap[todos.id]">
-            <n-text>{{ todos.title }}</n-text>
-          </div>
+          <!-- 父级标题编辑 -->
+          <n-input
+            v-if="editParentFlagMap[todos.id]"
+            v-model:value="inputParentValue[todos.id]"
+            placeholder="请输入标题"
+          />
+          <n-text v-else>{{ todos.title }}</n-text>
         </template>
+
         <template #header-extra>
+          <!-- 父级操作按钮 -->
           <template v-if="editParentFlagMap[todos.id]">
-            <CommonWrapper @click="handleEdit(todos, false, true)">
-              <JayIcon :icon="'material-symbols:check-indeterminate-small'" :type="'warning'" />
+            <CommonWrapper @click="handleEdit(todos, false, true)" title="取消">
+              <JayIcon icon="material-symbols:check-indeterminate-small" type="warning" />
             </CommonWrapper>
-            <CommonWrapper @click="handleSubmit(todos, true)">
-              <JayIcon :icon="'material-symbols:check-rounded'" :type="'success'" />
+            <CommonWrapper @click="handleSubmit(todos, true)" title="保存">
+              <JayIcon icon="material-symbols:check-rounded" type="success" />
             </CommonWrapper>
           </template>
-          <template v-if="!editParentFlagMap[todos.id]">
-            <CommonWrapper @click="handleDelete(todos, todos)">
-              <JayIcon :icon="'material-symbols:delete-forever-outline'" :type="'error'" />
+          <template v-else>
+            <CommonWrapper @click="handleDelete(todos, todos)" title="删除">
+              <JayIcon icon="material-symbols:delete-forever-outline" type="error" />
             </CommonWrapper>
-            <CommonWrapper @click="handleEdit(todos, true, true)">
-              <JayIcon :icon="'material-symbols:ink-pen-outline-rounded'" />
+            <CommonWrapper @click="handleEdit(todos, true, true)" title="编辑">
+              <JayIcon icon="material-symbols:ink-pen-outline-rounded" />
             </CommonWrapper>
           </template>
         </template>
@@ -86,55 +89,59 @@
                 >
                 </n-checkbox>
                 <div class="input-form flex-1">
-                  <div v-if="editFlagMap[todo.id]">
-                    <n-flex justify="space-between" align="center" :wrap="false">
-                      <n-input v-model:value="inputValue[todo.id]"></n-input>
-                      <n-button-group size="small">
-                        <n-button round @click="handleEdit(todo, false)">
-                          <JayIcon
-                            :icon="'material-symbols:check-indeterminate-small'"
-                            :type="'warning'"
-                          />
-                        </n-button>
-                        <n-button round @click="handleSubmit(todo)">
-                          <JayIcon :icon="'material-symbols:check-rounded'" :type="'success'" />
-                        </n-button>
-                      </n-button-group>
-                    </n-flex>
-                  </div>
-                  <div v-if="!editFlagMap[todo.id]">
-                    <n-flex justify="space-between" align="center" :wrap="false">
-                      <n-text>{{ todo.title }}</n-text>
-                      <n-button-group size="small" v-if="!todo.isDone">
-                        <n-button round @click="handleDelete(todo, todos)">
-                          <JayIcon
-                            :icon="'material-symbols:delete-forever-outline'"
-                            :type="'error'"
-                          />
-                        </n-button>
-                        <n-button round @click="handleEdit(todo, true)">
-                          <JayIcon :icon="'material-symbols:ink-pen-outline-rounded'" />
-                        </n-button>
-                      </n-button-group>
-                    </n-flex>
-                  </div>
+                  <!-- 子项目编辑状态 -->
+                  <n-flex
+                    v-if="editFlagMap[todo.id]"
+                    justify="space-between"
+                    align="center"
+                    :wrap="false"
+                  >
+                    <n-input v-model:value="inputValue[todo.id]" placeholder="请输入待办事项" />
+                    <n-button-group size="small">
+                      <n-button round @click="handleEdit(todo, false)" title="取消">
+                        <JayIcon icon="material-symbols:check-indeterminate-small" type="warning" />
+                      </n-button>
+                      <n-button round @click="handleSubmit(todo)" title="保存">
+                        <JayIcon icon="material-symbols:check-rounded" type="success" />
+                      </n-button>
+                    </n-button-group>
+                  </n-flex>
+
+                  <!-- 子项目显示状态 -->
+                  <n-flex v-else justify="space-between" align="center" :wrap="false">
+                    <n-text :class="{ 'line-through opacity-60': todo.isDone }">
+                      {{ todo.title }}
+                    </n-text>
+                    <n-button-group size="small" v-if="!todo.isDone">
+                      <n-button round @click="handleDelete(todo, todos)" title="删除">
+                        <JayIcon icon="material-symbols:delete-forever-outline" type="error" />
+                      </n-button>
+                      <n-button round @click="handleEdit(todo, true)" title="编辑">
+                        <JayIcon icon="material-symbols:ink-pen-outline-rounded" />
+                      </n-button>
+                    </n-button-group>
+                  </n-flex>
                 </div>
               </n-flex>
             </n-spin>
           </VueDraggable>
         </div>
         <template #footer>
+          <!-- 添加子项目按钮 -->
           <div class="flex justify-center mt-4">
-            <CommonWrapper @click="handleAddTodo(todos)">
-              <JayIcon :icon="'material-symbols:add-2'" hover :type="'primary'" />
+            <CommonWrapper @click="handleAddTodo(todos)" title="添加待办事项">
+              <JayIcon icon="material-symbols:add-2" hover type="primary" />
             </CommonWrapper>
           </div>
         </template>
       </n-card>
 
-      <CommonWrapper class="w-200px" @click="handleAddTodoList()">
-        <JayIcon :icon="'material-symbols:add-2'" :size="50" hover :type="'primary'" />
-      </CommonWrapper>
+      <!-- 添加新列表按钮 -->
+      <div class="w-200px flex items-center justify-center">
+        <CommonWrapper @click="handleAddTodoList()" title="添加新列表">
+          <JayIcon icon="material-symbols:add-2" :size="50" hover type="primary" />
+        </CommonWrapper>
+      </div>
     </VueDraggable>
   </div>
 </template>
@@ -143,236 +150,342 @@
 import { TodoApi } from '@/api';
 import { $t } from '@/locales';
 import { VueDraggable } from 'vue-draggable-plus';
-// import JayIcon from '@/components/common/JayIcon.vue';
 
+// ==================== 响应式数据 ====================
 const todoList = ref<Notice.Todo[]>([]);
-
 const loading = ref<boolean>(false);
+
+// 加载状态管理
 const submitLoading = ref<Record<string | number, boolean>>({});
 
+// 编辑状态管理
 const editFlagMap = ref<Record<string | number, boolean>>({});
 const editParentFlagMap = ref<Record<string | number, boolean>>({});
 
-const inputValue = ref<any>({});
-const inputParentValue = ref<any>({});
+// 输入值管理
+const inputValue = ref<Record<string | number, string>>({});
+const inputParentValue = ref<Record<string | number, string>>({});
 
-const getTodoList = async () => {
-  const res: Notice.Todo[] = await TodoApi.todoList();
-  todoList.value = res.map((item: Notice.Todo) => item);
-  nextTick(() => {
-    generateTemp(todoList.value);
-  });
+// ==================== 数据初始化 ====================
+/**
+ * 获取待办事项列表
+ */
+const getTodoList = async (): Promise<void> => {
+  try {
+    const res: Notice.Todo[] = await TodoApi.todoList();
+    todoList.value = res;
+    nextTick(() => {
+      initializeEditStates(todoList.value);
+    });
+  } catch (error: any) {
+    handleError(error, '获取待办事项失败');
+  }
 };
 
-onMounted(async () => {
-  loading.value = true;
-  await getTodoList();
-  loading.value = false;
-});
-
-const generateTemp = (data: Notice.Todo[]) => {
+/**
+ * 初始化编辑状态和输入值
+ */
+const initializeEditStates = (data: Notice.Todo[]): void => {
   data.forEach((todos) => {
-    inputValue.value[todos.id] = todos.children?.reduce((acc: any, cur: Notice.Todo) => {
-      acc[cur.id] = cur.title;
-      return acc;
-    }, {});
-    editFlagMap.value[todos.id] = todos.children?.reduce((acc: any, cur: Notice.Todo) => {
-      acc[cur.id] = false;
-      return acc;
-    }, {});
+    // 初始化子项目的输入值和编辑状态
+    if (todos.children) {
+      todos.children.forEach((child: any) => {
+        inputValue.value[child.id] = child.title;
+        editFlagMap.value[child.id] = false;
+      });
+    }
+
+    // 初始化父项目状态
     inputParentValue.value[todos.id] = todos.title;
     editParentFlagMap.value[todos.id] = false;
     submitLoading.value[todos.id] = false;
   });
 };
 
-const calcPercent = (todos: any) => {
+// ==================== 工具函数 ====================
+/**
+ * 计算完成百分比
+ */
+const calcPercent = (todos: Notice.Todo): number => {
   const { children } = todos;
-  const doneCount = children?.filter((item: Notice.Todo) => item.isDone).length;
-  const totalLength = children?.length || 0;
-  return totalLength > 0 ? parseFloat((doneCount / totalLength).toFixed(2)) * 100 : 0;
+  if (!children || children.length === 0) return 0;
+
+  const doneCount = children.filter((item: Notice.Todo) => item.isDone).length;
+  return Math.round((doneCount / children.length) * 100);
 };
 
-// 切换编辑状态
-const handleEdit = (todo: any, flag: boolean, isParent: boolean = false) => {
+/**
+ * 统一错误处理
+ */
+const handleError = (error: any, defaultMessage: string): void => {
+  const message = error?.message || error?.errMsg || error || defaultMessage;
+  window.$message?.error(message);
+};
+
+/**
+ * 生成唯一ID
+ */
+const generateId = (): number => Date.now();
+
+// ==================== 生命周期 ====================
+onMounted(async () => {
+  loading.value = true;
+  await getTodoList();
+  loading.value = false;
+});
+
+// ==================== 编辑操作 ====================
+/**
+ * 切换编辑状态
+ * @param todo 待办事项对象
+ * @param flag 编辑状态标志
+ * @param isParent 是否为父级项目
+ */
+const handleEdit = (todo: Notice.Todo, flag: boolean, isParent: boolean = false): void => {
+  // 如果是取消编辑且是新创建的项目，则删除
+  if (!flag && todo.tag === 'create') {
+    handleCancelCreate(todo, isParent);
+    return;
+  }
+
   if (isParent) {
-    // 如果是取消编辑且是新创建的项目，则删除
-    if (!flag && todo.tag === 'create') {
-      handleCancelCreate(todo, isParent);
-      return;
-    }
     // 恢复原始数据
     if (flag) {
-      inputParentValue.value[todo.id] = todo.title;
+      inputParentValue.value[todo.id] = todo.title || '';
     }
     editParentFlagMap.value[todo.id] = flag;
   } else {
-    // 如果是取消编辑且是新创建的项目，则删除
-    if (!flag && todo.tag === 'create') {
-      handleCancelCreate(todo, isParent);
-      return;
-    }
     // 恢复原始数据
     if (flag) {
-      inputValue.value[todo.id] = todo.title;
+      inputValue.value[todo.id] = todo.title || '';
     }
     editFlagMap.value[todo.id] = flag;
   }
 };
 
-// 新增待办事项
-const handleAddTodo = async (todos: Notice.Todo) => {
-  // id为时间戳
-  const id = Date.now();
-  const lastItem = todos.children[todos.children.length - 1];
-  const sortOrder = (lastItem?.sortOrder ?? todos.children.length) + 1;
-  todos?.children.push({
+// ==================== 新增操作 ====================
+/**
+ * 新增子待办事项
+ * @param parentTodo 父级待办事项
+ */
+const handleAddTodo = (parentTodo: Notice.Todo): void => {
+  const id = generateId();
+  const children = parentTodo.children || [];
+  const lastItem = children[children.length - 1];
+  const sortOrder = (lastItem?.sortOrder ?? children.length) + 1;
+
+  const newTodo: Notice.Todo = {
     id,
     title: '',
     isDone: false,
     tag: 'create',
-    pid: todos.id,
+    pid: parentTodo.id,
     sortOrder,
-  });
+  };
+
+  if (!parentTodo.children) {
+    parentTodo.children = [];
+  }
+  parentTodo.children.push(newTodo);
+
   nextTick(() => {
-    generateTemp(todoList.value);
+    initializeEditStates(todoList.value);
     editFlagMap.value[id] = true;
   });
 };
 
-// 新增待办事项-父级
-const handleAddTodoList = async () => {
-  const id = Date.now();
+/**
+ * 新增父级待办事项列表
+ */
+const handleAddTodoList = (): void => {
+  const id = generateId();
   const lastItem = todoList.value[todoList.value.length - 1];
   const sortOrder = (lastItem?.sortOrder ?? todoList.value.length) + 1;
-  todoList.value.push({
+
+  const newTodoList: Notice.Todo = {
     id,
     title: '',
     isDone: false,
     tag: 'create',
     sortOrder,
-  });
+    children: [],
+  };
+
+  todoList.value.push(newTodoList);
+
   nextTick(() => {
-    generateTemp(todoList.value);
+    initializeEditStates(todoList.value);
     editParentFlagMap.value[id] = true;
   });
 };
 
-// 更新待办事项
-const handleSubmit = async (todo: any, isParent: boolean = false) => {
+// ==================== 提交操作 ====================
+/**
+ * 提交待办事项（创建或更新）
+ * @param todo 待办事项对象
+ * @param isParent 是否为父级项目
+ */
+const handleSubmit = async (todo: Notice.Todo, isParent: boolean = false): Promise<void> => {
+  const title = isParent ? inputParentValue.value[todo.id] : inputValue.value[todo.id];
+  const loadingKey = isParent ? todo.id : todo.pid!;
+
+  // 验证标题不能为空
+  if (!title || title.trim() === '') {
+    window.$message?.warning('标题不能为空');
+    return;
+  }
+
   try {
-    const title = isParent ? inputParentValue.value[todo.id] : inputValue.value[todo.id];
+    submitLoading.value[loadingKey] = true;
 
-    // 验证标题不能为空
-    if (!title || title.trim() === '') {
-      window.$message?.warning('标题不能为空');
-      return;
-    }
-
-    submitLoading.value[isParent ? todo.id : todo.pid] = true;
-    if (todo.tag && todo.tag === 'create') {
+    if (todo.tag === 'create') {
+      // 创建新待办事项
       await TodoApi.createTodo({
         title: title.trim(),
         sortOrder: todo.sortOrder || 0,
         ...(isParent ? {} : { pid: todo.pid }),
       });
-      isParent ? (editParentFlagMap.value[todo.id] = false) : (editFlagMap.value[todo.id] = false);
+
       todo.title = title.trim();
-      todo.tag = undefined; // 移除创建标记
+      delete todo.tag; // 移除创建标记
       window.$message?.success($t('common.createSuccess'));
     } else {
+      // 更新现有待办事项
       await TodoApi.updateTodo({
         id: todo.id,
         title: title.trim(),
       });
-      isParent ? (editParentFlagMap.value[todo.id] = false) : (editFlagMap.value[todo.id] = false);
-      // 将本地todo同步
+
       todo.title = title.trim();
       window.$message?.success($t('common.updateSuccess'));
     }
 
-    getTodoList();
-  } catch (e: any) {
-    window.$message?.error(e.message || e);
-  } finally {
-    submitLoading.value[isParent ? todo.id : todo.pid] = false;
-  }
-};
-
-// 删除待办事项
-const handleDelete = async (todo: Notice.Todo, todos: Notice.Todo) => {
-  try {
-    submitLoading.value[todos.id] = true;
-    if (todo.tag && todo.tag === 'create') {
-      todos.children = todos.children.filter((item: any) => item.id !== todo.id);
+    // 退出编辑状态
+    if (isParent) {
+      editParentFlagMap.value[todo.id] = false;
     } else {
-      await TodoApi.deleteTodo(todo.id);
-      // 将本地todo同步
-      if (todos.children) {
-        todos.children = todos.children.filter((item: any) => item.id !== todo.id);
-      }
-      window.$message?.success($t('common.deleteSuccess'));
-      getTodoList();
+      editFlagMap.value[todo.id] = false;
     }
-  } catch (e: any) {
-    window.$message?.error(e.message || e);
+
+    // 刷新数据
+    await getTodoList();
+  } catch (error: any) {
+    handleError(error, '操作失败');
   } finally {
-    submitLoading.value[todos.id] = false;
+    submitLoading.value[loadingKey] = false;
   }
 };
 
-// 完成
-const handleChecked = async (checked: boolean, todo: Notice.Todo) => {
+// ==================== 删除操作 ====================
+/**
+ * 删除待办事项
+ * @param todo 要删除的待办事项
+ * @param parentTodo 父级待办事项
+ */
+const handleDelete = async (todo: Notice.Todo, parentTodo: Notice.Todo): Promise<void> => {
+  try {
+    submitLoading.value[parentTodo.id] = true;
+
+    if (todo.tag === 'create') {
+      // 删除未保存的新建项目
+      if (parentTodo.children) {
+        parentTodo.children = parentTodo.children.filter(
+          (item: { id: number }) => item.id !== todo.id,
+        );
+      }
+    } else {
+      // 删除已保存的项目
+      await TodoApi.deleteTodo(todo.id);
+
+      // 本地同步删除
+      if (parentTodo.children) {
+        parentTodo.children = parentTodo.children.filter(
+          (item: { id: number }) => item.id !== todo.id,
+        );
+      }
+
+      window.$message?.success($t('common.deleteSuccess'));
+      await getTodoList();
+    }
+  } catch (error: any) {
+    handleError(error, '删除失败');
+  } finally {
+    submitLoading.value[parentTodo.id] = false;
+  }
+};
+
+// ==================== 状态切换 ====================
+/**
+ * 切换待办事项完成状态
+ * @param checked 是否完成
+ * @param todo 待办事项对象
+ */
+const handleChecked = async (checked: boolean, todo: Notice.Todo): Promise<void> => {
   try {
     todo.isDone = checked;
     await TodoApi.doneTodo(todo.id, checked ? 1 : 0);
-    getTodoList();
+    await getTodoList();
   } catch (error: any) {
-    window.$message.error(error.errMsg || error.message || error);
+    // 回滚状态
+    todo.isDone = !checked;
+    handleError(error, '状态更新失败');
   }
 };
 
-// 排序
-const handleUpdateSort = async (event: any) => {
+// ==================== 排序操作 ====================
+/**
+ * 更新子项目排序
+ * @param event 拖拽事件对象
+ */
+const handleUpdateSort = async (event: any): Promise<void> => {
   try {
     const { pid } = event.data;
-    console.log('unref(todoList)', unref(todoList));
-    const sortTodos = unref(todoList)
-      .find((item: any) => item.id === pid)
-      ?.children.map((todo: Notice.Todo, index: number) => {
-        return {
-          id: todo.id,
-          sortOrder: index,
-        };
-      });
+    const parentTodo = todoList.value.find((item) => item.id === pid);
+
+    if (!parentTodo?.children) {
+      return;
+    }
+
+    const sortTodos = parentTodo.children.map((todo: Notice.Todo, index: number) => ({
+      id: todo.id,
+      sortOrder: index,
+    }));
+
     await TodoApi.updateTodoOrder({ sort: sortTodos, pid });
   } catch (error: any) {
-    window.$message.error(error.errMsg || error.message || error);
+    handleError(error, '排序更新失败');
   }
 };
 
-// 父卡片拖拽排序
-const handleUpdateSortParent = async () => {
+/**
+ * 更新父级项目排序
+ */
+const handleUpdateSortParent = async (): Promise<void> => {
   try {
-    const sortTodoList = unref(todoList).map((todo: Notice.Todo, index: number) => {
-      return {
-        id: todo.id,
-        sortOrder: index,
-      };
-    });
+    const sortTodoList = todoList.value.map((todo: Notice.Todo, index: number) => ({
+      id: todo.id,
+      sortOrder: index,
+    }));
+
     await TodoApi.updateTodoOrder({ sort: sortTodoList });
   } catch (error: any) {
-    window.$message.error(error.errMsg || error.message || error);
+    handleError(error, '排序更新失败');
   }
 };
-// 取消创建新项目（删除未保存的项目）
-const handleCancelCreate = (todo: any, isParent: boolean = false) => {
+// ==================== 辅助操作 ====================
+/**
+ * 取消创建新项目（删除未保存的项目）
+ * @param todo 待办事项对象
+ * @param isParent 是否为父级项目
+ */
+const handleCancelCreate = (todo: Notice.Todo, isParent: boolean = false): void => {
   if (isParent) {
     // 删除父级项目
     const index = todoList.value.findIndex((item) => item.id === todo.id);
     if (index > -1) {
       todoList.value.splice(index, 1);
     }
+
     // 清理相关状态
     delete editParentFlagMap.value[todo.id];
     delete inputParentValue.value[todo.id];
@@ -380,34 +493,40 @@ const handleCancelCreate = (todo: any, isParent: boolean = false) => {
   } else {
     // 删除子项目
     const parent = todoList.value.find((item) => item.id === todo.pid);
-    if (parent && parent.children) {
-      const index = parent.children.findIndex((item: { id: any }) => item.id === todo.id);
+    if (parent?.children) {
+      const index = parent.children.findIndex((item: any) => item.id === todo.id);
       if (index > -1) {
         parent.children.splice(index, 1);
       }
     }
+
     // 清理相关状态
     delete editFlagMap.value[todo.id];
     delete inputValue.value[todo.id];
   }
 };
 
-// 跨表拖拽
-const handleAdd = async (event: any) => {
+/**
+ * 处理跨列表拖拽
+ * @param event 拖拽事件对象
+ */
+const handleAdd = async (event: any): Promise<void> => {
   try {
-    // const prePid = event.data.pid;
     const pid = Number(event.to.id);
-    const sortTodos = unref(todoList)
-      .find((item: any) => item.id === pid)
-      ?.children.map((todo: Notice.Todo, index: number) => {
-        return {
-          id: todo.id,
-          sortOrder: index,
-        };
-      });
+    const parentTodo = todoList.value.find((item) => item.id === pid);
+
+    if (!parentTodo?.children) {
+      return;
+    }
+
+    const sortTodos = parentTodo.children.map((todo: Notice.Todo, index: number) => ({
+      id: todo.id,
+      sortOrder: index,
+    }));
+
     await TodoApi.updateTodoOrder({ sort: sortTodos, pid });
   } catch (error: any) {
-    window.$message.error(error.errMsg || error.message || error);
+    handleError(error, '跨列表拖拽失败');
   }
 };
 </script>
