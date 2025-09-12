@@ -13,6 +13,7 @@ export const layoutOptions = computed(() => [
   { label: $t('layout.normal'), value: 'normal' },
   { label: $t('layout.fullContent'), value: 'full-content' },
   { label: $t('layout.blog'), value: 'blog' },
+  { label: $t('layout.public'), value: 'public' },
 ]);
 
 /** @description: 菜单类型主题 */
@@ -89,30 +90,3 @@ export const postStatusOptions = computed(() => [
   { label: $t('modules.blog.post.statusMap.draft'), value: 'DRAFT' },
   { label: $t('modules.blog.post.statusMap.archived'), value: 'ARCHIVED' },
 ]);
-
-/** @description 操作类型选项配置 */
-export const operationTypeOptions = computed(() => [
-  { label: $t('modules.system.opLog.operationTypeMap.create'), value: 'CREATE' },
-  { label: $t('modules.system.opLog.operationTypeMap.update'), value: 'UPDATE' },
-  { label: $t('modules.system.opLog.operationTypeMap.delete'), value: 'DELETE' },
-  { label: $t('modules.system.opLog.operationTypeMap.view'), value: 'VIEW' },
-  { label: $t('modules.system.opLog.operationTypeMap.login'), value: 'LOGIN' },
-  { label: $t('modules.system.opLog.operationTypeMap.logout'), value: 'LOGOUT' },
-  { label: $t('modules.system.opLog.operationTypeMap.export'), value: 'EXPORT' },
-  { label: $t('modules.system.opLog.operationTypeMap.import'), value: 'IMPORT' },
-  { label: $t('modules.system.opLog.operationTypeMap.other'), value: 'OTHER' },
-]);
-
-/** @description 操作状态选项配置 */
-export const operationStatusOptions = computed(() => [
-  { label: $t('modules.system.opLog.operationStatusMap.success'), value: 'SUCCESS' },
-  { label: $t('modules.system.opLog.operationStatusMap.failed'), value: 'FAILED' },
-  { label: $t('modules.system.opLog.operationStatusMap.pending'), value: 'PENDING' },
-]);
-
-/** @description 操作状态样式配置 */
-export const operationStatusColorOptions: Record<string, 'success' | 'error' | 'warning'> = {
-  SUCCESS: 'success',
-  FAILED: 'error',
-  PENDING: 'warning',
-};

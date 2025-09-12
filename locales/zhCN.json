@@ -104,7 +104,8 @@
   "layout": {
     "blog": "博客",
     "fullContent": "主内容",
-    "normal": "普通"
+    "normal": "普通",
+    "public": "公开"
   },
   "login": {
     "captcha": "验证码",
@@ -317,8 +318,7 @@
           "notice": "通知"
         }
       },
-      "todoList": {
-      }
+      "todoList": {}
     },
     "system": {
       "config": {

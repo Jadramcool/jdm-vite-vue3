@@ -104,7 +104,8 @@
   "layout": {
     "blog": "Blog",
     "fullContent": "Full Content",
-    "normal": "Normal"
+    "normal": "Normal",
+    "public": "Public"
   },
   "login": {
     "captcha": "Captcha",
