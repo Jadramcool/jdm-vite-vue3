@@ -5,7 +5,7 @@ export default [
     component: '/src/views/home/normalHome.vue',
     meta: {
       title: '首页',
-      layout: 'full-content',
+      layout: 'normal',
       icon: 'fe:home',
     },
   },

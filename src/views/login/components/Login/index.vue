@@ -292,7 +292,7 @@ const handleLogin = async (e?: MouseEvent) => {
 };
 
 const handleExperience = async () => {
-  const mock = false;
+  const mock = true;
   if (!mock) {
     window.$notification.info({
       title: '一键体验',
@@ -311,7 +311,7 @@ const mockLogin = async (roleType: string) => {
   });
   const data = {
     username: roleType,
-    password: '123456..',
+    password: '123123',
   };
   try {
     const res = await UserApi.login(data);

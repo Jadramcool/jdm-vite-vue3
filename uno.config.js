@@ -51,11 +51,6 @@ export default defineConfig({
     presetRemToPx({ baseFontSize: 16 }),
   ],
 
-  // === 安全列表配置 ===
-  // 安全列表：确保这些 CSS 类不会被 UnoCSS 的按需生成机制清除
-  // 适用于动态生成的类名或条件渲染的样式
-  // safelist: ['i-carbon-sun', 'i-carbon-moon'],
-
   // === 转换器配置 ===
   // 转换器用于扩展 UnoCSS 的语法支持和功能
   transformers: [
@@ -100,9 +95,6 @@ export default defineConfig({
 
     // === 背景相关快捷方式 ===
     'auto-bg': 'bg-white dark:bg-#18181C', // 自适应背景（亮色/暗色模式）
-    'glass-bg': 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm', // 毛玻璃效果背景
-    'gradient-primary': 'bg-gradient-to-r from-blue-500 to-purple-600', // 主色调渐变背景
-    'gradient-warm': 'bg-gradient-to-r from-orange-400 to-pink-400', // 暖色调渐变背景
 
     // === 文字相关快捷方式 ===
     'text-primary': 'text-gray-900 dark:text-gray-100', // 主要文字颜色
