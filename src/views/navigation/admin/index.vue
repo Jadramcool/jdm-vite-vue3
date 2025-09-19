@@ -249,63 +249,65 @@
 
         <!-- 导航列表 -->
         <div class="navigations-container">
-          <div v-if="currentNavigations?.length">
-            <VueDraggable
-              ref="draggableRef"
-              v-model="currentNavigations"
-              group="navigation"
-              :animation="200"
-              :easing="'cubic-bezier(0.25, 0.46, 0.45, 0.94)'"
-              filter=".none_draggable"
-              :id="navigationGroup.id"
-              :class="['navigations-grid', isAdminUser ? 'admin-draggable' : 'non-admin']"
-              :scrollSensitivity="80"
-              :scroll-speed="10"
-              ghostClass="drag-ghost"
-              chosenClass="drag-chosen"
-              dragClass="drag-dragging"
-              :force-fallback="false"
-              :fallback-tolerance="3"
-              :delay="0"
-              :delay-on-touch-start="false"
-              :touch-start-threshold="5"
-              :disabled="!isAdminUser"
-              @start="onDragStart"
-              @end="onDragEnd"
-              @move="onDragMove"
-            >
-              <NavigationCard
-                v-for="navigation in currentNavigations"
-                :key="navigation.id"
-                :navigation="navigation"
-                :is-admin="isAdminUser"
-                :loading="loadingStates[navigation.id] || false"
-                @click="openBookmark"
-                @edit="editNavigation"
-                @delete="deleteNavigation"
-                @copyPath="copyPath"
-                @toggle-status="toggleNavigationStatus"
-                @groupClick="selectTag"
-              />
-            </VueDraggable>
-          </div>
+          <Transition :name="appStore.transitionAnimation" mode="out-in">
+            <div v-if="currentNavigations?.length" :key="navigationGroup.id">
+              <VueDraggable
+                ref="draggableRef"
+                v-model="currentNavigations"
+                group="navigation"
+                :animation="200"
+                :easing="'cubic-bezier(0.25, 0.46, 0.45, 0.94)'"
+                filter=".none_draggable"
+                :id="navigationGroup.id"
+                :class="['navigations-grid', isAdminUser ? 'admin-draggable' : 'non-admin']"
+                :scrollSensitivity="80"
+                :scroll-speed="10"
+                ghostClass="drag-ghost"
+                chosenClass="drag-chosen"
+                dragClass="drag-dragging"
+                :force-fallback="false"
+                :fallback-tolerance="3"
+                :delay="0"
+                :delay-on-touch-start="false"
+                :touch-start-threshold="5"
+                :disabled="!isAdminUser"
+                @start="onDragStart"
+                @end="onDragEnd"
+                @move="onDragMove"
+              >
+                <NavigationCard
+                  v-for="navigation in currentNavigations"
+                  :key="navigation.id"
+                  :navigation="navigation"
+                  :is-admin="isAdminUser"
+                  :loading="loadingStates[navigation.id] || false"
+                  @click="openBookmark"
+                  @edit="editNavigation"
+                  @delete="deleteNavigation"
+                  @copyPath="copyPath"
+                  @toggle-status="toggleNavigationStatus"
+                  @groupClick="selectTag"
+                />
+              </VueDraggable>
+            </div>
 
-          <!-- 空状态 -->
-          <div v-else class="empty-navigations">
-            <jay-icon icon="mdi:link-variant-off" class="empty-icon" />
-            <div class="empty-text">该分组暂无导航</div>
-            <n-button
-              v-if="isAdminUser"
-              class="add-navigation-button"
-              @click="openCreateNavigationModal()"
-              type="primary"
-            >
-              <template #icon>
-                <jay-icon icon="mdi:plus" class="button-icon" />
-              </template>
-              添加第一个导航
-            </n-button>
-          </div>
+            <!-- 空状态 -->
+            <div v-else class="empty-navigations">
+              <jay-icon icon="mdi:link-variant-off" class="empty-icon" />
+              <div class="empty-text">该分组暂无导航</div>
+              <n-button
+                v-if="isAdminUser"
+                class="add-navigation-button"
+                @click="openCreateNavigationModal()"
+                type="primary"
+              >
+                <template #icon>
+                  <jay-icon icon="mdi:plus" class="button-icon" />
+                </template>
+                添加第一个导航
+              </n-button>
+            </div>
+          </Transition>
         </div>
       </div>
 
@@ -343,12 +345,14 @@
 <script setup lang="ts">
 import { NavigationApi, PublicApi } from '@/api';
 import { useModal } from '@/components';
+import { useAppStore } from '@/store';
 import { isAdmin } from '@/utils/common/hasPermission';
 import { UseDraggableReturn, VueDraggable } from 'vue-draggable-plus';
 import { CreateModal, NavigationCard } from './components';
 
 defineOptions({ name: 'Navigation' });
 
+const appStore = useAppStore();
 // 权限控制的响应式变量
 const isAdminUser = ref(isAdmin());
 const draggableRef = ref<UseDraggableReturn>();

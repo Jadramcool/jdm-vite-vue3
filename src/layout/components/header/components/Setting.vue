@@ -106,34 +106,38 @@ const palette = [
   '#4b4b4b',
 ];
 
+/**
+ * 动画选择器选项配置
+ * 精简并优化了动画效果，提供更优雅的过渡体验
+ */
 const transitionSelectorOptions = [
   {
     label: t('app.transitionNull'),
     value: '',
   },
   {
-    label: t('app.transitionFadeSlide'),
-    value: 'fade-slide',
+    label: t('app.transitionSoft'),
+    value: 'fade',
+  },
+  {
+    label: t('app.transitionElegantSlide'),
+    value: 'elegant-slide',
+  },
+  {
+    label: t('app.transitionSmoothBounce'),
+    value: 'smooth-bounce',
+  },
+  {
+    label: t('app.transitionGentleRotate'),
+    value: 'gentle-rotate',
+  },
+  {
+    label: t('app.transitionFluidMorph'),
+    value: 'fluid-morph',
   },
   {
     label: t('app.transitionFadeBottom'),
     value: 'fade-bottom',
-  },
-  {
-    label: t('app.transitionFadeScale'),
-    value: 'fade-scale',
-  },
-  {
-    label: t('app.transitionZoomFade'),
-    value: 'zoom-fade',
-  },
-  {
-    label: t('app.transitionZoomOut'),
-    value: 'zoom-out',
-  },
-  {
-    label: t('app.transitionSoft'),
-    value: 'fade',
   },
 ];
 
