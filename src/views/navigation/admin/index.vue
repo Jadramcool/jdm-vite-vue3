@@ -15,12 +15,52 @@
 
       <!-- 导航组列表 -->
       <div class="groups-container">
+        <!-- 全部分组 -->
         <div class="groups-list">
+          <div
+            v-if="allGroup"
+            class="tag-item none_draggable"
+            @click="selectTag(allGroup)"
+            :class="{
+              active: navigationGroup?.id === allGroup.id,
+            }"
+          >
+            <div class="tag-icon">
+              <jay-icon :icon="allGroup.icon" :size="24" class="icon" />
+            </div>
+            <div class="tag-info">
+              <div class="tag-name">{{ allGroup.name }}</div>
+              <div class="tag-meta">
+                <span class="tag-count">{{ allGroup.navigationCount || 0 }} 个导航</span>
+                <span v-if="allGroup.status === 1" class="tag-status active">启用</span>
+                <span v-else class="tag-status inactive">禁用</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <VueDraggable
+          v-model="navigationGroups"
+          group="navigationGroups"
+          :animation="200"
+          :easing="'cubic-bezier(0.25, 0.46, 0.45, 0.94)'"
+          filter=".none_draggable"
+          :class="['groups-list', isAdminUser ? 'admin-draggable-groups' : 'non-admin-groups']"
+          ghostClass="group-drag-ghost"
+          chosenClass="group-drag-chosen"
+          dragClass="group-drag-dragging"
+          :disabled="!isAdminUser"
+          @start="onGroupDragStart"
+          @end="onGroupDragEnd"
+          @move="onGroupDragMove"
+        >
           <div
             v-for="tag in filteredGroups"
             :key="tag.id"
             class="tag-item"
-            :class="{ active: navigationGroup?.id === tag.id }"
+            :class="{
+              active: navigationGroup?.id === tag.id,
+              none_draggable: tag.id === 0,
+            }"
             @click="selectTag(tag)"
           >
             <div class="tag-icon">
@@ -29,38 +69,53 @@
             <div class="tag-info">
               <div class="tag-name">{{ tag.name }}</div>
               <div class="tag-meta">
-                <span class="tag-count"
-                  >{{ tag.navigations ? tag.navigations.length : 0 }} 个导航</span
-                >
+                <span class="tag-count">{{ tag.navigationCount || 0 }} 个导航</span>
                 <span v-if="tag.status === 1" class="tag-status active">启用</span>
                 <span v-else class="tag-status inactive">禁用</span>
               </div>
             </div>
-            <div class="tag-arrow">
-              <jay-icon icon="mdi:chevron-right" class="arrow-icon" />
+            <div class="tag-actions">
+              <n-button
+                v-if="isAdminUser && tag.id !== 0"
+                class="tag-action-btn delete"
+                @click.stop="deleteNavigationGroup(tag)"
+                text
+                size="small"
+              >
+                <template #icon>
+                  <jay-icon icon="mdi:delete" class="action-icon" />
+                </template>
+              </n-button>
+              <div class="tag-arrow">
+                <jay-icon icon="mdi:chevron-right" class="arrow-icon" />
+              </div>
             </div>
           </div>
-        </div>
+        </VueDraggable>
 
         <!-- 空状态 -->
         <div v-if="!filteredGroups.length" class="empty-state">
           <jay-icon icon="mdi:folder-outline" class="empty-icon" />
           <div class="empty-text">{{ searchQuery ? '未找到匹配的分组' : '暂无分组' }}</div>
-          <div v-if="!searchQuery" class="empty-action">
-            <button class="add-button" @click="editGroup">
-              <jay-icon icon="mdi:plus" class="button-icon" />
+          <div v-if="!searchQuery && isAdminUser" class="empty-action">
+            <n-button class="add-button" @click="editGroup" type="primary">
+              <template #icon>
+                <jay-icon icon="mdi:plus" class="button-icon" />
+              </template>
               创建第一个分组
-            </button>
+            </n-button>
           </div>
         </div>
       </div>
 
       <!-- 底部操作区 -->
-      <div class="sidebar-footer">
-        <button class="add-group-button" @click="editGroup">
-          <jay-icon icon="mdi:plus" class="button-icon" />
+      <div v-if="isAdminUser" class="sidebar-footer">
+        <n-button class="add-group-button" @click="editGroup" type="primary" block>
+          <template #icon>
+            <jay-icon icon="mdi:plus" class="button-icon" />
+          </template>
           <span>添加分组</span>
-        </button>
+        </n-button>
       </div>
     </div>
 
@@ -71,20 +126,15 @@
         <div class="group-header">
           <div class="header-main">
             <div class="group-icon-large">
-              <jay-icon :icon="navigationGroup.icon" class="icon" />
+              <jay-icon :icon="navigationGroup.icon" :size="40" class="icon" />
             </div>
             <div class="group-info">
-              <div class="breadcrumb">
-                <span class="breadcrumb-item">导航管理</span>
-                <jay-icon icon="mdi:chevron-right" class="breadcrumb-separator" />
-                <span class="breadcrumb-current">{{ navigationGroup.name }}</span>
-              </div>
               <h1 class="group-title">{{ navigationGroup.name }}</h1>
               <p class="group-description">{{ navigationGroup.description || '暂无描述' }}</p>
               <div class="group-stats">
                 <div class="stat-item">
                   <jay-icon icon="mdi:link-variant" class="stat-icon" />
-                  <span>{{ navigationGroup.navigations?.length || 0 }} 个导航</span>
+                  <span>{{ currentNavigations?.length || 0 }} 个导航</span>
                 </div>
                 <div class="stat-item">
                   <jay-icon icon="mdi:sort-numeric-variant" class="stat-icon" />
@@ -101,71 +151,112 @@
               </div>
             </div>
           </div>
-          <div class="header-actions">
-            <button class="action-button secondary" @click="openEditGroupModal(navigationGroup!)">
-              <jay-icon icon="mdi:pencil" class="button-icon" />
+          <div class="header-actions" v-if="isAdminUser">
+            <n-button
+              v-if="navigationGroup?.id !== 0"
+              class="action-button danger"
+              @click="deleteNavigationGroup(navigationGroup!)"
+              type="error"
+            >
+              <template #icon>
+                <jay-icon icon="mdi:delete" class="button-icon" />
+              </template>
+              删除分组
+            </n-button>
+            <n-button
+              v-if="navigationGroup?.id !== 0"
+              class="action-button secondary"
+              @click="openEditGroupModal(navigationGroup!)"
+              type="default"
+            >
+              <template #icon>
+                <jay-icon icon="mdi:pencil" class="button-icon" />
+              </template>
               编辑分组
-            </button>
-            <button class="action-button primary" @click="openCreateNavigationModal()">
-              <jay-icon icon="mdi:plus" class="button-icon" />
+            </n-button>
+            <n-button
+              class="action-button primary"
+              @click="openCreateNavigationModal()"
+              type="primary"
+            >
+              <template #icon>
+                <jay-icon icon="mdi:plus" class="button-icon" />
+              </template>
               添加导航
-            </button>
+            </n-button>
+            <n-button class="action-button primary" @click="resetSortOrder" type="primary">
+              <template #icon>
+                <jay-icon icon="mdi:refresh" class="button-icon" />
+              </template>
+              重置排序
+            </n-button>
+            <n-button class="reset-group-button" @click="resetNavigationGroupsSort" type="warning">
+              <template #icon>
+                <jay-icon icon="mdi:refresh" class="button-icon" />
+              </template>
+              <span>重置分组排序</span>
+            </n-button>
           </div>
         </div>
 
         <!-- 导航列表 -->
         <div class="navigations-container">
-          <div v-if="navigationGroup.navigations?.length" class="navigations-grid">
-            <div
-              v-for="navigation in navigationGroup.navigations"
-              :key="navigation.id"
-              class="navigation-card"
-              @click="openBookmark(navigation)"
+          <div v-if="currentNavigations?.length">
+            <VueDraggable
+              ref="draggableRef"
+              v-model="currentNavigations"
+              group="navigation"
+              :animation="200"
+              :easing="'cubic-bezier(0.25, 0.46, 0.45, 0.94)'"
+              filter=".none_draggable"
+              :id="navigationGroup.id"
+              :class="['navigations-grid', isAdminUser ? 'admin-draggable' : 'non-admin']"
+              :scrollSensitivity="80"
+              :scroll-speed="10"
+              ghostClass="drag-ghost"
+              chosenClass="drag-chosen"
+              dragClass="drag-dragging"
+              :force-fallback="false"
+              :fallback-tolerance="3"
+              :delay="0"
+              :delay-on-touch-start="false"
+              :touch-start-threshold="5"
+              :disabled="!isAdminUser"
+              @start="onDragStart"
+              @end="onDragEnd"
+              @move="onDragMove"
             >
-              <div class="navigation-header">
-                <div class="navigation-favicon">
-                  <div class="favicon-placeholder">
-                    {{ navigation.name.charAt(0).toUpperCase() }}
-                  </div>
-                </div>
-                <div class="navigation-actions">
-                  <button class="nav-action-btn" @click.stop="editNavigation(navigation)">
-                    <jay-icon icon="mdi:pencil" class="action-icon" />
-                  </button>
-                  <button class="nav-action-btn" @click.stop="deleteNavigation(navigation)">
-                    <jay-icon icon="mdi:delete" class="action-icon" />
-                  </button>
-                </div>
-              </div>
-              <div class="navigation-content">
-                <h3 class="navigation-title">{{ navigation.name }}</h3>
-                <p class="navigation-description">{{ navigation.description || '暂无描述' }}</p>
-                <div class="navigation-url">{{ navigation.path }}</div>
-                <div class="navigation-meta">
-                  <span class="meta-item">
-                    <jay-icon icon="mdi:sort-numeric-variant" class="meta-icon" />
-                    排序: {{ navigation.sortOrder }}
-                  </span>
-                  <span
-                    class="meta-item"
-                    :class="navigation.status === 1 ? 'status-active' : 'status-inactive'"
-                  >
-                    <jay-icon icon="mdi:circle" class="meta-icon" />
-                    {{ navigation.status === 1 ? '启用' : '禁用' }}
-                  </span>
-                </div>
-              </div>
-            </div>
+              <NavigationCard
+                v-for="navigation in currentNavigations"
+                :key="navigation.id"
+                :navigation="navigation"
+                :is-admin="isAdminUser"
+                :loading="loadingStates[navigation.id] || false"
+                @click="openBookmark"
+                @edit="editNavigation"
+                @delete="deleteNavigation"
+                @copyPath="copyPath"
+                @enable="enableNavigation"
+                @disable="disableNavigation"
+              />
+            </VueDraggable>
           </div>
 
           <!-- 空状态 -->
           <div v-else class="empty-navigations">
             <jay-icon icon="mdi:link-variant-off" class="empty-icon" />
             <div class="empty-text">该分组暂无导航</div>
-            <button class="add-navigation-button" @click="openCreateNavigationModal()">
-              <jay-icon icon="mdi:plus" class="button-icon" />
+            <n-button
+              v-if="isAdminUser"
+              class="add-navigation-button"
+              @click="openCreateNavigationModal()"
+              type="primary"
+            >
+              <template #icon>
+                <jay-icon icon="mdi:plus" class="button-icon" />
+              </template>
               添加第一个导航
-            </button>
+            </n-button>
           </div>
         </div>
       </div>
@@ -202,33 +293,89 @@
 </template>
 
 <script setup lang="ts">
-import { NavigationApi } from '@/api';
-import { JayIcon, useModal } from '@/components';
-import { computed, ref } from 'vue';
-import CreateModal from './components/CreateModal.vue';
+import { NavigationApi, PublicApi } from '@/api';
+import { useModal } from '@/components';
+import { isAdmin } from '@/utils/common/hasPermission';
+import { UseDraggableReturn, VueDraggable } from 'vue-draggable-plus';
+import { CreateModal, NavigationCard } from './components';
 
 defineOptions({ name: 'Navigation' });
 
-onMounted(() => {
-  getNavigationGroup();
+// 权限控制的响应式变量
+const isAdminUser = ref(isAdmin());
+const draggableRef = ref<UseDraggableReturn>();
+
+onMounted(async () => {
+  await getNavigationGroup();
+  // 默认选择"全部"分组并同步数据
+  await selectDefaultAllGroup();
 });
 
 const navigationGroups = ref<Navigation.NavigationGroup[]>([]);
+const allGroup = ref<Navigation.NavigationGroup>({
+  id: 0,
+  name: '全部',
+  icon: 'streamline-emojis:ballot-box-with-check',
+  navigations: [],
+  navigationCount: 0,
+  status: 1,
+});
 
 const getNavigationGroup = async () => {
   const res = await NavigationApi.getNavigationGroup({
     options: {
       showPagination: false,
-      with_navigation: true,
+      with_navigation: false,
+      with_navigation_count: true,
     },
   });
-  console.log('🚀 ~ getNavigationGroup ~ res:', res);
   navigationGroups.value = res.data;
+
+  // 获取所有导航的数量用于"全部"分组
+  const allNavigations = await getNavigationList(0);
+  const allNavigationCount = allNavigations.length;
+
+  // 初始化"全部"分组
+  allGroup.value.navigationCount = allNavigationCount;
+
+  // navigationGroups.value.unshift({
+  //   id: 0,
+  //   name: '全部',
+  //   icon: 'streamline-emojis:ballot-box-with-check',
+  //   navigations: [],
+  //   navigationCount: allNavigationCount,
+  //   status: 1,
+  // });
+};
+
+/**
+ * 选择默认的"全部"分组并同步数据
+ */
+const selectDefaultAllGroup = async () => {
+  await selectTag(allGroup.value);
+};
+
+const getNavigationList = async (groupId?: number): Promise<Navigation.Navigation[]> => {
+  if (groupId === 0) {
+    groupId = undefined;
+  }
+  const res = await NavigationApi.navigationList({
+    filters: {
+      groupId: groupId ?? undefined,
+    },
+    options: {
+      showPagination: false,
+    },
+  });
+  return res.data;
 };
 
 // 响应式数据
 const searchQuery = ref('');
 const navigationGroup = ref<Navigation.NavigationGroup | null>(null);
+const currentNavigations = ref<Navigation.Navigation[] | null>([]);
+// 加载状态管理
+const loadingStates = ref<Record<number, boolean>>({});
 
 // 计算属性：过滤标签
 const filteredGroups = computed(() => {
@@ -251,7 +398,8 @@ const editGroup = () => {
  * 选择标签
  * @param tag 标签数据
  */
-const selectTag = (group: Navigation.NavigationGroup) => {
+const selectTag = async (group: Navigation.NavigationGroup) => {
+  currentNavigations.value = await getNavigationList(group.id);
   navigationGroup.value = group;
 };
 
@@ -276,7 +424,121 @@ const editNavigation = (navigation: Navigation.Navigation) => {
  * @param navigation 导航数据
  */
 const deleteNavigation = (navigation: Navigation.Navigation) => {
-  console.log('删除导航:', navigation);
+  window.$dialog?.warning({
+    title: '确认删除',
+    content: `确定要删除导航"${navigation.name}"吗？此操作不可撤销。`,
+    positiveText: '删除',
+    negativeText: '取消',
+    onPositiveClick: async () => {
+      try {
+        await NavigationApi.deleteNavigation(navigation.id);
+        window.$message?.success('删除成功');
+
+        // 刷新数据
+        await getNavigationGroup();
+
+        // 如果当前选中的是"全部"分组，需要重新同步数据
+        if (navigationGroup.value?.id === 0) {
+          await selectDefaultAllGroup();
+        } else if (navigationGroup.value) {
+          // 如果选中的是其他分组，重新获取该分组的导航数据
+          await selectTag(navigationGroup.value);
+        }
+      } catch (error) {
+        console.error('删除导航失败:', error);
+        window.$message?.error('删除失败，请重试');
+      }
+    },
+  });
+};
+
+/**
+ * 禁用导航
+ * @param navigation 导航数据
+ */
+const disableNavigation = (navigation: Navigation.Navigation) => {
+  window.$dialog.warning({
+    title: '确认禁用',
+    content: `确定要禁用导航"${navigation.name}"吗？`,
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: async () => {
+      try {
+        // 设置加载状态
+        loadingStates.value[navigation.id] = true;
+
+        await NavigationApi.disable(navigation.id);
+
+        // 更新本地数据状态
+        if (currentNavigations.value) {
+          const targetNavigation = currentNavigations.value.find((nav) => nav.id === navigation.id);
+          if (targetNavigation) {
+            targetNavigation.status = 0;
+          }
+        }
+
+        window.$message.success('导航已禁用');
+      } catch (error) {
+        window.$message.error('禁用导航失败');
+        console.error('禁用导航失败:', error);
+      } finally {
+        // 清除加载状态
+        loadingStates.value[navigation.id] = false;
+      }
+    },
+  });
+};
+
+/**
+ * 启用导航
+ * @param navigation 导航数据
+ */
+const enableNavigation = (navigation: Navigation.Navigation) => {
+  window.$dialog.info({
+    title: '确认启用',
+    content: `确定要启用导航"${navigation.name}"吗？`,
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: async () => {
+      try {
+        // 设置加载状态
+        loadingStates.value[navigation.id] = true;
+
+        await NavigationApi.enable(navigation.id);
+
+        // 更新本地数据状态
+        if (currentNavigations.value) {
+          const targetNavigation = currentNavigations.value.find((nav) => nav.id === navigation.id);
+          if (targetNavigation) {
+            targetNavigation.status = 1;
+          }
+        }
+
+        window.$message.success('导航已启用');
+      } catch (error) {
+        window.$message.error('启用导航失败');
+        console.error('启用导航失败:', error);
+      } finally {
+        // 清除加载状态
+        loadingStates.value[navigation.id] = false;
+      }
+    },
+  });
+};
+
+/**
+ * 复制路径
+ * @param path 路径
+ */
+const copyPath = async (path: string) => {
+  const { copy, text } = useClipboard({ source: path });
+  try {
+    await copy();
+    window.$message?.success(`复制成功 ${text.value}`);
+  } catch (error) {
+    console.error('复制路径失败:', error);
+    window.$message?.error('复制失败，请重试');
+  }
 };
 
 // 弹窗相关
@@ -286,7 +548,7 @@ const [registerModal, { openModal }] = useModal();
  * 打开创建分组弹窗
  */
 const openCreateGroupModal = () => {
-  openModal(true, {
+  openModal({
     type: 'group',
     isUpdate: false,
   });
@@ -297,7 +559,7 @@ const openCreateGroupModal = () => {
  * @param group 分组数据
  */
 const openEditGroupModal = (group: Navigation.NavigationGroup) => {
-  openModal(true, {
+  openModal({
     type: 'group',
     isUpdate: true,
     record: group,
@@ -315,7 +577,7 @@ const openCreateNavigationModal = (group?: Navigation.NavigationGroup) => {
     return;
   }
 
-  openModal(true, {
+  openModal({
     type: 'navigation',
     isUpdate: false,
     group: targetGroup,
@@ -327,7 +589,7 @@ const openCreateNavigationModal = (group?: Navigation.NavigationGroup) => {
  * @param navigation 导航数据
  */
 const openEditNavigationModal = (navigation: Navigation.Navigation) => {
-  openModal(true, {
+  openModal({
     type: 'navigation',
     isUpdate: true,
     record: navigation,
@@ -336,11 +598,312 @@ const openEditNavigationModal = (navigation: Navigation.Navigation) => {
 };
 
 /**
+ * 删除导航组
+ * @param group 导航组数据
+ */
+const deleteNavigationGroup = (group: Navigation.NavigationGroup) => {
+  const navigationCount = group.navigationCount || group.navigations?.length || 0;
+  const hasNavigations = navigationCount > 0;
+
+  window.$dialog?.warning({
+    title: '确认删除',
+    content: hasNavigations
+      ? `分组"${group.name}"中还有 ${navigationCount} 个导航，删除分组将同时删除所有导航。此操作不可撤销，确定要继续吗？`
+      : `确定要删除分组"${group.name}"吗？此操作不可撤销。`,
+    positiveText: '删除',
+    negativeText: '取消',
+    onPositiveClick: async () => {
+      try {
+        await NavigationApi.deleteNavigationGroup(group.id);
+        window.$message?.success('删除成功');
+
+        // 刷新数据
+        await getNavigationGroup();
+
+        // 删除分组后自动选择"全部"分组
+        await selectDefaultAllGroup();
+      } catch (error) {
+        console.error('删除导航组失败:', error);
+        window.$message?.error(`删除分组"${group.name}"失败，${error}`);
+      }
+    },
+  });
+};
+
+/**
  * 弹窗操作成功回调
  */
-const handleModalSuccess = () => {
+const handleModalSuccess = async () => {
   // 刷新数据
-  getNavigationGroup();
+  await getNavigationGroup();
+
+  // 如果当前选中的是"全部"分组，需要重新同步数据
+  if (navigationGroup.value?.id === 0) {
+    await selectDefaultAllGroup();
+  } else if (navigationGroup.value) {
+    // 如果选中的是其他分组，重新获取该分组的导航数据
+    await selectTag(navigationGroup.value);
+  }
+};
+
+/**
+ * 重置排序
+ * @param group 导航组数据
+ */
+const resetSortOrder = async () => {
+  try {
+    await PublicApi.resetSort({
+      tableName: 'navigation',
+    });
+    window.$message?.success('重置排序成功');
+
+    // 刷新数据
+    await getNavigationGroup();
+
+    // 如果当前选中的是"全部"分组，需要重新同步数据
+    if (navigationGroup.value?.id === 0) {
+      await selectDefaultAllGroup();
+    } else if (navigationGroup.value) {
+      // 如果选中的是其他分组，重新获取该分组的导航数据
+      await selectTag(navigationGroup.value);
+    }
+  } catch (error) {
+    console.error('重置排序失败:', error);
+    window.$message?.error('重置排序失败，请重试');
+  }
+};
+
+/**
+ * 重置导航组
+ * 删除所有自定义导航组，保留"全部"分组
+ */
+const resetNavigationGroupsSort = () => {
+  const groupCount = navigationGroups.value.length;
+
+  if (groupCount === 0) {
+    window.$message?.info('当前没有可重置的分组');
+    return;
+  }
+
+  window.$dialog?.warning({
+    title: '确认重置',
+    content: `确定要重置所有导航分组的排序吗？此操作不可撤销！`,
+    positiveText: '重置',
+    negativeText: '取消',
+    onPositiveClick: async () => {
+      try {
+        // 显示加载状态
+        window.$message?.loading('正在重置分组...', { duration: 0 });
+
+        // 批量删除所有导航组
+        await PublicApi.resetSort({
+          tableName: 'navigation_group',
+        });
+
+        // 清除加载状态
+        window.$message?.destroyAll();
+        window.$message?.success('重置成功');
+
+        // 刷新数据
+        await getNavigationGroup();
+
+        // 自动选择"全部"分组
+        await selectDefaultAllGroup();
+      } catch (error) {
+        // 清除加载状态
+        window.$message?.destroyAll();
+        console.error('重置导航组失败:', error);
+        window.$message?.error(`重置失败：${error}`);
+      }
+    },
+  });
+};
+
+/**
+ * 拖拽开始事件处理
+ * @param evt 拖拽事件对象
+ */
+const onDragStart = (evt: any) => {
+  // 添加拖拽开始时的视觉反馈
+  const draggedElement = evt.item;
+  if (draggedElement) {
+    draggedElement.style.transition = 'none';
+  }
+};
+
+/**
+ * 拖拽结束事件处理
+ * @param evt 拖拽事件对象
+ */
+const onDragEnd = (evt: any) => {
+  // 恢复拖拽元素的过渡效果
+  const draggedElement = evt.item;
+  if (draggedElement) {
+    draggedElement.style.transition = '';
+  }
+
+  // 获取位置信息
+  const { oldIndex } = evt;
+  const { newIndex } = evt;
+
+  // 如果位置发生了变化
+  if (oldIndex !== newIndex && currentNavigations.value && currentNavigations.value.length > 0) {
+    const navigations = currentNavigations.value;
+
+    // 获取被拖拽元素的信息
+    const draggedItem = navigations[newIndex];
+    const draggedItemId = draggedItem.id;
+
+    // 获取新位置前后的元素ID
+    const previousItemId = newIndex > 0 ? navigations[newIndex - 1].id : null;
+
+    const data = {
+      tableName: 'navigation',
+      sourceId: draggedItemId,
+      targetId: previousItemId,
+      position: newIndex === 0 ? 'first' : 'after',
+    };
+
+    // 保存排序
+    saveDragOrder(data);
+  }
+};
+
+/**
+ * 拖拽移动事件处理
+ * @param evt 拖拽移动事件对象
+ * @returns {boolean} 是否允许移动
+ */
+const onDragMove = () => {
+  return true; // 允许移动
+};
+
+/**
+ * 保存拖拽排序结果
+ */
+const saveDragOrder = async (data: Recordable) => {
+  if (!currentNavigations.value || currentNavigations.value.length === 0) {
+    console.warn('没有可保存的导航数据');
+    return;
+  }
+
+  // 构建新的排序数据
+  const sortedNavigations = currentNavigations.value.map((nav: any, index: number) => ({
+    id: nav.id,
+    sort_order: index + 1,
+    name: nav.name,
+  }));
+
+  console.log('新的排序数据:', sortedNavigations);
+
+  try {
+    await PublicApi.sort(data);
+    window.$message?.success('排序保存成功');
+  } catch (error) {
+    console.error('排序保存失败:', error);
+    // 提示用户排序保存失败
+    window.$message?.error('排序保存失败，请重试');
+    // 重新加载
+    currentNavigations.value = await getNavigationList(navigationGroup.value?.id);
+  }
+};
+
+/**
+ * 导航组拖拽开始事件处理
+ * @param evt 拖拽事件对象
+ */
+const onGroupDragStart = (evt: any) => {
+  // 添加拖拽开始时的视觉反馈
+  const draggedElement = evt.item;
+  if (draggedElement) {
+    draggedElement.style.transition = 'none';
+  }
+};
+
+/**
+ * 导航组拖拽结束事件处理
+ * @param evt 拖拽事件对象
+ */
+const onGroupDragEnd = (evt: any) => {
+  // 恢复拖拽元素的过渡效果
+  const draggedElement = evt.item;
+  if (draggedElement) {
+    draggedElement.style.transition = '';
+  }
+
+  // 获取位置信息
+  const { oldIndex } = evt;
+  const { newIndex } = evt;
+  // 如果位置发生了变化且不是"全部"分组
+  if (oldIndex !== newIndex && filteredGroups.value && filteredGroups.value.length > 0) {
+    const groups = filteredGroups.value;
+    // 获取被拖拽元素的信息（使用oldIndex获取原始被拖拽的元素）
+    const draggedItem = groups[newIndex];
+    // 如果拖拽的是"全部"分组，不允许移动
+    if (draggedItem.id === 0) {
+      // 恢复原始顺序
+      getNavigationGroup();
+      return;
+    }
+
+    const draggedItemId = draggedItem.id;
+
+    // 获取新位置前一个元素的ID，跳过"全部"分组
+    let targetItemId = null;
+    for (let i = newIndex - 1; i >= 0; i--) {
+      if (groups[i].id !== 0) {
+        targetItemId = groups[i].id;
+        break;
+      }
+    }
+
+    const data = {
+      tableName: 'navigation_group',
+      sourceId: draggedItemId, // 被拖拽的元素ID
+      targetId: targetItemId, // 目标位置前一个元素的ID
+      position: targetItemId === null ? 'first' : 'after',
+    };
+    // 保存导航组排序
+    saveGroupDragOrder(data);
+  }
+};
+
+/**
+ * 导航组拖拽移动事件处理
+ * @param evt 拖拽移动事件对象
+ * @returns {boolean} 是否允许移动
+ */
+const onGroupDragMove = (evt: any) => {
+  // 不允许拖拽"全部"分组
+  const draggedElement = evt.dragged;
+  if (draggedElement && draggedElement.classList.contains('none_draggable')) {
+    return false;
+  }
+  return true; // 允许移动
+};
+
+/**
+ * 保存导航组拖拽排序结果
+ */
+const saveGroupDragOrder = async (data: Recordable) => {
+  if (!filteredGroups.value || filteredGroups.value.length === 0) {
+    console.warn('没有可保存的导航组数据');
+    return;
+  }
+
+  try {
+    await PublicApi.sort(data);
+    window.$message?.success('导航组排序保存成功');
+
+    // 重新获取导航组数据以同步最新排序
+    // await getNavigationGroup();
+  } catch (error) {
+    console.error('导航组排序保存失败:', error);
+    // 提示用户排序保存失败
+    window.$message?.error('导航组排序保存失败，请重试');
+    // 重新加载导航组数据
+    await getNavigationGroup();
+  }
 };
 </script>
 
@@ -350,17 +913,16 @@ const handleModalSuccess = () => {
   flex: 1;
   height: 100%;
   background: #f8fafc;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
 
   .sidebar {
-    width: 320px;
+    width: 280px;
     background: #ffffff;
     border-right: 1px solid #e2e8f0;
     display: flex;
     flex-direction: column;
 
     .search-container {
-      padding: 20px;
+      padding: 16px 16px 20px;
       border-bottom: 1px solid #f1f5f9;
       background: #ffffff;
 
@@ -379,7 +941,7 @@ const handleModalSuccess = () => {
 
         .search-input {
           width: 100%;
-          padding: 14px 44px 14px 44px;
+          padding: 10px 36px 10px 36px;
           border: 2px solid #e2e8f0;
           border-radius: 12px;
           background: #f8fafc;
@@ -450,7 +1012,75 @@ const handleModalSuccess = () => {
       }
 
       .groups-list {
-        padding: 8px 0;
+        /* 导航组拖拽相关样式 */
+        :deep(.group-drag-ghost) {
+          opacity: 0.4;
+          background: #f1f5f9;
+          border: 2px dashed #cbd5e1;
+          border-radius: 12px;
+          transform: rotate(1deg);
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        :deep(.group-drag-chosen) {
+          transform: scale(1.02);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+          border: 2px solid #667eea;
+          z-index: 1000;
+          transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        :deep(.group-drag-dragging) {
+          opacity: 0.8;
+          transform: rotate(2deg) scale(1.05);
+          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+          z-index: 1001;
+          cursor: grabbing !important;
+        }
+
+        /* 管理员用户的拖拽手势 */
+        &.admin-draggable-groups {
+          .tag-item {
+            cursor: grab;
+
+            &:active {
+              cursor: grabbing;
+            }
+
+            &:not(.none_draggable):hover {
+              cursor: grab;
+            }
+          }
+        }
+
+        /* 非管理员用户的普通手势 */
+        &.non-admin-groups {
+          .tag-item {
+            cursor: pointer;
+
+            &:hover {
+              cursor: pointer;
+            }
+
+            &:active {
+              cursor: pointer;
+            }
+          }
+        }
+
+        /* "全部"分组不可拖拽的样式 */
+        .tag-item.none_draggable {
+          cursor: pointer !important;
+
+          &:hover {
+            cursor: pointer !important;
+          }
+
+          &:active {
+            cursor: pointer !important;
+          }
+        }
+
         .tag-item {
           display: flex;
           align-items: center;
@@ -459,7 +1089,6 @@ const handleModalSuccess = () => {
           background: #ffffff;
           border: 1px solid #e2e8f0;
           border-radius: 12px;
-          cursor: pointer;
           transition: all 0.3s ease;
           position: relative;
 
@@ -467,8 +1096,15 @@ const handleModalSuccess = () => {
             background: #f8fafc;
             border-color: #e2e8f0;
 
-            .tag-arrow {
-              opacity: 1;
+            .tag-actions {
+              .tag-action-btn {
+                opacity: 1;
+                transform: scale(1);
+              }
+
+              .tag-arrow {
+                opacity: 1;
+              }
             }
           }
 
@@ -481,21 +1117,28 @@ const handleModalSuccess = () => {
               background: rgba(255, 255, 255, 0.2) !important;
             }
 
-            .tag-arrow {
-              opacity: 1;
-              transform: translateX(0);
-              color: #667eea;
+            .tag-actions {
+              .tag-action-btn {
+                opacity: 1;
+                transform: scale(1);
+              }
+
+              .tag-arrow {
+                opacity: 1;
+                transform: translateX(0);
+                color: #667eea;
+              }
             }
           }
 
           .tag-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 16px;
+            margin-right: 12px;
             flex-shrink: 0;
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -548,19 +1191,37 @@ const handleModalSuccess = () => {
             }
           }
 
-          .tag-arrow {
-            opacity: 0;
-            transform: translateX(-8px);
-            transition: all 0.3s ease;
-            color: #94a3b8;
+          .tag-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
 
-            .arrow-icon {
-              font-size: 16px;
+            .tag-action-btn {
+              opacity: 0;
+              transform: scale(0.8);
+              transition: all 0.2s ease;
+
+              .action-icon {
+                font-size: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
+            }
+
+            .tag-arrow {
+              opacity: 0;
+              transform: translateX(-8px);
+              transition: all 0.3s ease;
+              color: #94a3b8;
+
+              .arrow-icon {
+                font-size: 16px;
+              }
             }
           }
         }
       }
-
       .empty-state {
         display: flex;
         flex-direction: column;
@@ -584,447 +1245,281 @@ const handleModalSuccess = () => {
 
         .empty-action {
           .add-button {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 24px;
-            background: #3b82f6;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-
-            &:hover {
-              background: #2563eb;
-              transform: translateY(-2px);
-              box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-            }
-
             .button-icon {
               font-size: 16px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
             }
           }
-        }
-      }
-    }
-
-    .sidebar-footer {
-      padding: 20px;
-      border-top: 1px solid #f1f5f9;
-      background: #ffffff;
-
-      .add-group-button {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        padding: 14px 20px;
-        background: #3b82f6;
-        color: white;
-        border: none;
-        border-radius: 12px;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-
-        &:hover {
-          background: #2563eb;
-          transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-        }
-
-        .button-icon {
-          font-size: 18px;
         }
       }
     }
   }
 
-  .content-area {
+  .sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid #f1f5f9;
+    background: #ffffff;
+
+    .add-group-button {
+      .button-icon {
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+.content-area {
+  flex: 1;
+  background: #f8fafc;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+
+  .group-detail {
     flex: 1;
-    background: #f8fafc;
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
 
-    .group-detail {
-      flex: 1;
+    .group-header {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 20px 32px;
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
-      .group-header {
-        background: #ffffff;
-        border-bottom: 1px solid #e2e8f0;
-        padding: 32px 40px;
+      .header-main {
         display: flex;
-        justify-content: space-between;
         align-items: flex-start;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        gap: 16px;
+        flex: 1;
 
-        .header-main {
+        .group-icon-large {
+          width: 56px;
+          height: 56px;
+          border-radius: 14px;
           display: flex;
-          align-items: flex-start;
-          gap: 24px;
-          flex: 1;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 
-          .group-icon-large {
-            width: 72px;
-            height: 72px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-
-            .icon {
-              font-size: 36px;
-              color: #ffffff;
-            }
-          }
-
-          .group-info {
-            flex: 1;
-
-            .breadcrumb {
-              display: flex;
-              align-items: center;
-              gap: 8px;
-              margin-bottom: 12px;
-              font-size: 14px;
-
-              .breadcrumb-item {
-                color: #64748b;
-                font-weight: 500;
-              }
-
-              .breadcrumb-separator {
-                color: #cbd5e1;
-                font-size: 12px;
-              }
-
-              .breadcrumb-current {
-                color: #334155;
-                font-weight: 600;
-              }
-            }
-
-            .group-title {
-              font-size: 32px;
-              font-weight: 700;
-              color: #1e293b;
-              margin: 0 0 12px 0;
-              line-height: 1.2;
-            }
-
-            .group-description {
-              font-size: 16px;
-              color: #64748b;
-              margin: 0 0 20px 0;
-              line-height: 1.5;
-            }
-
-            .group-stats {
-              display: flex;
-              gap: 24px;
-              flex-wrap: wrap;
-
-              .stat-item {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                font-size: 14px;
-                color: #64748b;
-                font-weight: 500;
-
-                .stat-icon {
-                  font-size: 16px;
-
-                  &.status-active {
-                    color: #22c55e;
-                  }
-
-                  &.status-inactive {
-                    color: #ef4444;
-                  }
-                }
-              }
-            }
+          .icon {
+            font-size: 40px;
           }
         }
 
-        .header-actions {
-          display: flex;
-          gap: 12px;
-          flex-shrink: 0;
+        .group-info {
+          flex: 1;
 
-          .action-button {
+          .breadcrumb {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 10px;
+            gap: 6px;
+            margin-bottom: 6px;
+            font-size: 12px;
+
+            .breadcrumb-item {
+              color: #64748b;
+              font-weight: 500;
+            }
+
+            .breadcrumb-separator {
+              color: #cbd5e1;
+              font-size: 12px;
+            }
+
+            .breadcrumb-current {
+              color: #334155;
+              font-weight: 600;
+            }
+          }
+
+          .group-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 6px 0;
+            line-height: 1.2;
+          }
+
+          .group-description {
             font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            color: #64748b;
+            margin: 0 0 12px 0;
+            line-height: 1.5;
+          }
 
-            .button-icon {
-              font-size: 16px;
-            }
+          .group-stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
 
-            &.primary {
-              background: #3b82f6;
-              color: white;
-              box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            .stat-item {
+              display: flex;
+              align-items: center;
+              gap: 6px;
+              font-size: 12px;
+              color: #64748b;
+              font-weight: 500;
 
-              &:hover {
-                background: #2563eb;
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-              }
-            }
+              .stat-icon {
+                font-size: 14px;
 
-            &.secondary {
-              background: #f8fafc;
-              color: #475569;
-              border: 1px solid #e2e8f0;
+                &.status-active {
+                  color: #22c55e;
+                }
 
-              &:hover {
-                background: #f1f5f9;
-                border-color: #cbd5e1;
-                transform: translateY(-1px);
+                &.status-inactive {
+                  color: #ef4444;
+                }
               }
             }
           }
         }
       }
 
-      .navigations-container {
-        flex: 1;
-        padding: 24px 40px;
-        overflow-y: auto;
+      .header-actions {
+        display: flex;
+        gap: 12px;
+        flex-shrink: 0;
 
-        .navigations-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-          gap: 24px;
+        .action-button {
+          .button-icon {
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+      }
+    }
 
-          .navigation-card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 24px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            position: relative;
-            overflow: hidden;
+    .navigations-container {
+      flex: 1;
+      padding: 20px 32px;
+      overflow-y: auto;
 
-            &::before {
-              content: '';
-              position: absolute;
-              top: 0;
-              left: 0;
-              right: 0;
-              height: 4px;
-              background: #3b82f6;
-              transform: scaleX(0);
-              transition: transform 0.3s ease;
-            }
+      .navigations-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 20px;
+        position: relative;
 
-            &:hover {
-              border-color: #cbd5e1;
-              box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
-              transform: translateY(-4px);
+        /* 拖拽相关样式 */
+        :deep(.drag-ghost) {
+          opacity: 0.4;
+          background: #f1f5f9;
+          border: 2px dashed #cbd5e1;
+          border-radius: 12px;
+          transform: rotate(2deg);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
 
-              &::before {
-                transform: scaleX(1);
-              }
+        :deep(.drag-chosen) {
+          transform: scale(1.02);
+          box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+          border: 2px solid #3b82f6;
+          z-index: 1000;
+          transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
 
-              .navigation-actions {
-                opacity: 1;
-                transform: translateY(0);
-              }
-            }
+        :deep(.drag-dragging) {
+          opacity: 0.8;
+          transform: rotate(3deg) scale(1.05);
+          box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+          z-index: 1001;
+          cursor: grabbing !important;
+        }
 
-            .navigation-header {
-              display: flex;
-              justify-content: space-between;
-              align-items: flex-start;
-              margin-bottom: 20px;
+        /* 拖拽时的网格项动画 */
+        :deep(.navigation-card) {
+          transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
-              .navigation-favicon {
-                .favicon-placeholder {
-                  width: 48px;
-                  height: 48px;
-                  border-radius: 12px;
-                  background: #f3f4f6;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 20px;
-                  font-weight: 700;
-                  color: #6b7280;
-                  text-transform: uppercase;
-                  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                }
-              }
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+          }
+        }
 
-              .navigation-actions {
-                display: flex;
-                gap: 8px;
-                opacity: 0;
-                transform: translateY(-8px);
-                transition: all 0.3s ease;
+        /* 管理员用户的拖拽手势 */
+        &.admin-draggable {
+          :deep(.navigation-card) {
+            cursor: grab;
 
-                .nav-action-btn {
-                  width: 32px;
-                  height: 32px;
-                  border: none;
-                  border-radius: 8px;
-                  background: #f8fafc;
-                  color: #64748b;
-                  cursor: pointer;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  transition: all 0.2s ease;
-
-                  &:hover {
-                    background: #e2e8f0;
-                    color: #334155;
-                    transform: scale(1.1);
-                  }
-
-                  .action-icon {
-                    font-size: 14px;
-                  }
-                }
-              }
-            }
-
-            .navigation-content {
-              .navigation-title {
-                font-size: 20px;
-                font-weight: 700;
-                color: #1e293b;
-                margin: 0 0 12px 0;
-                line-height: 1.3;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-              }
-
-              .navigation-description {
-                font-size: 14px;
-                color: #64748b;
-                line-height: 1.6;
-                margin: 0 0 16px 0;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-                min-height: 44px;
-              }
-
-              .navigation-url {
-                font-size: 13px;
-                color: #3b82f6;
-                background: #eff6ff;
-                padding: 8px 12px;
-                border-radius: 8px;
-                margin-bottom: 16px;
-                font-family: 'Monaco', 'Menlo', monospace;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                border: 1px solid #dbeafe;
-              }
-
-              .navigation-meta {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                font-size: 12px;
-                color: #64748b;
-
-                .meta-item {
-                  display: flex;
-                  align-items: center;
-                  gap: 6px;
-                  font-weight: 500;
-
-                  .meta-icon {
-                    font-size: 12px;
-                  }
-
-                  &.status-active {
-                    color: #22c55e;
-                  }
-
-                  &.status-inactive {
-                    color: #ef4444;
-                  }
-                }
-              }
+            &:active {
+              cursor: grabbing;
             }
           }
         }
 
-        .empty-navigations {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding: 80px 20px;
-          text-align: center;
-
-          .empty-icon {
-            font-size: 80px;
-            color: #cbd5e1;
-            margin-bottom: 24px;
-          }
-
-          .empty-text {
-            font-size: 18px;
-            color: #64748b;
-            margin-bottom: 32px;
-            font-weight: 500;
-          }
-
-          .add-navigation-button {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 16px 32px;
-            background: #3b82f6;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        /* 非管理员用户的普通手势 */
+        &.non-admin {
+          :deep(.navigation-card) {
+            cursor: default;
 
             &:hover {
-              background: #2563eb;
-              transform: translateY(-2px);
-              box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+              cursor: default;
             }
 
-            .button-icon {
-              font-size: 18px;
+            &:active {
+              cursor: default;
             }
+          }
+        }
+
+        /* 拖拽区域指示器 */
+        &::before {
+          content: '';
+          position: absolute;
+          top: -10px;
+          left: -10px;
+          right: -10px;
+          bottom: -10px;
+          border: 2px dashed transparent;
+          border-radius: 16px;
+          pointer-events: none;
+          transition: all 0.3s ease;
+        }
+
+        &.drag-over::before {
+          border-color: #3b82f6;
+          background: rgba(59, 130, 246, 0.05);
+        }
+      }
+      .empty-navigations {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 80px 20px;
+        text-align: center;
+
+        .empty-icon {
+          font-size: 80px;
+          color: #cbd5e1;
+          margin-bottom: 24px;
+        }
+
+        .empty-text {
+          font-size: 18px;
+          color: #64748b;
+          margin-bottom: 32px;
+          font-weight: 500;
+        }
+
+        .add-navigation-button {
+          .button-icon {
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
         }
       }
@@ -1046,43 +1541,43 @@ const handleModalSuccess = () => {
         padding: 60px 40px;
 
         .welcome-illustration {
-          margin-bottom: 32px;
+          margin-bottom: 40px;
 
           .welcome-icon {
-            font-size: 120px;
+            font-size: 96px;
             color: #cbd5e1;
-            opacity: 0.8;
+            opacity: 0.9;
           }
         }
 
         .welcome-title {
-          font-size: 28px;
+          font-size: 32px;
           font-weight: 700;
           color: #1e293b;
-          margin: 0 0 16px 0;
+          margin: 0 0 20px 0;
         }
 
         .welcome-description {
-          font-size: 16px;
+          font-size: 18px;
           color: #64748b;
-          margin: 0 0 32px 0;
+          margin: 0 0 40px 0;
           line-height: 1.6;
         }
 
         .welcome-features {
           display: flex;
           justify-content: center;
-          gap: 32px;
+          gap: 40px;
           flex-wrap: wrap;
 
           .feature-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
-            padding: 16px;
+            gap: 12px;
+            padding: 20px;
             background: #f8fafc;
-            border-radius: 12px;
+            border-radius: 16px;
             border: 1px solid #e2e8f0;
             transition: all 0.3s ease;
 
@@ -1093,13 +1588,13 @@ const handleModalSuccess = () => {
             }
 
             .feature-icon {
-              font-size: 24px;
+              font-size: 28px;
               color: #3b82f6;
             }
 
             span {
-              font-size: 14px;
-              font-weight: 500;
+              font-size: 15px;
+              font-weight: 600;
               color: #475569;
             }
           }

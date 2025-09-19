@@ -1,3 +1,4 @@
+import { NavigationApi } from '@/api';
 import { FormItemRule } from 'naive-ui';
 
 /**
@@ -61,7 +62,6 @@ export const useCreateModalSchema = () => {
           trigger: ['blur', 'change'],
         },
       ],
-      defaultValue: 'mdi:folder',
       componentProps: {
         placeholder: '请选择分组图标',
       },
@@ -109,16 +109,71 @@ export const useCreateModalSchema = () => {
    * 导航表单配置
    */
   const getNavigationFormSchemas = () => [
+    // {
+    //   field: 'groupId',
+    //   label: '分组ID',
+    //   component: 'NInput',
+    //   required: true,
+    //   componentProps: {
+    //     disabled: true,
+    //     placeholder: '分组ID将自动设置',
+    //   },
+    // },
     {
-      field: 'groupId',
+      field: 'groupIds',
       label: '所属分组',
+      defaultValue: [],
+      component: 'ApiSelect',
+      required: true,
+      rules: [
+        {
+          required: true,
+          message: '请选择所属分组',
+          trigger: ['blur', 'change'],
+          validator: (_rule: FormItemRule, value: any) => {
+            // 对于多选组件，需要检查数组是否为空
+            if (!value || (Array.isArray(value) && value.length === 0)) {
+              return new Error('请至少选择一个分组');
+            }
+            return true;
+          },
+        },
+      ],
+      componentProps: {
+        api: NavigationApi.getNavigationGroup,
+        labelField: 'name',
+        valueField: 'id',
+        clearable: true,
+        filterable: true,
+        multiple: true,
+      },
+    },
+    {
+      field: 'path',
+      label: '导航链接',
       component: 'NInput',
       required: true,
+      rules: [
+        {
+          type: 'string',
+          required: true,
+          trigger: ['blur', 'input'],
+          validator: (_rule: FormItemRule, value: string) => {
+            if (!value) {
+              return new Error('请输入导航链接');
+            }
+            // 简单的URL验证
+            const urlPattern = /^(https?:\/\/)([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+            if (!urlPattern.test(value)) {
+              return new Error('请输入有效的URL地址（如：https://www.example.com）');
+            }
+            return true;
+          },
+        },
+      ],
       componentProps: {
-        disabled: true,
-        placeholder: '所属分组将自动设置',
+        placeholder: '请输入导航链接（如：https://www.example.com）',
       },
-      show: false, // 隐藏该字段，但保留值
     },
     {
       field: 'name',
@@ -151,31 +206,17 @@ export const useCreateModalSchema = () => {
       },
     },
     {
-      field: 'path',
-      label: '导航链接',
-      component: 'NInput',
+      field: 'icon',
+      label: '导航图标',
+      slot: 'navigationIcon',
       required: true,
       rules: [
         {
-          type: 'string',
           required: true,
-          trigger: ['blur', 'input'],
-          validator: (_rule: FormItemRule, value: string) => {
-            if (!value) {
-              return new Error('请输入导航链接');
-            }
-            // 简单的URL验证
-            const urlPattern = /^(https?:\/\/)([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-            if (!urlPattern.test(value)) {
-              return new Error('请输入有效的URL地址（如：https://www.example.com）');
-            }
-            return true;
-          },
+          message: '请选择导航图标',
+          trigger: ['blur', 'change'],
         },
       ],
-      componentProps: {
-        placeholder: '请输入导航链接（如：https://www.example.com）',
-      },
     },
     {
       field: 'description',

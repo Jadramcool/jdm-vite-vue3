@@ -23,14 +23,6 @@
               </n-text>
             </div>
           </div>
-          <n-statistic
-            v-if="showAppointments"
-            label="今日挂号"
-            :value="doctorAppointments?.finished || 0"
-          >
-            <template #prefix> </template>
-            <template #suffix> / {{ doctorAppointments?.total || 0 }} </template>
-          </n-statistic>
         </n-flex>
       </template>
     </n-card>
@@ -47,17 +39,6 @@ const props = defineProps({
   showAvatar: {
     type: Boolean,
     default: true,
-  },
-  showAppointments: {
-    type: Boolean,
-    default: false,
-  },
-  doctorAppointments: {
-    type: Object,
-    default: () => ({
-      total: 0,
-      finished: 0,
-    }),
   },
 });
 

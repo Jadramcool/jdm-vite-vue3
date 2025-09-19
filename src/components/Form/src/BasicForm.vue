@@ -131,6 +131,11 @@
                 "
               />
             </template>
+
+            <!-- 自定义插槽组件 -->
+            <template v-else-if="schema.slot && $slots[schema.slot]">
+              <slot :name="schema.slot" :model="formModel" :field="schema.field" :schema="schema" />
+            </template>
             <!--判断插槽-->
             <template v-else>
               <component

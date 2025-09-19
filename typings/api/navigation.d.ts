@@ -21,12 +21,21 @@ declare namespace Navigation {
     name: string;
     icon: string;
     description?: string;
-    sortOrder: number;
-    status: number;
+    sortOrder?: number;
+    status?: number;
     isDeleted?: number;
     createdTime?: Date;
     updatedTime?: Date;
     deletedTime?: Date;
     navigations?: Navigation[];
+    navigationCount?: number;
+  };
+
+  // WebsiteInfo 类型声明
+  type WebsiteInfo = {
+    title: string;
+    icon: string;
+    url: string;
+    originUrl: string;
   };
 }

@@ -157,3 +157,16 @@ export function isISOString(value: string): boolean {
   const regex = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/;
   return regex.test(value);
 }
+
+/**
+ * 判断是否为iconify图标格式
+ * @param icon 要检查的图标字符串
+ * @returns 如果是iconify图标格式返回true，否则返回false
+ */
+export function isIconifyIcon(icon: string): boolean {
+  if (!icon || !isString(icon)) return false;
+
+  // iconify图标格式为 "prefix:name"
+  const iconifyPattern = /^[a-zA-Z0-9-_]+:[a-zA-Z0-9-_]+$/;
+  return iconifyPattern.test(icon);
+}

@@ -1,4 +1,5 @@
 export * from './notice';
+export * from './public';
 export * from './system';
 export * from './third-party-api';
 export * from './upload';

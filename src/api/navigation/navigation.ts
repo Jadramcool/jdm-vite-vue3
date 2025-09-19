@@ -11,6 +11,7 @@ enum API {
   groupCreate = '/navigation-group/create',
   groupUpdate = '/navigation-group/update',
   groupDelete = '/navigation-group/delete',
+  websiteInfo = '/navigation/website-info',
 }
 
 /**
@@ -63,6 +64,32 @@ export const updateNavigation = (data: any) => {
 };
 
 /**
+ * @description: 禁用导航
+ */
+export const disable = (id: number) => {
+  return request.put<Navigation.Navigation>({
+    url: `${API.update}`,
+    data: {
+      id,
+      status: 0,
+    },
+  });
+};
+
+/**
+ * @description: 启用导航
+ */
+export const enable = (id: number) => {
+  return request.put<Navigation.Navigation>({
+    url: `${API.update}`,
+    data: {
+      id,
+      status: 1,
+    },
+  });
+};
+
+/**
  * @description: 删除导航
  */
 export const deleteNavigation = (id: number) => {
@@ -84,9 +111,9 @@ export const createNavigationGroup = (data: any) => {
 /**
  * @description: 更新导航分组
  */
-export const updateNavigationGroup = (id: number, data: any) => {
+export const updateNavigationGroup = (data: any) => {
   return request.put<Navigation.NavigationGroup>({
-    url: `${API.groupUpdate}/${id}`,
+    url: API.groupUpdate,
     data,
   });
 };
@@ -97,5 +124,15 @@ export const updateNavigationGroup = (id: number, data: any) => {
 export const deleteNavigationGroup = (id: number) => {
   return request.delete<Navigation.NavigationGroup>({
     url: `${API.groupDelete}/${id}`,
+  });
+};
+
+/**
+ * @description: 获取网站信息
+ */
+export const websiteInfo = (params: { url: string }) => {
+  return request.get<Navigation.WebsiteInfo>({
+    url: API.websiteInfo,
+    params,
   });
 };

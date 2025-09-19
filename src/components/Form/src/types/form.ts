@@ -19,6 +19,7 @@ export interface FormSchema {
   component?: ComponentType;
   query?: 'in' | 'not_in' | undefined;
   componentProps?: Nullable<Recordable>;
+  componentSlots?: Recordable;
   slot?: string;
   rules?: object | object[];
   rule?: object | object[];

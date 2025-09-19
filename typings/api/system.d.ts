@@ -63,7 +63,7 @@ declare namespace System {
     password?: string;
     isDeleted?: boolean;
     status: number; // 0: 未激活, 1: 激活
-    roleType?: string; // 角色类型 admin, user, doctor
+    roleType?: string; // 角色类型 admin, user
     city?: Nullable<string>;
     address?: Nullable<string>;
     addressDetail?: Nullable<string>;
@@ -190,22 +190,4 @@ declare namespace System {
     isDeleted: boolean;
     deletedTime: Date;
   }
-
-  // id            Int             @id @default(autoincrement())
-  // userId        Int?            @map("user_id")
-  // username      String?
-  // operationType OperationType   @map("operation_type")
-  // module        String?
-  // description   String?
-  // method        String?
-  // url           String?
-  // params        String?         @db.Text
-  // result        String?         @db.Text
-  // status        OperationStatus @default(SUCCESS)
-  // errorMessage  String?         @map("error_message") @db.Text
-  // ipAddress     String?         @map("ip_address")
-  // userAgent     String?         @map("user_agent") @db.Text
-  // duration      Int?
-  // createdTime   DateTime        @default(now()) @map("created_time")
-  // user          User?           @relation(fields: [userId], references: [id])
 }
