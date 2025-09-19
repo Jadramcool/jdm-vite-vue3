@@ -58,16 +58,31 @@
       <div class="card-url cursor-pointer" @click.stop="handleCopyPath">{{ navigation.path }}</div>
     </div>
 
-    <!-- 卡片底部：状态和排序 -->
+    <!-- 卡片底部：分组、状态和排序 -->
     <div class="card-footer">
-      <div
-        class="status-indicator cursor-pointer"
-        :class="{ active: navigation.status === 1 }"
-        @click.stop="handleStatusClick(navigation)"
-      >
-        {{ navigation.status === 1 ? '启用' : '禁用' }}
+      <!-- 分组标签 -->
+      <div class="card-groups">
+        <span
+          v-for="group in navigation.groups"
+          :key="group.id"
+          class="group-tag cursor-pointer"
+          @click.stop="handleGroupClick(group)"
+        >
+          {{ group.name }}
+        </span>
       </div>
-      <div class="sort-order">#{{ navigation.sortOrder }}</div>
+
+      <!-- 管理员操作区域 -->
+      <div class="admin-actions" v-if="props.isAdmin">
+        <div
+          class="status-indicator cursor-pointer"
+          :class="{ active: navigation.status === 1 }"
+          @click.stop="handleStatusClick(navigation)"
+        >
+          {{ navigation.status === 1 ? '启用' : '禁用' }}
+        </div>
+        <div class="sort-order">#{{ navigation.sortOrder }}</div>
+      </div>
     </div>
   </div>
 </template>
@@ -104,10 +119,10 @@ interface Emits {
   (e: 'delete', navigation: Navigation.Navigation): void;
   /** 复制路径事件 */
   (e: 'copyPath', path: string): void;
-  /** 启用导航事件 */
-  (e: 'enable', navigation: Navigation.Navigation): void;
-  /** 禁用导航事件 */
-  (e: 'disable', navigation: Navigation.Navigation): void;
+  /** 切换状态事件 */
+  (e: 'toggle-status', navigation: Navigation.Navigation): void;
+  /** 分组点击事件 */
+  (e: 'groupClick', group: Navigation.NavigationGroup): void;
 }
 
 const props = defineProps<Props>();
@@ -142,11 +157,14 @@ const handleDelete = () => {
  * 处理状态点击事件
  */
 const handleStatusClick = (navigation: Navigation.Navigation) => {
-  if (navigation.status === 1) {
-    emit('disable', navigation);
-  } else {
-    emit('enable', navigation);
-  }
+  emit('toggle-status', navigation);
+};
+
+/**
+ * 处理分组点击事件
+ */
+const handleGroupClick = (group: Navigation.NavigationGroup) => {
+  emit('groupClick', group);
 };
 
 /**
@@ -331,30 +349,68 @@ const handleCopyPath = (e: MouseEvent) => {
     justify-content: space-between;
     padding-top: 12px;
     border-top: 1px solid rgba(0, 0, 0, 0.04);
+    min-height: 32px;
 
-    .status-indicator {
-      font-size: 12px;
-      font-weight: 500;
-      padding: 4px 8px;
-      border-radius: 6px;
-      background: rgba(255, 59, 48, 0.1);
-      color: #ff3b30;
-      letter-spacing: 0.2px;
+    .card-groups {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      flex: 1;
+      margin-right: 12px;
 
-      &.active {
-        background: rgba(52, 199, 89, 0.1);
-        color: #34c759;
+      .group-tag {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 4px 12px;
+        border-radius: 12px;
+        background: #f8fafc;
+        color: #64748b;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: #f1f5f9;
+          color: #475569;
+          border-color: #cbd5e1;
+        }
       }
     }
 
-    .sort-order {
-      font-size: 12px;
-      font-weight: 500;
-      color: #86868b;
-      background: rgba(0, 0, 0, 0.04);
-      padding: 4px 8px;
-      border-radius: 6px;
-      letter-spacing: 0.5px;
+    .admin-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+
+      .status-indicator {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 3px 6px;
+        border-radius: 4px;
+        background: rgba(255, 59, 48, 0.1);
+        color: #ff3b30;
+        letter-spacing: 0.1px;
+        border: 1px solid rgba(255, 59, 48, 0.2);
+
+        &.active {
+          background: rgba(52, 199, 89, 0.1);
+          color: #34c759;
+          border-color: rgba(52, 199, 89, 0.2);
+        }
+      }
+
+      .sort-order {
+        font-size: 10px;
+        font-weight: 500;
+        color: #999;
+        background: rgba(0, 0, 0, 0.04);
+        padding: 3px 6px;
+        border-radius: 4px;
+        letter-spacing: 0.3px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+      }
     }
   }
 }

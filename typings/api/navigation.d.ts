@@ -9,6 +9,7 @@ declare namespace Navigation {
     groupId: number;
     sortOrder: number;
     status: number;
+    groups?: NavigationGroup[];
     isDeleted?: number;
     createdTime?: Date;
     updatedTime?: Date;

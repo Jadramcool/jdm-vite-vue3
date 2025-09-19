@@ -119,6 +119,32 @@ export const updateNavigationGroup = (data: any) => {
 };
 
 /**
+ * @description: 启用导航分组
+ */
+export const enableNavigationGroup = (id: number) => {
+  return request.put<Navigation.NavigationGroup>({
+    url: API.groupUpdate,
+    data: {
+      id,
+      status: 1,
+    },
+  });
+};
+
+/**
+ * @description: 禁用导航分组
+ */
+export const disableNavigationGroup = (id: number) => {
+  return request.put<Navigation.NavigationGroup>({
+    url: API.groupUpdate,
+    data: {
+      id,
+      status: 0,
+    },
+  });
+};
+
+/**
  * @description: 删除导航分组
  */
 export const deleteNavigationGroup = (id: number) => {

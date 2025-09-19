@@ -11,6 +11,23 @@
             <jay-icon icon="mdi:close" class="clear-icon" />
           </div>
         </div>
+        <!-- 分组状态筛选按钮 -->
+        <div v-if="isAdminUser" class="group-filter-container">
+          <n-button
+            :type="showOnlyEnabledGroups ? 'primary' : 'default'"
+            size="small"
+            class="group-filter-button"
+            @click="toggleGroupStatusFilter"
+          >
+            <template #icon>
+              <jay-icon
+                :icon="showOnlyEnabledGroups ? 'mdi:eye' : 'mdi:eye-off'"
+                class="button-icon"
+              />
+            </template>
+            {{ showOnlyEnabledGroups ? '仅启用分组' : '全部分组' }}
+          </n-button>
+        </div>
       </div>
 
       <!-- 导航组列表 -->
@@ -32,8 +49,6 @@
               <div class="tag-name">{{ allGroup.name }}</div>
               <div class="tag-meta">
                 <span class="tag-count">{{ allGroup.navigationCount || 0 }} 个导航</span>
-                <span v-if="allGroup.status === 1" class="tag-status active">启用</span>
-                <span v-else class="tag-status inactive">禁用</span>
               </div>
             </div>
           </div>
@@ -70,8 +85,14 @@
               <div class="tag-name">{{ tag.name }}</div>
               <div class="tag-meta">
                 <span class="tag-count">{{ tag.navigationCount || 0 }} 个导航</span>
-                <span v-if="tag.status === 1" class="tag-status active">启用</span>
-                <span v-else class="tag-status inactive">禁用</span>
+                <template v-if="isAdminUser">
+                  <span
+                    class="tag-status cursor-pointer"
+                    :class="tag.status === 1 ? 'active' : 'inactive'"
+                    @click.stop="toggleNavigationGroupStatus(tag)"
+                    >{{ tag.status === 1 ? '启用' : '禁用' }}</span
+                  >
+                </template>
               </div>
             </div>
             <div class="tag-actions">
@@ -136,11 +157,11 @@
                   <jay-icon icon="mdi:link-variant" class="stat-icon" />
                   <span>{{ currentNavigations?.length || 0 }} 个导航</span>
                 </div>
-                <div class="stat-item">
+                <div class="stat-item" v-if="isAdminUser && navigationGroup.id !== 0">
                   <jay-icon icon="mdi:sort-numeric-variant" class="stat-icon" />
                   <span>排序: {{ navigationGroup.sortOrder }}</span>
                 </div>
-                <div class="stat-item">
+                <div class="stat-item" v-if="isAdminUser">
                   <jay-icon
                     icon="mdi:circle"
                     class="stat-icon"
@@ -175,6 +196,45 @@
               编辑分组
             </n-button>
             <n-button
+              v-if="navigationGroup?.id === 0"
+              class="action-button primary"
+              @click="resetSortOrder"
+            >
+              <template #icon>
+                <jay-icon icon="mdi:refresh" class="button-icon" />
+              </template>
+              重置排序
+            </n-button>
+            <n-button
+              v-if="navigationGroup?.id === 0"
+              class="reset-group-button"
+              @click="resetNavigationGroupsSort"
+            >
+              <template #icon>
+                <jay-icon icon="mdi:refresh" class="button-icon" />
+              </template>
+              <span>重置分组排序</span>
+            </n-button>
+            <!-- 状态筛选按钮 -->
+            <n-button
+              v-if="isAdminUser"
+              class="action-button filter"
+              @click="toggleStatusFilter"
+              :type="showOnlyEnabled ? 'primary' : 'default'"
+            >
+              <template #icon>
+                <jay-icon :icon="showOnlyEnabled ? 'mdi:eye' : 'mdi:eye-off'" class="button-icon" />
+              </template>
+              {{ showOnlyEnabled ? '仅启用' : '全部状态' }}
+            </n-button>
+            <!-- 刷新按钮 -->
+            <n-button class="action-button refresh" @click="refreshData" type="success">
+              <template #icon>
+                <jay-icon icon="mdi:refresh" class="button-icon" />
+              </template>
+              刷新
+            </n-button>
+            <n-button
               class="action-button primary"
               @click="openCreateNavigationModal()"
               type="primary"
@@ -183,18 +243,6 @@
                 <jay-icon icon="mdi:plus" class="button-icon" />
               </template>
               添加导航
-            </n-button>
-            <n-button class="action-button primary" @click="resetSortOrder" type="primary">
-              <template #icon>
-                <jay-icon icon="mdi:refresh" class="button-icon" />
-              </template>
-              重置排序
-            </n-button>
-            <n-button class="reset-group-button" @click="resetNavigationGroupsSort" type="warning">
-              <template #icon>
-                <jay-icon icon="mdi:refresh" class="button-icon" />
-              </template>
-              <span>重置分组排序</span>
             </n-button>
           </div>
         </div>
@@ -236,8 +284,8 @@
                 @edit="editNavigation"
                 @delete="deleteNavigation"
                 @copyPath="copyPath"
-                @enable="enableNavigation"
-                @disable="disableNavigation"
+                @toggle-status="toggleNavigationStatus"
+                @groupClick="selectTag"
               />
             </VueDraggable>
           </div>
@@ -307,6 +355,13 @@ const draggableRef = ref<UseDraggableReturn>();
 
 onMounted(async () => {
   await getNavigationGroup();
+
+  // 获取所有导航的数量用于"全部"分组
+  const allNavigations = await getNavigationList(0);
+  const allNavigationCount = allNavigations.length;
+
+  // 初始化"全部"分组
+  allGroup.value.navigationCount = allNavigationCount;
   // 默认选择"全部"分组并同步数据
   await selectDefaultAllGroup();
 });
@@ -321,31 +376,27 @@ const allGroup = ref<Navigation.NavigationGroup>({
   status: 1,
 });
 
+/**
+ * 获取导航分组列表
+ * 支持状态筛选：非管理员只能查看启用状态的分组，管理员可以根据筛选设置查看
+ */
 const getNavigationGroup = async () => {
+  // 分组状态筛选逻辑：
+  // 1. 非管理员：只查询启用状态的分组
+  // 2. 管理员：根据showOnlyEnabledGroups变量决定是否筛选状态
+  const shouldFilterByStatus = !isAdminUser.value || showOnlyEnabledGroups.value;
+
   const res = await NavigationApi.getNavigationGroup({
     options: {
       showPagination: false,
       with_navigation: false,
       with_navigation_count: true,
     },
+    filters: {
+      ...(shouldFilterByStatus ? { status: 1 } : {}),
+    },
   });
   navigationGroups.value = res.data;
-
-  // 获取所有导航的数量用于"全部"分组
-  const allNavigations = await getNavigationList(0);
-  const allNavigationCount = allNavigations.length;
-
-  // 初始化"全部"分组
-  allGroup.value.navigationCount = allNavigationCount;
-
-  // navigationGroups.value.unshift({
-  //   id: 0,
-  //   name: '全部',
-  //   icon: 'streamline-emojis:ballot-box-with-check',
-  //   navigations: [],
-  //   navigationCount: allNavigationCount,
-  //   status: 1,
-  // });
 };
 
 /**
@@ -355,16 +406,29 @@ const selectDefaultAllGroup = async () => {
   await selectTag(allGroup.value);
 };
 
+/**
+ * 获取导航列表
+ * @param groupId 分组ID，0表示全部分组
+ * @returns 导航列表
+ */
 const getNavigationList = async (groupId?: number): Promise<Navigation.Navigation[]> => {
   if (groupId === 0) {
     groupId = undefined;
   }
+
+  // 状态筛选逻辑：
+  // 1. 非管理员：只查询启用状态的导航
+  // 2. 管理员：根据showOnlyEnabled变量决定是否筛选状态
+  const shouldFilterByStatus = !isAdminUser.value || showOnlyEnabled.value;
+
   const res = await NavigationApi.navigationList({
     filters: {
       groupId: groupId ?? undefined,
+      ...(shouldFilterByStatus ? { status: 1 } : {}),
     },
     options: {
       showPagination: false,
+      with_navigation_group: true,
     },
   });
   return res.data;
@@ -374,6 +438,10 @@ const getNavigationList = async (groupId?: number): Promise<Navigation.Navigatio
 const searchQuery = ref('');
 const navigationGroup = ref<Navigation.NavigationGroup | null>(null);
 const currentNavigations = ref<Navigation.Navigation[] | null>([]);
+// 导航状态筛选：管理员可以切换是否只显示启用状态的导航
+const showOnlyEnabled = ref(false);
+// 分组状态筛选：管理员可以切换是否只显示启用状态的分组
+const showOnlyEnabledGroups = ref(false);
 // 加载状态管理
 const loadingStates = ref<Record<number, boolean>>({});
 
@@ -392,6 +460,75 @@ const filteredGroups = computed(() => {
  */
 const editGroup = () => {
   openCreateGroupModal();
+};
+
+/**
+ * 切换导航状态筛选
+ * 管理员可以切换是否只显示启用状态的导航
+ */
+const toggleStatusFilter = async () => {
+  showOnlyEnabled.value = !showOnlyEnabled.value;
+
+  // 切换导航筛选状态后，重新获取当前分组的导航数据
+  if (navigationGroup.value?.id === 0) {
+    await selectDefaultAllGroup();
+  } else if (navigationGroup.value) {
+    // 如果选中的是其他分组，重新获取该分组的导航数据
+    await selectTag(navigationGroup.value);
+  }
+};
+
+/**
+ * 切换分组状态筛选
+ * 管理员可以切换是否只显示启用状态的分组
+ */
+const toggleGroupStatusFilter = async () => {
+  showOnlyEnabledGroups.value = !showOnlyEnabledGroups.value;
+
+  // 切换分组筛选状态后，重新获取分组列表
+  await getNavigationGroup();
+
+  // 如果当前选中的分组在筛选后不可见，则选择"全部"分组
+  if (navigationGroup.value && navigationGroup.value.id !== 0) {
+    const currentGroupExists = navigationGroups.value.some(
+      (group) => group.id === navigationGroup.value?.id,
+    );
+    if (!currentGroupExists) {
+      await selectDefaultAllGroup();
+    } else {
+      // 如果当前分组仍然存在，重新获取该分组的导航数据
+      await selectTag(navigationGroup.value);
+    }
+  } else {
+    // 如果当前选中的是"全部"分组，重新同步数据
+    await selectDefaultAllGroup();
+  }
+};
+
+/**
+ * 刷新数据
+ * 重新获取分组列表和当前选中分组的导航数据
+ */
+const refreshData = async () => {
+  try {
+    // 重新获取分组列表
+    await getNavigationGroup();
+
+    // 重新获取当前选中分组的导航数据
+    if (navigationGroup.value?.id === 0) {
+      // 如果选中的是"全部"分组，重新获取所有导航数据
+      await selectDefaultAllGroup();
+    } else if (navigationGroup.value) {
+      // 如果选中的是其他分组，重新获取该分组的导航数据
+      await selectTag(navigationGroup.value);
+    }
+
+    // 显示刷新成功提示
+    window.$message?.success('数据刷新成功');
+  } catch (error) {
+    console.error('刷新数据失败:', error);
+    window.$message?.error('数据刷新失败');
+  }
 };
 
 /**
@@ -453,13 +590,17 @@ const deleteNavigation = (navigation: Navigation.Navigation) => {
 };
 
 /**
- * 禁用导航
+ * 切换导航状态（启用/禁用）
  * @param navigation 导航数据
  */
-const disableNavigation = (navigation: Navigation.Navigation) => {
-  window.$dialog.warning({
-    title: '确认禁用',
-    content: `确定要禁用导航"${navigation.name}"吗？`,
+const toggleNavigationStatus = (navigation: Navigation.Navigation) => {
+  const isEnable = navigation.status === 0; // 当前是禁用状态，要启用
+  const action = isEnable ? '启用' : '禁用';
+  const dialogType = isEnable ? 'info' : 'warning';
+
+  window.$dialog[dialogType]({
+    title: `确认${action}`,
+    content: `确定要${action}导航【${navigation.name}】吗？`,
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
@@ -467,20 +608,25 @@ const disableNavigation = (navigation: Navigation.Navigation) => {
         // 设置加载状态
         loadingStates.value[navigation.id] = true;
 
-        await NavigationApi.disable(navigation.id);
+        // 调用对应的API
+        if (isEnable) {
+          await NavigationApi.enable(navigation.id);
+        } else {
+          await NavigationApi.disable(navigation.id);
+        }
 
         // 更新本地数据状态
         if (currentNavigations.value) {
           const targetNavigation = currentNavigations.value.find((nav) => nav.id === navigation.id);
           if (targetNavigation) {
-            targetNavigation.status = 0;
+            targetNavigation.status = isEnable ? 1 : 0;
           }
         }
 
-        window.$message.success('导航已禁用');
+        window.$message.success(`导航已${action}`);
       } catch (error) {
-        window.$message.error('禁用导航失败');
-        console.error('禁用导航失败:', error);
+        window.$message.error(`${action}导航失败`);
+        console.error(`${action}导航失败:`, error);
       } finally {
         // 清除加载状态
         loadingStates.value[navigation.id] = false;
@@ -490,37 +636,51 @@ const disableNavigation = (navigation: Navigation.Navigation) => {
 };
 
 /**
- * 启用导航
- * @param navigation 导航数据
+ * 切换导航分组状态（启用/禁用）
+ * @param group 导航分组数据
  */
-const enableNavigation = (navigation: Navigation.Navigation) => {
-  window.$dialog.info({
-    title: '确认启用',
-    content: `确定要启用导航"${navigation.name}"吗？`,
+const toggleNavigationGroupStatus = (group: Navigation.NavigationGroup) => {
+  const isEnable = group.status === 0; // 当前是禁用状态，要启用
+  const action = isEnable ? '启用' : '禁用';
+  const dialogType = isEnable ? 'info' : 'warning';
+
+  // 禁用时的特殊提示
+  const content = isEnable
+    ? `确定要${action}导航分组【${group.name}】吗？`
+    : `确定要${action}导航分组【${group.name}】吗？如果禁用则同时禁用该分组下的所有导航。`;
+
+  window.$dialog[dialogType]({
+    title: `确认${action}`,
+    content,
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
       try {
         // 设置加载状态
-        loadingStates.value[navigation.id] = true;
+        loadingStates.value[group.id] = true;
 
-        await NavigationApi.enable(navigation.id);
+        // 调用对应的API
+        if (isEnable) {
+          await NavigationApi.enableNavigationGroup(group.id);
+        } else {
+          await NavigationApi.disableNavigationGroup(group.id);
+        }
 
         // 更新本地数据状态
-        if (currentNavigations.value) {
-          const targetNavigation = currentNavigations.value.find((nav) => nav.id === navigation.id);
-          if (targetNavigation) {
-            targetNavigation.status = 1;
+        if (navigationGroups.value) {
+          const targetGroup = navigationGroups.value.find((nav) => nav.id === group.id);
+          if (targetGroup) {
+            targetGroup.status = isEnable ? 1 : 0;
           }
         }
 
-        window.$message.success('导航已启用');
+        window.$message.success(`导航分组已${action}`);
       } catch (error) {
-        window.$message.error('启用导航失败');
-        console.error('启用导航失败:', error);
+        window.$message.error(`${action}导航分组失败`);
+        console.error(`${action}导航分组失败:`, error);
       } finally {
         // 清除加载状态
-        loadingStates.value[navigation.id] = false;
+        loadingStates.value[group.id] = false;
       }
     },
   });
@@ -986,6 +1146,28 @@ const saveGroupDragOrder = async (data: Recordable) => {
           }
         }
       }
+
+      .group-filter-container {
+        margin-top: 12px;
+
+        .group-filter-button {
+          width: 100%;
+          height: 36px;
+          border-radius: 8px;
+          font-size: 13px;
+          font-weight: 500;
+          transition: all 0.3s ease;
+
+          .button-icon {
+            font-size: 16px;
+          }
+
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          }
+        }
+      }
     }
 
     .groups-container {
@@ -1396,6 +1578,22 @@ const saveGroupDragOrder = async (data: Recordable) => {
             display: flex;
             align-items: center;
             justify-content: center;
+          }
+
+          &.refresh {
+            transition: all 0.3s ease;
+
+            &:hover {
+              .button-icon {
+                transform: rotate(180deg);
+              }
+            }
+
+            &:active {
+              .button-icon {
+                transform: rotate(360deg);
+              }
+            }
           }
         }
       }

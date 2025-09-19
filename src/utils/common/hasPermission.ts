@@ -12,5 +12,6 @@ export const hasPermission = (permission: string) => {
 export const isAdmin = (): boolean => {
   const userStore = useUserStore();
   const { userInfo } = userStore;
+  // return false;
   return userInfo ? userInfo?.roleType === 'admin' : false;
 };
