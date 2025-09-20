@@ -35,7 +35,7 @@
         <!-- 全部分组 -->
         <div class="groups-list">
           <div
-            v-if="allGroup"
+            v-if="allGroup && navigationGroups.length > 0"
             class="tag-item none_draggable"
             @click="selectTag(allGroup)"
             :class="{
@@ -154,7 +154,7 @@
       </div>
 
       <!-- 数据加载完成后的内容显示 -->
-      <div v-else-if="navigationGroup" class="group-detail">
+      <div v-else-if="navigationGroup && navigationGroups.length > 0" class="group-detail">
         <!-- 分组头部 -->
         <div class="group-header">
           <div class="header-main">
@@ -343,11 +343,14 @@
       <div v-else class="no-selection">
         <div class="welcome-content">
           <div class="welcome-illustration">
-            <jay-icon icon="mdi:folder-multiple-outline" class="welcome-icon" />
+            <jay-icon icon="mdi:folder-multiple-outline" :size="96" class="welcome-icon" />
           </div>
           <h2 class="welcome-title">导航管理系统</h2>
-          <p class="welcome-description">选择左侧的分组来查看和管理导航链接</p>
-          <div class="welcome-features">
+          <p v-if="showAdminFeatures" class="welcome-description">
+            管理员模式下，您可以创建、编辑、删除分组和导航，以及管理排序。
+          </p>
+          <p v-else class="welcome-description">当前暂无分组和导航，请等待管理员添加</p>
+          <div class="welcome-features" v-if="showAdminFeatures">
             <div class="feature-item">
               <jay-icon icon="mdi:folder-plus" class="feature-icon" />
               <span>创建分组</span>
@@ -1828,14 +1831,13 @@ const saveGroupDragOrder = async (data: Recordable) => {
 
     .welcome-content {
       text-align: center;
-      max-width: 500px;
+      max-width: 700px;
       padding: 60px 40px;
 
       .welcome-illustration {
         margin-bottom: 40px;
 
         .welcome-icon {
-          font-size: 96px;
           color: #cbd5e1;
           opacity: 0.9;
         }
