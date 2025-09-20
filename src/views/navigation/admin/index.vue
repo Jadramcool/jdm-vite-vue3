@@ -145,7 +145,16 @@
 
     <!-- 右侧内容区域 -->
     <div class="content-area">
-      <div v-if="navigationGroup" class="group-detail">
+      <!-- 初始化加载状态 -->
+      <div v-if="isInitialLoading" class="loading-container">
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <p class="loading-text">正在加载导航数据...</p>
+        </div>
+      </div>
+
+      <!-- 数据加载完成后的内容显示 -->
+      <div v-else-if="navigationGroup" class="group-detail">
         <!-- 分组头部 -->
         <div class="group-header">
           <div class="header-main">
@@ -381,16 +390,21 @@ const showAdminFeatures = computed(() => isAdminUser.value && !isGuestMode.value
 const draggableRef = ref<UseDraggableReturn>();
 
 onMounted(async () => {
-  await getNavigationGroup();
+  try {
+    await getNavigationGroup();
 
-  // 获取所有导航的数量用于"全部"分组
-  const allNavigations = await getNavigationList(0);
-  const allNavigationCount = allNavigations.length;
+    // 获取所有导航的数量用于"全部"分组
+    const allNavigations = await getNavigationList(0);
+    const allNavigationCount = allNavigations.length;
 
-  // 初始化"全部"分组
-  allGroup.value.navigationCount = allNavigationCount;
-  // 默认选择"全部"分组并同步数据
-  await selectDefaultAllGroup();
+    // 初始化"全部"分组
+    allGroup.value.navigationCount = allNavigationCount;
+    // 默认选择"全部"分组并同步数据
+    await selectDefaultAllGroup();
+  } finally {
+    // 确保无论成功还是失败都设置加载状态为完成
+    isInitialLoading.value = false;
+  }
 });
 
 const navigationGroups = ref<Navigation.NavigationGroup[]>([]);
@@ -473,6 +487,8 @@ const showOnlyEnabled = ref(false);
 const showOnlyEnabledGroups = ref(false);
 // 加载状态管理
 const loadingStates = ref<Record<number, boolean>>({});
+// 页面初始化加载状态
+const isInitialLoading = ref(true);
 
 // 计算属性：过滤标签
 const filteredGroups = computed(() => {
@@ -1799,82 +1815,123 @@ const saveGroupDragOrder = async (data: Recordable) => {
         }
       }
     }
+  }
+  .no-selection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    margin: 20px;
 
-    .no-selection {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
-      border-radius: 20px;
-      margin: 20px;
+    .welcome-content {
+      text-align: center;
+      max-width: 500px;
+      padding: 60px 40px;
 
-      .welcome-content {
-        text-align: center;
-        max-width: 500px;
-        padding: 60px 40px;
+      .welcome-illustration {
+        margin-bottom: 40px;
 
-        .welcome-illustration {
-          margin-bottom: 40px;
-
-          .welcome-icon {
-            font-size: 96px;
-            color: #cbd5e1;
-            opacity: 0.9;
-          }
+        .welcome-icon {
+          font-size: 96px;
+          color: #cbd5e1;
+          opacity: 0.9;
         }
+      }
 
-        .welcome-title {
-          font-size: 32px;
-          font-weight: 700;
-          color: #1e293b;
-          margin: 0 0 20px 0;
-        }
+      .welcome-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0 0 20px 0;
+      }
 
-        .welcome-description {
-          font-size: 18px;
-          color: #64748b;
-          margin: 0 0 40px 0;
-          line-height: 1.6;
-        }
+      .welcome-description {
+        font-size: 18px;
+        color: #64748b;
+        margin: 0 0 40px 0;
+        line-height: 1.6;
+      }
 
-        .welcome-features {
+      .welcome-features {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        flex-wrap: wrap;
+
+        .feature-item {
           display: flex;
-          justify-content: center;
-          gap: 40px;
-          flex-wrap: wrap;
+          flex-direction: column;
+          align-items: center;
+          gap: 12px;
+          padding: 20px;
+          background: #f8fafc;
+          border-radius: 16px;
+          border: 1px solid #e2e8f0;
+          transition: all 0.3s ease;
 
-          .feature-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            padding: 20px;
-            background: #f8fafc;
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
+          &:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+          }
 
-            &:hover {
-              background: #f1f5f9;
-              border-color: #cbd5e1;
-              transform: translateY(-2px);
-            }
+          .feature-icon {
+            font-size: 28px;
+            color: #3b82f6;
+          }
 
-            .feature-icon {
-              font-size: 28px;
-              color: #3b82f6;
-            }
-
-            span {
-              font-size: 15px;
-              font-weight: 600;
-              color: #475569;
-            }
+          span {
+            font-size: 15px;
+            font-weight: 600;
+            color: #475569;
           }
         }
       }
+    }
+  }
+
+  // 加载动画样式
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+    width: 100%;
+
+    .loading-spinner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #18a058;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      .loading-text {
+        color: #666;
+        font-size: 16px;
+        margin: 0;
+        font-weight: 500;
+      }
+    }
+  }
+
+  // 旋转动画关键帧
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
     }
   }
 }
