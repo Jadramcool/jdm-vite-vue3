@@ -12,7 +12,7 @@
           </div>
         </div>
         <!-- 分组状态筛选按钮 -->
-        <div v-if="isAdminUser" class="group-filter-container">
+        <div v-if="showAdminFeatures" class="group-filter-container">
           <n-button
             :type="showOnlyEnabledGroups ? 'primary' : 'default'"
             size="small"
@@ -59,11 +59,14 @@
           :animation="200"
           :easing="'cubic-bezier(0.25, 0.46, 0.45, 0.94)'"
           filter=".none_draggable"
-          :class="['groups-list', isAdminUser ? 'admin-draggable-groups' : 'non-admin-groups']"
+          :class="[
+            'groups-list',
+            showAdminFeatures ? 'admin-draggable-groups' : 'non-admin-groups',
+          ]"
           ghostClass="group-drag-ghost"
           chosenClass="group-drag-chosen"
           dragClass="group-drag-dragging"
-          :disabled="!isAdminUser"
+          :disabled="!showAdminFeatures"
           @start="onGroupDragStart"
           @end="onGroupDragEnd"
           @move="onGroupDragMove"
@@ -85,7 +88,7 @@
               <div class="tag-name">{{ tag.name }}</div>
               <div class="tag-meta">
                 <span class="tag-count">{{ tag.navigationCount || 0 }} 个导航</span>
-                <template v-if="isAdminUser">
+                <template v-if="showAdminFeatures">
                   <span
                     class="tag-status cursor-pointer"
                     :class="tag.status === 1 ? 'active' : 'inactive'"
@@ -97,7 +100,7 @@
             </div>
             <div class="tag-actions">
               <n-button
-                v-if="isAdminUser && tag.id !== 0"
+                v-if="showAdminFeatures && tag.id !== 0"
                 class="tag-action-btn delete"
                 @click.stop="deleteNavigationGroup(tag)"
                 text
@@ -118,7 +121,7 @@
         <div v-if="!filteredGroups.length" class="empty-state">
           <jay-icon icon="mdi:folder-outline" class="empty-icon" />
           <div class="empty-text">{{ searchQuery ? '未找到匹配的分组' : '暂无分组' }}</div>
-          <div v-if="!searchQuery && isAdminUser" class="empty-action">
+          <div v-if="!searchQuery && showAdminFeatures" class="empty-action">
             <n-button class="add-button" @click="editGroup" type="primary">
               <template #icon>
                 <jay-icon icon="mdi:plus" class="button-icon" />
@@ -130,7 +133,7 @@
       </div>
 
       <!-- 底部操作区 -->
-      <div v-if="isAdminUser" class="sidebar-footer">
+      <div v-if="showAdminFeatures" class="sidebar-footer">
         <n-button class="add-group-button" @click="editGroup" type="primary" block>
           <template #icon>
             <jay-icon icon="mdi:plus" class="button-icon" />
@@ -157,11 +160,11 @@
                   <jay-icon icon="mdi:link-variant" class="stat-icon" />
                   <span>{{ currentNavigations?.length || 0 }} 个导航</span>
                 </div>
-                <div class="stat-item" v-if="isAdminUser && navigationGroup.id !== 0">
+                <div class="stat-item" v-if="showAdminFeatures && navigationGroup.id !== 0">
                   <jay-icon icon="mdi:sort-numeric-variant" class="stat-icon" />
                   <span>排序: {{ navigationGroup.sortOrder }}</span>
                 </div>
-                <div class="stat-item" v-if="isAdminUser">
+                <div class="stat-item" v-if="showAdminFeatures">
                   <jay-icon
                     icon="mdi:circle"
                     class="stat-icon"
@@ -173,8 +176,23 @@
             </div>
           </div>
           <div class="header-actions" v-if="isAdminUser">
+            <!-- 游客模式切换按钮 -->
             <n-button
-              v-if="navigationGroup?.id !== 0"
+              class="action-button guest-mode"
+              @click="toggleGuestMode"
+              :type="isGuestMode ? 'warning' : 'default'"
+            >
+              <template #icon>
+                <jay-icon
+                  :icon="isGuestMode ? 'mdi:account-check' : 'mdi:account-eye'"
+                  class="button-icon"
+                />
+              </template>
+              {{ isGuestMode ? '退出游客模式' : '游客模式预览' }}
+            </n-button>
+
+            <n-button
+              v-if="showAdminFeatures && navigationGroup?.id !== 0"
               class="action-button danger"
               @click="deleteNavigationGroup(navigationGroup!)"
               type="error"
@@ -185,7 +203,7 @@
               删除分组
             </n-button>
             <n-button
-              v-if="navigationGroup?.id !== 0"
+              v-if="showAdminFeatures && navigationGroup?.id !== 0"
               class="action-button secondary"
               @click="openEditGroupModal(navigationGroup!)"
               type="default"
@@ -196,7 +214,7 @@
               编辑分组
             </n-button>
             <n-button
-              v-if="navigationGroup?.id === 0"
+              v-if="showAdminFeatures && navigationGroup?.id === 0"
               class="action-button primary"
               @click="resetSortOrder"
             >
@@ -206,7 +224,7 @@
               重置排序
             </n-button>
             <n-button
-              v-if="navigationGroup?.id === 0"
+              v-if="showAdminFeatures && navigationGroup?.id === 0"
               class="reset-group-button"
               @click="resetNavigationGroupsSort"
             >
@@ -217,7 +235,7 @@
             </n-button>
             <!-- 状态筛选按钮 -->
             <n-button
-              v-if="isAdminUser"
+              v-if="showAdminFeatures"
               class="action-button filter"
               @click="toggleStatusFilter"
               :type="showOnlyEnabled ? 'primary' : 'default'"
@@ -235,6 +253,7 @@
               刷新
             </n-button>
             <n-button
+              v-if="showAdminFeatures"
               class="action-button primary"
               @click="openCreateNavigationModal()"
               type="primary"
@@ -259,7 +278,7 @@
                 :easing="'cubic-bezier(0.25, 0.46, 0.45, 0.94)'"
                 filter=".none_draggable"
                 :id="navigationGroup.id"
-                :class="['navigations-grid', isAdminUser ? 'admin-draggable' : 'non-admin']"
+                :class="['navigations-grid', showAdminFeatures ? 'admin-draggable' : 'non-admin']"
                 :scrollSensitivity="80"
                 :scroll-speed="10"
                 ghostClass="drag-ghost"
@@ -270,7 +289,7 @@
                 :delay="0"
                 :delay-on-touch-start="false"
                 :touch-start-threshold="5"
-                :disabled="!isAdminUser"
+                :disabled="!showAdminFeatures"
                 @start="onDragStart"
                 @end="onDragEnd"
                 @move="onDragMove"
@@ -279,7 +298,7 @@
                   v-for="navigation in currentNavigations"
                   :key="navigation.id"
                   :navigation="navigation"
-                  :is-admin="isAdminUser"
+                  :is-admin="showAdminFeatures"
                   :loading="loadingStates[navigation.id] || false"
                   @click="openBookmark"
                   @edit="editNavigation"
@@ -296,7 +315,7 @@
               <jay-icon icon="mdi:link-variant-off" class="empty-icon" />
               <div class="empty-text">该分组暂无导航</div>
               <n-button
-                v-if="isAdminUser"
+                v-if="showAdminFeatures"
                 class="add-navigation-button"
                 @click="openCreateNavigationModal()"
                 type="primary"
@@ -355,6 +374,10 @@ defineOptions({ name: 'Navigation' });
 const appStore = useAppStore();
 // 权限控制的响应式变量
 const isAdminUser = ref(isAdmin());
+// 游客模式切换状态（仅在管理员模式下可用）
+const isGuestMode = ref(false);
+// 计算当前是否应该显示管理员功能（真实管理员权限 && 未开启游客模式）
+const showAdminFeatures = computed(() => isAdminUser.value && !isGuestMode.value);
 const draggableRef = ref<UseDraggableReturn>();
 
 onMounted(async () => {
@@ -387,8 +410,9 @@ const allGroup = ref<Navigation.NavigationGroup>({
 const getNavigationGroup = async () => {
   // 分组状态筛选逻辑：
   // 1. 非管理员：只查询启用状态的分组
-  // 2. 管理员：根据showOnlyEnabledGroups变量决定是否筛选状态
-  const shouldFilterByStatus = !isAdminUser.value || showOnlyEnabledGroups.value;
+  // 2. 管理员在游客模式下：只查询启用状态的分组
+  // 3. 管理员在管理模式下：根据showOnlyEnabledGroups变量决定是否筛选状态
+  const shouldFilterByStatus = !showAdminFeatures.value || showOnlyEnabledGroups.value;
 
   const res = await NavigationApi.getNavigationGroup({
     options: {
@@ -422,8 +446,9 @@ const getNavigationList = async (groupId?: number): Promise<Navigation.Navigatio
 
   // 状态筛选逻辑：
   // 1. 非管理员：只查询启用状态的导航
-  // 2. 管理员：根据showOnlyEnabled变量决定是否筛选状态
-  const shouldFilterByStatus = !isAdminUser.value || showOnlyEnabled.value;
+  // 2. 管理员在游客模式下：只查询启用状态的导航
+  // 3. 管理员在管理模式下：根据showOnlyEnabled变量决定是否筛选状态
+  const shouldFilterByStatus = !showAdminFeatures.value || showOnlyEnabled.value;
 
   const res = await NavigationApi.navigationList({
     filters: {
@@ -507,6 +532,33 @@ const toggleGroupStatusFilter = async () => {
     // 如果当前选中的是"全部"分组，重新同步数据
     await selectDefaultAllGroup();
   }
+};
+
+/**
+ * 切换游客模式
+ * 管理员可以一键切换到游客模式来预览页面效果
+ */
+const toggleGuestMode = async () => {
+  // 只有真实的管理员才能切换游客模式
+  if (!isAdminUser.value) {
+    return;
+  }
+
+  isGuestMode.value = !isGuestMode.value;
+
+  // 切换模式后重新获取数据，因为游客模式下的数据筛选逻辑不同
+  await getNavigationGroup();
+
+  // 重新获取当前分组的导航数据
+  if (navigationGroup.value?.id === 0) {
+    await selectDefaultAllGroup();
+  } else if (navigationGroup.value) {
+    await selectTag(navigationGroup.value);
+  }
+
+  // 显示切换提示
+  const modeText = isGuestMode.value ? '游客模式' : '管理员模式';
+  window.$message?.success(`已切换到${modeText}`);
 };
 
 /**
@@ -1582,6 +1634,27 @@ const saveGroupDragOrder = async (data: Recordable) => {
             display: flex;
             align-items: center;
             justify-content: center;
+          }
+
+          &.guest-mode {
+            position: relative;
+            transition: all 0.3s ease;
+
+            &:hover {
+              transform: translateY(-1px);
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+
+            /* 游客模式激活状态的特殊样式 */
+            &.n-button--warning-type {
+              background: linear-gradient(135deg, #f59e0b, #d97706);
+              border-color: #d97706;
+
+              &:hover {
+                background: linear-gradient(135deg, #d97706, #b45309);
+                border-color: #b45309;
+              }
+            }
           }
 
           &.refresh {
