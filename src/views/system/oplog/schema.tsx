@@ -1,15 +1,15 @@
 import JayIcon from '@/components/common/JayIcon.vue';
-import {
-  operationStatusColorOptions,
-  operationStatusOptions,
-  operationTypeOptions,
-} from '@/constants';
 import { $t } from '@/locales/i18n';
 import { columnsUtil, formSchemaUtil } from '@/utils';
 import dayjs from 'dayjs';
 import { NButton, NPopconfirm, NSpace, NTag, NTooltip } from 'naive-ui';
 import { RowData } from 'naive-ui/es/data-table/src/interface';
 import { computed, unref } from 'vue';
+import {
+  operationStatusColorOptions,
+  operationStatusOptions,
+  operationTypeOptions,
+} from './constants';
 
 // 表格和表单配置函数
 export const useOpLogSchema = (methods: any = {}) => {

@@ -5,7 +5,7 @@
       collapse-mode="width"
       :collapsed-width="64"
       :width="240"
-      content-style="display: flex;flex-direction: column;min-height:100%;border-right: 1px solid var(--n-border-color); transition: all 0.3s ease;box-shadow: 2px 0 12px rgba(0, 0, 0, 0.08);background: linear-gradient(135deg, var(--card-color) 0%, rgba(255,255,255,0.95) 100%);"
+      content-style="display: flex;flex-direction: column;min-height:100%;border-right: 1px solid var(--n-border-color); transition: all 0.3s ease;background: linear-gradient(135deg, var(--card-color) 0%, rgba(255,255,255,0.95) 100%);"
     >
       <SideLogo v-if="appStore.showLogo" />
       <n-scrollbar class="flex-1">
@@ -84,7 +84,7 @@ const withContentCard = computed(() => {
  * 添加渐变背景和阴影效果
  */
 .layout-header {
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  // box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
 }

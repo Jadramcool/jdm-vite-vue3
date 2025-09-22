@@ -20,6 +20,8 @@ const categoryOptions = [
   { label: '业务配置', value: 'BUSINESS' },
   { label: '界面配置', value: 'UI' },
   { label: '安全配置', value: 'SECURITY' },
+  { label: '日志配置', value: 'LOG' },
+  { label: '上传', value: 'UPLOAD' },
   { label: '其他配置', value: 'OTHER' },
 ];
 

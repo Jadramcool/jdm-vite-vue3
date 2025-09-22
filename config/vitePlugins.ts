@@ -23,8 +23,18 @@ import { NaiveUiResolver } from 'unplugin-vue-components/resolvers';
 import UnoCSS from 'unocss/vite';
 import { ConfigEnv } from 'vite';
 
+/**
+ * 配置 Vite 插件
+ * @param env - Vite 环境配置
+ * @returns 插件数组
+ */
 export default (env: ConfigEnv) => {
-  console.debug('🚀 ~ env:', env);
+  const { command, mode } = env;
+
+  console.log(`📦 环境模式: ${mode}`);
+  console.log(`⚡ 构建命令: ${command}`);
+  console.log(`🔧 开发模式: ${command === 'serve' ? '是' : '否'}`);
+
   const vitePlugins: (Plugin | Plugin[])[] = [
     vue({
       include: [/.vue$/],

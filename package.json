@@ -12,6 +12,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@unocss/inspector": "^66.5.1",
     "@visactor/vchart": "^1.12.13",
     "@visactor/vchart-theme": "^1.12.2",
     "@visactor/vgrammar-core": "^0.14.16",
