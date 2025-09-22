@@ -34,6 +34,7 @@
       :striped="isStriped"
       :bordered="isBordered"
       :class="{ 'header-no-wrap': getProps.headerNoWrap }"
+      :render-expand-icon="renderExpandIcon"
       @update:page="updatePage"
       @update:page-size="updatePageSize"
     />
@@ -41,7 +42,9 @@
 </template>
 
 <script setup lang="ts" name="BasicTable">
+import { JayIcon } from '@/components';
 import { useComponentTableStore } from '@/store';
+import { h, VNodeChild } from 'vue';
 import { ToolBar } from './components';
 import { useColumns, useDataSource, useLoading, usePagination } from './hooks';
 import { basicProps } from './props';
@@ -160,6 +163,30 @@ const handleBatchDelete = () => {
   emit('batchDelete');
 };
 
+/**
+ * 渲染展开图标的函数
+ * @param {object} params - 参数对象
+ * @param {boolean} params.expanded - 是否展开
+ * @returns {VNodeChild} 渲染的图标节点
+ */
+const renderExpandIcon = ({ expanded }: { expanded: boolean }): VNodeChild => {
+  return h(JayIcon, {
+    icon: 'tabler:chevron-right',
+    size: 16,
+    class: [
+      'expand-icon',
+      'transition-all',
+      'duration-300',
+      'ease-in-out',
+      'hover:scale-110',
+      'hover:text-primary',
+      {
+        'rotate-90': expanded,
+      },
+    ],
+  });
+};
+
 // 暴露方法
 defineExpose({
   reload,
@@ -190,8 +217,8 @@ defineExpose({
 
 /* 确保表头排序图标不影响布局 */
 :deep(
-    .header-no-wrap.n-data-table .n-data-table-thead .n-data-table-th .n-data-table-th__ellipsis
-  ) {
+  .header-no-wrap.n-data-table .n-data-table-thead .n-data-table-th .n-data-table-th__ellipsis
+) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -200,15 +227,59 @@ defineExpose({
 
 /* 确保表头文本容器不换行 */
 :deep(
-    .header-no-wrap.n-data-table
-      .n-data-table-thead
-      .n-data-table-th
-      .n-data-table-th__title-wrapper
-  ) {
+  .header-no-wrap.n-data-table .n-data-table-thead .n-data-table-th .n-data-table-th__title-wrapper
+) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   min-width: 0;
   flex-shrink: 1;
+}
+
+/* 展开图标样式 */
+.expand-icon {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  padding: 2px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 悬停效果 */
+.expand-icon:hover {
+  background-color: rgba(24, 160, 88, 0.1);
+  transform: scale(1.1);
+}
+
+/* 旋转动画 */
+.rotate-90 {
+  transform: rotate(90deg);
+}
+
+/* 展开时的脉冲动画 */
+@keyframes expand-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(24, 160, 88, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(24, 160, 88, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(24, 160, 88, 0);
+  }
+}
+
+/* 图标旋转时的弹性效果 */
+.expand-icon.rotate-90 {
+  transform: rotate(90deg) scale(1.05);
+  color: #18a058;
+}
+
+/* 活跃状态样式 */
+.expand-icon:active {
+  transform: scale(0.95);
+  transition-duration: 0.1s;
 }
 </style>

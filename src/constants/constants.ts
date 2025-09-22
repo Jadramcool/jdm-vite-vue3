@@ -13,6 +13,7 @@ export const layoutOptions = computed(() => [
   { label: $t('layout.normal'), value: 'normal' },
   { label: $t('layout.fullContent'), value: 'full-content' },
   { label: $t('layout.blog'), value: 'blog' },
+  { label: $t('layout.public'), value: 'public' },
 ]);
 
 /** @description: 菜单类型主题 */
