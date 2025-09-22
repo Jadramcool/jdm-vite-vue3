@@ -71,4 +71,14 @@ export const basicProps = {
     type: Boolean,
     default: false,
   },
+  // 表头是否不换行
+  headerNoWrap: {
+    type: Boolean,
+    default: true,
+  },
+  // 表格尺寸
+  size: {
+    type: String,
+    default: 'small',
+  },
 };

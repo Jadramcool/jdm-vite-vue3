@@ -23,7 +23,7 @@
             </div>
             <n-checkbox-group
               v-model:value="dateWithPeriod[dayjs(key).format('YYYY-MM-DD')]"
-              @update:value="(value) => handleUpdateRadio(value, key)"
+              @update:value="(value: (string | number)[]) => handleUpdateRadio(value, key)"
             >
               <n-space>
                 <n-checkbox value="MORNING" label="上午" />

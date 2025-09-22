@@ -32,5 +32,12 @@ declare interface Fn<T = any, R = T> {
   (...arg: T[]): R;
 }
 
+interface Pagination {
+  page?: number;
+  pageSize?: number;
+  totalRecords?: number;
+  totalPages?: number;
+}
+
 // declarations.d.ts
 declare module '@wangeditor/editor-for-vue';

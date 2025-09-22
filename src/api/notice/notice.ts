@@ -16,7 +16,7 @@ enum API {
  * @description: 获取公告
  */
 export const noticeList = (params?: any) => {
-  return request.get<Notice.Notice[]>({
+  return request.get<List<Notice.Notice>>({
     url: API.list,
     params,
   });

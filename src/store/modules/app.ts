@@ -2,15 +2,23 @@ import { defineStore } from 'pinia';
 // import { useDark } from '@vueuse/core';
 import {
   darkThemeOverrides,
+  defaultFont,
   defaultLayout,
+  fontOptions,
   lightThemeOverrides,
   naiveThemeOverrides,
 } from '@/settings';
-import { getRgb, isValidColor, lStorage, setLocale } from '@/utils';
+import { getRgb, isValidColor, setLocale } from '@/utils';
+import { getLStorage } from '@/utils/storage';
 import { useCssVar } from '@vueuse/core';
 import chroma from 'chroma-js'; // 极小且零依赖的 JavaScript 颜色库
 import _ from 'lodash';
 import { type GlobalThemeOverrides } from 'naive-ui';
+import { nextTick } from 'vue';
+
+const lStorage = getLStorage();
+
+// 移除防抖相关代码，改为同步更新主题
 
 // 引用 HTML 文档的根元素
 const docEle = ref(document.documentElement);
@@ -20,7 +28,7 @@ const { isFullscreen, toggle } = useFullscreen(docEle);
 const { system, store } = useColorMode({
   emitAuto: true,
   storageKey: 'theme-mode',
-  disableTransition: false, // 开启动画
+  disableTransition: true, // 开启动画
 });
 
 export const useAppStore = defineStore('app', {
@@ -33,6 +41,7 @@ export const useAppStore = defineStore('app', {
     // naiveThemeOverrides, // naive-ui 主题配置
     lang: lStorage.getItem('lang') || 'zhCN', // 语言
     primaryColor: naiveThemeOverrides.common.primaryColor, // 主题色
+    currentFont: lStorage.getItem('currentFont') || defaultFont, // 当前字体
     weakColor: false, // 弱色
     grayMode: false, // 黑白模式
     transitionAnimation: 'fade-slide' as App.TransitionAnimation,
@@ -67,10 +76,17 @@ export const useAppStore = defineStore('app', {
     switchCollapsed() {
       this.collapsed = !this.collapsed;
     },
-    // 切换颜色模式
+    /**
+     * 设置颜色模式
+     * @param mode - 主题模式：light(浅色) | dark(深色) | auto(跟随系统)
+     */
     setColorMode(mode: 'light' | 'dark' | 'auto') {
+      // 避免重复设置相同模式
+      if (store.value === mode) return;
+
+      // 更新模式并重新生成主题
       store.value = mode;
-      this.setPrimaryColor();
+      this.setPrimaryColor(this.primaryColor);
     },
     // 切换全屏
     toggleFullScreen() {
@@ -83,43 +99,81 @@ export const useAppStore = defineStore('app', {
       lStorage.setItem('lang', lang);
     },
 
-    // 提取主题变量并设置全局 CSS 变量
+    /**
+     * 设置全局CSS变量
+     */
     setupCssVar() {
-      const common: any = this.theme?.common || {};
-      Object.keys(common).forEach((key) => {
-        const value: string = common[key];
-        if (isValidColor(value)) {
-          const rgb = getRgb(value);
-          // 全局css变量-十六进制
-          useCssVar(`--${_.kebabCase(key)}`, document.documentElement).value = value || '';
-          // 全局css变量-rgb, xx xx xx 形式, 如: 255 255 255,给uno使用
-          useCssVar(`--${_.kebabCase(key)}-rgb`, document.documentElement).value =
-            rgb.join(' ') || '';
-        }
+      const common = this.theme?.common || {};
+      const { documentElement } = document;
 
-        // 特别处理 primaryColor，将其存入本地存储
-        if (key === 'primaryColor') {
-          window.localStorage.setItem('__THEME_COLOR__', value || '');
+      Object.entries(common).forEach(([key, value]) => {
+        const stringValue = value as string;
+
+        if (isValidColor(stringValue)) {
+          const rgb = getRgb(stringValue);
+          const kebabKey = _.kebabCase(key);
+
+          // 设置CSS变量
+          documentElement.style.setProperty(`--${kebabKey}`, stringValue);
+          documentElement.style.setProperty(`--${kebabKey}-rgb`, rgb.join(' '));
+
+          // 保存主题色到本地存储
+          if (key === 'primaryColor') {
+            window.localStorage.setItem('__THEME_COLOR__', stringValue);
+          }
         }
       });
     },
-    // 设置主题色
-    setPrimaryColor(color: string = '') {
-      if (this.colorMode === 'dark') {
-        this.theme = _.merge(this.theme, darkThemeOverrides);
-      } else if (this.colorMode === 'light') {
-        this.theme = _.merge(this.theme, lightThemeOverrides);
+
+    /**
+     * 设置字体
+     * @param fontKey - 字体键值
+     */
+    setFont(fontKey: string) {
+      if (fontOptions[fontKey]) {
+        this.currentFont = fontKey;
+        const fontValue = fontOptions[fontKey].value;
+
+        // 更新主题中的字体
+        _.set(this.theme, 'common.fontFamily', fontValue);
+
+        // 更新全局CSS变量
+        useCssVar('--font-family', document.documentElement).value = fontValue;
+
+        // 保存到本地存储
+        lStorage.setItem('currentFont', fontKey);
+
+        // 重新设置CSS变量
+        this.setupCssVar();
       }
-      if (color) {
+    },
+
+    /**
+     * 设置主题色
+     * @param color - 主题色值，为空时仅更新主题模式
+     */
+    setPrimaryColor(color: string = '') {
+      // 获取基础主题配置
+      const themeOverrides = this.colorMode === 'dark' ? darkThemeOverrides : lightThemeOverrides;
+
+      // 合并主题配置
+      this.theme = _.merge(_.cloneDeep(naiveThemeOverrides), _.cloneDeep(themeOverrides));
+
+      // 更新主题色
+      if (color && isValidColor(color)) {
+        this.primaryColor = color;
+
         const brightenColor = chroma(color).brighten(1).hex();
         const darkenColor = chroma(color).darken(1).hex();
-        this.primaryColor = color;
+
+        // 更新主题色相关配置
         _.set(this.theme, 'common.primaryColor', color);
         _.set(this.theme, 'common.primaryColorHover', brightenColor);
         _.set(this.theme, 'common.primaryColorPressed', darkenColor);
         _.set(this.theme, 'common.primaryColorSuppl', brightenColor);
       }
 
+      // 更新CSS变量
       this.setupCssVar();
     },
     /* 切换色弱模式 */

@@ -1,9 +1,38 @@
 export const defaultLayout = 'normal';
+
+// 字体配置
+export const fontOptions: Record<string, { name: string; value: string; description: string }> = {
+  'smiley-sans': {
+    name: '得意黑',
+    value: 'Smiley Sans',
+    description: '得意黑体 - 现代简洁',
+  },
+  'harmony-sans': {
+    name: '鸿蒙字体',
+    value: 'HarmonySans',
+    description: '鸿蒙字体 - 优雅舒适',
+  },
+  LXGWWenKai: {
+    name: '霞鹜文楷',
+    value: 'LXGWWenKai',
+    description: '霞鹜文楷 - 优雅舒适',
+  },
+  system: {
+    name: 'System',
+    value:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    description: '系统默认字体',
+  },
+};
+
+// 默认字体
+export const defaultFont = 'smiley-sans';
+
 // 全局主题变量
 export const naiveThemeOverrides = {
   common: {
     // 字体
-    fontFamily: 'Smiley Sans',
+    fontFamily: fontOptions[defaultFont].value,
     primaryColor: '#18a058',
     primaryColorHover: '#36ad6a',
     primaryColorPressed: '#0c7a43',

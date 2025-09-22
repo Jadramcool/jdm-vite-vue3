@@ -67,6 +67,7 @@ function handleMenuSelect(_key: any, item: any) {
   :deep(.n-menu-item-content--selected::before) {
     // border-left: 5px solid var(--n-item-color-active);
     border-left: 4px solid var(--primary-color);
+    border-radius: 0 4px 4px 0;
   }
 }
 </style>

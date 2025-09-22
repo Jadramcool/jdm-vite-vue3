@@ -20,6 +20,7 @@ export default defineConfig((env: ConfigEnv) => {
   return {
     base: viteEnv.VITE_BASE,
     envDir: './env', // 指定环境变量文件目录
+    clearScreen: false, // 防止Vite清除终端屏幕，保持地址显示
     plugins: vitePlugins(env),
     resolve: {
       // 设置别名
@@ -45,7 +46,8 @@ export default defineConfig((env: ConfigEnv) => {
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: '@import "@/assets/styles/index.scss";',
+          additionalData:
+            '@import "@/assets/styles/color.scss"; @import "@/assets/styles/font.scss";',
           // TODO
           silenceDeprecations: ['legacy-js-api'], // Dart Sass 2.0.0 将完全移除旧版 API
         },

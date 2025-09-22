@@ -8,10 +8,12 @@
  *
  */
 
-import { lStorage } from '@/utils';
+import { getLStorage } from '@/utils/storage';
 import { createI18n, I18n } from 'vue-i18n';
 import enUS from '../../locales/enUS.json';
 import zhCN from '../../locales/zhCN.json';
+
+const lStorage = getLStorage();
 
 const lang: string = lStorage.getItem('lang') || 'zhCN';
 
