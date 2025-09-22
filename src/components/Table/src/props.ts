@@ -76,4 +76,9 @@ export const basicProps = {
     type: Boolean,
     default: true,
   },
+  // 表格尺寸
+  size: {
+    type: String,
+    default: 'small',
+  },
 };

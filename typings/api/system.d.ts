@@ -63,7 +63,7 @@ declare namespace System {
     password?: string;
     isDeleted?: boolean;
     status: number; // 0: 未激活, 1: 激活
-    roleType?: string; // 角色类型 admin, user, doctor
+    roleType?: string; // 角色类型 admin, user
     city?: Nullable<string>;
     address?: Nullable<string>;
     addressDetail?: Nullable<string>;
@@ -137,5 +137,57 @@ declare namespace System {
     isSystem?: boolean;
     isPublic?: boolean;
     sortOrder?: number | null;
+  }
+
+  interface Department {
+    id: number;
+    name: string;
+    code: string;
+    description?: string | null;
+    createdTime: Date;
+    updatedTime: Date;
+    deletedTime?: Date | null;
+    isDeleted: boolean;
+  }
+
+  enum OperationType {
+    CREATE = 'CREATE',
+    UPDATE = 'UPDATE',
+    DELETE = 'DELETE',
+    VIEW = 'VIEW',
+    LOGIN = 'LOGIN',
+    LOGOUT = 'LOGOUT',
+    EXPORT = 'EXPORT',
+    IMPORT = 'IMPORT',
+    OTHER = 'OTHER',
+  }
+
+  interface OperationLog {
+    id: number;
+    userId: number;
+    username: string;
+    operationType: OperationType;
+    module: string;
+    description: string;
+    method: string;
+    requestMethod: string;
+    operatorType: string;
+    status: number;
+    errorMsg: string;
+    ipAddress: string;
+    userAgent: string;
+    duration: number;
+    createdTime: Date;
+    params: string;
+    result: string;
+    url: string;
+    requestIp: string;
+    browser: string;
+    os: string;
+    createdBy: number;
+    updatedBy: number;
+    deletedBy: number;
+    isDeleted: boolean;
+    deletedTime: Date;
   }
 }

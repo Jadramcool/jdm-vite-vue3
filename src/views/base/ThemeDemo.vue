@@ -43,20 +43,6 @@
               </template>
               循环切换
             </n-button>
-
-            <n-button type="success" @click="preloadResources">
-              <template #icon>
-                <JayIcon icon="icon-park-outline:download" />
-              </template>
-              预加载资源
-            </n-button>
-
-            <n-button type="tertiary" @click="switchWithCircularTransition">
-              <template #icon>
-                <JayIcon icon="icon-park-outline:target" />
-              </template>
-              圆形过渡
-            </n-button>
           </n-space>
         </n-card>
 
@@ -121,9 +107,7 @@ import { useAppStore } from '@/store';
 import {
   isDarkMode as checkIsDarkMode,
   cycleTheme,
-  getCurrentTheme,
   switchTheme,
-  ThemeManager,
   type ThemeMode,
 } from '@/utils/theme';
 import { useMessage } from 'naive-ui';
@@ -220,10 +204,7 @@ const switchToTheme = async (mode: ThemeMode) => {
     targetTheme.value = mode;
     addLog(`开始切换到 ${themeOptions.find((t) => t.value === mode)?.label}`, 'info');
 
-    await switchTheme(mode, {
-      enableTransition: true,
-      transitionDuration: 150, // 优化过渡时间
-      transitionType: 'uniform', // 明确使用优化的默认过渡
+    switchTheme(mode, {
       onStart: () => {
         addLog(`开始切换至 ${mode} 模式...`);
       },
@@ -259,10 +240,7 @@ const handleCycleTheme = async () => {
     isCycling.value = true;
     addLog('开始循环切换主题', 'info');
 
-    await cycleTheme({
-      enableTransition: true,
-      transitionDuration: 150, // 优化过渡时间
-      transitionType: 'uniform', // 明确使用优化的默认过渡
+    cycleTheme({
       onComplete: (newMode) => {
         addLog(
           `循环切换完成，当前: ${themeOptions.find((t) => t.value === newMode)?.label}`,
@@ -281,57 +259,6 @@ const handleCycleTheme = async () => {
     message.error('循环切换异常');
   } finally {
     isCycling.value = false;
-  }
-};
-
-/**
- * 预加载主题资源
- */
-const preloadResources = async () => {
-  try {
-    addLog('开始预加载主题资源', 'info');
-    await ThemeManager.preloadThemeResources();
-    addLog('主题资源预加载完成', 'success');
-    message.success('主题资源预加载完成');
-  } catch (error) {
-    const err = error instanceof Error ? error : new Error('未知错误');
-    addLog(`预加载失败: ${err.message}`, 'error');
-    message.error('预加载失败');
-  }
-};
-
-/**
- * 圆形过渡效果切换
- */
-const switchWithCircularTransition = async (event: MouseEvent) => {
-  const currentMode = getCurrentTheme();
-  const nextMode = currentMode === 'light' ? 'dark' : 'light';
-
-  try {
-    addLog('开始圆形过渡切换', 'info');
-
-    // 获取点击位置
-    const clickX = event.clientX;
-    const clickY = event.clientY;
-
-    await switchTheme(nextMode, {
-      enableTransition: true,
-      transitionType: 'circular',
-      transitionDuration: 600,
-      clickX,
-      clickY,
-      onStart: () => {
-        addLog(`圆形过渡开始... (${clickX}, ${clickY})`, 'info');
-      },
-      onComplete: (newMode) => {
-        addLog(`圆形过渡完成: ${themeOptions.find((t) => t.value === newMode)?.label}`, 'success');
-        message.success('圆形过渡完成');
-      },
-    });
-  } catch (error) {
-    const err = error instanceof Error ? error : new Error('未知错误');
-    addLog(`圆形过渡失败: ${err.message}`, 'error');
-    message.error('圆形过渡失败');
   }
 };
 

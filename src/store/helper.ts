@@ -80,7 +80,6 @@ export async function getOnlineMenus() {
 export async function getConfig() {
   try {
     const res = await ConfigApi.publicConfig();
-    console.log('🚀 ~ getConfig ~ res:', res);
     return res || res || {};
   } catch (error) {
     return {};

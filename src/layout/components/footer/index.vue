@@ -8,7 +8,7 @@ import { useAppStore, useConfigStore } from '@/store';
 const appStore = useAppStore();
 const configStore = useConfigStore();
 
-const footerText = configStore.getConfigValue('system.copyright') || appStore.footerText;
+const footerText = configStore.getConfigValue('copyright') || appStore.footerText;
 </script>
 
 <style lang="scss" scoped></style>
