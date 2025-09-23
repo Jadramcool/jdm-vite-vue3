@@ -104,17 +104,22 @@
             <div class="article-meta-card">
               <div class="meta-row">
                 <div class="meta-item">
-                  <JayIcon icon="material-symbols:schedule" class="meta-icon" />
-                  <div class="meta-text">
-                    <div>预计阅读时间</div>
-                    <div>{{ estimatedReadTime }} 分钟</div>
+                  <div class="meta-icon-wrapper">
+                    <JayIcon icon="material-symbols:schedule" class="meta-icon" />
+                  </div>
+                  <div class="meta-content">
+                    <div class="meta-label">阅读时间</div>
+                    <div class="meta-value">{{ estimatedReadTime }} 分钟</div>
                   </div>
                 </div>
+                <div class="meta-divider"></div>
                 <div class="meta-item">
-                  <JayIcon icon="material-symbols:visibility" class="meta-icon" />
-                  <div class="meta-text">
-                    <div>字数统计</div>
-                    <div>{{ wordCount }} 字</div>
+                  <div class="meta-icon-wrapper">
+                    <JayIcon icon="material-symbols:visibility" class="meta-icon" />
+                  </div>
+                  <div class="meta-content">
+                    <div class="meta-label">字数统计</div>
+                    <div class="meta-value">{{ wordCount }} 字</div>
                   </div>
                 </div>
               </div>
@@ -799,153 +804,209 @@ const initVditor = () => {
         .main-content {
           min-width: 0;
           padding: 0;
-          /* 文章元信息卡片 */
+          /* 文章元信息卡片 - 苹果风格设计 */
           .article-meta-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            padding: 20px;
             margin-bottom: 2rem;
-            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
-            position: relative;
-            overflow: hidden;
-
-            &::before {
-              content: '';
-              position: absolute;
-              top: 0;
-              left: 0;
-              right: 0;
-              bottom: 0;
-              background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-              pointer-events: none;
-            }
+            box-shadow:
+              0 8px 32px rgba(0, 0, 0, 0.04),
+              0 1px 1px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
             .meta-row {
               display: flex;
-              justify-content: space-around;
-              text-align: center;
-              gap: 2rem;
-              position: relative;
+              align-items: center;
+              justify-content: center;
+              gap: 0;
 
               .meta-item {
                 flex: 1;
                 display: flex;
-                flex-direction: column;
                 align-items: center;
-                gap: 0.5rem;
-                padding: 0.75rem;
-                border-radius: 8px;
-                background: rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(5px);
-                transition: all 0.3s ease;
+                gap: 12px;
+                padding: 0;
+                transition: all 0.2s ease;
 
-                &:hover {
-                  background: rgba(255, 255, 255, 0.2);
-                  transform: translateY(-3px);
+                .meta-icon-wrapper {
+                  width: 40px;
+                  height: 40px;
+                  border-radius: 10px;
+                  background: #667eea;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  flex-shrink: 0;
+
+                  .meta-icon {
+                    font-size: 18px;
+                    color: white;
+                  }
                 }
 
-                .meta-icon {
-                  font-size: 1.5rem;
-                  opacity: 0.9;
-                }
+                .meta-content {
+                  flex: 1;
+                  text-align: left;
 
-                .meta-text {
-                  font-size: 0.85rem;
-                  font-weight: 500;
-                  line-height: 1.3;
+                  .meta-label {
+                    font-size: 13px;
+                    font-weight: 500;
+                    color: #8e8e93;
+                    margin-bottom: 2px;
+                    letter-spacing: -0.08px;
+                  }
+
+                  .meta-value {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #1d1d1f;
+                    letter-spacing: -0.32px;
+                  }
                 }
+              }
+
+              .meta-divider {
+                width: 1px;
+                height: 32px;
+                background: linear-gradient(
+                  to bottom,
+                  transparent,
+                  rgba(0, 0, 0, 0.1),
+                  transparent
+                );
+                margin: 0 24px;
+                flex-shrink: 0;
               }
             }
           }
         }
 
         /**
-      * 文章内容
+      * 文章内容 - 苹果风格设计
       */
         .post-content {
-          background: var(--content-bg, white);
-          border-radius: 1rem;
-          padding: 2rem;
-          margin-bottom: 3rem;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-          transition: all 0.3s ease;
+          background: rgba(255, 255, 255, 0.8);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          border-radius: 16px;
+          padding: 32px;
+          margin-bottom: 24px;
+          box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.04),
+            0 1px 1px rgba(0, 0, 0, 0.05);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
           .markdown-content {
-            line-height: 1.8;
-            font-size: 1rem;
-            color: var(--text-color, #374151);
+            line-height: 1.7;
+            font-size: 16px;
+            color: #1d1d1f;
+            letter-spacing: -0.32px;
+
+            /* 优化文章内容的排版 */
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+              color: #1d1d1f;
+              font-weight: 600;
+              letter-spacing: -0.5px;
+              margin-top: 2em;
+              margin-bottom: 0.8em;
+            }
+
+            p {
+              margin-bottom: 1.2em;
+              color: #1d1d1f;
+            }
+
+            code {
+              background: rgba(142, 142, 147, 0.12);
+              padding: 2px 6px;
+              border-radius: 6px;
+              font-size: 14px;
+              color: #af52de;
+            }
+
+            blockquote {
+              border-left: 3px solid #667eea;
+              padding-left: 16px;
+              margin: 1.5em 0;
+              color: #8e8e93;
+              font-style: italic;
+            }
           }
         }
 
-        /* 标签云区域 */
+        /* 标签云区域 - 苹果风格设计 */
         .article-tags-section {
-          background: rgba(255, 255, 255, 0.95);
-          backdrop-filter: blur(10px);
-          padding: 1.5rem;
-          border-radius: 12px;
-          margin-bottom: 2rem;
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
-          transition: all 0.3s ease;
+          background: rgba(255, 255, 255, 0.8);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          border-radius: 16px;
+          padding: 24px;
+          margin-bottom: 24px;
+          box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.04),
+            0 1px 1px rgba(0, 0, 0, 0.05);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
           &:hover {
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
             transform: translateY(-2px);
+            box-shadow:
+              0 12px 40px rgba(0, 0, 0, 0.08),
+              0 2px 4px rgba(0, 0, 0, 0.06);
           }
 
           .tags-title {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 1.1rem;
+            gap: 8px;
+            font-size: 18px;
             font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid #e2e8f0;
+            color: #1d1d1f;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(142, 142, 147, 0.2);
+            letter-spacing: -0.36px;
+
+            .icon {
+              font-size: 20px;
+              color: #667eea;
+            }
           }
+
           .tags-cloud {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 12px;
 
             .tag-item {
-              background: linear-gradient(135deg, #667eea, #764ba2);
-              color: white;
-              padding: 0.75rem 1.5rem;
-              border-radius: 25px;
-              font-size: 0.9rem;
-              font-weight: 600;
+              background: rgba(102, 126, 234, 0.1);
+              color: #667eea;
+              padding: 8px 16px;
+              border-radius: 12px;
+              font-size: 14px;
+              font-weight: 500;
               text-decoration: none;
-              transition: all 0.3s ease;
-              box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
-              position: relative;
-              overflow: hidden;
-
-              &::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(
-                  90deg,
-                  transparent,
-                  rgba(255, 255, 255, 0.2),
-                  transparent
-                );
-                transition: left 0.5s ease;
-              }
+              transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+              border: 1px solid rgba(102, 126, 234, 0.2);
+              letter-spacing: -0.28px;
 
               &:hover {
-                transform: translateY(-3px) scale(1.05);
-                box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+                background: #667eea;
                 color: white;
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+                border-color: #667eea;
+              }
 
-                &::before {
-                  left: 100%;
-                }
+              &:active {
+                transform: translateY(0);
+                transition-duration: 0.1s;
               }
             }
           }

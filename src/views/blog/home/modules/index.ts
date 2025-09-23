@@ -1,3 +1,4 @@
+import BlogCategories from './blogCategories/index.vue';
 import BlogPosts from './blogPosts/index.vue';
 
-export { BlogPosts };
+export { BlogCategories, BlogPosts };

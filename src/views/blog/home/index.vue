@@ -1,49 +1,63 @@
 <template>
-  <div>
+  <div class="blog-home">
     <Wave></Wave>
-    <div class="content">
-      <div class="left-side flex-y-end">
-        <div class="my-info w-280px h-300px flex box-shadow card-hover-lift">
-          <n-avatar class="avatar" :size="120" round :src="blogUser?.avatar">
-            <template #placeholder></template>
-          </n-avatar>
-          <div class="name text-30px font-bold">{{ blogUser?.name || 'Jay1' }}</div>
-          <div class="info mt-10px w-100%">
-            <div class="flex justify-around">
-              <div v-for="item in blogStat" :key="item.title" class="desc text-center text-16px">
-                <div class="title">{{ item.title }}</div>
-                <div class="count font-bold">{{ item.count }}</div>
+    <div class="page-container">
+      <div class="content">
+        <div class="left-side flex-y-end">
+          <div class="flex-col gap-20px">
+            <div class="my-info w-280px h-300px flex box-shadow card-hover-lift">
+              <n-avatar class="avatar" :size="120" round :src="blogUser?.avatar">
+                <template #placeholder></template>
+              </n-avatar>
+              <div class="name text-30px font-bold">{{ blogUser?.name || 'Jay1' }}</div>
+              <div class="info mt-10px w-100%">
+                <div class="flex justify-around">
+                  <div
+                    v-for="item in blogStat"
+                    :key="item.title"
+                    class="desc text-center text-16px"
+                  >
+                    <div class="title">{{ item.title }}</div>
+                    <div class="count font-bold">{{ item.count }}</div>
+                  </div>
+                </div>
               </div>
             </div>
+            <BlogCategories></BlogCategories>
           </div>
         </div>
-      </div>
-      <div class="divider mx-20px"></div>
-      <div class="right-side">
-        <n-space vertical :size="20">
-          <NoticeScroll
-            :notices="noticeList"
-            :interval="5000"
-            :auto-start="true"
-            :show-icon="true"
-            @notice-click="handleNoticeClick"
-          />
-          <div class="right-content">
-            <div class="title flex-between">
-              <div class="flex-x-end">
-                <JayIcon icon="material-symbols:view-comfy-alt-rounded" type="primary" :size="24" />
-                <span class="ml-8px">最近文章</span>
+        <div class="divider mx-20px"></div>
+        <div class="right-side">
+          <n-space vertical :size="20">
+            <NoticeScroll
+              :notices="noticeList"
+              :interval="5000"
+              :auto-start="true"
+              :show-icon="true"
+              @notice-click="handleNoticeClick"
+            />
+            <div class="right-content">
+              <div class="content-module flex-col gap-10px">
+                <div class="title flex-between">
+                  <div class="flex-x-end">
+                    <JayIcon
+                      icon="material-symbols:view-comfy-alt-rounded"
+                      type="primary"
+                      :size="24"
+                    />
+                    <span class="ml-8px">最近文章</span>
+                  </div>
+                  <div class="more flex-x-end cursor-pointer">
+                    <JayIcon icon="gg:chevron-double-right" type="primary" :size="24" />
+                    <span>MORE</span>
+                  </div>
+                </div>
+                <BlogPosts></BlogPosts>
               </div>
-              <div class="more flex-x-end cursor-pointer">
-                <JayIcon icon="gg:chevron-double-right" type="primary" :size="24" />
-                <span>MORE</span>
-              </div>
+              <div class="divider my-16px w-100% border-1px border-dashed border-gray-300"></div>
             </div>
-            <div class="divider mt-8px w-100% border-1px border-dashed border-gray-300"></div>
-          </div>
-
-          <BlogPosts></BlogPosts>
-        </n-space>
+          </n-space>
+        </div>
       </div>
     </div>
   </div>
@@ -52,7 +66,7 @@
 <script setup lang="ts">
 import { BlogApi, NoticeApi } from '@/api';
 import { NoticeScroll, Wave } from './components';
-import { BlogPosts } from './modules';
+import { BlogCategories, BlogPosts } from './modules';
 
 interface BlogStat {
   title: string;
@@ -118,7 +132,17 @@ const init = async () => {
       noticeList.value = noticeResult.data;
     } else {
       console.log('没有获取到通知数据，使用测试数据');
-      noticeList.value = [];
+      noticeList.value = [
+        {
+          id: 1,
+          title: '暂无通知',
+          content: '暂无通知',
+          type: 'notice',
+          status: 1,
+          createdTime: new Date(),
+          updatedTime: new Date(),
+        },
+      ];
     }
   } catch (error) {
     console.error('获取博客数据失败:', error);
@@ -132,44 +156,134 @@ const init = async () => {
 </script>
 
 <style lang="scss" scoped>
+.blog-home {
+  min-height: 100vh;
+  width: 100%;
+}
+
+.page-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
 .content {
   display: flex;
   flex-direction: row;
   height: 100%;
-  padding: 20px 10%;
+  padding: 20px 0;
+  gap: 20px;
+
   .left-side {
-    flex: 1;
+    flex: 0 0 320px;
+    min-width: 320px;
     height: 100%;
+
     .my-info {
-      background: linear-gradient(135deg, #ff6b6b, #ffb86c);
+      background-image: linear-gradient(0deg, #fdcbf1 0%, #fdcbf1 1%, #e6dee9 100%);
       border-radius: 20px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+
       .avatar {
         border: 5px solid #f6ebeb;
         border-radius: 50%;
         transition: transform 0.5s ease-in-out;
         cursor: pointer;
+
         &:hover {
           transform: rotate(360deg) scale(1.1);
         }
       }
     }
   }
+
   .right-side {
-    flex: 2;
+    flex: 1;
+    min-width: 0;
     height: 100%;
 
     .more {
       transition: all 0.2s ease-in-out;
+
+      &:hover {
+        color: var(--primary-color);
+        transform: scale(1.1);
+      }
+    }
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .page-container {
+    max-width: 1000px;
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 992px) {
+  .page-container {
+    padding: 0 12px;
+  }
+
+  .content {
+    gap: 16px;
+
+    .divider {
+      margin: 0 16px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;
+    gap: 24px;
+
+    .left-side {
+      flex: none;
+      min-width: auto;
+
+      .my-info {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+      }
     }
 
-    .more:hover {
-      color: var(--primary-color);
-      transform: scale(1.1);
+    .divider {
+      width: 100%;
+      height: 1px;
+      margin: 0;
+      background: linear-gradient(to right, transparent, #e5e7eb, transparent);
     }
+
+    .right-side {
+      flex: none;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: 0 8px;
+  }
+
+  .content {
+    padding: 16px 0;
+    gap: 20px;
+  }
+
+  .left-side .my-info {
+    width: 100%;
+    height: auto;
+    min-height: 280px;
+    padding: 20px;
   }
 }
 </style>

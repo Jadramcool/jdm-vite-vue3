@@ -1,8 +1,8 @@
 <template>
   <div>
-    <n-flex class="content">
+    <n-flex class="content" :size="20">
       <div
-        class="post-card w-[300px] rounded-2xl overflow-auto card-hover-float shadow-lg hover:shadow-strong relative"
+        class="post-card rounded-2xl overflow-auto card-hover-float shadow-lg hover:shadow-strong relative"
         v-for="post in blogPosts"
         :key="post.id"
         @click="handlePostDetail(post)"
@@ -79,6 +79,10 @@ const init = async () => {
     filters: {
       status: 'PUBLISHED',
     },
+    pagination: {
+      page: 1,
+      pageSize: 6,
+    },
   });
   blogPosts.value = posts.data;
 };
@@ -90,4 +94,16 @@ const handlePostDetail = (post: Blog.Post) => {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.content {
+  gap: 20px;
+}
+
+.post-card {
+  flex: 1;
+  min-width: 280px;
+  // max-width: 350px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+</style>

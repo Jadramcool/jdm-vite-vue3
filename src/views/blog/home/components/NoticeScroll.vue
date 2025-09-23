@@ -80,6 +80,7 @@ const getItemKey = (item: NoticeItem, index: number): string | number => {
 
 // 获取项目显示文本
 const getItemText = (item: NoticeItem): string => {
+  console.log('🚀 ~ getItemText ~ item:', item);
   if (isNoticeObject(item)) {
     return item.title || item.content || String(item.id || '');
   }
