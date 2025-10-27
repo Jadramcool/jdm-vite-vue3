@@ -72,6 +72,9 @@ export const useAppStore = defineStore('app', {
     },
   },
   actions: {
+    initApp() {
+      this.setColorMode(this.storeColorMode);
+    },
     // 切换侧边栏折叠状态
     switchCollapsed() {
       this.collapsed = !this.collapsed;

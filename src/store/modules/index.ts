@@ -1,5 +1,6 @@
 export * from './app';
 export * from './auth';
+export * from './blog';
 export * from './common';
 export * from './componentStore'; // 存储组件的状态
 export * from './config'; // 全局配置状态管理

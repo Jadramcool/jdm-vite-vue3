@@ -14,11 +14,25 @@
 </template>
 
 <script lang="ts" setup>
-import { useAppStore, useConfigStore } from '@/store';
+import { useAppStore, useBlogConfigStore, useConfigStore } from '@/store';
+
+const props = defineProps({
+  logoType: {
+    type: String,
+    default: 'default',
+  },
+});
 
 const appStore = useAppStore();
 const configStore = useConfigStore();
-const title = configStore.getConfigValue('system.siteName') || import.meta.env.VITE_TITLE;
+const blogConfigStore = useBlogConfigStore();
+const title = computed(() => {
+  const defaultTitle = configStore.getConfigValue('site_name') || import.meta.env.VITE_TITLE;
+  if (props.logoType === 'blog') {
+    return blogConfigStore.getConfigValue('site_title') || defaultTitle;
+  }
+  return configStore.getConfigValue('site_name') || defaultTitle;
+});
 </script>
 <style lang="scss" scoped>
 /**

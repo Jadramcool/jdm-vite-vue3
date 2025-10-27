@@ -36,6 +36,8 @@ interface Props {
   autoStart?: boolean;
   // 是否显示图标
   showIcon?: boolean;
+  // 点击事件处理函数
+  onClick?: (item: NoticeItem, index: number) => void;
 }
 
 interface Emits {
@@ -45,6 +47,9 @@ interface Emits {
   (e: 'notice-change', currentIndex: number, item: NoticeItem): void;
 }
 
+/**
+ * 定义组件属性，设置默认值
+ */
 const props = withDefaults(defineProps<Props>(), {
   notices: () => [],
   interval: 5000,
@@ -65,12 +70,16 @@ const noticeList = computed<NoticeItem[]>(() => {
   return props.notices;
 });
 
-// 类型守卫：判断是否为 Notice 对象
+/**
+ * 类型守卫：判断是否为 Notice 对象
+ */
 const isNoticeObject = (item: NoticeItem): item is Notice.Notice => {
   return typeof item === 'object' && item !== null && 'id' in item;
 };
 
-// 获取项目的唯一键
+/**
+ * 获取项目的唯一键
+ */
 const getItemKey = (item: NoticeItem, index: number): string | number => {
   if (isNoticeObject(item)) {
     return item.id || index;
@@ -78,16 +87,19 @@ const getItemKey = (item: NoticeItem, index: number): string | number => {
   return index;
 };
 
-// 获取项目显示文本
+/**
+ * 获取项目显示文本
+ */
 const getItemText = (item: NoticeItem): string => {
-  console.log('🚀 ~ getItemText ~ item:', item);
   if (isNoticeObject(item)) {
     return item.title || item.content || String(item.id || '');
   }
   return String(item);
 };
 
-// 启动通知滚动
+/**
+ * 启动通知滚动
+ */
 const startNoticeScroll = () => {
   // 如果只有一个或没有通知，不启动滚动
   if (noticeList.value.length <= 1) {
@@ -117,7 +129,9 @@ const startNoticeScroll = () => {
   }, props.interval);
 };
 
-// 停止通知滚动
+/**
+ * 停止通知滚动
+ */
 const stopNoticeScroll = () => {
   if (noticeTimer) {
     clearInterval(noticeTimer);
@@ -126,14 +140,18 @@ const stopNoticeScroll = () => {
   }
 };
 
-// 暂停通知滚动
+/**
+ * 暂停通知滚动
+ */
 const pauseNoticeScroll = () => {
   console.log('鼠标悬停，暂停通知滚动');
   isPaused.value = true;
   stopNoticeScroll();
 };
 
-// 恢复通知滚动
+/**
+ * 恢复通知滚动
+ */
 const resumeNoticeScroll = () => {
   console.log('鼠标离开，恢复通知滚动');
   isPaused.value = false;
@@ -143,9 +161,17 @@ const resumeNoticeScroll = () => {
   }
 };
 
-// 处理通知点击
+/**
+ * 处理通知点击
+ */
 const handleNoticeClick = (item: NoticeItem, index: number) => {
+  // 触发emit事件
   emit('notice-click', item, index);
+
+  // 如果提供了onClick prop，也调用它
+  if (props.onClick) {
+    props.onClick(item, index);
+  }
 };
 
 // 监听通知列表变化

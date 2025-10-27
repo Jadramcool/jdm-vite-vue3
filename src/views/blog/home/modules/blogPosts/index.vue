@@ -1,72 +1,36 @@
 <template>
-  <div>
-    <n-flex class="content" :size="20">
-      <div
-        class="post-card rounded-2xl overflow-auto card-hover-float shadow-lg hover:shadow-strong relative"
-        v-for="post in blogPosts"
-        :key="post.id"
-        @click="handlePostDetail(post)"
-      >
-        <!-- 置顶标签 -->
-        <div
-          v-if="post.isTop"
-          class="absolute top-10px left-10px z-10 bg-red-500 text-white px-8px py-4px rounded-md text-xs font-bold flex-x-center shadow-md"
-        >
-          <JayIcon icon="material-symbols:push-pin" class="mr-4px" :size="14" />
-          置顶
-        </div>
-        <div class="post-cover overflow-hidden h-200px">
-          <img
-            class="w-full h-full object-cover hover:(scale-130) transition-all duration-300 cursor-pointer"
-            :src="
-              post.coverImage ? post.coverImage + '?x-oss-process=image/resize,h_300' : homeBgUrl
-            "
-            alt="post-cover"
-          />
-        </div>
-        <div class="post-content p-10px">
-          <div class="post-date flex-x-center">
-            <JayIcon icon="material-symbols:calendar-month-outline-rounded" />
-            <span class="lh-18px ml-10px">{{
-              dayjs(post.publishedAt).format('YYYY-MM-DD HH:mm:ss')
-            }}</span>
-          </div>
-          <div class="post-title text-lg font-bold my-16px">{{ post.title }}</div>
-          <div class="post-meta flex text-muted">
-            <div class="hot flex-x-center">
-              <JayIcon icon="twemoji:fire" />
-              <span class="ml-5px lh-18px">{{ post.likeCount }}</span>
-              <span class="ml-5px lh-18px">热度</span>
-            </div>
-            <div class="comment-count flex-x-center ml-20px">
-              <JayIcon icon="fxemoji:openbook" />
-              <span class="ml-5px lh-18px">{{ post.commentCount }}</span>
-              <span class="ml-5px lh-18px">评论</span>
-            </div>
-          </div>
-          <n-space class="post-tag flex-x-center mt-10px">
-            <div v-for="tag in post.tags" :key="tag.id" class="tag flex-x-center">
-              <div
-                class="tag-text flex-x-center px-6px py-2px text-secondary rounded-md bg-[#EEEEEE] hover:bg-[#E0E0E0] transition-all duration-300"
-              >
-                <JayIcon :icon="tag?.icon" />
-                <span class="ml-5px">{{ tag?.name }}</span>
-              </div>
-            </div>
-          </n-space>
-        </div>
+  <div class="content-module">
+    <div class="title flex-between">
+      <div class="flex-x-end">
+        <JayIcon icon="material-symbols:view-comfy-alt-rounded" type="primary" :size="24" />
+        <span class="ml-8px">{{ title }}</span>
       </div>
+      <div class="more flex-x-end cursor-pointer">
+        <JayIcon icon="gg:chevron-double-right" type="primary" :size="24" />
+        <span>MORE</span>
+      </div>
+    </div>
+    <n-flex class="content" :size="20">
+      <PostCard v-for="post in blogPosts" :key="post.id" :post="post" @click="handlePostDetail" />
     </n-flex>
   </div>
 </template>
 
 <script setup lang="ts">
 import { BlogApi } from '@/api';
-import homeBgUrl from '@/assets/images/blog/home_bg.png';
-import dayjs from 'dayjs';
+import { useBlogConfigStore } from '@/store';
 import { useRouter } from 'vue-router';
+import PostCard from './components/PostCard.vue';
 
 const router = useRouter();
+const blogConfigStore = useBlogConfigStore();
+
+interface Props {
+  categoryId?: number;
+  title?: string;
+}
+
+const { categoryId = 0, title = '最近文章' } = defineProps<Props>();
 
 onMounted(async () => {
   await init();
@@ -75,13 +39,15 @@ onMounted(async () => {
 const blogPosts = ref<Blog.Post[]>([]);
 
 const init = async () => {
+  const postPerPage = blogConfigStore.getConfigValue('posts_per_page');
   const posts = await BlogApi.getPostList({
     filters: {
       status: 'PUBLISHED',
+      categoryId: categoryId > 0 ? categoryId : undefined,
     },
     pagination: {
       page: 1,
-      pageSize: 6,
+      pageSize: postPerPage,
     },
   });
   blogPosts.value = posts.data;
@@ -95,15 +61,17 @@ const handlePostDetail = (post: Blog.Post) => {
 </script>
 
 <style lang="scss" scoped>
-.content {
-  gap: 20px;
-}
+.content-module {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  .more {
+    transition: all 0.2s ease-in-out;
 
-.post-card {
-  flex: 1;
-  min-width: 280px;
-  // max-width: 350px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+    &:hover {
+      color: var(--primary-color);
+      transform: scale(1.1);
+    }
+  }
 }
 </style>

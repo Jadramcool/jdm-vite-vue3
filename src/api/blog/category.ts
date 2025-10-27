@@ -3,6 +3,7 @@ import request from '@/utils/http/axios';
 enum API {
   // 分类基础操作 - 使用RESTful设计
   categories = '/blog/category', // GET: 获取分类列表, POST: 创建分类
+  categoryAll = '/blog/category/all', // GET: 获取所有分类
   categoryTree = '/blog/category/tree', // GET: 获取分类树形结构
   categoryStats = '/blog/category/stats', // GET: 获取分类统计
   categoryById = '/blog/category/:id', // GET: 获取分类, PUT: 更新分类, DELETE: 删除分类
@@ -27,6 +28,16 @@ export const createCategory = (data: Blog.CreateCategoryRequest) => {
 export const getCategoryList = (params?: any) => {
   return request.get<Blog.CategoryListResponse>({
     url: API.categories,
+    params,
+  });
+};
+
+/**
+ * @description: 获取所有博客分类
+ */
+export const getAllCategoryList = (params?: any) => {
+  return request.get<Blog.CategoryListResponse>({
+    url: API.categoryAll,
     params,
   });
 };

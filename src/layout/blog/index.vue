@@ -11,7 +11,7 @@
         content-style="transition: border-color 0.3s ease;"
       >
         <div class="flex-x-center p-x-xl">
-          <SideLogo v-if="appStore.showLogo" />
+          <SideLogo v-if="appStore.showLogo" :logoType="'blog'" />
         </div>
         <div class="info flex-x-center gap-1 h-full p-x-xl">
           <HeaderTools :showDarkMode="true" :showLanguage="false" :showUserCenter="false" />

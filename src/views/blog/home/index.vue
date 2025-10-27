@@ -5,57 +5,26 @@
       <div class="content">
         <div class="left-side flex-y-end">
           <div class="flex-col gap-20px">
-            <div class="my-info w-280px h-300px flex box-shadow card-hover-lift">
-              <n-avatar class="avatar" :size="120" round :src="blogUser?.avatar">
-                <template #placeholder></template>
-              </n-avatar>
-              <div class="name text-30px font-bold">{{ blogUser?.name || 'Jay1' }}</div>
-              <div class="info mt-10px w-100%">
-                <div class="flex justify-around">
-                  <div
-                    v-for="item in blogStat"
-                    :key="item.title"
-                    class="desc text-center text-16px"
-                  >
-                    <div class="title">{{ item.title }}</div>
-                    <div class="count font-bold">{{ item.count }}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <BlogCategories></BlogCategories>
+            <Component
+              v-for="module in leftModules"
+              :key="module.key"
+              :is="getComponentByKey(module.key)"
+              v-bind="getComponentProps(module.key)"
+            />
+            <!-- <UserInfo key="user-profile" :blog-user="blogUser" :blog-stat="blogStat" />
+            <BlogCategories key="category-nav"></BlogCategories> -->
           </div>
         </div>
         <div class="divider mx-20px"></div>
-        <div class="right-side">
+        <div class="right-side flex-col gap-10px">
           <n-space vertical :size="20">
-            <NoticeScroll
-              :notices="noticeList"
-              :interval="5000"
-              :auto-start="true"
-              :show-icon="true"
-              @notice-click="handleNoticeClick"
+            <Component
+              v-for="module in rightModules"
+              :key="module.key"
+              :is="getComponentByKey(module.key)"
+              v-bind="getComponentProps(module.key)"
             />
-            <div class="right-content">
-              <div class="content-module flex-col gap-10px">
-                <div class="title flex-between">
-                  <div class="flex-x-end">
-                    <JayIcon
-                      icon="material-symbols:view-comfy-alt-rounded"
-                      type="primary"
-                      :size="24"
-                    />
-                    <span class="ml-8px">最近文章</span>
-                  </div>
-                  <div class="more flex-x-end cursor-pointer">
-                    <JayIcon icon="gg:chevron-double-right" type="primary" :size="24" />
-                    <span>MORE</span>
-                  </div>
-                </div>
-                <BlogPosts></BlogPosts>
-              </div>
-              <div class="divider my-16px w-100% border-1px border-dashed border-gray-300"></div>
-            </div>
+            <div class="divider my-16px w-100% border-1px border-dashed border-gray-300"></div>
           </n-space>
         </div>
       </div>
@@ -65,14 +34,60 @@
 
 <script setup lang="ts">
 import { BlogApi, NoticeApi } from '@/api';
-import { NoticeScroll, Wave } from './components';
-import { BlogCategories, BlogPosts } from './modules';
+import { useBlogConfigStore } from '@/store';
+import { Wave } from './components';
+import { BlogCategories, BlogPosts, NoticeScroll, UserInfo } from './modules';
+
+/**
+ * 根据组件键获取对应的组件
+ * @param key 组件键
+ * @returns Vue组件
+ */
+const getComponentByKey = (key: string) => {
+  const componentMap: Record<string, any> = {
+    'user-profile': UserInfo,
+    'category-nav': BlogCategories,
+    'recent-posts': BlogPosts,
+    notice: NoticeScroll,
+    ...categorySlugs.value.reduce((acc, slug) => ({ ...acc, [slug]: BlogPosts }), {}),
+  };
+  return componentMap[key] || null;
+};
+
+/**
+ * 根据组件键获取对应的属性
+ * @param key 组件键
+ * @returns 组件属性对象
+ */
+const getComponentProps = (key: string) => {
+  const propsMap: Record<string, any> = {
+    'user-profile': { blogUser: blogUser.value, blogStat: blogStat.value },
+    notice: {
+      notices: noticeList.value,
+      interval: 5000,
+      autoStart: true,
+      showIcon: true,
+      onClick: handleNoticeClick,
+    },
+    ...categorySlugs.value.reduce(
+      (acc, slug) => ({
+        ...acc,
+        [slug]: { categoryId: categoryIdMap.value[slug], title: categoryTitleMap.value[slug] },
+      }),
+      {},
+    ),
+  };
+  console.log('🚀 ~ getComponentProps ~ propsMap:', propsMap);
+  return propsMap[key] || {};
+};
 
 interface BlogStat {
   title: string;
   count: number;
   key: string;
 }
+
+const blogConfigStore = useBlogConfigStore();
 
 onMounted(async () => {
   await init();
@@ -99,7 +114,16 @@ const blogStat = ref<BlogStat[]>([
   },
 ]);
 
+// 首页装修
+const homeDecoration = computed(() => JSON.parse(blogConfigStore.getConfigValue('decoration')));
+
+const leftModules = computed(() => homeDecoration.value.leftModules || []);
+const rightModules = computed(() => homeDecoration.value.rightModules || []);
+
 const noticeList = ref<Notice.Notice[]>([]);
+const categoryIdMap = ref<Record<string, number>>({});
+const categorySlugs = ref<string[]>([]);
+const categoryTitleMap = ref<Record<string, string>>({});
 
 // 加载状态
 const loading = ref(true);
@@ -107,21 +131,37 @@ const loading = ref(true);
 // 通知事件处理
 const handleNoticeClick = (notice: Notice.Notice | string, index: number) => {
   console.log('通知被点击:', notice, index);
-  // 这里可以添加点击通知的处理逻辑，比如跳转到详情页
+
+  // 这里可以添加更多的点击通知处理逻辑，比如：
+  // - 跳转到通知详情页
+  // - 标记通知为已读
+  // - 打开相关页面等
 };
 
 const init = async () => {
   try {
     loading.value = true;
-
     // 并行获取数据
-    const [userResult, statsResult, noticeResult] = await Promise.all([
+    const [userResult, statsResult, noticeResult, categoryResult] = await Promise.all([
       BlogApi.getBlogUser(),
       BlogApi.getOverviewStats(),
       NoticeApi.noticeList(),
+      BlogApi.getCategoryList({
+        options: {
+          showPagination: false,
+        },
+      }),
     ]);
+    console.log('🚀 ~ init ~ categoryResult:', categoryResult.data);
     blogUser.value = userResult;
 
+    if (categoryResult && categoryResult.data && categoryResult.data.length > 0) {
+      categoryResult.data.forEach((item) => {
+        categorySlugs.value.push(item.slug);
+        categoryTitleMap.value[item.slug] = item.name;
+        categoryIdMap.value[item.slug] = item.id;
+      });
+    }
     if (statsResult) {
       blogStat.value = blogStat.value.map((item) => ({
         ...item,
@@ -151,8 +191,6 @@ const init = async () => {
     loading.value = false;
   }
 };
-
-// NoticeScroll 组件会自动处理生命周期，无需手动清理
 </script>
 
 <style lang="scss" scoped>
@@ -206,15 +244,6 @@ const init = async () => {
     flex: 1;
     min-width: 0;
     height: 100%;
-
-    .more {
-      transition: all 0.2s ease-in-out;
-
-      &:hover {
-        color: var(--primary-color);
-        transform: scale(1.1);
-      }
-    }
   }
 }
 

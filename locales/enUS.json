@@ -17,13 +17,13 @@
     "themeSetting": "Theme Setting",
     "toggleFullScreen": "Toggle Full Screen",
     "topProgress": "Top Progress",
-    "transitionFadeBottom": "Fade Bottom",
-    "transitionNull": "No Transition",
-    "transitionSoft": "Soft Fade",
     "transitionElegantSlide": "Elegant Slide",
-    "transitionSmoothBounce": "Smooth Bounce",
-    "transitionGentleRotate": "Gentle Rotate",
+    "transitionFadeBottom": "Fade Bottom",
     "transitionFluidMorph": "Fluid Morph",
+    "transitionGentleRotate": "Gentle Rotate",
+    "transitionNull": "No Transition",
+    "transitionSmoothBounce": "Smooth Bounce",
+    "transitionSoft": "Soft Fade",
     "watermake": "Watermark",
     "weakColor": "Weak Color Mode"
   },
@@ -232,6 +232,11 @@
         },
         "table": {
           "title": "Category List"
+        }
+      },
+      "config": {
+        "table": {
+          "title": "Blog Config Table"
         }
       },
       "post": {

@@ -3,12 +3,13 @@ import request from '@/utils/http/axios';
 enum API {
   // 配置基础操作 - 使用RESTful设计
   configs = '/blog/config', // GET: 获取配置列表, POST: 创建配置
+  allConfigs = '/blog/config/all', // GET: 获取所有配置
   configByCategory = '/blog/config/category/:category', // GET: 根据分类获取配置
   configByKey = '/blog/config/key/:key', // GET: 根据键获取配置
   configCategories = '/blog/config/categories', // GET: 获取配置分类列表
   configStats = '/blog/config/stats', // GET: 获取配置统计
   configById = '/blog/config/:id', // GET: 获取配置, PUT: 更新配置, DELETE: 删除配置
-  batchUpdateConfig = '/blog/config/batch', // PUT: 批量更新配置
+  update = '/blog/config/update',
 }
 
 /**
@@ -18,6 +19,15 @@ export const createConfig = (data: Blog.CreateConfigRequest) => {
   return request.post<Blog.Config>({
     url: API.configs,
     data,
+  });
+};
+
+/**
+ * @description: 获取所有博客配置
+ */
+export const getAllConfigs = () => {
+  return request.get<Blog.Config[]>({
+    url: API.allConfigs,
   });
 };
 
@@ -79,19 +89,9 @@ export const getConfigById = (id: number) => {
 /**
  * @description: 更新博客配置
  */
-export const updateConfig = (id: number, data: Blog.UpdateConfigRequest) => {
+export const updateConfig = (data: Blog.UpdateConfigRequest) => {
   return request.put<Blog.Config>({
-    url: API.configById.replace(':id', id.toString()),
-    data,
-  });
-};
-
-/**
- * @description: 批量更新配置
- */
-export const batchUpdateConfig = (data: Blog.BatchUpdateConfigRequest) => {
-  return request.put<Blog.Config[]>({
-    url: API.batchUpdateConfig,
+    url: API.update,
     data,
   });
 };
