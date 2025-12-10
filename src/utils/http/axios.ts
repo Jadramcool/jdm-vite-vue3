@@ -5,16 +5,30 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
+import { isString } from 'lodash';
+import qs from 'qs';
 
 import { router } from '@/router';
 import { useAuthStore } from '@/store';
 import { getLStorage } from '@/utils/storage';
-import { isString } from 'lodash';
 import { getToken } from '../token/index';
 import { CodeConfig as HttpCodeConfig } from './codeConfig.ts';
 import { ResponseModel } from './types/index.ts';
 
 const lStorage = getLStorage();
+
+// 存储当前挂起的请求
+const pendingMap = new Map<string, AbortController>();
+
+/**
+ * 生成请求的唯一标识
+ * @param config
+ */
+const getPendingUrl = (config: AxiosRequestConfig) => {
+  return [config.method, config.url, qs.stringify(config.params), qs.stringify(config.data)].join(
+    '&',
+  );
+};
 
 class HttpRequest {
   service: AxiosInstance;
@@ -29,6 +43,14 @@ class HttpRequest {
     // 请求拦截器
     this.service.interceptors.request.use(
       async (config: InternalAxiosRequestConfig) => {
+        // 添加到pendingMap
+        const controller = new AbortController();
+        config.signal = controller.signal;
+        const key = getPendingUrl(config);
+        if (!pendingMap.has(key)) {
+          pendingMap.set(key, controller);
+        }
+
         if (import.meta.env.VITE_APP_TOKEN_KEY && getToken()) {
           config.headers.authorization = `Bearer ${getToken()}`;
         }
@@ -43,7 +65,10 @@ class HttpRequest {
     // 响应拦截器
     this.service.interceptors.response.use(
       (response: AxiosResponse<ResponseModel>): AxiosResponse['data'] => {
-        // console.info('响应拦截器触发', response); // 调试用
+        // 请求完成，从pendingMap移除
+        const key = getPendingUrl(response.config);
+        pendingMap.delete(key);
+
         const { data } = response;
         const { code } = data;
         if (code && code !== HttpCodeConfig.success) {
@@ -63,22 +88,41 @@ class HttpRequest {
         return data;
       },
       (error: AxiosError) => {
+        // 请求失败或取消，从pendingMap移除
+        if (error.config) {
+          const key = getPendingUrl(error.config);
+          pendingMap.delete(key);
+        }
+        if (axios.isCancel(error)) {
+          return Promise.reject(error);
+        }
         return Promise.reject(error);
       },
     );
+  }
+
+  /**
+   * 取消所有挂起的请求
+   */
+  // eslint-disable-next-line class-methods-use-this
+  public cancelAllRequest() {
+    for (const controller of pendingMap.values()) {
+      controller.abort();
+    }
+    pendingMap.clear();
   }
 
   // 执行请求
   private async executeRequest<T = any>(config: AxiosRequestConfig): Promise<T> {
     try {
       // 这个方法会影响原始参数，导致isEqual方法返回false
-      // if (config.params) {
-      //   Object.entries(config.params).forEach(([key, value]) => {
-      //     if (Array.isArray(value) || typeof value === 'object') {
-      //       config.params[key] = JSON.stringify(value);
-      //     }
-      //   });
-      // }
+      if (config.params) {
+        Object.entries(config.params).forEach(([key, value]) => {
+          if (Array.isArray(value) || typeof value === 'object') {
+            config.params[key] = JSON.stringify(value);
+          }
+        });
+      }
       // 将请求参数中的数组和对象转换JSON字符串
       if (config.params) {
         config.params = Object.entries(config.params).reduce(
@@ -108,9 +152,13 @@ class HttpRequest {
           router.push({ path: '/login', replace: true });
           window.$message.error('登录信息已过期，请重新登录！');
         }
+        // 如果是取消请求，不显示错误
+        if (axios.isCancel(error)) {
+          return Promise.reject(error);
+        }
         const lang: string = lStorage.getItem('lang') || 'zhCN';
         const errMsg =
-          (error.errMsg as { [key: string]: any })[lang] ||
+          (error.errMsg as { [key: string]: any })?.[lang] ||
           (isString(error.errMsg) && error.errMsg) ||
           error.message ||
           '接口请求失败，请稍后再试';
