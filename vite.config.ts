@@ -53,5 +53,47 @@ export default defineConfig((env: ConfigEnv) => {
         },
       },
     },
+    build: {
+      target: 'es2015',
+      outDir: 'dist',
+      assetsDir: 'assets',
+      cssCodeSplit: true, // 启用 CSS 代码拆分
+      sourcemap: false, // 生产环境不生成 sourcemap
+      chunkSizeWarningLimit: 2000,
+      rollupOptions: {
+        output: {
+          // 最小化拆分包
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('naive-ui')) {
+                return 'naive-ui';
+              }
+              if (id.includes('vue') || id.includes('pinia') || id.includes('vue-router')) {
+                return 'vue-vendor';
+              }
+              if (id.includes('lodash')) {
+                return 'lodash';
+              }
+              if (id.includes('echarts') || id.includes('vchart')) {
+                return 'charts';
+              }
+              return 'vendor'; // 其他第三方库
+            }
+          },
+          // 静态资源分类打包
+          chunkFileNames: 'assets/js/[name]-[hash].js',
+          entryFileNames: 'assets/js/[name]-[hash].js',
+          assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+        },
+      },
+      // 生产环境移除 console
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+        },
+      },
+    },
   };
 });

@@ -5,9 +5,9 @@ declare namespace System {
     code: string;
     name: string;
     description?: string | null;
-    createdTime: Date;
-    updatedTime: Date;
-    deletedTime?: Date | null;
+    createdTime: string;
+    updatedTime: string;
+    deletedTime?: string | null;
     isDeleted: boolean;
     users?: Recordable;
     menus?: Recordable;
@@ -56,10 +56,10 @@ declare namespace System {
     email?: string;
     sex?: Sex; // 需要定义 Sex 类型
     avatar?: string;
-    birthday?: Date;
-    createdTime?: Date;
-    updatedTime?: Date;
-    deletedTime?: Date;
+    birthday?: string;
+    createdTime?: string;
+    updatedTime?: string;
+    deletedTime?: string;
     password?: string;
     isDeleted?: boolean;
     status: number; // 0: 未激活, 1: 激活
@@ -93,9 +93,9 @@ declare namespace System {
     /** 排序 */
     sortOrder: number | null;
     /** 创建时间 */
-    createdTime: Date;
+    createdTime: string;
     /** 更新时间 */
-    updatedTime: Date;
+    updatedTime: string;
   }
 
   enum ConfigType {

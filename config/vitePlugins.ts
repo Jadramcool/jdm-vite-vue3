@@ -21,7 +21,9 @@ import { viteMockServe } from 'vite-plugin-mock';
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers';
 // UnoCSS
 import UnoCSS from 'unocss/vite';
+// Compression
 import { ConfigEnv } from 'vite';
+import viteCompression from 'vite-plugin-compression';
 
 /**
  * 配置 Vite 插件
@@ -83,6 +85,15 @@ export default (env: ConfigEnv) => {
       enable: true,
       // 是否显示日志
       logger: true,
+    }),
+    // 压缩插件
+    viteCompression({
+      verbose: true, // 默认即可
+      disable: false, // 开启压缩(不禁用)
+      deleteOriginFile: false, // 删除源文件
+      threshold: 10240, // 压缩前最小文件大小
+      algorithm: 'gzip', // 压缩算法
+      ext: '.gz', // 文件类型
     }),
   ];
 

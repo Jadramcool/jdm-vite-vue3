@@ -1,4 +1,5 @@
 import { NCard, NModal } from 'naive-ui';
+import { PropType } from 'vue';
 
 type Type = 'default' | 'tertiary' | 'primary' | 'info' | 'success' | 'warning' | 'error';
 
