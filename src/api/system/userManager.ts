@@ -22,6 +22,7 @@ enum API {
 
 /**
  * @description: 获取用户列表
+ * @param params 查询参数
  */
 export const userList = (params: any) => {
   return request.get<List<System.User>>({

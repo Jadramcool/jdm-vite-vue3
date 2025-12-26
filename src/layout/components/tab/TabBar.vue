@@ -1,5 +1,5 @@
 <template>
-  <div class="tabbars flex-x-center">
+  <div class="tabbars flex items-center">
     <n-tabs
       :value="tabStore.activeTab"
       :closable="tabStore.tabs.length > 1"
@@ -153,7 +153,6 @@ function handleDragEnd(event: DragEvent) {
   padding: 6px 16px;
   border-bottom: 1px solid var(--n-border-color);
   transition: all 0.3s ease;
-  backdrop-filter: blur(8px);
 }
 
 :deep(.n-tabs) {
