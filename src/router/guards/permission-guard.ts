@@ -77,7 +77,12 @@ export function createPermissionGuard(router: any) {
         const configStore = useConfigStore();
         // 刷新页面时，pinia中的数据会丢失，所以需要重新获取用户信息和权限
         if (!userStore.userInfo || !userStore.userInfo.id) {
-          const user: any = await getUserInfo();
+          // 并发获取用户信息、菜单和配置，提高加载速度
+          const [user, menus] = await Promise.all([
+            getUserInfo(),
+            getMenus(),
+            configStore.initConfig().catch((err) => console.warn('全局配置初始化失败:', err)),
+          ]);
 
           if (!user || (user && Object.keys(user).length === 0)) {
             window.$message.error('用户信息或权限初始化失败，请刷新页面重试！');
@@ -86,19 +91,12 @@ export function createPermissionGuard(router: any) {
           }
           userStore.setUser(user);
 
-          // 初始化全局配置
-          try {
-            await configStore.initConfig();
-          } catch (error) {
-            console.warn('全局配置初始化失败，但不影响正常使用:', error);
-          }
-
-          const menus = await getMenus();
           // 路由初始化失败
           if (!menus) {
             window.$message.error('路由初始化失败，请刷新页面重试！');
             return;
           }
+
           // 设置权限
           permissionStore.setPermissions(menus);
           // 设置菜单
