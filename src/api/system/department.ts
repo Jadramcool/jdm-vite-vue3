@@ -1,5 +1,10 @@
 import request from '@/utils/http/axios';
-import { BasicModel } from '../types/base';
+import type {
+  CreateDepartmentParams,
+  DepartmentListParams,
+  PaginationResponse,
+  UpdateDepartmentParams,
+} from '#/api/user';
 
 enum API {
   list = '/system/department/list',
@@ -22,12 +27,12 @@ enum API {
 
 /**
  * @description: 获取部门列表（分页）
+ * @param {DepartmentListParams} params
  */
-export const getDepartmentList = (params?: any) => {
-  return request.get<{
-    list: System.Department[];
-    total: number;
-  }>({
+export const getDepartmentList = (
+  params?: DepartmentListParams,
+): Promise<PaginationResponse<System.Department>> => {
+  return request.get<PaginationResponse<System.Department>>({
     url: API.list,
     params,
   });
@@ -35,8 +40,9 @@ export const getDepartmentList = (params?: any) => {
 
 /**
  * @description: 获取部门树形结构
+ * @param {{ status?: number }} params
  */
-export const getDepartmentTree = (params?: any) => {
+export const getDepartmentTree = (params?: { status?: number }): Promise<System.Department[]> => {
   return request.get<System.Department[]>({
     url: API.tree,
     params,
@@ -45,8 +51,9 @@ export const getDepartmentTree = (params?: any) => {
 
 /**
  * @description: 创建部门
+ * @param {CreateDepartmentParams} data
  */
-export const createDepartment = (data: any) => {
+export const createDepartment = (data: CreateDepartmentParams): Promise<System.Department> => {
   return request.post<System.Department>({
     url: API.create,
     data,
@@ -55,8 +62,9 @@ export const createDepartment = (data: any) => {
 
 /**
  * @description: 更新部门信息
+ * @param {UpdateDepartmentParams} data
  */
-export const updateDepartment = (data: any) => {
+export const updateDepartment = (data: UpdateDepartmentParams): Promise<System.Department> => {
   return request.put<System.Department>({
     url: API.update,
     data,
@@ -65,8 +73,9 @@ export const updateDepartment = (data: any) => {
 
 /**
  * @description: 获取部门详情
+ * @param {number | string} id
  */
-export const getDepartmentDetail = (id: number | string) => {
+export const getDepartmentDetail = (id: number | string): Promise<System.Department> => {
   return request.get<System.Department>({
     url: `${API.detail}/${id}`,
   });
@@ -74,18 +83,24 @@ export const getDepartmentDetail = (id: number | string) => {
 
 /**
  * @description: 删除部门
+ * @param {number | string} id
  */
-export const deleteDepartment = (id: number | string) => {
-  return request.delete<BasicModel>({
+export const deleteDepartment = (id: number | string): Promise<void> => {
+  return request.delete<void>({
     url: `${API.delete}/${id}`,
   });
 };
 
 /**
  * @description: 获取部门成员列表
+ * @param {number | string} id
+ * @param {{ page?: number; pageSize?: number }} params
  */
-export const getDepartmentMembers = (id: number | string, params?: any) => {
-  return request.get<System.User[]>({
+export const getDepartmentMembers = (
+  id: number | string,
+  params?: { page?: number; pageSize?: number },
+): Promise<PaginationResponse<System.User>> => {
+  return request.get<PaginationResponse<System.User>>({
     url: `${API.members}/${id}`,
     params,
   });
@@ -93,12 +108,13 @@ export const getDepartmentMembers = (id: number | string, params?: any) => {
 
 /**
  * @description: 分配用户到部门
+ * @param {{ userId: number | string; departmentId: number | string }} data
  */
 export const assignUserToDepartment = (data: {
   userId: number | string;
   departmentId: number | string;
-}) => {
-  return request.post<BasicModel>({
+}): Promise<void> => {
+  return request.post<void>({
     url: API.assignUser,
     data,
   });
@@ -106,12 +122,13 @@ export const assignUserToDepartment = (data: {
 
 /**
  * @description: 批量分配用户到部门
+ * @param {{ userIds: Array<number | string>; departmentId: number | string }} data
  */
 export const batchAssignUsersToDepartment = (data: {
   userIds: Array<number | string>;
   departmentId: number | string;
-}) => {
-  return request.post<BasicModel>({
+}): Promise<void> => {
+  return request.post<void>({
     url: API.batchAssignUsers,
     data,
   });
@@ -119,12 +136,13 @@ export const batchAssignUsersToDepartment = (data: {
 
 /**
  * @description: 从部门移除用户
+ * @param {{ userId: number | string; departmentId: number | string }} data
  */
 export const removeUserFromDepartment = (data: {
   userId: number | string;
   departmentId: number | string;
-}) => {
-  return request.delete<BasicModel>({
+}): Promise<void> => {
+  return request.delete<void>({
     url: API.removeUser,
     data,
   });
@@ -132,12 +150,13 @@ export const removeUserFromDepartment = (data: {
 
 /**
  * @description: 分配角色到部门
+ * @param {{ roleId: number | string; departmentId: number | string }} data
  */
 export const assignRoleToDepartment = (data: {
   roleId: number | string;
   departmentId: number | string;
-}) => {
-  return request.post<BasicModel>({
+}): Promise<void> => {
+  return request.post<void>({
     url: API.assignRole,
     data,
   });
@@ -145,12 +164,13 @@ export const assignRoleToDepartment = (data: {
 
 /**
  * @description: 从部门移除角色
+ * @param {{ roleId: number | string; departmentId: number | string }} data
  */
 export const removeRoleFromDepartment = (data: {
   roleId: number | string;
   departmentId: number | string;
-}) => {
-  return request.delete<BasicModel>({
+}): Promise<void> => {
+  return request.delete<void>({
     url: API.removeRole,
     data,
   });
@@ -158,8 +178,12 @@ export const removeRoleFromDepartment = (data: {
 
 /**
  * @description: 搜索部门
+ * @param {{ keyword: string; [key: string]: any }} params
  */
-export const searchDepartments = (params: { keyword: string; [key: string]: any }) => {
+export const searchDepartments = (params: {
+  keyword: string;
+  [key: string]: any;
+}): Promise<System.Department[]> => {
   return request.get<System.Department[]>({
     url: API.search,
     params,
@@ -168,8 +192,9 @@ export const searchDepartments = (params: { keyword: string; [key: string]: any 
 
 /**
  * @description: 获取部门统计信息
+ * @param {number | string} id
  */
-export const getDepartmentStats = (id?: number | string) => {
+export const getDepartmentStats = (id?: number | string): Promise<any> => {
   return request.get<any>({
     url: id ? `${API.stats}/${id}` : API.stats,
   });
@@ -177,18 +202,20 @@ export const getDepartmentStats = (id?: number | string) => {
 
 /**
  * @description: 启用部门
+ * @param {number | string} id
  */
-export const enableDepartment = (id: number | string) => {
-  return request.put<BasicModel>({
+export const enableDepartment = (id: number | string): Promise<void> => {
+  return request.put<void>({
     url: `${API.enable}/${id}`,
   });
 };
 
 /**
  * @description: 停用部门
+ * @param {number | string} id
  */
-export const disableDepartment = (id: number | string) => {
-  return request.put<BasicModel>({
+export const disableDepartment = (id: number | string): Promise<void> => {
+  return request.put<void>({
     url: `${API.disable}/${id}`,
   });
 };

@@ -89,7 +89,7 @@
         </n-form-item>
 
         <!-- 验证码输入框 -->
-        <n-form-item path="captcha" class="form-item">
+        <n-form-item v-if="common.captchaEnabled" path="captcha" class="form-item">
           <div class="captcha-wrapper">
             <Captcha
               ref="captchaRef"
@@ -220,21 +220,23 @@ const registerFormRules: FormRules = {
       },
     },
   ],
-  captcha: [
-    {
-      required: true,
-      trigger: ['blur', 'input'],
-      validator: (_rule: FormItemRule, value: string) => {
-        if (!value) {
-          return new Error(t('common.pleaseInput') + t('login.captcha'));
-        }
-        if (!captchaRef.value?.getValidationResult()) {
-          return new Error(t('login.captchaError'));
-        }
-        return Promise.resolve();
-      },
-    },
-  ],
+  captcha: common.captchaEnabled
+    ? [
+        {
+          required: true,
+          trigger: ['blur', 'input'],
+          validator: (_rule: FormItemRule, value: string) => {
+            if (!value) {
+              return new Error(t('common.pleaseInput') + t('login.captcha'));
+            }
+            if (!captchaRef.value?.getValidationResult()) {
+              return new Error(t('login.captchaError'));
+            }
+            return Promise.resolve();
+          },
+        },
+      ]
+    : [],
 };
 
 const toOtherForm = (type: any) => {
@@ -267,28 +269,31 @@ const handleRegister = async (e: MouseEvent) => {
     duration: 0,
   });
 
-  // 验证验证码
-  if (!captchaRef.value?.getValidationResult()) {
-    window.$notification.error({
-      title: `${t('login.status.registerFailed')}`,
-      content: t('login.captchaError'),
-      duration: 3000,
-      keepAliveOnHover: true,
-    });
-    captchaRef.value?.refreshCaptcha();
-    messageReactive.value?.destroy();
-    return;
+  if (common.captchaEnabled) {
+    if (!captchaRef.value?.getValidationResult()) {
+      window.$notification.error({
+        title: `${t('login.status.registerFailed')}`,
+        content: t('login.captchaError'),
+        duration: 3000,
+        keepAliveOnHover: true,
+      });
+      captchaRef.value?.refreshCaptcha();
+      messageReactive.value?.destroy();
+      return;
+    }
   }
 
   registerFormRef.value?.validate(async (errors) => {
     try {
       if (!errors) {
-        const data = {
+        const data: any = {
           username: registerForm.value.username,
           password: registerForm.value.password,
           phone: registerForm.value.phone,
-          captcha: registerForm.value.captcha,
         };
+        if (common.captchaEnabled) {
+          data.captcha = registerForm.value.captcha;
+        }
 
         await UserApi.register(data);
         window.$notification.success({
@@ -296,7 +301,6 @@ const handleRegister = async (e: MouseEvent) => {
           duration: 3000,
           keepAliveOnHover: true,
         });
-        // 跳转到登录页面
         toOtherForm('login');
       } else {
         const errorMessage: any = errors.map((item) => item[0].message).join('\n');
@@ -306,8 +310,9 @@ const handleRegister = async (e: MouseEvent) => {
           duration: 3000,
           keepAliveOnHover: true,
         });
-        // 验证失败时刷新验证码
-        captchaRef.value?.refreshCaptcha();
+        if (common.captchaEnabled) {
+          captchaRef.value?.refreshCaptcha();
+        }
       }
     } catch (error: any) {
       window.$notification.error({

@@ -1,5 +1,5 @@
 import request from '@/utils/http/axios';
-import { BasicModel } from '../types/base';
+import type { CreateMenuParams, MenuListParams, UpdateMenuParams } from '#/api/user';
 
 enum API {
   menu = '/system/menu/list',
@@ -12,8 +12,9 @@ enum API {
 
 /**
  * @description: 获取菜单
+ * @param {MenuListParams} params
  */
-export const menuList = (params?: any) => {
+export const menuList = (params?: MenuListParams): Promise<System.Menu[]> => {
   return request.get<System.Menu[]>({
     url: API.menu,
     params,
@@ -22,8 +23,9 @@ export const menuList = (params?: any) => {
 
 /**
  * @description: 创建菜单
+ * @param {CreateMenuParams} data
  */
-export const createMenu = (data: any) => {
+export const createMenu = (data: CreateMenuParams): Promise<System.Menu> => {
   return request.post<System.Menu>({
     url: API.create,
     data,
@@ -32,8 +34,9 @@ export const createMenu = (data: any) => {
 
 /**
  * @description: 更新菜单
+ * @param {UpdateMenuParams} data
  */
-export const updateMenu = (data: any) => {
+export const updateMenu = (data: UpdateMenuParams): Promise<System.Menu> => {
   return request.put<System.Menu>({
     url: API.update,
     data,
@@ -42,18 +45,20 @@ export const updateMenu = (data: any) => {
 
 /**
  * @description: 删除菜单
+ * @param {number} id
  */
-export const deleteMenu = (id: number) => {
-  return request.delete<BasicModel>({
+export const deleteMenu = (id: number): Promise<void> => {
+  return request.delete<void>({
     url: `${API.delete}/${id}`,
   });
 };
 
 /**
  * @description: 批量删除菜单
+ * @param {Array<number | string>} ids
  */
-export const batchDeleteMenu = (ids: Array<number | string>) => {
-  return request.delete<BasicModel>({
+export const batchDeleteMenu = (ids: Array<number | string>): Promise<void> => {
+  return request.delete<void>({
     url: API.batchDelete,
     data: {
       ids,
@@ -64,7 +69,7 @@ export const batchDeleteMenu = (ids: Array<number | string>) => {
 /**
  * @description: 获取在线菜单
  */
-export const onlineMenu = () => {
+export const onlineMenu = (): Promise<System.Menu[]> => {
   return request.get<System.Menu[]>({
     url: API.onlineMenu,
   });

@@ -1,14 +1,15 @@
 /*
  * @Author: jdm
  * @Date: 2024-05-30 10:29:46
- * @LastEditors: jdm
- * @LastEditTime: 2024-09-24 13:29:37
+ * @LastEditors: jdm 1051780106@qq.com
+ * @LastEditTime: 2026-01-06 18:21:55
  * @FilePath: \vite-vue3-jdm\src\store\helper.ts
  * @Description:
  *
  */
 import { ConfigApi, MenuApi, UserApi } from '@/api';
 import { baseMenus } from '@/settings';
+import errorHandler from '@/utils/error/ErrorHandler';
 
 export async function getUserInfo() {
   try {
@@ -17,6 +18,7 @@ export async function getUserInfo() {
     const userInfo: System.User = res;
     return userInfo;
   } catch (error) {
+    errorHandler.handle(error, 'getUserInfo', false);
     return {};
   }
 }
@@ -28,7 +30,7 @@ export async function getMenus() {
     res = await UserApi.menuAPI();
     asyncMenus = res?.data || res || [];
   } catch (error) {
-    console.error(error);
+    errorHandler.handle(error, 'getMenus', false);
   }
 
   const mergedMenus = new Map();
@@ -56,7 +58,7 @@ export async function getOnlineMenus() {
     res = await MenuApi.onlineMenu();
     asyncMenus = res?.data || res || [];
   } catch (error) {
-    console.error(error);
+    errorHandler.handle(error, 'getOnlineMenus', false);
   }
 
   const mergedMenus = new Map();
@@ -82,6 +84,7 @@ export async function getConfig() {
     const res = await ConfigApi.publicConfig();
     return res || res || {};
   } catch (error) {
+    errorHandler.handle(error, 'getConfig', false);
     return {};
   }
 }
