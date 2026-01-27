@@ -1,5 +1,5 @@
 <template>
-  <div class="basic-setting-container">
+  <AppCard class="basic-setting-container">
     <!-- 头像设置区域 -->
     <div class="avatar-section">
       <div class="section-header">
@@ -79,7 +79,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </AppCard>
 </template>
 
 <script setup lang="ts">
@@ -241,9 +241,7 @@ const handleSubmitUserInfo = async () => {
 // 区域通用样式
 .avatar-section,
 .info-section {
-  background: #ffffff;
   padding: 32px 0;
-  border-bottom: 1px solid rgba(229, 231, 235, 0.3);
 
   &:last-child {
     border-bottom: none;
@@ -270,7 +268,6 @@ const handleSubmitUserInfo = async () => {
 .header-title {
   font-size: 16px;
   font-weight: 600;
-  color: #111827;
   margin: 0;
   letter-spacing: -0.025em;
 }
@@ -403,7 +400,6 @@ const handleSubmitUserInfo = async () => {
   display: flex;
   justify-content: center;
   padding-top: 20px;
-  border-top: 1px solid #e5e7eb;
 }
 
 .save-button {

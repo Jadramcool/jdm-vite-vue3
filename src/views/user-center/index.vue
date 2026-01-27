@@ -26,8 +26,13 @@
             </div>
 
             <!-- 用户详细信息卡片 -->
-            <div class="user-details">
-              <div v-for="(item, index) in userTableDetail" :key="index" class="detail-item">
+            <bordered class="user-details">
+              <AppCard
+                bordered
+                v-for="(item, index) in userTableDetail"
+                :key="index"
+                class="detail-item"
+              >
                 <div class="detail-icon">
                   <JayIcon :icon="item.icon" :size="18" />
                 </div>
@@ -35,8 +40,8 @@
                   <span class="detail-label">{{ item.title }}</span>
                   <span class="detail-value">{{ item.content }}</span>
                 </div>
-              </div>
-            </div>
+              </AppCard>
+            </bordered>
           </div>
         </AppCard>
       </n-gi>
@@ -168,16 +173,22 @@ onMounted(() => {
 <style scoped lang="scss">
 .user-center-container {
   padding: 20px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   border-radius: 16px;
   min-height: 100vh;
 }
 
+.light .user-center-container {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
 // 用户资料卡片样式
 .user-profile-card {
-  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
   border-radius: 16px;
   padding: 32px;
+}
+
+.light .user-profile-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
 }
 
 .user-info {
@@ -243,9 +254,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     padding: 16px;
-    background: rgba(255, 255, 255, 0.7);
     border-radius: 12px;
-    border: 1px solid rgba(226, 232, 240, 0.8);
     transition: all 0.3s ease;
     .detail-icon {
       display: flex;
@@ -253,7 +262,7 @@ onMounted(() => {
       justify-content: center;
       width: 40px;
       height: 40px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #bdc5e9 0%, #bc9ade 100%);
       border-radius: 10px;
       color: white;
       margin-right: 16px;
@@ -295,7 +304,7 @@ onMounted(() => {
     .settings-title {
       font-size: 20px;
       font-weight: 700;
-      color: #2d3748;
+      // color: #2d3748;
     }
   }
 }

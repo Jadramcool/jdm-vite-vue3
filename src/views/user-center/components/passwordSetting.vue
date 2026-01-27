@@ -1,5 +1,5 @@
 <template>
-  <div class="password-setting-container">
+  <AppCard class="password-setting-container">
     <div class="password-section">
       <div class="section-header">
         <JayIcon icon="solar:lock-password-bold" class="header-icon" />
@@ -70,7 +70,7 @@
             <n-button
               type="primary"
               size="large"
-              :disabled="passwordModel.reenteredPassword === null"
+              :disabled="passwordModel.reenteredPassword === ''"
               :loading="loading"
               @click="handleSubmit"
               class="submit-button"
@@ -84,7 +84,7 @@
         </n-form>
       </div>
     </div>
-  </div>
+  </AppCard>
 </template>
 
 <script lang="ts" setup>
@@ -100,9 +100,9 @@ const formRef = ref<FormInst | null>(null);
 const loading = ref<boolean>(false);
 
 const passwordModel = reactive({
-  originPassword: null,
-  password: null,
-  reenteredPassword: null,
+  originPassword: '',
+  password: '',
+  reenteredPassword: '',
 });
 
 const rules = ref<FormRules>({
@@ -196,12 +196,13 @@ const handleSubmit = async (e: MouseEvent) => {
     loading.value = true;
     await formRef.value?.validate();
     await UserApi.updatePassword({
-      password: passwordModel.password,
+      oldPassword: passwordModel.originPassword,
+      newPassword: passwordModel.password,
     });
     window.$message.success($t('modules.appCenter.passwordSetting.updateSuccess'));
-    passwordModel.originPassword = null;
-    passwordModel.password = null;
-    passwordModel.reenteredPassword = null;
+    passwordModel.originPassword = '';
+    passwordModel.password = '';
+    passwordModel.reenteredPassword = '';
   } catch (e) {
     window.$message.error(e as string);
   } finally {
@@ -213,7 +214,6 @@ const handleSubmit = async (e: MouseEvent) => {
 <style scoped lang="scss">
 .password-setting-container {
   .password-section {
-    background: #ffffff;
     padding: 32px 0;
   }
 
@@ -235,7 +235,6 @@ const handleSubmit = async (e: MouseEvent) => {
     .header-title {
       font-size: 16px;
       font-weight: 600;
-      color: #111827;
       margin: 0;
       letter-spacing: -0.025em;
     }
@@ -286,7 +285,6 @@ const handleSubmit = async (e: MouseEvent) => {
     display: flex;
     justify-content: center;
     padding-top: 24px;
-    border-top: 1px solid rgba(229, 231, 235, 0.8);
     margin-top: 16px;
   }
 
