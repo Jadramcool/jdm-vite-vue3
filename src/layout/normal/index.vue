@@ -15,27 +15,24 @@
     <n-layout class="layout h-full" content-style="display: flex; flex-direction: column" embedded>
       <n-layout-header
         bordered
-        class="layout-header z-1 flex-x-center justify-between backdrop-blur-sm"
+        class="layout-header z-1 flex justify-between items-center backdrop-blur-sm h-60px"
       >
-        <div class="flex-x-center h-60px">
-          <div class="flex-x-center h-full">
-            <MenuCollapse />
-            <Breadcrumb v-if="appStore.showBreadcrumb" />
-          </div>
+        <div class="flex items-center h-full">
+          <MenuCollapse />
+          <Breadcrumb v-if="appStore.showBreadcrumb" class="ml-2" />
         </div>
-        <div class="flex-x-center gap-1 h-full p-x-xl">
+        <div class="flex items-center h-full px-6">
           <HeaderTools />
         </div>
       </n-layout-header>
-      <n-layout-header embedded class="tab-header backdrop-blur-sm">
-        <TabBar v-if="appStore.showTabs"></TabBar>
+      <n-layout-header v-if="appStore.showTabs" embedded class="tab-header backdrop-blur-sm">
+        <TabBar />
       </n-layout-header>
       <n-layout-content embedded class="h-full flex-1 overflow-hidden">
-        <!-- :native-scrollbar="!!withContentCard" -->
         <div class="wh-full flex-col cus-scroll">
           <AppCard
-            class="m-12px flex-1 rounded-lg"
-            :class="withContentCard ? 'p-24px cus-scroll' : ''"
+            class="m-3 flex-1 rounded-lg"
+            :class="withContentCard ? 'p-6 cus-scroll' : ''"
             :style="{ background: !withContentCard && 'transparent' }"
             :bordered="!!withContentCard"
           >
@@ -45,9 +42,9 @@
           </AppCard>
         </div>
       </n-layout-content>
-      <n-layout-footer bordered class="h-40px" v-if="appStore.showFooter">
+      <n-layout-footer v-if="appStore.showFooter" bordered class="h-10">
         <AppCard
-          class="flex-1 h-full flex-center"
+          class="flex-1 h-full flex items-center justify-center"
           style="box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05)"
         >
           <Footer />

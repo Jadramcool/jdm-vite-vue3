@@ -10,8 +10,7 @@
 <template>
   <div class="sider-container">
     <SideLogo class="logo-section" />
-    <div class="menu-divider"></div>
-    <SideMenu class="cus-scroll-y menu-section h-0 flex-1" />
+    <SideMenu class="cus-scroll-y flex-1" />
   </div>
 </template>
 
@@ -57,34 +56,6 @@ import { SideLogo, SideMenu } from '@/layout/components';
 }
 
 /**
- * 菜单分隔线
- */
-.menu-divider {
-  height: 8px;
-  background: linear-gradient(180deg, rgba(24, 160, 251, 0.02) 0%, transparent 100%);
-  flex-shrink: 0;
-}
-
-/**
- * 菜单区域样式
- */
-.menu-section {
-  padding: 8px 12px;
-  position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 20px;
-    background: linear-gradient(180deg, rgba(24, 160, 251, 0.02) 0%, transparent 100%);
-    pointer-events: none;
-  }
-}
-
-/**
  * 暗色模式适配
  */
 .dark {
@@ -102,16 +73,6 @@ import { SideLogo, SideMenu } from '@/layout/components';
         rgba(24, 160, 251, 0.4) 50%,
         transparent 100%
       );
-    }
-  }
-
-  .menu-divider {
-    background: linear-gradient(180deg, rgba(24, 160, 251, 0.04) 0%, transparent 100%);
-  }
-
-  .menu-section {
-    &::before {
-      background: linear-gradient(180deg, rgba(24, 160, 251, 0.04) 0%, transparent 100%);
     }
   }
 }

@@ -17,11 +17,15 @@ import vitePlugins from './config/vitePlugins';
 export default defineConfig((env: ConfigEnv) => {
   // 加载环境变量
   const viteEnv = loadEnv(env.mode, './env', 'VITE');
+
+  // 解析环境变量
+  const { VITE_PORT, VITE_OPEN, VITE_DROP_CONSOLE } = viteEnv;
+
   return {
     base: viteEnv.VITE_BASE,
     envDir: './env', // 指定环境变量文件目录
     clearScreen: false, // 防止Vite清除终端屏幕，保持地址显示
-    plugins: vitePlugins(env),
+    plugins: vitePlugins(env, viteEnv),
     resolve: {
       // 设置别名
       alias: {
@@ -31,8 +35,8 @@ export default defineConfig((env: ConfigEnv) => {
     },
     server: {
       host: '0.0.0.0',
-      port: 4000,
-      open: false,
+      port: Number(VITE_PORT) || 4000,
+      open: VITE_OPEN === 'true',
       // https: false,
       // proxy: {
       //   '/api': {
@@ -48,10 +52,24 @@ export default defineConfig((env: ConfigEnv) => {
         scss: {
           additionalData:
             '@import "@/assets/styles/color.scss"; @import "@/assets/styles/font.scss";',
-          // TODO
+          // TODO: 移除 legacy-js-api 警告
           silenceDeprecations: ['legacy-js-api'], // Dart Sass 2.0.0 将完全移除旧版 API
         },
       },
+    },
+    // 依赖预构建优化
+    optimizeDeps: {
+      include: [
+        'vue',
+        'vue-router',
+        'pinia',
+        'axios',
+        'dayjs',
+        'lodash',
+        '@vueuse/core',
+        'naive-ui',
+        '@visactor/vchart',
+      ],
     },
     build: {
       target: 'es2015',
@@ -90,7 +108,7 @@ export default defineConfig((env: ConfigEnv) => {
       minify: 'terser',
       terserOptions: {
         compress: {
-          drop_console: true,
+          drop_console: VITE_DROP_CONSOLE === 'true',
           drop_debugger: true,
         },
       },

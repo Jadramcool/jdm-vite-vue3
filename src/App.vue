@@ -67,7 +67,7 @@ const currentTheme = computed(() => {
 
 // TODO 待删除 获取组件实例
 const onVNodeMounted = (vnode: { type: any }) => {
-  console.log('Component:', vnode.type.name);
+  console.log('组件挂载:', vnode.type.name);
 };
 
 /**
