@@ -40,17 +40,12 @@
         </div>
 
         <!-- 标签 -->
-        <div class="post-tags" v-if="post?.tags && post.tags.length > 0">
+        <div class="post-tags cursor-pointer" v-if="post?.tags && post.tags.length > 0">
           <span class="tag" v-for="tag in post.tags" :key="tag.id">
             {{ tag.name }}
           </span>
         </div>
       </div>
-    </div>
-
-    <!-- 阅读进度条 -->
-    <div class="reading-progress">
-      <div class="progress-bar" :style="{ width: readingProgress + '%' }"></div>
     </div>
 
     <!-- 文章内容区域 -->
@@ -251,9 +246,6 @@ interface TocItem {
 const tocItems = ref<TocItem[]>([]);
 const activeHeading = ref<string>('');
 
-// 阅读进度
-const readingProgress = ref(0);
-
 // 文章统计
 const wordCount = ref(0);
 const estimatedReadTime = ref(0);
@@ -263,7 +255,6 @@ const isMobileTocOpen = ref(false);
 
 // 滚动事件处理函数
 const handleScroll = () => {
-  updateReadingProgress();
   updateActiveHeading();
 };
 
@@ -285,16 +276,6 @@ const setupScrollListener = () => {
  */
 const cleanupScrollListener = () => {
   window.removeEventListener('scroll', handleScroll);
-};
-
-/**
- * 更新阅读进度
- */
-const updateReadingProgress = () => {
-  const scrollTop = window.pageYOffset || (document.documentElement as HTMLElement).scrollTop;
-  const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-  const progress = (scrollTop / scrollHeight) * 100;
-  readingProgress.value = Math.min(Math.max(progress, 0), 100);
 };
 
 /**
@@ -427,9 +408,8 @@ const initVditor = () => {
     return;
   }
 
-  // 清除之前的内容和类名
+  // 清除之前的内容
   markdownRef.value.innerHTML = '';
-  markdownRef.value.className = 'markdown-content';
 
   Vditor.preview(markdownRef.value as HTMLDivElement, post.value.content, {
     mode: 'light',
@@ -1242,22 +1222,6 @@ const initVditor = () => {
       'Helvetica Neue',
       Arial,
       sans-serif;
-  }
-
-  /* 阅读进度条 */
-  .reading-progress {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: rgba(0, 0, 0, 0.1);
-
-    .progress-bar {
-      height: 100%;
-      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-      transition: width 0.3s ease;
-    }
   }
 
   .toc-link {

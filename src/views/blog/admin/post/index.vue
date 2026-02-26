@@ -77,7 +77,7 @@ const schemaMethods = {
   },
 
   handleSearchCategory: async (row: Blog.Post) => {
-    await setFieldsValue({ categoryId: row.id });
+    await setFieldsValue({ categoryId: row.categoryId });
     await tableRef.value.reload();
   },
 

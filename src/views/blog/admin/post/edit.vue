@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="editor-layout h-100%" :class="[getThemeClass(), 'theme-transition']">
+    <div class="editor-layout h-100%">
       <!-- 主编辑区域 -->
       <div class="editor-main">
         <!-- 编辑器加载动画 -->
@@ -415,20 +415,6 @@
                 </div>
 
                 <div class="setting-group">
-                  <h4 class="setting-title">主题设置</h4>
-                  <div class="theme-selector">
-                    <div
-                      v-for="theme in themes"
-                      :key="theme.key"
-                      class="theme-option"
-                      :class="[theme.key, { active: currentTheme === theme.key }]"
-                      :title="theme.name"
-                      @click="switchTheme(theme.key)"
-                    ></div>
-                  </div>
-                </div>
-
-                <div class="setting-group">
                   <h4 class="setting-title">编辑器设置</h4>
                   <div class="setting-item switch-item">
                     <label class="setting-label">显示字数</label>
@@ -507,7 +493,6 @@
 
 <script setup lang="ts">
 import { BlogApi, UploadApi } from '@/api';
-import { useTheme } from '@/composables/useTheme';
 import { getToken } from '@/utils/token';
 import { NInput, NRadio, NRadioGroup, NSwitch, useMessage } from 'naive-ui';
 import Vditor from 'vditor';
@@ -552,9 +537,6 @@ const editorSettings = ref({
   autoSave: false,
 });
 
-// 主题设置 - 使用组合式函数
-const { currentTheme, themes, switchTheme, loadThemeFromStorage, getThemeClass } = useTheme();
-
 // 表单数据
 const formData = ref({
   title: '',
@@ -581,7 +563,6 @@ const coverUploadProgress = ref(0);
 const showPreviewModal = ref(false);
 
 onMounted(async () => {
-  loadThemeFromStorage();
   await init();
   setTimeout(() => {
     initVditor();
@@ -1564,9 +1545,6 @@ const handleSave = async () => {
 </script>
 
 <style lang="scss" scoped>
-// 导入通用主题文件
-@import '@/assets/styles/common-themes.scss';
-
 .editor-layout {
   position: absolute;
   top: 0;
