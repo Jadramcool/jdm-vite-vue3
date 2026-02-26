@@ -53,7 +53,7 @@
         </n-form-item>
 
         <!-- 验证码输入框 -->
-        <n-form-item v-if="common.captchaEnabled" path="captcha" class="form-item">
+        <n-form-item path="captcha" class="form-item">
           <div class="captcha-wrapper">
             <Captcha
               ref="captchaRef"
@@ -178,23 +178,21 @@ const loginFormRules: FormRules = {
       },
     },
   ],
-  captcha: common.captchaEnabled
-    ? [
-        {
-          required: true,
-          trigger: ['blur', 'input'],
-          validator: (_rule: FormItemRule, value: string) => {
-            if (!value) {
-              return new Error(t('common.pleaseInput') + t('login.captcha'));
-            }
-            if (!captchaRef.value?.getValidationResult()) {
-              return new Error(t('login.captchaError'));
-            }
-            return Promise.resolve();
-          },
-        },
-      ]
-    : [],
+  captcha: [
+    {
+      required: true,
+      trigger: ['blur', 'input'],
+      validator: (_rule: FormItemRule, value: string) => {
+        if (!value) {
+          return new Error(t('common.pleaseInput') + t('login.captcha'));
+        }
+        if (!captchaRef.value?.getValidationResult()) {
+          return new Error(t('login.captchaError'));
+        }
+        return Promise.resolve();
+      },
+    },
+  ],
 };
 
 const isRemember = ref<boolean>(false);
@@ -256,13 +254,11 @@ const handleLogin = async (e?: MouseEvent) => {
   try {
     await loginFormRef.value?.validate(async (errors) => {
       if (!errors) {
-        const data: any = {
+        const data = {
           username: loginForm.value.username,
           password: loginForm.value.password,
+          captcha: loginForm.value.captcha,
         };
-        if (common.captchaEnabled) {
-          data.captcha = loginForm.value.captcha;
-        }
         try {
           const res = await UserApi.login(data);
           onLoginSuccess(res);
@@ -274,9 +270,8 @@ const handleLogin = async (e?: MouseEvent) => {
             duration: 3000,
             keepAliveOnHover: true,
           });
-          if (common.captchaEnabled) {
-            captchaRef.value?.refreshCaptcha();
-          }
+          // 登录失败时刷新验证码
+          captchaRef.value?.refreshCaptcha();
         }
       } else {
         const errorMessage: any = errors.map((item) => item[0].message).join('\n');
@@ -286,9 +281,8 @@ const handleLogin = async (e?: MouseEvent) => {
           duration: 3000,
           keepAliveOnHover: true,
         });
-        if (common.captchaEnabled) {
-          captchaRef.value?.refreshCaptcha();
-        }
+        // 验证失败时刷新验证码
+        captchaRef.value?.refreshCaptcha();
       }
     });
   } finally {

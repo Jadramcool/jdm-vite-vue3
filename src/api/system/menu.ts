@@ -1,5 +1,5 @@
 import request from '@/utils/http/axios';
-import type { CreateMenuParams, MenuListParams, UpdateMenuParams } from '#/api/user';
+import { BasicModel } from '../types/base';
 
 enum API {
   menu = '/system/menu/list',
@@ -12,9 +12,8 @@ enum API {
 
 /**
  * @description: 获取菜单
- * @param {MenuListParams} params
  */
-export const menuList = (params?: MenuListParams): Promise<System.Menu[]> => {
+export const menuList = (params?: any) => {
   return request.get<System.Menu[]>({
     url: API.menu,
     params,
@@ -23,9 +22,8 @@ export const menuList = (params?: MenuListParams): Promise<System.Menu[]> => {
 
 /**
  * @description: 创建菜单
- * @param {CreateMenuParams} data
  */
-export const createMenu = (data: CreateMenuParams): Promise<System.Menu> => {
+export const createMenu = (data: any) => {
   return request.post<System.Menu>({
     url: API.create,
     data,
@@ -34,9 +32,8 @@ export const createMenu = (data: CreateMenuParams): Promise<System.Menu> => {
 
 /**
  * @description: 更新菜单
- * @param {UpdateMenuParams} data
  */
-export const updateMenu = (data: UpdateMenuParams): Promise<System.Menu> => {
+export const updateMenu = (data: any) => {
   return request.put<System.Menu>({
     url: API.update,
     data,
@@ -45,20 +42,18 @@ export const updateMenu = (data: UpdateMenuParams): Promise<System.Menu> => {
 
 /**
  * @description: 删除菜单
- * @param {number} id
  */
-export const deleteMenu = (id: number): Promise<void> => {
-  return request.delete<void>({
+export const deleteMenu = (id: number) => {
+  return request.delete<BasicModel>({
     url: `${API.delete}/${id}`,
   });
 };
 
 /**
  * @description: 批量删除菜单
- * @param {Array<number | string>} ids
  */
-export const batchDeleteMenu = (ids: Array<number | string>): Promise<void> => {
-  return request.delete<void>({
+export const batchDeleteMenu = (ids: Array<number | string>) => {
+  return request.delete<BasicModel>({
     url: API.batchDelete,
     data: {
       ids,
@@ -69,7 +64,7 @@ export const batchDeleteMenu = (ids: Array<number | string>): Promise<void> => {
 /**
  * @description: 获取在线菜单
  */
-export const onlineMenu = (): Promise<System.Menu[]> => {
+export const onlineMenu = () => {
   return request.get<System.Menu[]>({
     url: API.onlineMenu,
   });

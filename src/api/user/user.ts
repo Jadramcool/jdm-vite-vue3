@@ -1,5 +1,4 @@
 import request from '@/utils/http/axios';
-import type { LoginParams, RegisterParams, UpdateUserParams } from '#/api/user';
 import { BasicModel } from '../types/base';
 
 enum API {
@@ -14,9 +13,9 @@ enum API {
 
 /**
  * @description: 登录
- * @param {LoginParams} data
+ * @param {loginModel} data
  */
-export const login = (data: LoginParams): Promise<System.User> => {
+export const login = (data: System.loginModel) => {
   return request.post<System.User>({
     url: API.login,
     data,
@@ -25,9 +24,9 @@ export const login = (data: LoginParams): Promise<System.User> => {
 
 /**
  * @description: 注册
- * @param {RegisterParams} data
+ * @param {loginModel} data
  */
-export const register = (data: RegisterParams): Promise<System.User> => {
+export const register = (data: System.loginModel) => {
   return request.post<System.User>({
     url: API.register,
     data,
@@ -37,7 +36,7 @@ export const register = (data: RegisterParams): Promise<System.User> => {
 /**
  * @description: 获取用户信息
  */
-export const getUserInfo = (): Promise<System.User> => {
+export const getUserInfo = () => {
   return request.get<System.User>({
     url: API.userInfo,
   });
@@ -46,7 +45,7 @@ export const getUserInfo = (): Promise<System.User> => {
 /**
  * @description: 获取菜单
  */
-export const menuAPI = (): Promise<BasicModel[]> => {
+export const menuAPI = () => {
   return request.get<BasicModel[]>({
     url: API.userMenu,
   });
@@ -54,10 +53,9 @@ export const menuAPI = (): Promise<BasicModel[]> => {
 
 /**
  * @description: 更新用户信息
- * @param {UpdateUserParams} data
  */
-export const update = (data: UpdateUserParams): Promise<System.User> => {
-  return request.put<System.User>({
+export const update = (data: any) => {
+  return request.put<BasicModel[]>({
     url: API.update,
     data,
   });
@@ -65,10 +63,9 @@ export const update = (data: UpdateUserParams): Promise<System.User> => {
 
 /**
  * @description: 检查密码
- * @param {{ password: string }} data
  */
-export const checkPassword = (data: { password: string }): Promise<boolean> => {
-  return request.post<boolean>({
+export const checkPassword = (data: any) => {
+  return request.post<BasicModel[]>({
     url: API.checkPassword,
     data,
   });
@@ -76,13 +73,9 @@ export const checkPassword = (data: { password: string }): Promise<boolean> => {
 
 /**
  * @description: 更新密码
- * @param {{ oldPassword: string; newPassword: string }} data
  */
-export const updatePassword = (data: {
-  oldPassword: string;
-  newPassword: string;
-}): Promise<void> => {
-  return request.put<void>({
+export const updatePassword = (data: any) => {
+  return request.put<BasicModel[]>({
     url: API.updatePassword,
     data,
   });

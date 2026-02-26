@@ -5,13 +5,17 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
+import { isString } from 'lodash';
 import qs from 'qs';
 
-import errorHandler from '@/utils/error/ErrorHandler';
-import Logger from '@/utils/logger/Logger';
+import { router } from '@/router';
+import { useAuthStore } from '@/store';
+import { getLStorage } from '@/utils/storage';
 import { getToken } from '../token/index';
 import { CodeConfig as HttpCodeConfig } from './codeConfig.ts';
 import { ResponseModel } from './types/index.ts';
+
+const lStorage = getLStorage();
 
 // 存储当前挂起的请求
 const pendingMap = new Map<string, AbortController>();
@@ -53,7 +57,7 @@ class HttpRequest {
         return config;
       },
       (error: AxiosError) => {
-        Logger.error('requestError: ', error);
+        console.error('requestError: ', error);
         return Promise.reject(error);
       },
     );
@@ -68,14 +72,17 @@ class HttpRequest {
         const { data } = response;
         const { code } = data;
         if (code && code !== HttpCodeConfig.success) {
-          // 使用统一的错误处理
-          errorHandler.handle(
-            {
-              response,
-              message: data.errMsg || data.message || 'Unknown error',
-            },
-            'HTTP Response',
-          );
+          switch (code) {
+            case HttpCodeConfig.notFound:
+              // 处理未找到的情况
+              break;
+            case HttpCodeConfig.noPermission:
+              // 处理无权限的情况
+              break;
+            default:
+              break;
+          }
+          // const errMsg = data.errMsg || data.message || 'Unknown error';
           return Promise.reject(data);
         }
         return data;
@@ -89,8 +96,6 @@ class HttpRequest {
         if (axios.isCancel(error)) {
           return Promise.reject(error);
         }
-        // 使用统一的错误处理
-        errorHandler.handle(error, 'HTTP Request');
         return Promise.reject(error);
       },
     );
@@ -135,7 +140,30 @@ class HttpRequest {
       const response = await this.service.request<T>(config);
       return response.data;
     } catch (error: any) {
-      // 错误已在拦截器中统一处理，这里直接reject
+      if (error && typeof error === 'object') {
+        // 处理401错误
+        if (error.response && error.response.status === 401) {
+          const authStore = useAuthStore();
+          console.error('未授权访问', error);
+          // 可以在这里添加额外的处理逻辑，例如重定向到登录页面
+          lStorage.removeItem(import.meta.env.VITE_APP_TOKEN_KEY);
+          lStorage.removeItem('auth');
+          authStore.resetToken();
+          router.push({ path: '/login', replace: true });
+          window.$message.error('登录信息已过期，请重新登录！');
+        }
+        // 如果是取消请求，不显示错误
+        if (axios.isCancel(error)) {
+          return Promise.reject(error);
+        }
+        const lang: string = lStorage.getItem('lang') || 'zhCN';
+        const errMsg =
+          (error.errMsg as { [key: string]: any })?.[lang] ||
+          (isString(error.errMsg) && error.errMsg) ||
+          error.message ||
+          '接口请求失败，请稍后再试';
+        return Promise.reject(errMsg);
+      }
       return Promise.reject(error);
     }
   }

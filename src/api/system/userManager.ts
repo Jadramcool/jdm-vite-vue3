@@ -1,5 +1,15 @@
+/*
+ * @Author: Jay
+ * @Date: 2024-05-30 10:29:46
+ * @LastEditors: jdm
+ * @LastEditTime: 2024-10-30 17:46:14
+ * @FilePath: \vite-vue3-jdm\src\api\system\userManager.ts
+ * @Description:
+ *
+ */
 import request from '@/utils/http/axios';
-import type { PaginationResponse, UpdateUserParams, UserListParams } from '#/api/user';
+// import qs from 'qs';
+import { List } from '../types';
 
 enum API {
   list = '/system/user/list',
@@ -12,10 +22,10 @@ enum API {
 
 /**
  * @description: 获取用户列表
- * @param {UserListParams} params 查询参数
+ * @param params 查询参数
  */
-export const userList = (params: UserListParams): Promise<PaginationResponse<System.User>> => {
-  return request.get<PaginationResponse<System.User>>({
+export const userList = (params: any) => {
+  return request.get<List<System.User>>({
     url: API.list,
     params,
   });
@@ -23,16 +33,8 @@ export const userList = (params: UserListParams): Promise<PaginationResponse<Sys
 
 /**
  * @description: 新增用户
- * @param {{ username: string; password: string; email?: string; phone?: string; departmentId?: number; roleIds?: number[] }} data
  */
-export const addUser = (data: {
-  username: string;
-  password: string;
-  email?: string;
-  phone?: string;
-  departmentId?: number;
-  roleIds?: number[];
-}): Promise<System.User> => {
+export const addUser = (data: any) => {
   return request.post<System.User>({
     url: API.create,
     data,
@@ -41,9 +43,8 @@ export const addUser = (data: {
 
 /**
  * @description: 更新用户
- * @param {UpdateUserParams} data
  */
-export const updateUser = (data: UpdateUserParams): Promise<System.User> => {
+export const updateUser = (data: any) => {
   return request.put<System.User>({
     url: API.update,
     data,
@@ -52,20 +53,18 @@ export const updateUser = (data: UpdateUserParams): Promise<System.User> => {
 
 /**
  * @description: 删除用户
- * @param {number} id
  */
-export const deleteUser = (id: number): Promise<void> => {
-  return request.put<void>({
+export const deleteUser = (id: number) => {
+  return request.put<System.User>({
     url: `${API.delete}/${id}`,
   });
 };
 
 /**
  * @description: 批量删除用户
- * @param {Array<number | string>} ids
  */
-export const batchDeleteUser = (ids: Array<number | string>): Promise<void> => {
-  return request.put<void>({
+export const batchDeleteUser = (ids: Array<number | string>) => {
+  return request.put<System.User>({
     url: API.batchDelete,
     data: {
       ids,
@@ -75,10 +74,8 @@ export const batchDeleteUser = (ids: Array<number | string>): Promise<void> => {
 
 /**
  * @description: 启用用户
- * @param {number} id
- * @param {number} status
  */
-export const enableUser = (id: number, status: number): Promise<System.User> => {
+export const enableUser = (id: number, status: number) => {
   return request.put<System.User>({
     url: `${API.enable}/${id}`,
     data: {

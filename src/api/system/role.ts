@@ -1,10 +1,5 @@
 import request from '@/utils/http/axios';
-import type {
-  CreateRoleParams,
-  PaginationResponse,
-  RoleListParams,
-  UpdateRoleParams,
-} from '#/api/user';
+import { BasicModel, List } from '../types';
 
 enum API {
   list = '/system/role/list',
@@ -16,10 +11,9 @@ enum API {
 
 /**
  * @description: 获取角色列表
- * @param {RoleListParams} params
  */
-export const roleList = (params?: RoleListParams): Promise<PaginationResponse<System.Role>> => {
-  return request.get<PaginationResponse<System.Role>>({
+export const roleList = (params?: any) => {
+  return request.get<List<System.Role>>({
     url: API.list,
     params,
   });
@@ -28,21 +22,22 @@ export const roleList = (params?: RoleListParams): Promise<PaginationResponse<Sy
 /**
  * @description: 获取所有角色
  */
-export const getAllRoleList = (): Promise<PaginationResponse<System.Role>> => {
-  return request.get<PaginationResponse<System.Role>>({
+export const getAllRoleList = () => {
+  return request.get<List<System.Role>>({
     url: API.list,
     params: {
-      page: 1,
-      pageSize: 999,
+      pagination: {
+        page: 1,
+        pageSize: 999,
+      },
     },
   });
 };
 
 /**
  * @description: 创建角色
- * @param {CreateRoleParams} data
  */
-export const addRole = (data: CreateRoleParams): Promise<System.Role> => {
+export const addRole = (data: any) => {
   return request.post<System.Role>({
     url: API.create,
     data,
@@ -51,10 +46,9 @@ export const addRole = (data: CreateRoleParams): Promise<System.Role> => {
 
 /**
  * @description: 更新角色
- * @param {UpdateRoleParams} data
  */
-export const updateRole = (data: UpdateRoleParams): Promise<System.Role> => {
-  return request.put<System.Role>({
+export const updateRole = (data: any) => {
+  return request.put<BasicModel[]>({
     url: API.update,
     data,
   });
@@ -62,20 +56,18 @@ export const updateRole = (data: UpdateRoleParams): Promise<System.Role> => {
 
 /**
  * @description: 删除角色
- * @param {number} id
  */
-export const deleteRole = (id: number): Promise<void> => {
-  return request.delete<void>({
+export const deleteRole = (id: number) => {
+  return request.delete<BasicModel[]>({
     url: `${API.delete}/${id}`,
   });
 };
 
 /**
  * @description: 更新角色菜单
- * @param {{ roleId: number; menuIds: number[] }} data
  */
-export const updateRoleMenu = (data: { roleId: number; menuIds: number[] }): Promise<void> => {
-  return request.post<void>({
+export const updateRoleMenu = (data: any) => {
+  return request.post<BasicModel[]>({
     url: API.roleMenu,
     data,
   });
