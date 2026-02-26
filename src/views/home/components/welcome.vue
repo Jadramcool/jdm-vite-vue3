@@ -17,10 +17,10 @@
                   $t('common.phrase.welcome')
                 }}!
               </n-h3>
-              <n-text class="text-tips">
+              <!-- <n-text class="text-tips">
                 {{ weatherLiveData.city }}, 今日天气{{ weatherLiveData.weather }}, 温度
                 {{ weatherLiveData.temperature }}℃
-              </n-text>
+              </n-text> -->
             </div>
           </div>
         </n-flex>
@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { GaodeApi } from '@/api';
+// import { GaodeApi } from '@/api';
 import { $t } from '@/locales';
 import { useUserStore } from '@/store';
 import dayjs from 'dayjs';
@@ -45,7 +45,7 @@ const props = defineProps({
 const userStore = useUserStore();
 const { userInfo } = userStore;
 
-const weatherLiveData = ref<Recordable>({});
+// const weatherLiveData = ref<Recordable>({});
 
 const getTimeofDay = computed(() => {
   const hour = dayjs().hour();
@@ -59,14 +59,14 @@ const getTimeofDay = computed(() => {
   return $t('common.time.goodEvening');
 });
 
-const getLocationWeather = async () => {
-  const weatherData = await GaodeApi.cityWeather();
-  const [liveWeather] = weatherData.lives;
-  weatherLiveData.value = liveWeather;
-};
+// const getLocationWeather = async () => {
+//   const weatherData = await GaodeApi.cityWeather();
+//   const [liveWeather] = weatherData.lives;
+//   weatherLiveData.value = liveWeather;
+// };
 
 onMounted(() => {
-  getLocationWeather();
+  // getLocationWeather();
 });
 </script>
 

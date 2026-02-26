@@ -44,7 +44,6 @@ const start = async () => {
   dayjs.extend(calendar);
 
   app.mount('#app');
-
   // 启动性能监控
   if (import.meta.env.VITE_ENABLE_PERFORMANCE_MONITOR === 'true') {
     performanceMonitor.init();

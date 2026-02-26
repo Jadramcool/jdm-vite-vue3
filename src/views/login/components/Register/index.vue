@@ -89,7 +89,7 @@
         </n-form-item>
 
         <!-- 验证码输入框 -->
-        <n-form-item path="captcha" class="form-item">
+        <n-form-item v-if="common.captchaEnabled" path="captcha" class="form-item">
           <div class="captcha-wrapper">
             <Captcha
               ref="captchaRef"
@@ -222,9 +222,10 @@ const registerFormRules: FormRules = {
   ],
   captcha: [
     {
-      required: true,
+      required: common.captchaEnabled,
       trigger: ['blur', 'input'],
       validator: (_rule: FormItemRule, value: string) => {
+        if (!common.captchaEnabled) return Promise.resolve();
         if (!value) {
           return new Error(t('common.pleaseInput') + t('login.captcha'));
         }
@@ -268,7 +269,7 @@ const handleRegister = async (e: MouseEvent) => {
   });
 
   // 验证验证码
-  if (!captchaRef.value?.getValidationResult()) {
+  if (common.captchaEnabled && !captchaRef.value?.getValidationResult()) {
     window.$notification.error({
       title: `${t('login.status.registerFailed')}`,
       content: t('login.captchaError'),

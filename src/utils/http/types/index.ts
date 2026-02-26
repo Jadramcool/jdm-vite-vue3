@@ -4,6 +4,7 @@ export interface ResponseModel<T = any> {
   code?: number | string;
   status?: number | string;
   data: T;
+  errMsg?: string | Record<string, any>; // 错误信息，可能是字符串或多语言对象
   [key: string]: any; // 允许其他属性
 }
 

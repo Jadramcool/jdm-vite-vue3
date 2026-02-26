@@ -404,6 +404,7 @@
           "disable": "禁用",
           "enable": "启用",
           "pleaseInputCorrectPhone": "请输入正确的手机号",
+          "pleaseInputName": "请输入姓名",
           "pleaseInputPhone": "请输入手机号",
           "pleaseInputUsername": "请输入用户名",
           "usernameLengthMaxError": "用户名长度不能超过16位",
