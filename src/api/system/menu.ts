@@ -13,7 +13,7 @@ enum API {
 /**
  * @description: 获取菜单
  */
-export const menuList = (params?: any) => {
+export const menuList = (params?: Query.GetParams) => {
   return request.get<System.Menu[]>({
     url: API.menu,
     params,

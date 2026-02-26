@@ -23,7 +23,7 @@ enum API {
 /**
  * @description: 获取部门列表（分页）
  */
-export const getDepartmentList = (params?: any) => {
+export const getDepartmentList = (params?: Query.GetParams) => {
   return request.get<{
     list: System.Department[];
     total: number;

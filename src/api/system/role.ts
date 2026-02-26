@@ -12,7 +12,7 @@ enum API {
 /**
  * @description: 获取角色列表
  */
-export const roleList = (params?: any) => {
+export const roleList = (params?: Query.GetParams) => {
   return request.get<List<System.Role>>({
     url: API.list,
     params,

@@ -15,7 +15,7 @@ enum API {
 /**
  * @description: 获取公告
  */
-export const noticeList = (params?: any) => {
+export const noticeList = (params?: Query.GetParams) => {
   return request.get<List<Notice.Notice>>({
     url: API.list,
     params,
@@ -73,7 +73,7 @@ export const sendNotice = (data: { id: number; userIds: number[] }) => {
 /**
  * @description: 用户公告
  */
-export const getUserNotice = (params?: any) => {
+export const getUserNotice = (params?: Query.GetParams) => {
   return request.get<List<Notice.UserNotice>>({
     url: API.userNotice,
     params,

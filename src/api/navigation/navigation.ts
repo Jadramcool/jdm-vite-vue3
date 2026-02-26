@@ -17,7 +17,7 @@ enum API {
 /**
  * @description: 获取导航
  */
-export const navigationList = (params?: any) => {
+export const navigationList = (params?: Query.GetParams) => {
   return request.get<List<Navigation.Navigation>>({
     url: API.list,
     params,
@@ -36,7 +36,7 @@ export const navigationDetail = (navigationId: number) => {
 /**
  * @description: 获取导航分组
  */
-export const getNavigationGroup = (params?: any) => {
+export const getNavigationGroup = (params?: Query.GetParams) => {
   return request.get<List<Navigation.NavigationGroup>>({
     url: API.group,
     params,
