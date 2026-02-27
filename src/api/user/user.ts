@@ -54,8 +54,8 @@ export const menuAPI = () => {
 /**
  * @description: 更新用户信息
  */
-export const update = (data: any) => {
-  return request.put<BasicModel[]>({
+export const update = (data: Partial<System.User>) => {
+  return request.put<System.User>({
     url: API.update,
     data,
   });
@@ -64,8 +64,8 @@ export const update = (data: any) => {
 /**
  * @description: 检查密码
  */
-export const checkPassword = (data: any) => {
-  return request.post<BasicModel[]>({
+export const checkPassword = (data: { password: string }) => {
+  return request.post<boolean>({
     url: API.checkPassword,
     data,
   });
@@ -74,8 +74,8 @@ export const checkPassword = (data: any) => {
 /**
  * @description: 更新密码
  */
-export const updatePassword = (data: any) => {
-  return request.put<BasicModel[]>({
+export const updatePassword = (data: { oldPassword: string; newPassword: string }) => {
+  return request.put<System.User>({
     url: API.updatePassword,
     data,
   });

@@ -3,6 +3,7 @@ import axios, {
   AxiosRequestConfig,
   AxiosResponse,
   InternalAxiosRequestConfig,
+  AxiosError,
 } from 'axios';
 import qs from 'qs';
 
@@ -29,10 +30,23 @@ const getPendingUrl = (config: AxiosRequestConfig) => {
 };
 
 /**
+ * 移除重复请求
+ * @param config
+ */
+const removePending = (config: AxiosRequestConfig) => {
+  const key = getPendingUrl(config);
+  if (pendingMap.has(key)) {
+    const controller = pendingMap.get(key);
+    controller?.abort();
+    pendingMap.delete(key);
+  }
+};
+
+/**
  * 解析错误信息
  * @param error 错误对象或响应数据
  */
-const resolveErrorMessage = (error: any): string => {
+const resolveErrorMessage = (error: Record<string, any>): string => {
   const lang: string = lStorage.getItem('lang') || 'zhCN';
   // 优先取后端返回的 errMsg
   if (error?.errMsg) {
@@ -71,20 +85,20 @@ class HttpRequest {
     // 请求拦截器
     this.service.interceptors.request.use(
       async (config: InternalAxiosRequestConfig) => {
+        // 自动取消重复请求
+        removePending(config);
         // 添加到pendingMap
         const controller = new AbortController();
         config.signal = controller.signal;
         const key = getPendingUrl(config);
-        if (!pendingMap.has(key)) {
-          pendingMap.set(key, controller);
-        }
+        pendingMap.set(key, controller);
 
         if (import.meta.env.VITE_APP_TOKEN_KEY && getToken()) {
           config.headers.authorization = `Bearer ${getToken()}`;
         }
         return config;
       },
-      (error: any) => {
+      (error: AxiosError) => {
         console.error('requestError: ', error);
         return Promise.reject(error);
       },
@@ -92,7 +106,7 @@ class HttpRequest {
 
     // 响应拦截器
     this.service.interceptors.response.use(
-      (response: AxiosResponse<ResponseModel>): Promise<any> | AxiosResponse['data'] => {
+      (response: AxiosResponse<ResponseModel>): Promise<ResponseModel> | AxiosResponse['data'] => {
         // 请求完成，从pendingMap移除
         const key = getPendingUrl(response.config);
         pendingMap.delete(key);
@@ -126,8 +140,11 @@ class HttpRequest {
       },
       (error: any) => {
         // 请求失败或取消，从pendingMap移除
-        if (error.config) {
-          const key = getPendingUrl(error.config);
+        // 类型断言为 AxiosError 以访问 config 和 response
+        const axiosError = error as AxiosError<ResponseModel>;
+
+        if (axiosError.config) {
+          const key = getPendingUrl(axiosError.config);
           pendingMap.delete(key);
         }
 
@@ -138,9 +155,9 @@ class HttpRequest {
 
         // 处理 HTTP 状态码错误
         let errMsg = '网络请求错误';
-        if (error.response) {
-          const { status } = error.response;
-          const data = error.response.data as any;
+        if (axiosError.response) {
+          const { status } = axiosError.response;
+          const { data } = axiosError.response;
 
           // 尝试从响应体获取错误信息
           if (data && (data.errMsg || data.message)) {

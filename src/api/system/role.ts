@@ -37,7 +37,7 @@ export const getAllRoleList = () => {
 /**
  * @description: 创建角色
  */
-export const addRole = (data: any) => {
+export const addRole = (data: Partial<System.Role>) => {
   return request.post<System.Role>({
     url: API.create,
     data,
@@ -47,8 +47,8 @@ export const addRole = (data: any) => {
 /**
  * @description: 更新角色
  */
-export const updateRole = (data: any) => {
-  return request.put<BasicModel[]>({
+export const updateRole = (data: Partial<System.Role>) => {
+  return request.put<System.Role>({
     url: API.update,
     data,
   });
@@ -58,7 +58,7 @@ export const updateRole = (data: any) => {
  * @description: 删除角色
  */
 export const deleteRole = (id: number) => {
-  return request.delete<BasicModel[]>({
+  return request.delete<BasicModel>({
     url: `${API.delete}/${id}`,
   });
 };
@@ -66,8 +66,8 @@ export const deleteRole = (id: number) => {
 /**
  * @description: 更新角色菜单
  */
-export const updateRoleMenu = (data: any) => {
-  return request.post<BasicModel[]>({
+export const updateRoleMenu = (data: { roleId: number; menuIds: number[] }) => {
+  return request.post<BasicModel>({
     url: API.roleMenu,
     data,
   });

@@ -23,7 +23,7 @@ export const menuList = (params?: Query.GetParams) => {
 /**
  * @description: 创建菜单
  */
-export const createMenu = (data: any) => {
+export const createMenu = (data: Partial<System.Menu>) => {
   return request.post<System.Menu>({
     url: API.create,
     data,
@@ -33,7 +33,7 @@ export const createMenu = (data: any) => {
 /**
  * @description: 更新菜单
  */
-export const updateMenu = (data: any) => {
+export const updateMenu = (data: Partial<System.Menu>) => {
   return request.put<System.Menu>({
     url: API.update,
     data,

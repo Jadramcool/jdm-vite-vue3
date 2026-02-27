@@ -247,7 +247,7 @@ const toOtherForm = (type: any) => {
  * @param value 验证码值
  * @param isValid 是否有效
  */
-const handleCaptchaChange = (value: string, isValid: boolean): void => {
+const handleCaptchaChange = (_value: string, isValid: boolean): void => {
   captchaValid.value = isValid;
 };
 

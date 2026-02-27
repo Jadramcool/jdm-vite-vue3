@@ -1,6 +1,7 @@
 import { arrayToTree, isExternal, renderIcon } from '@/utils/common'; // 导入自定义的 isExternal 函数，用于判断链接是否为外部链接
 import { hyphenate } from '@vueuse/core'; // 导入 Vue 通用实用函数库中的 hyphenate 函数
 import _ from 'lodash';
+import { MenuOption } from 'naive-ui';
 import { defineStore } from 'pinia'; // 导入 Pinia 库中的 defineStore 函数
 import { RouteRecordRaw } from 'vue-router';
 
@@ -9,10 +10,10 @@ export const routeComponents = import.meta.glob('/src/views/**/*.vue');
 export const usePermissionStore = defineStore('permission', {
   // 定义 store 的初始状态
   state: () => ({
-    accessRoutes: <any>{}, // 存储访问路由的数组
-    permissions: <any[]>[], // 存储权限的数组
-    menus: <any[]>[], // 存储菜单的数组
-    buttonPermissions: <any[]>[],
+    accessRoutes: <RouteRecordRaw>{}, // 存储访问路由的数组
+    permissions: <System.Menu[]>[], // 存储权限的数组
+    menus: <MenuOption[]>[], // 存储菜单的数组
+    buttonPermissions: <System.Menu[]>[],
     buttonPermissionKeys: <string[]>[],
   }),
   getters: {
@@ -35,7 +36,8 @@ export const usePermissionStore = defineStore('permission', {
           .map((item) => this.getMenuItem(item))
           .filter((item) => !!item)
           .sort(
-            (a: System.Menu, b: System.Menu): any => (a.order ?? Infinity) - (b.order ?? Infinity),
+            (a: System.Menu, b: System.Menu): number =>
+              (a.order ?? Infinity) - (b.order ?? Infinity),
           ),
       );
     },
@@ -52,7 +54,7 @@ export const usePermissionStore = defineStore('permission', {
       const btnPermissions: System.Menu[] = []; // 按钮权限
       const nonButtonMenus: System.Menu[] = []; // 非按钮菜单
 
-      const routeCache: { [key: string]: any } = {};
+      const routeCache: Record<string, RouteRecordRaw> = {};
 
       menus.forEach((item) => {
         if (item.type === 'BUTTON') {
@@ -87,7 +89,7 @@ export const usePermissionStore = defineStore('permission', {
         path: '/',
         name: 'pageHome',
         redirect: homePath,
-        component: undefined,
+        component: () => import('@/layout/normal/index.vue'),
         meta: {
           title: '首页',
           icon: 'icon-park-outline:home',
@@ -133,7 +135,7 @@ export const usePermissionStore = defineStore('permission', {
         path: '/',
         name: 'pageHome',
         redirect: homePath,
-        component: undefined,
+        component: () => import('@/layout/normal/index.vue'),
         meta: {
           title: '首页',
           icon: 'icon-park-outline:home',
@@ -252,6 +254,7 @@ export const usePermissionStore = defineStore('permission', {
         name: item.name, // 路由的名称
         path: item.path, // 路由的路径
         redirect: item.redirect, // 路由的重定向路径
+        // 同上，优化本地路由组件加载
         component: routeComponents[item.component] || undefined, // 路由对应的组件
         meta: {
           originPath, // 原始路径

@@ -36,7 +36,7 @@ export const getDepartmentList = (params?: Query.GetParams) => {
 /**
  * @description: 获取部门树形结构
  */
-export const getDepartmentTree = (params?: any) => {
+export const getDepartmentTree = (params?: Record<string, any>) => {
   return request.get<System.Department[]>({
     url: API.tree,
     params,
@@ -46,7 +46,7 @@ export const getDepartmentTree = (params?: any) => {
 /**
  * @description: 创建部门
  */
-export const createDepartment = (data: any) => {
+export const createDepartment = (data: Partial<System.Department>) => {
   return request.post<System.Department>({
     url: API.create,
     data,
@@ -56,7 +56,7 @@ export const createDepartment = (data: any) => {
 /**
  * @description: 更新部门信息
  */
-export const updateDepartment = (data: any) => {
+export const updateDepartment = (data: Partial<System.Department>) => {
   return request.put<System.Department>({
     url: API.update,
     data,
@@ -84,7 +84,7 @@ export const deleteDepartment = (id: number | string) => {
 /**
  * @description: 获取部门成员列表
  */
-export const getDepartmentMembers = (id: number | string, params?: any) => {
+export const getDepartmentMembers = (id: number | string, params?: Record<string, any>) => {
   return request.get<System.User[]>({
     url: `${API.members}/${id}`,
     params,
@@ -159,7 +159,7 @@ export const removeRoleFromDepartment = (data: {
 /**
  * @description: 搜索部门
  */
-export const searchDepartments = (params: { keyword: string; [key: string]: any }) => {
+export const searchDepartments = (params: { keyword: string } & Record<string, any>) => {
   return request.get<System.Department[]>({
     url: API.search,
     params,

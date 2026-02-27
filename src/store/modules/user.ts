@@ -22,7 +22,7 @@ export const useUserStore = defineStore('user', {
     getUser: (state) => state.userInfo,
   },
   actions: {
-    setUser(info: any) {
+    setUser(info: Partial<System.User>) {
       this.userInfo = { ...this.userInfo, ...info };
     },
     resetUser() {

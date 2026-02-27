@@ -6,7 +6,7 @@ import { performanceMonitor } from '@/utils/performance';
  * 用于监控路由切换性能
  */
 export function createPerformanceGuard(router: Router) {
-  router.beforeEach((to, from, next) => {
+  router.beforeEach((to, _from, next) => {
     // 开始测量路由切换时间
     performanceMonitor.startMeasure(`route-change:${to.path}`);
     next();
