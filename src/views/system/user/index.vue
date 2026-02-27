@@ -18,17 +18,6 @@
           </n-icon>
           <span>组织架构</span>
         </div>
-        <n-button
-          class="collapse-btn"
-          quaternary
-          circle
-          size="small"
-          @click="toggleDepartmentPanel"
-        >
-          <n-icon size="16">
-            <i :class="departmentCollapsed ? 'i-carbon:chevron-right' : 'i-carbon:chevron-left'" />
-          </n-icon>
-        </n-button>
       </div>
 
       <div class="department-content" v-show="!departmentCollapsed">
@@ -74,7 +63,14 @@
       </div>
     </div>
 
-    <n-divider style="height: 100%" dashed vertical />
+    <div class="divider-wrapper">
+      <n-divider style="height: 100%" dashed vertical />
+      <div class="collapse-trigger" @click="toggleDepartmentPanel">
+        <n-icon size="14">
+          <i :class="departmentCollapsed ? 'i-carbon:chevron-right' : 'i-carbon:chevron-left'" />
+        </n-icon>
+      </div>
+    </div>
 
     <!-- 右侧用户管理区域 -->
     <div class="user-panel">
@@ -376,8 +372,8 @@ const toggleDepartmentPanel = () => {
 
   // 左侧部门面板
   .department-panel {
-    width: 280px;
-    min-width: 280px;
+    width: 220px;
+    min-width: 220px;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -385,8 +381,10 @@ const toggleDepartmentPanel = () => {
     overflow: hidden;
 
     &.collapsed {
-      width: 48px;
-      min-width: 48px;
+      width: 0;
+      min-width: 0;
+      padding: 0;
+      margin: 0;
     }
 
     .department-header {
@@ -417,12 +415,6 @@ const toggleDepartmentPanel = () => {
           overflow: hidden;
           text-overflow: ellipsis;
         }
-      }
-
-      .collapse-btn {
-        flex-shrink: 0;
-        transition: all 0.2s ease;
-        background-color: rgba($color: #333, $alpha: 0.1);
       }
     }
 
@@ -473,6 +465,42 @@ const toggleDepartmentPanel = () => {
             }
           }
         }
+      }
+    }
+  }
+
+  // 分割线容器
+  .divider-wrapper {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    flex-shrink: 0;
+
+    .collapse-trigger {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 16px;
+      height: 32px;
+      background-color: var(--n-color);
+      border: 1px solid var(--n-border-color);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      &:hover {
+        background-color: var(--primary-color-hover);
+        color: white;
+        border-color: var(--primary-color-hover);
       }
     }
   }
