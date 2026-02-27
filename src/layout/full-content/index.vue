@@ -1,5 +1,5 @@
 <template>
-  <n-layout class="wh-full flex" has-sider>
+  <n-layout class="wh-full flex">
     <n-layout class="layout h-full" content-style="display: flex;flex-direction: column" embedded>
       <n-layout-header
         bordered
@@ -25,9 +25,11 @@
             :style="{ background: !withContentCard && 'transparent' }"
             :bordered="!!withContentCard"
           >
-            <Transition :name="appStore.transitionAnimation" mode="out-in">
-              <slot />
-            </Transition>
+            <router-view v-slot="{ Component, route }">
+              <Transition :name="appStore.transitionAnimation" mode="out-in">
+                <component :is="Component" :key="route.fullPath" />
+              </Transition>
+            </router-view>
           </AppCard>
         </div>
       </n-layout-content>

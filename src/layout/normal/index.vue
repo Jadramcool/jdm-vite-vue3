@@ -36,9 +36,13 @@
             :style="{ background: !withContentCard && 'transparent' }"
             :bordered="!!withContentCard"
           >
-            <Transition :name="appStore.transitionAnimation" mode="out-in">
-              <slot />
-            </Transition>
+            <router-view v-slot="{ Component, route }">
+              <Transition :name="appStore.transitionAnimation" mode="out-in">
+                <KeepAlive :include="keepAliveNames">
+                  <component :is="Component" v-if="appStore.loadFlag" :key="route.fullPath" />
+                </KeepAlive>
+              </Transition>
+            </router-view>
           </AppCard>
         </div>
       </n-layout-content>
@@ -64,14 +68,29 @@ import {
   SideMenu,
   TabBar,
 } from '@/layout/components';
-import { useAppStore } from '@/store';
+import { useAppStore, useTabStore } from '@/store';
 
 const appStore = useAppStore();
+const tabStore = useTabStore();
+const route = useRoute();
 
-const attrs = useAttrs();
+// const attrs = useAttrs();
 
 const withContentCard = computed(() => {
-  return attrs?.withContentCard ?? true;
+  const extraData = route.meta?.extraData as Recordable;
+  if (!extraData) {
+    return true;
+  }
+  return extraData?.withContentCard ?? true;
+});
+
+/**
+ * 计算需要keep-alive的组件名称列表
+ */
+const keepAliveNames = computed(() => {
+  return tabStore.tabs
+    .filter((item) => item.keepAlive && item.name)
+    .map((item) => item.name as string);
 });
 </script>
 

@@ -89,7 +89,7 @@ export const usePermissionStore = defineStore('permission', {
         path: '/',
         name: 'pageHome',
         redirect: homePath,
-        component: () => import('@/layout/normal/index.vue'),
+        component: () => import('@/layout/index.vue'),
         meta: {
           title: '首页',
           icon: 'icon-park-outline:home',
@@ -135,7 +135,7 @@ export const usePermissionStore = defineStore('permission', {
         path: '/',
         name: 'pageHome',
         redirect: homePath,
-        component: () => import('@/layout/normal/index.vue'),
+        component: () => import('@/layout/index.vue'),
         meta: {
           title: '首页',
           icon: 'icon-park-outline:home',

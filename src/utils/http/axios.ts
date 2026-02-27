@@ -65,11 +65,12 @@ const resolveErrorMessage = (error: Record<string, any>): string => {
  */
 const handleUnauthorized = () => {
   const authStore = useAuthStore();
-  lStorage.removeItem(import.meta.env.VITE_APP_TOKEN_KEY);
-  lStorage.removeItem('auth');
-  authStore.resetToken();
-  router.push({ path: '/login', replace: true });
-  window.$message?.error('登录信息已过期，请重新登录！');
+  // 避免重复跳转
+  if (router.currentRoute.value.path !== '/login') {
+    authStore.resetToken();
+    router.replace({ path: '/login', query: { redirect: router.currentRoute.value.fullPath } });
+    window.$message?.error('登录信息已过期，请重新登录！');
+  }
 };
 
 class HttpRequest {
@@ -119,14 +120,17 @@ class HttpRequest {
           return data;
         }
 
+        // 处理未授权（登录过期）
+        if (code === HttpCodeConfig.noPermission) {
+          handleUnauthorized();
+          return Promise.reject(new Error('登录已过期'));
+        }
+
         // 业务失败处理
         const errMsg = resolveErrorMessage(data);
 
         // 特殊状态码处理
         switch (code) {
-          case HttpCodeConfig.noPermission: // 401
-            handleUnauthorized();
-            break;
           case HttpCodeConfig.notFound: // 404
             window.$message?.error('请求资源不存在');
             break;
@@ -159,15 +163,18 @@ class HttpRequest {
           const { status } = axiosError.response;
           const { data } = axiosError.response;
 
+          // 401 处理
+          if (status === 401) {
+            handleUnauthorized();
+            return Promise.reject(new Error('登录已过期'));
+          }
+
           // 尝试从响应体获取错误信息
           if (data && (data.errMsg || data.message)) {
             errMsg = resolveErrorMessage(data);
           } else {
             // 默认状态码消息
             switch (status) {
-              case 401:
-                handleUnauthorized();
-                return Promise.reject(new Error('登录已过期'));
               case 403:
                 errMsg = '拒绝访问';
                 break;

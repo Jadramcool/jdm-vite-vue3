@@ -26,7 +26,7 @@
             </div>
 
             <!-- 用户详细信息卡片 -->
-            <bordered class="user-details">
+            <div class="user-details">
               <AppCard
                 bordered
                 v-for="(item, index) in userTableDetail"
@@ -41,7 +41,7 @@
                   <span class="detail-value">{{ item.content }}</span>
                 </div>
               </AppCard>
-            </bordered>
+            </div>
           </div>
         </AppCard>
       </n-gi>
