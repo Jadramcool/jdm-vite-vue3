@@ -54,7 +54,7 @@ const getProps = computed((): NewDrawerProps => {
 });
 
 const getLoading = computed(() => {
-  return false;
+  return unref(getMergeProps).loading ?? false;
 });
 
 const getBindValue = computed(() => {

@@ -12,7 +12,9 @@
   <!-- 自定义表格部分 -->
   <NCard :bordered="false" size="small">
     <template #header>
-      <p class="card-header">{{ getProps.cardTitle }}</p>
+      <slot name="header">
+        <p class="card-header">{{ getProps.cardTitle }}</p>
+      </slot>
     </template>
     <template #header-extra>
       <tool-bar
@@ -26,6 +28,11 @@
       >
         <slot name="toolbar" />
       </tool-bar>
+      <slot name="header-extra" />
+    </template>
+
+    <template #footer>
+      <slot name="card-footer" />
     </template>
 
     <NDataTable
@@ -37,7 +44,17 @@
       :render-expand-icon="renderExpandIcon"
       @update:page="updatePage"
       @update:page-size="updatePageSize"
-    />
+    >
+      <template #empty>
+        <slot name="empty">
+          <n-empty description="暂无数据" />
+        </slot>
+      </template>
+
+      <template #loading>
+        <slot name="loading" />
+      </template>
+    </NDataTable>
   </NCard>
 </template>
 
@@ -45,9 +62,20 @@
 import { JayIcon } from '@/components';
 import { useComponentTableStore } from '@/store';
 import { h, VNodeChild } from 'vue';
+import { NEmpty } from 'naive-ui';
 import { ToolBar } from './components';
 import { useColumns, useDataSource, useLoading, usePagination } from './hooks';
 import { basicProps } from './props';
+
+defineSlots<{
+  header?: any;
+  'header-extra'?: any;
+  toolbar?: any;
+  'card-footer'?: any;
+  empty?: any;
+  loading?: any;
+  [key: string]: any;
+}>();
 
 defineOptions({ name: 'BasicTable' });
 
