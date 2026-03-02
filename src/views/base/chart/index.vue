@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { useVChart } from '@/hook/vchart';
+import { useVChart } from '@/hooks/vchart';
 import type {
   IBarChartSpec,
   IGaugeChartSpec,

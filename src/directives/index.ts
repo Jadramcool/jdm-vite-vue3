@@ -1,8 +1,8 @@
 import type { App } from 'vue';
-import { permission } from './modules';
+import { auth } from './modules';
 
 const directivesList: any = {
-  permission,
+  auth,
 };
 
 const setDirectives = {

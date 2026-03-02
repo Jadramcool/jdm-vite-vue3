@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { useVChart } from '@/hook';
+import { useVChart } from '@/hooks';
 import { spec } from './data';
 
 defineOptions({ name: 'LineChart' });
