@@ -9,6 +9,8 @@ export interface ThemeOptions {
   enableTransition?: boolean;
   /** 过渡动画持续时间 */
   transitionDuration?: number;
+  /** 过渡类型 */
+  transitionType?: 'uniform' | 'circular';
   /** 点击位置X坐标（用于circular过渡） */
   clickX?: number;
   /** 点击位置Y坐标（用于circular过渡） */

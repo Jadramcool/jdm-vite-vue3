@@ -73,7 +73,7 @@ module.exports = {
     'import/no-extraneous-dependencies': 'off',
     'no-plusplus': 'off',
     'no-shadow': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-explicit-any': 'warn',
     // TODO 之后考虑删除
     'no-useless-escape': 'off',
     'import/export': 'off',

@@ -440,6 +440,7 @@ export const useConfigSchema = (methods: any = {}) => {
           render: (row: any) => (
             <NSwitch
               value={!!row.isSystem}
+              round={false}
               loading={methods.loadingStates?.value?.[row.id]?.system || false}
               onUpdateValue={(value: boolean) => methods.handleToggleSystem(row, value)}
             />
@@ -474,6 +475,7 @@ export const useConfigSchema = (methods: any = {}) => {
           render: (row: any) => (
             <NSwitch
               value={!!row.isPublic}
+              round={false}
               loading={methods.loadingStates?.value?.[row.id]?.public || false}
               onUpdateValue={(value: boolean) => methods.handleTogglePublic(row, value)}
             />

@@ -27,7 +27,7 @@ enum API {
 /**
  * @description: 获取配置列表
  */
-export const configList = (params: any) => {
+export const configList = (params: Record<string, any>) => {
   return request.get<List<System.SysConfig>>({
     url: API.list,
     params,
@@ -55,7 +55,7 @@ export const configKey = (key: string) => {
 /**
  * @description: 新增配置
  */
-export const createConfig = (data: any) => {
+export const createConfig = (data: Partial<System.SysConfig>) => {
   return request.post<System.SysConfig>({
     url: API.create,
     data,
@@ -65,7 +65,7 @@ export const createConfig = (data: any) => {
 /**
  * @description: 更新配置
  */
-export const updateConfig = (data: any) => {
+export const updateConfig = (data: Partial<System.SysConfig>) => {
   return request.put<System.SysConfig>({
     url: API.update,
     data,

@@ -1,6 +1,6 @@
 <!-- 博客 页面的布局 -->
 <template>
-  <n-layout class="wh-full flex" has-sider>
+  <n-layout class="wh-full">
     <n-layout class="layout h-full" content-style="display: flex;flex-direction: column" embedded>
       <n-layout-header
         class="z-1 flex-x-center justify-between bordered"
@@ -15,9 +15,11 @@
       </n-layout-header>
       <n-layout-content embedded class="h-full flex-1 overflow-hidden" :native-scrollbar="true">
         <div class="wh-full flex-col">
-          <Transition :name="appStore.transitionAnimation" mode="out-in">
-            <slot />
-          </Transition>
+          <router-view v-slot="{ Component, route }">
+            <Transition :name="appStore.transitionAnimation" mode="out-in">
+              <component :is="Component" :key="route.fullPath" />
+            </Transition>
+          </router-view>
         </div>
       </n-layout-content>
       <n-layout-footer bordered class="h-40px" v-if="appStore.showFooter">

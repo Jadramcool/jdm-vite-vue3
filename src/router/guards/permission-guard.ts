@@ -1,14 +1,21 @@
 import { useAuthStore, useConfigStore, usePermissionStore, useUserStore } from '@/store';
 import { getMenus, getOnlineMenus, getUserInfo } from '@/store/helper';
 
-// ---------------判断是否需要登录---------------
+const WHITE_LIST = ['/login', '/404', '/403'];
+
 const needLoginTag = import.meta.env.VITE_NEED_LOGIN === 'true';
 const localRouteMode = import.meta.env.VITE_ROUTER_MODE;
-// ---------------判断是否需要登录---------------
 
-const WHITE_LIST = ['/login', '/404', '/403'];
+function checkRouteExists(router: any, to: { name: unknown }) {
+  return router.getRoutes().some((route: { name: unknown }) => route.name === to.name);
+}
+
+function createAccessDeniedHandler(to: { fullPath: string }) {
+  console.warn('没有权限，跳转到404页面');
+  return { name: '404', query: { path: to.fullPath } };
+}
+
 export function createPermissionGuard(router: any) {
-  let routes: any[] = [];
   router.beforeEach(async (to: any) => {
     try {
       const permissionStore = usePermissionStore();
@@ -38,46 +45,38 @@ export function createPermissionGuard(router: any) {
         } else {
           if (permissionStore.menus.length === 0) {
             const menus = await getOnlineMenus();
-            // 路由初始化失败
             if (!menus) {
               window.$message.error('路由初始化失败，请刷新页面重试！');
               return;
             }
 
-            // 设置权限
             permissionStore.setPermissions(menus);
-            // 设置菜单
             permissionStore.setMenus(menus);
-            // 设置路由
             permissionStore.setRoutes(menus);
             await router.addRoute(permissionStore.accessRoutes);
-            routes = router.getRoutes();
             return { ...to, replace: true };
           }
-          if (routes.find((route: any) => route.name === to.name)) return true;
-          console.warn('没有权限，跳转到404页面');
-          return { name: '404', query: { path: to.fullPath } };
+          if (checkRouteExists(router, to)) return true;
+          return createAccessDeniedHandler(to);
         }
       }
       if (shouldUseLoginFlow) {
-        // 登录流程
-        // 无token的情况
         if (!token) {
           console.warn('没有token，跳转到登录页');
           if (WHITE_LIST.includes(to.path)) return true;
-          // 如果在路由守卫中返回一个对象，那么会中断当前的导航，然后进行新的导航
           return { path: 'login', query: { ...to.query, redirect: to.path } };
         }
 
-        // 如果有token，并且是登录页，那么直接跳转到首页
         if (to.path === '/login') return { path: '/' };
 
         if (WHITE_LIST.includes(to.path)) return true;
         const userStore = useUserStore();
-        const configStore = useConfigStore();
-        // 刷新页面时，pinia中的数据会丢失，所以需要重新获取用户信息和权限
         if (!userStore.userInfo || !userStore.userInfo.id) {
-          const user: any = await getUserInfo();
+          const [user, menus] = await Promise.all([
+            getUserInfo(),
+            getMenus(),
+            configStore.initConfig().catch((err) => console.warn('全局配置初始化失败:', err)),
+          ]);
 
           if (!user || (user && Object.keys(user).length === 0)) {
             window.$message.error('用户信息或权限初始化失败，请刷新页面重试！');
@@ -86,33 +85,20 @@ export function createPermissionGuard(router: any) {
           }
           userStore.setUser(user);
 
-          // 初始化全局配置
-          try {
-            await configStore.initConfig();
-          } catch (error) {
-            console.warn('全局配置初始化失败，但不影响正常使用:', error);
-          }
-
-          const menus = await getMenus();
-          // 路由初始化失败
           if (!menus) {
             window.$message.error('路由初始化失败，请刷新页面重试！');
             return;
           }
-          // 设置权限
+
           permissionStore.setPermissions(menus);
-          // 设置菜单
           permissionStore.setMenus(menus);
-          // 设置路由
           permissionStore.setRoutes(menus);
           await router.addRoute(permissionStore.accessRoutes);
-          routes = router.getRoutes();
           return { ...to, replace: true };
         }
 
-        if (routes.find((route: any) => route.name === to.name)) return true;
-        console.warn('没有权限，跳转到404页面');
-        return { name: '404', query: { path: to.fullPath } };
+        if (checkRouteExists(router, to)) return true;
+        return createAccessDeniedHandler(to);
       }
     } catch (error) {
       console.error(error);

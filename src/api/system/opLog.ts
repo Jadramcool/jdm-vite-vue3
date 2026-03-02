@@ -12,7 +12,7 @@ enum API {
 /**
  * @description: 获取操作日志列表（分页）
  */
-export const getOpLogList = (params?: any) => {
+export const getOpLogList = (params?: Query.GetParams) => {
   return request.get<{
     list: System.OperationLog[];
     total: number;

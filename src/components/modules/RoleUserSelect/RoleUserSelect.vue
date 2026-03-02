@@ -202,7 +202,7 @@ const selectedData = computed(() => {
 // 加载所有角色-用户
 const loadAllRole = async () => {
   const res = await RoleApi.roleList({
-    options: JSON.stringify({ showPagination: false, with_user: true }),
+    options: { showPagination: false, with_user: true },
   });
   // 处理一个人对应多个角色，直接选中一整个角色的时候，会选到其他角色下的该用户
   const newOptions = res.data.map((item: any) => {

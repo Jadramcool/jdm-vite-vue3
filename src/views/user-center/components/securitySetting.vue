@@ -1,5 +1,5 @@
 <template>
-  <div class="security-setting-container">
+  <AppCard class="security-setting-container">
     <div class="security-section">
       <div class="section-header">
         <JayIcon icon="solar:shield-check-bold" class="header-icon" />
@@ -7,7 +7,7 @@
       </div>
       <div class="security-items">
         <!-- 实名认证 -->
-        <div class="security-item">
+        <AppCard bordered class="security-item">
           <div class="item-left">
             <div class="item-icon verified">
               <JayIcon icon="solar:verified-check-bold" />
@@ -35,9 +35,9 @@
               }}
             </n-tag>
           </div>
-        </div>
+        </AppCard>
         <!-- 登录密码 -->
-        <div class="security-item">
+        <AppCard bordered class="security-item">
           <div class="item-left">
             <div class="item-icon password">
               <JayIcon icon="solar:lock-password-bold" />
@@ -60,9 +60,9 @@
               {{ $t('common.edit') }}
             </n-button>
           </div>
-        </div>
+        </AppCard>
         <!-- 手机号 -->
-        <div class="security-item">
+        <AppCard bordered class="security-item">
           <div class="item-left">
             <div class="item-icon phone">
               <JayIcon icon="solar:phone-bold" />
@@ -83,9 +83,9 @@
               {{ $t('common.edit') }}
             </n-button>
           </div>
-        </div>
+        </AppCard>
         <!-- 邮箱 -->
-        <div class="security-item">
+        <AppCard bordered class="security-item">
           <div class="item-left">
             <div class="item-icon email">
               <JayIcon icon="solar:letter-bold" />
@@ -105,10 +105,10 @@
               {{ $t('common.edit') }}
             </n-button>
           </div>
-        </div>
+        </AppCard>
       </div>
     </div>
-  </div>
+  </AppCard>
 </template>
 
 <script setup lang="ts">
@@ -133,7 +133,6 @@ const handleEditBasic = () => {
 <style scoped lang="scss">
 .security-setting-container {
   .security-section {
-    background: #ffffff;
     padding: 32px 0;
   }
 
@@ -155,7 +154,6 @@ const handleEditBasic = () => {
     .header-title {
       font-size: 16px;
       font-weight: 600;
-      color: #111827;
       margin: 0;
       letter-spacing: -0.025em;
     }
@@ -172,13 +170,17 @@ const handleEditBasic = () => {
     align-items: center;
     justify-content: space-between;
     padding: 20px;
-    border: 1px solid #f0f0f0;
     border-radius: 8px;
     transition: all 0.3s ease;
 
     &:hover {
       border-color: #d9d9d9;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .dark &:hover {
+      border-color: #404040;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     .item-left {
@@ -220,7 +222,7 @@ const handleEditBasic = () => {
         .item-title {
           font-size: 14px;
           font-weight: 500;
-          color: #262626;
+          // color: #262626;
           margin-bottom: 4px;
         }
 

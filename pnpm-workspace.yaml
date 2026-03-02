@@ -1,0 +1,4 @@
+ignoredBuiltDependencies:
+  - es5-ext
+  - esbuild
+  - vue-demi

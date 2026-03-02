@@ -13,19 +13,19 @@
 </template>
 
 <script setup lang="ts">
-import { GaodeApi } from '@/api';
+// import { GaodeApi } from '@/api';
 import { LineChart, Welcome } from './components';
 
-const weatherLiveData = ref<Recordable>({});
+// const weatherLiveData = ref<Recordable>({});
 
-const getLocationWeather = async () => {
-  const weatherData = await GaodeApi.cityWeather();
-  const [liveWeather] = weatherData.lives;
-  weatherLiveData.value = liveWeather;
-};
+// const getLocationWeather = async () => {
+//   const weatherData = await GaodeApi.cityWeather();
+//   const [liveWeather] = weatherData.lives;
+//   weatherLiveData.value = liveWeather;
+// };
 
 onMounted(() => {
-  getLocationWeather();
+  // getLocationWeather();
 });
 </script>
 

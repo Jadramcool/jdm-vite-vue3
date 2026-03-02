@@ -89,8 +89,27 @@ export const useUserSchema = (methods: any = {}) => {
         key: 'name',
         label: $t('user.name'),
         defaultValue: undefined,
+        form: {
+          component: 'NInput',
+          componentProps: {
+            placeholder: $t('modules.system.user.schema.pleaseInputName'),
+          },
+        },
         table: {
           render: (row: any) => row.name || '-',
+        },
+        editForm: {
+          component: 'NInput',
+          rules: [
+            {
+              required: false,
+              message: $t('modules.system.user.schema.pleaseInputName'),
+              trigger: ['blur', 'input'],
+            },
+          ],
+          componentProps: {
+            placeholder: $t('modules.system.user.schema.pleaseInputName'),
+          },
         },
       },
       {
@@ -341,6 +360,7 @@ export const useUserSchema = (methods: any = {}) => {
   const formFields = [
     'id',
     'username',
+    'name',
     'phone',
     'roleType',
     'role',
@@ -349,7 +369,7 @@ export const useUserSchema = (methods: any = {}) => {
     'createdTime',
     'updatedTime',
   ];
-  const editFormFields = ['id', 'username', 'phone', 'roleType', 'role', 'sex', 'status'];
+  const editFormFields = ['id', 'username', 'name', 'phone', 'roleType', 'role', 'sex', 'status'];
 
   // 表格列配置
   const columns = computed(() => columnsUtil(schema.value, tableFields));

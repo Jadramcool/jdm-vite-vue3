@@ -425,6 +425,7 @@
           "disable": "Disable",
           "enable": "Enable",
           "pleaseInputCorrectPhone": "Please input correct phone",
+          "pleaseInputName": "Please input name",
           "pleaseInputPhone": "Please input phone",
           "pleaseInputUsername": "Please input username",
           "usernameLengthMaxError": "Username length cannot exceed 16 characters",

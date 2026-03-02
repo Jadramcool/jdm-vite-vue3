@@ -1,4 +1,4 @@
 <!-- 空 -->
 <template>
-  <slot />
+  <router-view />
 </template>

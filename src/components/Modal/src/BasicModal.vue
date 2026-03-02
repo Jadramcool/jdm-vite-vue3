@@ -18,16 +18,18 @@
           </div>
         </template>
         <template #default>
-          <NScrollbar
-            content-class="modal-content"
-            :style="{
-              height: isNumber(getBindValue.cardHeight)
-                ? getBindValue.cardHeight + 'px'
-                : getBindValue.cardHeight,
-            }"
-          >
-            <slot></slot>
-          </NScrollbar>
+          <n-spin :show="getLoading">
+            <NScrollbar
+              content-class="modal-content"
+              :style="{
+                height: isNumber(getBindValue.cardHeight)
+                  ? getBindValue.cardHeight + 'px'
+                  : getBindValue.cardHeight,
+              }"
+            >
+              <slot></slot>
+            </NScrollbar>
+          </n-spin>
         </template>
         <template #footer>
           <slot v-if="$slots.footer" name="footer"></slot>
@@ -81,6 +83,10 @@ const getProps = computed((): NewModalProps => {
 
 const getBindValue = computed(() => {
   return { ...unref(getProps) } as Recordable;
+});
+
+const getLoading = computed(() => {
+  return unref(getMergeProps).loading ?? false;
 });
 
 watch(

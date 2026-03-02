@@ -10,6 +10,7 @@
 import '@/assets/styles/index.scss';
 import { i18n } from '@/locales';
 import store from '@/store';
+import { performanceMonitor } from '@/utils/performance';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import calendar from 'dayjs/plugin/calendar';
@@ -43,6 +44,10 @@ const start = async () => {
   dayjs.extend(calendar);
 
   app.mount('#app');
+  // 启动性能监控
+  if (import.meta.env.VITE_ENABLE_PERFORMANCE_MONITOR === 'true') {
+    performanceMonitor.init();
+  }
 
   // 在生产环境中使用mock服务
   // if (process.env.NODE_ENV === 'production') {

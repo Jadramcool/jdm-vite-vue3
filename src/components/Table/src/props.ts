@@ -8,6 +8,7 @@
  *
  */
 import { NDataTable } from 'naive-ui';
+import { PropType } from 'vue';
 
 export const basicProps = {
   ...NDataTable.props, // 这里继承原 UI 组件的 props
@@ -17,7 +18,7 @@ export const basicProps = {
     default: undefined,
   },
   columns: {
-    type: [Array],
+    type: [Array] as PropType<any[]>,
     default: () => [],
     required: true,
   },
@@ -38,7 +39,7 @@ export const basicProps = {
   //     default: null,
   //   },
   rowKey: {
-    type: [String, Function],
+    type: [String, Function] as PropType<string | ((row: any) => string)>,
     default: undefined,
   },
   pagination: {
@@ -78,7 +79,7 @@ export const basicProps = {
   },
   // 表格尺寸
   size: {
-    type: String,
+    type: String as PropType<'small' | 'medium' | 'large'>,
     default: 'small',
   },
 };

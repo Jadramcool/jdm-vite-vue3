@@ -72,7 +72,7 @@ const schemaMethods = {
     // 设置加载状态
     loadingStates.value[recordId].system = true;
 
-    ConfigApi.updateConfig({ id: recordId, isSystem: value ? 1 : 0 })
+    ConfigApi.updateConfig({ id: recordId, isSystem: value })
       .then(() => {
         window.$message.success('系统配置状态更新成功');
         tableRef.value.reload();
@@ -99,7 +99,7 @@ const schemaMethods = {
     // 设置加载状态
     loadingStates.value[recordId].public = true;
 
-    ConfigApi.updateConfig({ id: recordId, isPublic: value ? 1 : 0 })
+    ConfigApi.updateConfig({ id: recordId, isPublic: value })
       .then(() => {
         window.$message.success('公开配置状态更新成功');
         tableRef.value.reload();

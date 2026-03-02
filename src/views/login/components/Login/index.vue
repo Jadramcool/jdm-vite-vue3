@@ -53,7 +53,7 @@
         </n-form-item>
 
         <!-- 验证码输入框 -->
-        <n-form-item path="captcha" class="form-item">
+        <n-form-item v-if="common.captchaEnabled" path="captcha" class="form-item">
           <div class="captcha-wrapper">
             <Captcha
               ref="captchaRef"
@@ -180,9 +180,10 @@ const loginFormRules: FormRules = {
   ],
   captcha: [
     {
-      required: true,
+      required: common.captchaEnabled,
       trigger: ['blur', 'input'],
       validator: (_rule: FormItemRule, value: string) => {
+        if (!common.captchaEnabled) return Promise.resolve();
         if (!value) {
           return new Error(t('common.pleaseInput') + t('login.captcha'));
         }
@@ -234,7 +235,7 @@ const checkLocalAccount = () => {
  * @param value 验证码值
  * @param isValid 是否有效
  */
-const handleCaptchaChange = (value: string, isValid: boolean): void => {
+const handleCaptchaChange = (_value: string, isValid: boolean): void => {
   captchaValid.value = isValid;
 };
 
@@ -264,14 +265,8 @@ const handleLogin = async (e?: MouseEvent) => {
           onLoginSuccess(res);
         } catch (error) {
           console.error('error', error);
-          window.$notification.error({
-            title: `${t('login.status.loginFailed')}`,
-            content: error as string,
-            duration: 3000,
-            keepAliveOnHover: true,
-          });
           // 登录失败时刷新验证码
-          captchaRef.value?.refreshCaptcha();
+          if (common.captchaEnabled) captchaRef.value?.refreshCaptcha();
         }
       } else {
         const errorMessage: any = errors.map((item) => item[0].message).join('\n');
@@ -282,7 +277,7 @@ const handleLogin = async (e?: MouseEvent) => {
           keepAliveOnHover: true,
         });
         // 验证失败时刷新验证码
-        captchaRef.value?.refreshCaptcha();
+        if (common.captchaEnabled) captchaRef.value?.refreshCaptcha();
       }
     });
   } finally {

@@ -24,12 +24,12 @@ export const basicProps = {
   },
   // 表单配置规则
   schemas: {
-    type: [Array],
+    type: [Array] as PropType<any[]>,
     default: () => [],
   },
   // 布局方式
   layout: {
-    type: String,
+    type: String as PropType<'inline' | 'vertical' | 'horizontal'>,
     default: 'inline',
   },
   // 是否显示行为内表单

@@ -13,147 +13,17 @@
     <NGrid v-bind="getGrid">
       <template v-for="schema in getSchema">
         <NGi v-bind="schema.giProps" v-if="getShow(schema).isIfShow" :key="schema.field">
-          <NFormItemGi :label="schema.label" :path="schema.field">
-            <!-- 左侧提示 -->
-            <template #label v-if="schema.labelMessage">
-              {{ schema.label }}
-              <NTooltip trigger="hover" :style="schema.labelMessageStyle">
-                <template #trigger>
-                  <JayIcon :icon="'mynaui:question-waves'" :hover="true" :size="14" />
-                </template>
-                {{ schema.labelMessage }}
-              </NTooltip>
+          <FormItem
+            :schema="schema"
+            :form-model="formModel"
+            :component-props-map="componentPropsMap"
+            :is-full="getProps.isFull"
+            @set-ref="setComponentRef"
+          >
+            <template v-for="(_, name) in $slots" #[name]="slotData">
+              <slot :name="name" v-bind="slotData || {}" />
             </template>
-            <!-- TODO 考虑把所有的都改成componentPropsMap[schema.field]，等待有空修改然后测试 -->
-            <template v-if="schema.component === 'NRadioGroup'">
-              <NRadioGroup
-                v-bind="componentPropsMap[schema.field]"
-                v-model:value="formModel[schema.field]"
-                :ref="
-                  (el: any) => {
-                    setComponentRef(schema.field, el);
-                  }
-                "
-              >
-                <NRadio
-                  v-for="option in componentPropsMap[schema.field]?.options ?? []"
-                  :key="option.value"
-                  :value="option.value"
-                >
-                  {{ option.label }}
-                </NRadio>
-              </NRadioGroup>
-            </template>
-            <template v-else-if="schema.component === 'NCheckboxGroup'">
-              <NCheckboxGroup
-                v-bind="getComponentProps(schema)"
-                v-model:value="formModel[schema.field]"
-                :ref="
-                  (el: any) => {
-                    setComponentRef(schema.field, el);
-                  }
-                "
-              >
-                <NCheckbox
-                  v-for="option in getComponentProps(schema)?.options ?? []"
-                  :key="option.value"
-                  :value="option.value"
-                  :label="option.label"
-                >
-                </NCheckbox>
-              </NCheckboxGroup>
-            </template>
-            <template v-else-if="schema.component === 'ApiSelect'">
-              <ApiSelect
-                v-bind="getComponentProps(schema)"
-                v-model:value="formModel[schema.field]"
-                :ref="
-                  (el: any) => {
-                    setComponentRef(schema.field, el);
-                  }
-                "
-              />
-            </template>
-            <template v-else-if="schema.component === 'ApiTreeSelect'">
-              <ApiTreeSelect
-                v-bind="getComponentProps(schema)"
-                v-model:value="formModel[schema.field]"
-                :ref="
-                  (el: any) => {
-                    setComponentRef(schema.field, el);
-                  }
-                "
-              />
-            </template>
-
-            <template v-else-if="schema.component === 'NDatePicker'">
-              <DatePicker
-                v-bind="getComponentProps(schema)"
-                v-model:value="formModel[schema.field]"
-                :ref="
-                  (el: any) => {
-                    setComponentRef(schema.field, el);
-                  }
-                "
-              />
-            </template>
-            <template v-else-if="schema.component === 'ApiTree'">
-              <ApiTree
-                v-bind="getComponentProps(schema)"
-                v-model:value="formModel[schema.field]"
-                :ref="
-                  (el: any) => {
-                    setComponentRef(schema.field, el);
-                  }
-                "
-              />
-            </template>
-            <template v-else-if="schema.component === 'MutiDatePicker'">
-              <MutiDatePicker
-                v-bind="getComponentProps(schema)"
-                v-model:value="formModel[schema.field]"
-                :ref="
-                  (el: any) => {
-                    setComponentRef(schema.field, el);
-                  }
-                "
-              >
-              </MutiDatePicker>
-            </template>
-            <template v-else-if="schema.component === 'IconPicker'">
-              <IconPicker
-                v-bind="getComponentProps(schema)"
-                v-model:value="formModel[schema.field]"
-                :ref="
-                  (el: any) => {
-                    setComponentRef(schema.field, el);
-                  }
-                "
-              />
-            </template>
-
-            <!-- 自定义插槽组件 -->
-            <template v-else-if="schema.slot && $slots[schema.slot]">
-              <slot :name="schema.slot" :model="formModel" :field="schema.field" :schema="schema" />
-            </template>
-            <!--判断插槽-->
-            <template v-else>
-              <component
-                v-bind="getComponentProps(schema)"
-                v-model:value="formModel[schema.field]"
-                :is="componentMap.get(schema.component)"
-                :class="{
-                  isFull:
-                    schema.isFull != false && getProps.isFull && schema.component !== 'NSwitch',
-                }"
-                :ref="
-                  (el: HTMLElement) => {
-                    setComponentRef(schema.field, el);
-                  }
-                "
-              />
-            </template>
-          </NFormItemGi>
+          </FormItem>
         </NGi>
       </template>
       <NGi
@@ -194,14 +64,9 @@
 <script setup lang="ts">
 import { isArray, isBoolean, isFunction } from '@/utils';
 import _ from 'lodash';
-import { NCheckboxGroup, NRadio, type GridProps } from 'naive-ui';
-import { componentMap } from './componentMap';
-import ApiSelect from './components/ApiSelect.vue';
-import ApiTree from './components/ApiTree.vue';
-import ApiTreeSelect from './components/ApiTreeSelect.vue';
-import DatePicker from './components/DatePicker.vue';
-import IconPicker from './components/IconPicker.vue';
+import { type GridProps } from 'naive-ui';
 import { createPlaceholderMessage } from './helper';
+import FormItem from './components/FormItem.vue';
 import { useFormEvents, useFormValues } from './hooks';
 import { basicProps } from './props';
 import { FormActionType, FormSchema, NewFormProps } from './types';
@@ -319,20 +184,15 @@ const {
   handleFormatFormValues,
 });
 
-// 缓存特定的 schema 的 componentProps
+// 缓存所有 schema 的 componentProps
 const componentPropsMap = computed(() => {
-  // 确保 getSchema.value 存在且为数组
   const schemaArray = getSchema.value || [];
 
   return schemaArray.reduce(
     (acc, schema: any) => {
-      // 只处理特定组件类型的 schema
-      if (['NRadioGroup', 'NCheckboxGroup'].includes(schema.component)) {
-        const props = getComponentProps(schema);
-        // 确保 props 是有效的对象
-        if (props !== undefined && typeof props === 'object') {
-          acc[schema.field] = props;
-        }
+      const props = getComponentProps(schema);
+      if (props !== undefined && typeof props === 'object') {
+        acc[schema.field] = props;
       }
       return acc;
     },

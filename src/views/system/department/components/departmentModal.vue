@@ -1,5 +1,11 @@
 <template>
-  <BasicModal v-bind="attrs" @register="register" @ok="handleOk" :title="getTitle">
+  <BasicModal
+    v-bind="attrs"
+    @register="register"
+    @ok="handleOk"
+    :title="getTitle"
+    :loading="loading"
+  >
     <BasicForm @register="registerForm"></BasicForm>
   </BasicModal>
 </template>
@@ -17,6 +23,7 @@ const attrs = useAttrs();
 
 const entityId = ref<number>(0); // 实体ID
 const isUpdate = ref<boolean>(false); // 是否是更新
+const loading = ref<boolean>(false); // 加载状态
 
 const getTitle = computed(() => {
   return `${unref(isUpdate) ? '编辑' : '新增'}部门`;
@@ -31,16 +38,19 @@ const [registerForm, { setFieldsValue, resetFields, submit }] = useForm({
 });
 
 const [register, { closeModal, setModalProps }] = useModalInner(async (data) => {
+  loading.value = true;
   await resetFields();
   isUpdate.value = !!data?.isUpdate;
   entityId.value = data?.record?.id;
   if (isUpdate.value) {
-    setFieldsValue(data.record);
+    await setFieldsValue(data.record);
   }
+  loading.value = false;
 });
 
 const handleOk = async () => {
   try {
+    loading.value = true;
     setModalProps({ confirmLoading: true });
     const values = await submit();
     const allValues = { ...values };
@@ -57,6 +67,7 @@ const handleOk = async () => {
     console.error(error);
     window.$message?.error(error);
   } finally {
+    loading.value = false;
     setModalProps({ confirmLoading: false });
   }
 };

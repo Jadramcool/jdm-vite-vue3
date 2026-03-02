@@ -2,13 +2,17 @@ import { defineStore } from 'pinia';
 // import * as NprogressFn from '@/utils/nprogress';
 import { useRouterStore } from './router';
 
+export interface TabItem {
+  name?: string;
+  path: string;
+  title?: string;
+  icon?: string;
+  keepAlive?: boolean;
+}
+
 export const useTabStore = defineStore('tab', {
   state: (): {
-    tabs: Array<{
-      path: string;
-      keepAlive?: boolean;
-      title?: string;
-    }>;
+    tabs: Array<TabItem>;
     activeTab: string;
     // reloading: boolean;
   } => ({
@@ -26,11 +30,11 @@ export const useTabStore = defineStore('tab', {
       await nextTick(); // tab栏dom更新完再设置激活，让tab栏定位到新增的tab上生效
       this.activeTab = path;
     },
-    setTabs(tabs: Array<{ path: string; keepAlive?: boolean }>): void {
+    setTabs(tabs: Array<TabItem>): void {
       this.tabs = tabs;
     },
     addTab(
-      tab: { name?: string; path: string; title?: string; icon?: string; keepAlive?: boolean } = {
+      tab: TabItem = {
         path: '',
       },
     ): void {

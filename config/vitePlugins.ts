@@ -21,19 +21,23 @@ import { viteMockServe } from 'vite-plugin-mock';
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers';
 // UnoCSS
 import UnoCSS from 'unocss/vite';
+// Compression
 import { ConfigEnv } from 'vite';
+import viteCompression from 'vite-plugin-compression';
 
 /**
  * 配置 Vite 插件
  * @param env - Vite 环境配置
  * @returns 插件数组
  */
-export default (env: ConfigEnv) => {
+export default (env: ConfigEnv, viteEnv: Record<string, string>) => {
   const { command, mode } = env;
+  const { VITE_USE_COMPRESS, VITE_MOCK } = viteEnv;
 
   console.log(`📦 环境模式: ${mode}`);
   console.log(`⚡ 构建命令: ${command}`);
   console.log(`🔧 开发模式: ${command === 'serve' ? '是' : '否'}`);
+  console.log(`🗜️ 开启压缩: ${VITE_USE_COMPRESS === 'true' ? '是' : '否'}`);
 
   const vitePlugins: (Plugin | Plugin[])[] = [
     vue({
@@ -80,9 +84,18 @@ export default (env: ConfigEnv) => {
       // 是否实时更新
       watchFiles: true,
       // 是否启用
-      enable: true,
+      enable: VITE_MOCK === 'true',
       // 是否显示日志
       logger: true,
+    }),
+    // 压缩插件
+    viteCompression({
+      verbose: true, // 默认即可
+      disable: VITE_USE_COMPRESS !== 'true', // 是否禁用压缩
+      deleteOriginFile: false, // 删除源文件
+      threshold: 10240, // 压缩前最小文件大小
+      algorithm: 'gzip', // 压缩算法
+      ext: '.gz', // 文件类型
     }),
   ];
 
