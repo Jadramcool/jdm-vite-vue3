@@ -1,8 +1,11 @@
-import type { App } from 'vue';
-import { auth } from './modules';
+import type { App, Directive } from 'vue';
 
-const directivesList: any = {
+import { auth, copy, debounce } from './modules';
+
+const directivesList: Record<string, Directive> = {
   auth,
+  copy,
+  debounce,
 };
 
 const setDirectives = {
