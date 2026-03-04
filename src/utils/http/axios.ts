@@ -10,7 +10,7 @@ import qs from 'qs';
 import { router } from '@/router';
 import { useAuthStore } from '@/store';
 import { getLStorage } from '@/utils/storage';
-import { getToken } from '../token/index';
+import { getToken, setToken, getRefreshToken, removeRefreshToken } from '../token/index';
 import { CodeConfig as HttpCodeConfig } from './codeConfig.ts';
 import { ResponseModel } from './types/index.ts';
 
@@ -18,6 +18,22 @@ const lStorage = getLStorage();
 
 // 存储当前挂起的请求
 const pendingMap = new Map<string, AbortController>();
+
+// 是否正在刷新token中
+let isRefreshing = false;
+// 存储刷新token期间等待的请求
+let subscribers: Array<(token: string) => void> = [];
+
+// 通知所有订阅者
+const notifySubscribers = (newToken: string) => {
+  subscribers.forEach((callback) => callback(newToken));
+  subscribers = [];
+};
+
+// 订阅token刷新
+const subscribeTokenRefresh = (cb: (token: string) => void) => {
+  subscribers.push(cb);
+};
 
 /**
  * 生成请求的唯一标识
@@ -142,7 +158,7 @@ class HttpRequest {
         // 返回 Promise.reject 以便调用方捕获
         return Promise.reject(new Error(errMsg));
       },
-      (error: any) => {
+      async (error: any) => {
         // 请求失败或取消，从pendingMap移除
         // 类型断言为 AxiosError 以访问 config 和 response
         const axiosError = error as AxiosError<ResponseModel>;
@@ -159,14 +175,62 @@ class HttpRequest {
 
         // 处理 HTTP 状态码错误
         let errMsg = '网络请求错误';
-        if (axiosError.response) {
+        if (axiosError.response && axiosError.config) {
           const { status } = axiosError.response;
           const { data } = axiosError.response;
 
-          // 401 处理
+          // 401 处理 - 尝试刷新Token
           if (status === 401) {
-            handleUnauthorized();
-            return Promise.reject(new Error('登录已过期'));
+            const refreshToken = getRefreshToken();
+
+            // 没有refreshToken，直接跳转登录
+            if (!refreshToken) {
+              handleUnauthorized();
+              return Promise.reject(new Error('登录已过期'));
+            }
+
+            // 如果正在刷新token，把当前请求加入队列
+            if (isRefreshing) {
+              const { config } = axiosError;
+              if (!config) {
+                return Promise.reject(new Error('配置不存在'));
+              }
+              return new Promise((resolve) => {
+                subscribeTokenRefresh((newToken: string) => {
+                  config.headers.Authorization = `Bearer ${newToken}`;
+                  resolve(axios(config));
+                });
+              });
+            }
+
+            // 开始刷新token
+            isRefreshing = true;
+
+            try {
+              const res = await axios.post(`${import.meta.env.VITE_APP_BASE_URL}/user/refresh`, {
+                refreshToken,
+              });
+
+              const { accessToken } = res.data?.data || {};
+
+              const { config } = axiosError;
+              if (accessToken && config) {
+                setToken(accessToken);
+                notifySubscribers(accessToken);
+
+                // 重试当前请求
+                config.headers.Authorization = `Bearer ${accessToken}`;
+                return axios(config);
+              }
+              throw new Error('刷新失败');
+            } catch (refreshError) {
+              // 刷新失败，清除token并跳转登录
+              removeRefreshToken();
+              handleUnauthorized();
+              return Promise.reject(new Error('登录已过期'));
+            } finally {
+              isRefreshing = false;
+            }
           }
 
           // 尝试从响应体获取错误信息

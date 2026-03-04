@@ -1,5 +1,10 @@
 import { usePermissionStore, useRouterStore, useTabStore, useUserStore } from '@/store';
-import { removeToken, setToken as setTokenLocal } from '@/utils';
+import {
+  removeToken,
+  setToken as setTokenLocal,
+  setRefreshToken,
+  removeRefreshToken,
+} from '@/utils';
 import { defineStore } from 'pinia';
 
 export const useAuthStore = defineStore('auth', {
@@ -7,12 +12,22 @@ export const useAuthStore = defineStore('auth', {
     token: undefined,
   }),
   actions: {
-    setToken({ token }: any) {
-      this.token = token;
-      setTokenLocal(token);
+    setToken({ accessToken, refreshToken, token }: any) {
+      if (accessToken) {
+        this.token = accessToken;
+        setTokenLocal(accessToken);
+      } else if (token) {
+        // 兼容旧版接口
+        this.token = token;
+        setTokenLocal(token);
+      }
+      if (refreshToken) {
+        setRefreshToken(refreshToken);
+      }
     },
     resetToken() {
       this.$reset();
+      removeRefreshToken();
     },
     toLogin() {
       const { router, route } = useRouterStore();
