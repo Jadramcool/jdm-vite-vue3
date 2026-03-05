@@ -32,6 +32,8 @@ declare namespace System {
     enable?: boolean; // 是否启用
     order?: number; // 排序
     roles?: Recordable; // 与角色菜单表的关系
+    updatedTime: string;
+    createdTime: string;
   };
 
   type loginModel = {

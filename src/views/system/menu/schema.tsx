@@ -12,7 +12,7 @@ import { computed } from 'vue';
 
 const locales = (field: string) => $t(`modules.system.menu.${field}`);
 
-export const useMenuSchema = (methods: any = {}) => {
+export const useMenuSchema = (methods: Recordable = {}) => {
   const schema = computed(() => ({
     properties: [
       {
@@ -83,7 +83,7 @@ export const useMenuSchema = (methods: any = {}) => {
         label: $t('modules.system.menu.schema.description'),
         defaultValue: undefined,
         table: {
-          render: (row: any) => row.description || '-',
+          render: (row: System.Menu) => row.description || '-',
           ellipsis: {
             tooltip: true,
           },
@@ -106,7 +106,7 @@ export const useMenuSchema = (methods: any = {}) => {
         label: $t('modules.system.menu.schema.path'),
         defaultValue: undefined,
         table: {
-          render: (row: any) => {
+          render: (row: System.Menu) => {
             const path = row.path || '-';
             return (
               <div onClick={() => methods.copy(path)} class="cursor-pointer">
@@ -128,7 +128,7 @@ export const useMenuSchema = (methods: any = {}) => {
               message: $t('modules.system.menu.schema.pleaseInputPath'),
             },
           ],
-          ifShow: ({ values }: any) => {
+          ifShow: ({ values }: { values: System.Menu }) => {
             if (values.type === 'BUTTON') {
               return false;
             }
@@ -142,7 +142,7 @@ export const useMenuSchema = (methods: any = {}) => {
         defaultValue: undefined,
         table: {
           width: 100,
-          render: (row: any) => {
+          render: (row: System.Menu) => {
             const layout =
               unref(layoutOptions).find((item) => item.value === row.layout)?.label || '-';
             return (
@@ -160,7 +160,7 @@ export const useMenuSchema = (methods: any = {}) => {
           },
         },
         editForm: {
-          ifShow: ({ values }: any) => {
+          ifShow: ({ values }: { values: System.Menu }) => {
             if (values.type === 'BUTTON') {
               return false;
             }
@@ -179,7 +179,7 @@ export const useMenuSchema = (methods: any = {}) => {
             labelField: 'name',
             keyField: 'id',
             placeholder: $t('common.pleaseSelect'),
-            afterRequest: (data: any) => {
+            afterRequest: (data: System.Menu[]) => {
               return arrayToTree(data);
             },
           },
@@ -194,7 +194,7 @@ export const useMenuSchema = (methods: any = {}) => {
         defaultValue: undefined,
         table: {
           width: 200,
-          render: (row: any) => dayjs(row.createdTime).format('YYYY-MM-DD HH:mm:ss'),
+          render: (row: System.Menu) => dayjs(row.createdTime).format('YYYY-MM-DD HH:mm:ss'),
         },
       },
       {
@@ -203,7 +203,7 @@ export const useMenuSchema = (methods: any = {}) => {
         form: {},
         table: {
           width: 200,
-          render: (row: any) => dayjs(row.updatedTime).format('YYYY-MM-DD HH:mm:ss'),
+          render: (row: System.Menu) => dayjs(row.updatedTime).format('YYYY-MM-DD HH:mm:ss'),
         },
       },
       {
@@ -211,8 +211,8 @@ export const useMenuSchema = (methods: any = {}) => {
         label: $t('common.operate'),
         table: {
           fixed: 'right',
-          width: 200,
-          render: (row: any) => (
+          width: 140,
+          render: (row: System.Menu) => (
             <NSpace justify="center">
               <NButton type="primary" ghost size="small" onClick={() => methods.handleEdit(row)}>
                 {$t('common.edit')}
@@ -238,7 +238,7 @@ export const useMenuSchema = (methods: any = {}) => {
         key: 'type',
         label: $t('modules.system.menu.schema.type'),
         table: {
-          render: (row: any) => {
+          render: (row: System.Menu) => {
             return (
               <NTag type={MenuTypeColorMap[row.type]} bordered={false} size="small">
                 {locales(`typeMap.${toLower(row.type)}`)}
@@ -268,7 +268,7 @@ export const useMenuSchema = (methods: any = {}) => {
           component: 'NInput',
         },
         editForm: {
-          ifShow: ({ values }: any) => {
+          ifShow: ({ values }: { values: System.Menu }) => {
             if (values.type === 'BUTTON') {
               return false;
             }
@@ -284,7 +284,7 @@ export const useMenuSchema = (methods: any = {}) => {
           defaultValue: true,
         },
         editForm: {
-          ifShow: ({ values }: any) => {
+          ifShow: ({ values }: { values: System.Menu }) => {
             if (values.type === 'BUTTON') {
               return false;
             }
@@ -299,7 +299,7 @@ export const useMenuSchema = (methods: any = {}) => {
           ellipsis: {
             tooltip: true,
           },
-          render: (row: NaiveUI.RowData) => row.component || '-',
+          render: (row: System.Menu) => row.component || '-',
         },
         form: {
           component: 'NInput',
@@ -311,7 +311,7 @@ export const useMenuSchema = (methods: any = {}) => {
               message: $t('modules.system.menu.schema.pleaseInputComponent'),
             },
           ],
-          ifShow: ({ values }: any) => {
+          ifShow: ({ values }: { values: System.Menu }) => {
             if (values.type === 'BUTTON') {
               return false;
             }
